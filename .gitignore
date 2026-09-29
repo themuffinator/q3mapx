@@ -1,0 +1,6 @@
+/build/
+/out/
+/.agents/tmp/
+/CMakeUserPresets.json
+__pycache__/
+*.pyc

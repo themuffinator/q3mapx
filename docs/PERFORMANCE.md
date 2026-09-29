@@ -39,9 +39,26 @@ Image sizes are limited to 1..8192, fixed samples to 1..256, random samples to
 Persistent workers and batched atomic range dispatch reduce tiny-job overhead.
 The scheduler microbenchmark improved roughly 49.6x, but the initial full-stage
 comparison did **not** show a general BSP/VIS/LIGHT speedup. One-worker VIS was
-slower in that run and needs an alternating investigation. See the [task log](PROGRESS.md)
+slower in that initial run. See the [task log](PROGRESS.md)
 and [raw job-stage results](benchmarks/jobs-win-x64.json). The portal-publication
 race fix is retained regardless of benchmark results.
+
+An alternating follow-up on a 9x9-pillar fixture measured NRC **2.6156 s**, the
+previous q3mapx build **2.6636 s**, and optimized VIS **2.2991 s** with one worker:
+12.1% less elapsed time than NRC, with identical visibility bytes. The changes use
+64-bit bitset intersections, reuse recursion scratch on worker-local heaps, and
+visit each leaf only once during the initial reachability flood. Scratch recursion
+now has a checked 1,024-level limit instead of overflowing the native stack.
+[Raw observations](benchmarks/vis-win-x64.json) contain warmups, three alternating
+measurements, executable hashes and output comparisons.
+
+The same test exposed an inherited scheduling dependency: NRC's 20-worker output
+varied by zero to two visibility bits between runs; existing q3mapx also varies.
+Those multithreaded timings (NRC 0.2892 s, q3mapx 0.2573 s median) are characterization,
+**not** evidence of byte-identical multithreaded parity. The smaller grid=5 regression
+is identical across workers, which did not expose this larger-case limitation.
+Use one VIS worker when exact reproducibility is required pending the explicit
+reproducible mode. The earlier grid=11 run is not directly comparable to grid=9.
 
 Use `-profile report.json` to inspect named CPU passes. Profile timing includes
 separate execution and setup-inclusive values. See [development](DEVELOPMENT.md)

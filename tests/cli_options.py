@@ -1,5 +1,6 @@
 """CLI argument bounds, profiling, and real VIS worker parity. GPL-3.0-or-later."""
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -47,6 +48,16 @@ def main():
             assert item['seconds'] >= 0 and item['grain'] > 0
         visibility.append(Bsp(source.with_suffix('.bsp')).lump(16))
     assert visibility[0] == visibility[1] == visibility[2], 'Worker-dependent visibility data'
+    # Captured from NRC 8216133, built with the same synthetic grid=5 fixture.
+    # This checks the actual visibility output, including the high half of bitsets.
+    assert hashlib.sha256(visibility[0]).hexdigest()=='4271c3a613b1741da612de2bc9c874b814744bb39cb4d3933d54df2995a0af1f'
+    for mode,expected in {
+        '-nopassage':'9c6f3761c775c73615c5f6f4b1e24402887dd0b6e457953a885db3a74c0de8c9',
+        '-passageOnly':'55646326c04e305014372daf74102984c01cdacf99f66200b2ae726f5ca67c2a',
+        '-fast':'4e0df2074488030ab5a9f12bdfeed241fbe9c9f7a4a8ecda9673fb70f1a54f8b',
+    }.items():
+        run(exe,[*base,'-threads',1,'-vis','-saveprt',mode,source],root,'reference'+mode)
+        assert hashlib.sha256(Bsp(source.with_suffix('.bsp')).lump(16)).hexdigest()==expected,mode
     print('Numeric bounds, JSON profiles and VIS parity at 1/4/70 workers passed')
 
 

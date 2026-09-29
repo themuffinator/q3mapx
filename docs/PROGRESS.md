@@ -273,3 +273,22 @@ Lighting option tests cover huge samples/dimensions, invalid shifts, non-finite
 values and oversized combined supersampling. Existing compiler/GUI paths pass.
 This hardens compiler-owned inputs; third-party image/model decoders still need
 broader sanitizer/fuzz coverage.
+
+## 2026-09-29 — Visibility working sets and bitsets
+
+Replaced platform-sized `long` visibility intersections with aligned 64-bit words,
+fused redundant copy/intersection loops, moved recursive scratch frames to reusable
+worker-local heap storage with a 1,024-depth diagnostic, and made initial portal
+reachability iterative with one visit per leaf. Small clipping windings use compact
+stack arrays; large input windings use reusable thread-local scratch. Removed
+undefined subtraction of winding pointers belonging to different allocations.
+
+Validation: all four VIS algorithms match captured NRC visibility hashes on the
+grid=5 fixture. The alternating grid=9 benchmark measures 2.6156 s NRC versus
+2.2991 s q3mapx with one worker and exact output parity (12.1% less elapsed time).
+The preceding q3mapx build took 2.6636 s. Full raw evidence is in
+`docs/benchmarks/vis-win-x64.json`.
+
+Additional inherited issue: default multithreaded VIS can vary by one or two bits
+on grid=9, including in NRC itself. The raw results retain these differences rather
+than labeling them parity. An explicit reproducible scheduling mode follows.

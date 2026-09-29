@@ -23,10 +23,12 @@
 
 #pragma once
 #include <atomic>
+#include <cstdint>
 
 /* vis structures */
 
 using visPlane_t = Plane3f;
+using VisWord = std::uint64_t;
 
 
 struct fixedWinding_t
@@ -39,7 +41,7 @@ struct fixedWinding_t
 struct passage_t
 {
 	struct passage_t    *next;
-	byte cansee[ 1 ];                   /* all portals that can be seen through this passage */
+	alignas(VisWord) byte cansee[ 1 ];   /* all portals that can be seen through this passage */
 };
 
 
@@ -89,7 +91,7 @@ struct leaf_t
 
 struct pstack_t
 {
-	byte mightsee[ MAX_PORTALS / 8 ];
+	alignas(VisWord) byte mightsee[ MAX_PORTALS / 8 ];
 	pstack_t            *next;
 	leaf_t              *leaf;
 	vportal_t           *portal;        /* portal exiting */
@@ -143,6 +145,6 @@ inline leaf_t             *faceleafs;
 inline int numfaces;
 
 inline int leafbytes;
-inline int portalbytes, portallongs;
+inline int portalbytes, portalwords;
 
 extern vportal_t          *sorted_portals[ MAX_MAP_PORTALS * 2 ];

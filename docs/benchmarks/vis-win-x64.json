@@ -1,0 +1,194 @@
+{
+  "schema_version": 1,
+  "kind": "whole_process_visibility",
+  "timestamp_utc": "2026-09-29T07:39:08.073049+00:00",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+  "logical_cpus": 20,
+  "fixture_grid": 9,
+  "warmup_runs": 1,
+  "measured_runs": 3,
+  "visibility_sha256": "0862ff74f9b3c42757686f095a037381d94b4b7b32e0d628b323abffa20d175c",
+  "records": [
+    {
+      "implementation": "nrc",
+      "threads": 1,
+      "compiler": "E:\\Repositories\\q3mapx\\build\\baseline\\bin\\q3mapx.exe",
+      "compiler_sha256": "5bee5356d9b4d0c94a80b6e206c940340db11f807fe44b416eeb366ad210336e",
+      "seconds": [
+        2.6155627999687567,
+        2.840941400034353,
+        2.6082212000037543
+      ],
+      "median_seconds": 2.6155627999687567,
+      "outputs_including_warmup": [
+        {
+          "sha256": "0862ff74f9b3c42757686f095a037381d94b4b7b32e0d628b323abffa20d175c",
+          "different_bits": 0
+        },
+        {
+          "sha256": "0862ff74f9b3c42757686f095a037381d94b4b7b32e0d628b323abffa20d175c",
+          "different_bits": 0
+        },
+        {
+          "sha256": "0862ff74f9b3c42757686f095a037381d94b4b7b32e0d628b323abffa20d175c",
+          "different_bits": 0
+        },
+        {
+          "sha256": "0862ff74f9b3c42757686f095a037381d94b4b7b32e0d628b323abffa20d175c",
+          "different_bits": 0
+        }
+      ]
+    },
+    {
+      "implementation": "previous",
+      "threads": 1,
+      "compiler": "E:\\Repositories\\q3mapx\\build\\pre-vis\\bin\\q3mapx.exe",
+      "compiler_sha256": "af557ad745dc73af25fbfec37ba57529a7e3fe157a463d79dcea6421b432530e",
+      "seconds": [
+        2.6635774999740534,
+        2.650488800019957,
+        2.6937489000265487
+      ],
+      "median_seconds": 2.6635774999740534,
+      "outputs_including_warmup": [
+        {
+          "sha256": "0862ff74f9b3c42757686f095a037381d94b4b7b32e0d628b323abffa20d175c",
+          "different_bits": 0
+        },
+        {
+          "sha256": "0862ff74f9b3c42757686f095a037381d94b4b7b32e0d628b323abffa20d175c",
+          "different_bits": 0
+        },
+        {
+          "sha256": "0862ff74f9b3c42757686f095a037381d94b4b7b32e0d628b323abffa20d175c",
+          "different_bits": 0
+        },
+        {
+          "sha256": "0862ff74f9b3c42757686f095a037381d94b4b7b32e0d628b323abffa20d175c",
+          "different_bits": 0
+        }
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "threads": 1,
+      "compiler": "E:\\Repositories\\q3mapx\\build\\release\\bin\\q3mapx.exe",
+      "compiler_sha256": "3e842131d9e8e0304aadd16cf1808f338037312f4956927e0f4c5127c5159bf4",
+      "seconds": [
+        2.2991243000142276,
+        2.313230999978259,
+        2.2942560000228696
+      ],
+      "median_seconds": 2.2991243000142276,
+      "outputs_including_warmup": [
+        {
+          "sha256": "0862ff74f9b3c42757686f095a037381d94b4b7b32e0d628b323abffa20d175c",
+          "different_bits": 0
+        },
+        {
+          "sha256": "0862ff74f9b3c42757686f095a037381d94b4b7b32e0d628b323abffa20d175c",
+          "different_bits": 0
+        },
+        {
+          "sha256": "0862ff74f9b3c42757686f095a037381d94b4b7b32e0d628b323abffa20d175c",
+          "different_bits": 0
+        },
+        {
+          "sha256": "0862ff74f9b3c42757686f095a037381d94b4b7b32e0d628b323abffa20d175c",
+          "different_bits": 0
+        }
+      ]
+    },
+    {
+      "implementation": "nrc",
+      "threads": 20,
+      "compiler": "E:\\Repositories\\q3mapx\\build\\baseline\\bin\\q3mapx.exe",
+      "compiler_sha256": "5bee5356d9b4d0c94a80b6e206c940340db11f807fe44b416eeb366ad210336e",
+      "seconds": [
+        0.29365130001679063,
+        0.28916720004053786,
+        0.28431089996593073
+      ],
+      "median_seconds": 0.28916720004053786,
+      "outputs_including_warmup": [
+        {
+          "sha256": "0862ff74f9b3c42757686f095a037381d94b4b7b32e0d628b323abffa20d175c",
+          "different_bits": 0
+        },
+        {
+          "sha256": "0862ff74f9b3c42757686f095a037381d94b4b7b32e0d628b323abffa20d175c",
+          "different_bits": 0
+        },
+        {
+          "sha256": "831289df381f41a8b3d7b162fe418190dbae5745b79d5de46d45c76456be09a2",
+          "different_bits": 2
+        },
+        {
+          "sha256": "d4fca3ac5d7dd735a295ea848301b2ccf81894f0f8a2e7da46fbe757da03e9a9",
+          "different_bits": 1
+        }
+      ]
+    },
+    {
+      "implementation": "previous",
+      "threads": 20,
+      "compiler": "E:\\Repositories\\q3mapx\\build\\pre-vis\\bin\\q3mapx.exe",
+      "compiler_sha256": "af557ad745dc73af25fbfec37ba57529a7e3fe157a463d79dcea6421b432530e",
+      "seconds": [
+        0.30712220002897084,
+        0.2985577000072226,
+        0.2986963000148535
+      ],
+      "median_seconds": 0.2986963000148535,
+      "outputs_including_warmup": [
+        {
+          "sha256": "d4fca3ac5d7dd735a295ea848301b2ccf81894f0f8a2e7da46fbe757da03e9a9",
+          "different_bits": 1
+        },
+        {
+          "sha256": "d4fca3ac5d7dd735a295ea848301b2ccf81894f0f8a2e7da46fbe757da03e9a9",
+          "different_bits": 1
+        },
+        {
+          "sha256": "d4fca3ac5d7dd735a295ea848301b2ccf81894f0f8a2e7da46fbe757da03e9a9",
+          "different_bits": 1
+        },
+        {
+          "sha256": "d4fca3ac5d7dd735a295ea848301b2ccf81894f0f8a2e7da46fbe757da03e9a9",
+          "different_bits": 1
+        }
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "threads": 20,
+      "compiler": "E:\\Repositories\\q3mapx\\build\\release\\bin\\q3mapx.exe",
+      "compiler_sha256": "3e842131d9e8e0304aadd16cf1808f338037312f4956927e0f4c5127c5159bf4",
+      "seconds": [
+        0.26004620001185685,
+        0.2573361999820918,
+        0.2495471999864094
+      ],
+      "median_seconds": 0.2573361999820918,
+      "outputs_including_warmup": [
+        {
+          "sha256": "d4fca3ac5d7dd735a295ea848301b2ccf81894f0f8a2e7da46fbe757da03e9a9",
+          "different_bits": 1
+        },
+        {
+          "sha256": "0862ff74f9b3c42757686f095a037381d94b4b7b32e0d628b323abffa20d175c",
+          "different_bits": 0
+        },
+        {
+          "sha256": "0862ff74f9b3c42757686f095a037381d94b4b7b32e0d628b323abffa20d175c",
+          "different_bits": 0
+        },
+        {
+          "sha256": "d4fca3ac5d7dd735a295ea848301b2ccf81894f0f8a2e7da46fbe757da03e9a9",
+          "different_bits": 1
+        }
+      ]
+    }
+  ]
+}

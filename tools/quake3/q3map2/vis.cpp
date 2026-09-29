@@ -127,7 +127,7 @@ static int LeafVectorFromPortalVector( byte *portalbits, byte *leafbits ){
 static int clustersizehistogram[MAX_MAP_LEAFS] = {0};
 
 static void ClusterMerge( int leafnum ){
-	byte portalvector[MAX_PORTALS / 8];
+	alignas(VisWord) byte portalvector[MAX_PORTALS / 8];
 	byte uncompressed[MAX_MAP_LEAFS / 8];
 	int numvis, mergedleafnum;
 
@@ -148,8 +148,8 @@ static void ClusterMerge( int leafnum ){
 		if ( p->getStatus() != EVStatus::Done ) {
 			Error( "portal not done" );
 		}
-		for ( int j = 0; j < portallongs; ++j )
-			( (long *)portalvector )[j] |= ( (long *)p->portalvis )[j];
+		for ( int j = 0; j < portalwords; ++j )
+			( (VisWord *)portalvector )[j] |= ( (VisWord *)p->portalvis )[j];
 		bit_enable( portalvector, p - portals );
 	}
 
@@ -731,7 +731,7 @@ static void LoadPortals( char *name ){
 	leafbytes = ( ( portalclusters + 63 ) & ~63 ) >> 3;
 
 	portalbytes = ( ( numportals * 2 + 63 ) & ~63 ) >> 3;
-	portallongs = portalbytes / sizeof( long );
+	portalwords = portalbytes / sizeof( VisWord );
 
 	// each file portal is split into two memory portals
 	portals = safe_calloc( 2 * numportals * sizeof( vportal_t ) );

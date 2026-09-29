@@ -156,6 +156,10 @@ if(BUILD_TESTING)
         --compiler $<TARGET_FILE:q3mapx>
         --work-dir ${CMAKE_BINARY_DIR}/tests/gpu)
     set_tests_properties(gpu_columns PROPERTIES TIMEOUT 180)
+    add_test(NAME portal_validation COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/portal_validation.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/portals)
+    set_tests_properties(portal_validation PROPERTIES TIMEOUT 90)
 endif()
 
 include(GNUInstallDirs)

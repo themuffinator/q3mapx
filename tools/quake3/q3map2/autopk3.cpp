@@ -306,7 +306,7 @@ int pk3BSPMain( Args& args ){
 			png = true;
 		}
 		if ( args.takeArg( "-complevel" ) ) {
-			compLevel = std::clamp( atoi( args.takeNext() ), -1, 10 );
+			compLevel = std::clamp( args.takeInt(), -1, 10 );
 			Sys_Printf( "Compression level set to %i\n", compLevel );
 		}
 	}
@@ -687,7 +687,7 @@ int repackBSPMain( Args& args ){
 			analyze = true;
 		}
 		if ( args.takeArg( "-complevel" ) ) {
-			compLevel = std::clamp( atoi( args.takeNext() ), -1, 10 );
+			compLevel = std::clamp( args.takeInt(), -1, 10 );
 			Sys_Printf( "Compression level set to %i\n", compLevel );
 		}
 	}

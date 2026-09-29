@@ -39,7 +39,9 @@ vportal_t          *sorted_portals[ MAX_MAP_PORTALS * 2 ];
 static visPlane_t PlaneFromWinding( const fixedWinding_t *w ){
 	// calc plane
 	visPlane_t plane;
-	PlaneFromPoints( plane, w->points );
+	if ( !PlaneFromPoints( plane, w->points ) ) Error("Degenerate portal winding");
+	if (!std::isfinite(plane.dist()) || !std::isfinite(plane.normal().x()) || !std::isfinite(plane.normal().y()) || !std::isfinite(plane.normal().z()))
+		Error("Non-finite portal plane");
 	return plane;
 }
 
@@ -51,7 +53,7 @@ static visPlane_t PlaneFromWinding( const fixedWinding_t *w ){
  */
 
 static fixedWinding_t *NewFixedWinding( int numpoints ){
-	if ( numpoints > MAX_POINTS_ON_WINDING ) {
+	if ( numpoints < 3 || numpoints > MAX_POINTS_ON_WINDING ) {
 		Error( "NewWinding: %i points", numpoints );
 	}
 	return safe_calloc( offsetof_array( fixedWinding_t, points, numpoints ) );
@@ -686,6 +688,12 @@ static int CountActivePortals(){
    LoadPortals
    ============
  */
+static int ReadPortalInteger(FILE* file,const char* field,int minimum,int maximum){
+	char token[64];
+	if ( fscanf(file,"%63s ",token)!=1 ) Error("LoadPortals: missing %s",field);
+	return ParseIntegerOption(field,token,minimum,maximum);
+}
+
 static void LoadPortals( char *name ){
 	char magic[80];
 	FILE        *f;
@@ -699,12 +707,17 @@ static void LoadPortals( char *name ){
 		f = SafeOpenRead( name, "rt" );
 	}
 
-	if ( fscanf( f, "%79s\n%i\n%i\n%i\n", magic, &portalclusters, &numportals, &numfaces ) != 4 ) {
+	if ( fscanf( f, "%79s ", magic ) != 1 ) {
 		Error( "LoadPortals: failed to read header" );
 	}
 	if ( !strEqual( magic, PORTALFILE ) ) {
 		Error( "LoadPortals: not a portal file" );
 	}
+	portalclusters=ReadPortalInteger(f,"portal cluster count",1,MAX_MAP_VISCLUSTERS);
+	for (const auto& leaf:bspLeafs) if (leaf.cluster>=portalclusters) Error("Portal clusters do not cover BSP leaf clusters");
+	// Every file portal has two directed bits in the fixed flow scratch buffers.
+	numportals=ReadPortalInteger(f,"portal count",0,MAX_PORTALS / 2);
+	numfaces=ReadPortalInteger(f,"portal face count",0,MAX_MAP_PORTALS * 2);
 
 	Sys_Printf( "%6i portalclusters\n", portalclusters );
 	Sys_Printf( "%6i numportals\n", numportals );
@@ -738,19 +751,10 @@ static void LoadPortals( char *name ){
 
 	for ( int i = 0; i < numportals; ++i )
 	{
-		if ( fscanf( f, "%i %i %i ", &numpoints, &leafnums[0], &leafnums[1] ) != 3 ) {
-			Error( "LoadPortals: reading portal %i", i );
-		}
-		if ( numpoints > MAX_POINTS_ON_WINDING ) {
-			Error( "LoadPortals: portal %i has too many points", i );
-		}
-		if ( leafnums[0] > portalclusters
-		  || leafnums[1] > portalclusters ) {
-			Error( "LoadPortals: reading portal %i", i );
-		}
-		if ( fscanf( f, "%i ", &flags ) != 1 ) {
-			Error( "LoadPortals: reading flags" );
-		}
+		numpoints=ReadPortalInteger(f,"portal point count",3,MAX_POINTS_ON_WINDING);
+		leafnums[0]=ReadPortalInteger(f,"portal leaf index",0,portalclusters-1);
+		leafnums[1]=ReadPortalInteger(f,"portal leaf index",0,portalclusters-1);
+		flags=ReadPortalInteger(f,"portal flags",0,INT_MAX);
 
 		fixedWinding_t *w = NewFixedWinding( numpoints );
 		w->numpoints = numpoints;
@@ -758,7 +762,7 @@ static void LoadPortals( char *name ){
 		for ( Vector3& point : Span( w->points, w->numpoints ) )
 		{
 			if ( fscanf( f, "(%f %f %f ) ",
-			             &point[0], &point[1], &point[2] ) != 3 ) {
+			             &point[0], &point[1], &point[2] ) != 3 || !std::isfinite(point[0]) || !std::isfinite(point[1]) || !std::isfinite(point[2]) ) {
 				Error( "LoadPortals: reading portal %i", i );
 			}
 		}
@@ -815,9 +819,8 @@ static void LoadPortals( char *name ){
 
 	for ( int i = 0; i < numfaces; ++i )
 	{
-		if ( fscanf( f, "%i %i ", &numpoints, &leafnums[0] ) != 2 ) {
-			Error( "LoadPortals: reading portal %i", i );
-		}
+		numpoints=ReadPortalInteger(f,"face point count",3,MAX_POINTS_ON_WINDING);
+		leafnums[0]=ReadPortalInteger(f,"face leaf index",0,portalclusters-1);
 
 		fixedWinding_t *w = NewFixedWinding( numpoints );
 		w->numpoints = numpoints;
@@ -825,7 +828,7 @@ static void LoadPortals( char *name ){
 		for ( Vector3& point : Span( w->points, w->numpoints ) )
 		{
 			if ( fscanf( f, "(%f %f %f ) ",
-			             &point[0], &point[1], &point[2] ) != 3 ) {
+			             &point[0], &point[1], &point[2] ) != 3 || !std::isfinite(point[0]) || !std::isfinite(point[1]) || !std::isfinite(point[2]) ) {
 				Error( "LoadPortals: reading portal %i", i );
 			}
 		}

@@ -2244,7 +2244,7 @@ int LightMain( Args& args ){
 	{
 		/* lightsource scaling */
 		while ( args.takeArg( "-point", "-pointscale" ) ) {
-			f = atof( args.takeNext() );
+			f = args.takeDouble();
 			pointScale *= f;
 			spotScale *= f;
 			Sys_Printf( "Spherical point (entity) light scaled by %f to %f\n", f, pointScale );
@@ -2252,38 +2252,38 @@ int LightMain( Args& args ){
 		}
 
 		while ( args.takeArg( "-spherical", "-sphericalscale" ) ) {
-			f = atof( args.takeNext() );
+			f = args.takeDouble();
 			pointScale *= f;
 			Sys_Printf( "Spherical point (entity) light scaled by %f to %f\n", f, pointScale );
 		}
 
 		while ( args.takeArg( "-spot", "-spotscale" ) ) {
-			f = atof( args.takeNext() );
+			f = args.takeDouble();
 			spotScale *= f;
 			Sys_Printf( "Spot point (entity) light scaled by %f to %f\n", f, spotScale );
 		}
 
 		while ( args.takeArg( "-area", "-areascale" ) ) {
-			f = atof( args.takeNext() );
+			f = args.takeDouble();
 			areaScale *= f;
 			Sys_Printf( "Area (shader) light scaled by %f to %f\n", f, areaScale );
 		}
 
 		while ( args.takeArg( "-sky", "-skyscale" ) ) {
-			f = atof( args.takeNext() );
+			f = args.takeDouble();
 			skyScale *= f;
 			Sys_Printf( "Sky/sun light scaled by %f to %f\n", f, skyScale );
 		}
 
 		while ( args.takeArg( "-vertexscale" ) ) {
-			g_vertexScale = atof( args.takeNext() );
+			g_vertexScale = args.takeDouble();
 			Sys_Printf( "Vertex lighting scaled by %f\n", g_vertexScale );
 		}
 
 		while ( args.takeArg( "-backsplash" ) ) {
-			g_backsplashFractionScale = atof( args.takeNext() );
+			g_backsplashFractionScale = args.takeDouble();
 			Sys_Printf( "Area lights backsplash fraction scaled by %f\n", g_backsplashFractionScale );
-			f = atof( args.takeNext() );
+			f = args.takeDouble();
 			if ( f >= -900.0f ){
 				g_backsplashDistance = f;
 				Sys_Printf( "Area lights backsplash distance set globally to %f\n", g_backsplashDistance );
@@ -2296,18 +2296,18 @@ int LightMain( Args& args ){
 		}
 
 		while ( args.takeArg( "-bouncecolorratio" ) ) {
-			bounceColorRatio = std::clamp( atof( args.takeNext() ), 0.0, 1.0 );
+			bounceColorRatio = std::clamp( args.takeDouble(), 0.0, 1.0 );
 			Sys_Printf( "Bounce color ratio set to %f\n", bounceColorRatio );
 		}
 
 		while ( args.takeArg( "-bouncescale" ) ) {
-			f = atof( args.takeNext() );
+			f = args.takeDouble();
 			bounceScale *= f;
 			Sys_Printf( "Bounce (radiosity) light scaled by %f to %f\n", f, bounceScale );
 		}
 
 		while ( args.takeArg( "-scale" ) ) {
-			f = atof( args.takeNext() );
+			f = args.takeDouble();
 			pointScale *= f;
 			spotScale *= f;
 			areaScale *= f;
@@ -2316,31 +2316,31 @@ int LightMain( Args& args ){
 		}
 
 		while ( args.takeArg( "-gridscale" ) ) {
-			f = atof( args.takeNext() );
+			f = args.takeDouble();
 			Sys_Printf( "Grid lighting scaled by %f\n", f );
 			gridScale *= f;
 		}
 
 		while ( args.takeArg( "-gridambientscale" ) ) {
-			f = atof( args.takeNext() );
+			f = args.takeDouble();
 			Sys_Printf( "Grid ambient lighting scaled by %f\n", f );
 			gridAmbientScale *= f;
 		}
 
 		while ( args.takeArg( "-griddirectionality" ) ) {
-			gridDirectionality = std::min( 1.0, atof( args.takeNext() ) );
+			gridDirectionality = std::min( 1.0, args.takeDouble() );
 			value_minimize( gridAmbientDirectionality, gridDirectionality );
 			Sys_Printf( "Grid directionality is %f\n", gridDirectionality );
 		}
 
 		while ( args.takeArg( "-gridambientdirectionality" ) ) {
-			gridAmbientDirectionality = std::max( -1.0, atof( args.takeNext() ) );
+			gridAmbientDirectionality = std::max( -1.0, args.takeDouble() );
 			value_maximize( gridDirectionality, gridAmbientDirectionality );
 			Sys_Printf( "Grid ambient directionality is %f\n", gridAmbientDirectionality );
 		}
 
 		while ( args.takeArg( "-gamma" ) ) {
-			f = atof( args.takeNext() );
+			f = args.takeDouble();
 			lightmapGamma = f;
 			Sys_Printf( "Lighting gamma set to %f\n", lightmapGamma );
 		}
@@ -2394,13 +2394,13 @@ int LightMain( Args& args ){
 		}
 
 		while ( args.takeArg( "-exposure" ) ) {
-			f = atof( args.takeNext() );
+			f = args.takeDouble();
 			lightmapExposure = f;
 			Sys_Printf( "Lighting exposure set to %f\n", lightmapExposure );
 		}
 
 		while ( args.takeArg( "-compensate" ) ) {
-			f = atof( args.takeNext() );
+			f = args.takeDouble();
 			if ( f <= 0 ) {
 				f = 1;
 			}
@@ -2410,13 +2410,13 @@ int LightMain( Args& args ){
 
 		/* Lightmaps brightness */
 		while ( args.takeArg( "-brightness" ) ){
-			lightmapBrightness = atof( args.takeNext() );
+			lightmapBrightness = args.takeDouble();
 			Sys_Printf( "Scaling lightmaps brightness by %f\n", lightmapBrightness );
 		}
 
 		/* Lighting contrast */
 		while ( args.takeArg( "-contrast" ) ){
-			lightmapContrast = std::clamp( atof( args.takeNext() ), -255.0, 255.0 );
+			lightmapContrast = std::clamp( args.takeDouble(), -255.0, 255.0 );
 			Sys_Printf( "Lighting contrast set to %f\n", lightmapContrast );
 			/* change to factor in range of 0 to 129.5 */
 			lightmapContrast = ( 259 * ( lightmapContrast + 255 ) ) / ( 255 * ( 259 - lightmapContrast ) );
@@ -2424,20 +2424,20 @@ int LightMain( Args& args ){
 
 		/* Lighting saturation */
 		while ( args.takeArg( "-saturation" ) ){
-			g_lightmapSaturation = atof( args.takeNext() );
+			g_lightmapSaturation = args.takeDouble();
 			Sys_Printf( "Lighting saturation set to %f\n", g_lightmapSaturation );
 		}
 
 		/* ydnar switches */
 		while ( args.takeArg( "-bounce" ) ) {
-			bounce = std::max( 0, atoi( args.takeNext() ) );
+			bounce = args.takeInt(0, 1024);
 			if ( bounce > 0 ) {
 				Sys_Printf( "Radiosity enabled with %d bounce(s)\n", bounce );
 			}
 		}
 
 		while ( args.takeArg( "-supersample", "-super" ) ) {
-			superSample = std::max( 1, atoi( args.takeNext() ) );
+			superSample = args.takeInt(1, 8);
 			if ( superSample > 1 ) {
 				Sys_Printf( "Ordered-grid supersampling enabled with %d sample(s) per lightmap texel\n", ( superSample * superSample ) );
 			}
@@ -2451,14 +2451,14 @@ int LightMain( Args& args ){
 		while ( args.takeArg( "-samples" ) ) {
 			const char *arg = args.takeNext();
 			lightSamplesInsist = ( *arg == '+' );
-			lightSamples = std::max( 1, atoi( arg ) );
+			lightSamples = ParseIntegerOption("-samples", arg, 1, 4096);
 			if ( lightSamples > 1 ) {
 				Sys_Printf( "Adaptive supersampling enabled with %d sample(s) per lightmap texel\n", lightSamples );
 			}
 		}
 
 		while ( args.takeArg( "-samplessearchboxsize" ) ) {
-			lightSamplesSearchBoxSize = std::clamp( atoi( args.takeNext() ), 1, 4 ); /* more makes no sense */
+			lightSamplesSearchBoxSize = std::clamp( args.takeInt(), 1, 4 ); /* more makes no sense */
 			if ( lightSamplesSearchBoxSize != 1 )
 				Sys_Printf( "Adaptive supersampling uses %f times the normal search box size\n", lightSamplesSearchBoxSize );
 		}
@@ -2474,7 +2474,7 @@ int LightMain( Args& args ){
 		}
 
 		while ( args.takeArg( "-shadeangle" ) ) {
-			shadeAngleDegrees = std::max( 0.0, atof( args.takeNext() ) );
+			shadeAngleDegrees = std::max( 0.0, args.takeDouble() );
 			if ( shadeAngleDegrees > 0 ) {
 				shade = true;
 				Sys_Printf( "Phong shading enabled with a breaking angle of %f degrees\n", shadeAngleDegrees );
@@ -2482,7 +2482,7 @@ int LightMain( Args& args ){
 		}
 
 		while ( args.takeArg( "-thresh" ) ) {
-			subdivideThreshold = atof( args.takeNext() );
+			subdivideThreshold = args.takeDouble();
 			if ( subdivideThreshold < 0 ) {
 				subdivideThreshold = DEFAULT_SUBDIVIDE_THRESHOLD;
 			}
@@ -2492,7 +2492,7 @@ int LightMain( Args& args ){
 		}
 
 		while ( args.takeArg( "-approx" ) ) {
-			approximateTolerance = std::max( 0, atoi( args.takeNext() ) );
+			approximateTolerance = std::max( 0, args.takeInt() );
 			if ( approximateTolerance > 0 ) {
 				Sys_Printf( "Approximating lightmaps within a byte tolerance of %d\n", approximateTolerance );
 			}
@@ -2506,7 +2506,7 @@ int LightMain( Args& args ){
 			Sys_Printf( "Generating deluxemaps for average light direction\n" );
 		}
 		while ( args.takeArg( "-deluxemode" ) ) {
-			deluxemode = atoi( args.takeNext() );
+			deluxemode = args.takeInt();
 			if ( deluxemode != 1 ) {
 				Sys_Printf( "Generating modelspace deluxemaps\n" );
 				deluxemode = 0;
@@ -2528,9 +2528,9 @@ int LightMain( Args& args ){
 		while ( args.takeArg( "-lightmapsize" )
 		       || ( extlmhack = args.takeArg( "-extlmhacksize" ) ) ) {
 
-			lmCustomSizeW = lmCustomSizeH = atoi( args.takeNext() );
+			lmCustomSizeW = lmCustomSizeH = args.takeInt(2, 8192);
 			if( args.nextAvailable() && 0 != atoi( args.next() ) ){ // optional second dimension
-				lmCustomSizeH = atoi( args.takeNext() );
+				lmCustomSizeH = args.takeInt(2, 8192);
 			}
 			/* must be a power of 2 and greater than 2 */
 			if ( ( ( lmCustomSizeW - 1 ) & lmCustomSizeW ) || lmCustomSizeW < 2 ||
@@ -2550,7 +2550,7 @@ int LightMain( Args& args ){
 		}
 
 		while ( args.takeArg( "-rawlightmapsizelimit" ) ) {
-			lmLimitSize = atoi( args.takeNext() );
+			lmLimitSize = args.takeInt(0, 8192);
 			Sys_Printf( "Raw lightmap size limit set to %d x %d pixels\n", lmLimitSize, lmLimitSize );
 		}
 
@@ -2580,7 +2580,7 @@ int LightMain( Args& args ){
 		}
 
 		while ( args.takeArg( "-extradist" ) ) {
-			extraDist = std::max( 0.0, atof( args.takeNext() ) );
+			extraDist = std::max( 0.0, args.takeDouble() );
 			Sys_Printf( "Default extra radius set to %f units\n", extraDist );
 		}
 
@@ -2610,13 +2610,14 @@ int LightMain( Args& args ){
 		}
 
 		while ( args.takeArg( "-lightmapsearchpower" ) ) {
-			const int power = atoi( args.takeNext() );
+			const int power = args.takeInt(0, 20);
+			if (g_game->lightmapSize > (INT_MAX >> power)) Error("Lightmap search size overflows");
 			lightmapMergeSize = ( g_game->lightmapSize << power );
 			Sys_Printf( "Restricted lightmap searching enabled - optimize for lightmap merge power %d (size %d)\n", power, lightmapMergeSize );
 		}
 
 		while ( args.takeArg( "-lightmapsearchblocksize" ) ) {
-			lightmapSearchBlockSize = atoi( args.takeNext() );
+			lightmapSearchBlockSize = args.takeInt(0, 1048576);
 			Sys_Printf( "Restricted lightmap searching enabled - block size set to %d\n", lightmapSearchBlockSize );
 		}
 
@@ -2733,15 +2734,15 @@ int LightMain( Args& args ){
 			Sys_Printf( "Patch shadow casting enabled\n" );
 		}
 		while ( args.takeArg( "-samplesize" ) ) {
-			sampleSize = std::max( 1, atoi( args.takeNext() ) );
+			sampleSize = args.takeInt(1, 1048576);
 			Sys_Printf( "Default lightmap sample size set to %dx%d units\n", sampleSize, sampleSize );
 		}
 		while ( args.takeArg( "-minsamplesize" ) ) {
-			minSampleSize = std::max( 1, atoi( args.takeNext() ) );
+			minSampleSize = args.takeInt(1, 1048576);
 			Sys_Printf( "Minimum lightmap sample size set to %dx%d units\n", minSampleSize, minSampleSize );
 		}
 		while ( args.takeArg(  "-samplescale" ) ) {
-			sampleScale = atoi( args.takeNext() );
+			sampleScale = args.takeInt(0, 1024);
 			Sys_Printf( "Lightmaps sample scale set to %d\n", sampleScale );
 		}
 		while ( args.takeArg(  "-debugsamplesize" ) ) {
@@ -2750,7 +2751,7 @@ int LightMain( Args& args ){
 		}
 		while ( args.takeArg( "-novertex" ) ) {
 			if ( args.nextAvailable() && atof( args.next() ) != 0 ) { /* optional value to set */
-				noVertexLighting = std::clamp( atof( args.takeNext() ), 0.0, 1.0 );
+				noVertexLighting = std::clamp( args.takeDouble(), 0.0, 1.0 );
 				Sys_Printf( "Setting vertex lighting globally to %f\n", noVertexLighting );
 			}
 			else{
@@ -2779,7 +2780,7 @@ int LightMain( Args& args ){
 			Sys_Printf( "Enabling low-memory (potentially slower) lighting mode\n" );
 		}
 		while ( args.takeArg( "-lightanglehl" ) ) {
-			const bool enable = ( atoi( args.takeNext() ) != 0 );
+			const bool enable = ( args.takeInt() != 0 );
 			if ( enable != lightAngleHL ) {
 				lightAngleHL = enable;
 				if ( lightAngleHL ) {
@@ -2825,7 +2826,7 @@ int LightMain( Args& args ){
 			Sys_Printf( "Dirtmap debugging enabled\n" );
 		}
 		while ( args.takeArg( "-dirtmode" ) ) {
-			dirtMode = atoi( args.takeNext() );
+			dirtMode = args.takeInt();
 			if ( dirtMode != 0 && dirtMode != 1 ) {
 				dirtMode = 0;
 			}
@@ -2837,21 +2838,21 @@ int LightMain( Args& args ){
 			}
 		}
 		while ( args.takeArg( "-dirtdepth" ) ) {
-			dirtDepth = atof( args.takeNext() );
+			dirtDepth = args.takeDouble();
 			if ( dirtDepth <= 0 ) {
 				dirtDepth = 128.0f;
 			}
 			Sys_Printf( "Dirtmapping depth set to %.1f\n", dirtDepth );
 		}
 		while ( args.takeArg( "-dirtscale" ) ) {
-			dirtScale = atof( args.takeNext() );
+			dirtScale = args.takeDouble();
 			if ( dirtScale <= 0 ) {
 				dirtScale = 1;
 			}
 			Sys_Printf( "Dirtmapping scale set to %.1f\n", dirtScale );
 		}
 		while ( args.takeArg( "-dirtgain" ) ) {
-			dirtGain = atof( args.takeNext() );
+			dirtGain = args.takeDouble();
 			if ( dirtGain <= 0 ) {
 				dirtGain = 1;
 			}
@@ -2876,6 +2877,9 @@ int LightMain( Args& args ){
 			Sys_Warning( "Unknown argument \"%s\"\n", args.takeFront() );
 		}
 	}
+
+	if (lmCustomSizeW > 8192 / std::max(superSample,1) || lmCustomSizeH > 8192 / std::max(superSample,1))
+		Error("Supersampled lightmap dimensions must not exceed 8192 pixels");
 
 	/* fix up falloff tolerance for sRGB */
 	if ( lightmapsRGB ) {
@@ -2914,7 +2918,9 @@ int LightMain( Args& args ){
 
 	/* fix up lightmap search power */
 	if ( lightmapMergeSize ) {
-		lightmapSearchBlockSize = std::max( 1, ( lightmapMergeSize / lmCustomSizeW ) * ( lightmapMergeSize / lmCustomSizeW ) ); //? should use min or max( lmCustomSizeW, lmCustomSizeH )? :thinking:
+		const int64_t searchSide = lightmapMergeSize / lmCustomSizeW;
+		if ( searchSide * searchSide > 1048576 ) Error("Lightmap search block exceeds supported size");
+		lightmapSearchBlockSize = int(std::max(int64_t(1), searchSide * searchSide));
 
 		Sys_Printf( "Restricted lightmap searching enabled - block size adjusted to %d\n", lightmapSearchBlockSize );
 	}

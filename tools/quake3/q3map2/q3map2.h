@@ -1415,18 +1415,22 @@ struct surfaceInfo_t
 };
 
 
+#include "arguments.h"
+
 class Args
 {
 private:
 	const char *m_arg0;
 	std::vector<const char*> m_args;
 	std::vector<const char*>::const_iterator m_next;
-	const char *m_current;
+	const char *m_current = "command line";
 public:
 	Args( int argc, char **argv ){
 		ENSURE( argc > 0 );
 		m_arg0 = argv[0];
 		m_args = { argv + 1, argv + argc };
+		for ( const char* argument : m_args )
+			if ( std::strlen(argument) > 1000 ) Error("Command-line argument exceeds supported 1000-byte length");
 	}
 	const char *getArg0() const {
 		return m_arg0;
@@ -1456,6 +1460,12 @@ public:
 	}
 	bool nextAvailable() const {
 		return( m_next != m_args.cend() );
+	}
+	int takeInt( int minimum = INT_MIN, int maximum = INT_MAX ){
+		return ParseIntegerOption(m_current,takeNext(),minimum,maximum);
+	}
+	double takeDouble( double minimum = -1e9, double maximum = 1e9 ){
+		return ParseDoubleOption(m_current,takeNext(),minimum,maximum);
 	}
 	const char *next() const {
 		return *m_next;

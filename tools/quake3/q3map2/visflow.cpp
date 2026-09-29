@@ -114,8 +114,8 @@ static void FreeStackWinding( fixedWinding_t *w, pstack_t *stack ){
    ==============
  */
 static fixedWinding_t  *VisChopWinding( fixedWinding_t *in, pstack_t *stack, const visPlane_t& split ){
-	float dists[128];
-	EPlaneSide sides[128];
+	float dists[MAX_POINTS_ON_WINDING + 1];
+	EPlaneSide sides[MAX_POINTS_ON_WINDING + 1];
 	int counts[3];
 	float dot;
 	int i, j;
@@ -995,8 +995,8 @@ void PassagePortalFlow( int portalnum ){
 }
 
 static fixedWinding_t *PassageChopWinding( fixedWinding_t *in, fixedWinding_t *out, const visPlane_t& split ){
-	float dists[128];
-	EPlaneSide sides[128];
+	float dists[MAX_POINTS_ON_WINDING + 1];
+	EPlaneSide sides[MAX_POINTS_ON_WINDING + 1];
 	int counts[3];
 	float dot;
 	int i, j;

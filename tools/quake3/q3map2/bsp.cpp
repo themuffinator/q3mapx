@@ -700,11 +700,11 @@ int BSPMain( Args& args ){
 			fakemap = true;
 		}
 		while ( args.takeArg( "-samplesize" ) ) {
-			sampleSize = std::max( 1, atoi( args.takeNext() ) );
+			sampleSize = args.takeInt(1, 1048576);
 			Sys_Printf( "Lightmap sample size set to %dx%d units\n", sampleSize, sampleSize );
 		}
 		while ( args.takeArg( "-minsamplesize" ) ) {
-			minSampleSize = std::max( 1, atoi( args.takeNext() ) );
+			minSampleSize = args.takeInt(1, 1048576);
 			Sys_Printf( "Minimum lightmap sample size set to %dx%d units\n", minSampleSize, minSampleSize );
 		}
 		while ( args.takeArg( "-custinfoparms" ) ) {
@@ -720,30 +720,30 @@ int BSPMain( Args& args ){
 
 		/* ydnar args */
 		while ( args.takeArg( "-ne" ) ) {
-			normalEpsilon = atof( args.takeNext() );
+			normalEpsilon = args.takeDouble();
 			Sys_Printf( "Normal epsilon set to %f\n", normalEpsilon );
 		}
 		while ( args.takeArg( "-de" ) ) {
-			distanceEpsilon = atof( args.takeNext() );
+			distanceEpsilon = args.takeDouble();
 			Sys_Printf( "Distance epsilon set to %f\n", distanceEpsilon );
 		}
 		while ( args.takeArg( "-mv" ) ) {
-			maxLMSurfaceVerts = std::max( 3, atoi( args.takeNext() ) );
+			maxLMSurfaceVerts = args.takeInt(3, 1048576);
 			value_maximize( maxSurfaceVerts, maxLMSurfaceVerts );
 			Sys_Printf( "Maximum lightmapped surface vertex count set to %d\n", maxLMSurfaceVerts );
 		}
 		while ( args.takeArg( "-mi" ) ) {
-			maxSurfaceIndexes = std::max( 3, atoi( args.takeNext() ) );
+			maxSurfaceIndexes = args.takeInt(3, 1048576);
 			Sys_Printf( "Maximum per-surface index count set to %d\n", maxSurfaceIndexes );
 		}
 		while ( args.takeArg( "-np" ) ) {
-			npDegrees = std::max( 0.0, atof( args.takeNext() ) );
+			npDegrees = std::max( 0.0, args.takeDouble() );
 			if ( npDegrees > 0 ) {
 				Sys_Printf( "Forcing nonplanar surfaces with a breaking angle of %f degrees\n", npDegrees );
 			}
 		}
 		while ( args.takeArg( "-snap" ) ) {
-			bevelSnap = std::max( 0, atoi( args.takeNext() ) );
+			bevelSnap = std::max( 0, args.takeInt() );
 			if ( bevelSnap > 0 ) {
 				Sys_Printf( "Snapping brush bevel planes to %d units\n", bevelSnap );
 			}
@@ -769,13 +769,13 @@ int BSPMain( Args& args ){
 			meta = true;
 		}
 		while ( args.takeArg( "-metaadequatescore" ) ) {
-			metaAdequateScore = std::max( -1, atoi( args.takeNext() ) );
+			metaAdequateScore = std::max( -1, args.takeInt() );
 			if ( metaAdequateScore >= 0 ) {
 				Sys_Printf( "Setting ADEQUATE meta score to %d (see surface_meta.c)\n", metaAdequateScore );
 			}
 		}
 		while ( args.takeArg( "-metagoodscore" ) ) {
-			metaGoodScore = std::max( -1, atoi( args.takeNext() ) );
+			metaGoodScore = std::max( -1, args.takeInt() );
 			if ( metaGoodScore >= 0 ) {
 				Sys_Printf( "Setting GOOD meta score to %d (see surface_meta.c)\n", metaGoodScore );
 			}
@@ -813,7 +813,7 @@ int BSPMain( Args& args ){
 			debugClip = true;
 		}
 		while ( args.takeArg(  "-clipdepth" ) ) {
-			clipDepthGlobal = atof( args.takeNext() );
+			clipDepthGlobal = args.takeDouble();
 			Sys_Printf( "Model autoclip thickness set to %.3f\n", clipDepthGlobal );
 		}
 		while ( args.takeArg( "-sRGBtex" ) ) {

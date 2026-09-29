@@ -248,3 +248,28 @@ mouse/keyboard injection was used. Preview logs/settings stay in that test folde
 Known limits: wider real-game and assistive-technology testing is outstanding;
 lighting remains CPU based. Build history is bounded to 100 runs and the live log
 view is bounded, while full logs remain in run folders. Runtime packaging follows.
+
+## 2026-09-29 — Numeric and portal input boundaries
+
+Replaced direct `atoi`/`atof` consumption in BSP, lighting, conversion and packing
+options with complete checked numeric parsing. Added bounded supersampling,
+lightmap dimensions/search shifts/sample scales, byte-safe raw lightmap allocation
+sizes, and an explicit 1,000-byte argument limit for inherited fixed path buffers.
+
+Portal input now rejects negative/oversized counts, off-by-one and negative leaf
+indices, invalid face/point counts, non-finite vertices and degenerate planes.
+It verifies that portal clusters cover BSP leaves. A further inherited defect was
+found: 131,072 file portals were accepted despite scratch space for only 131,072
+directed portal bits. Input is now bounded to 65,536 file portals until scratch
+storage is expanded safely; malformed counts fail before allocation/traversal.
+Clipping scratch arrays now cover the full accepted 512-point winding plus its
+closing sentinel, replacing undersized 128-entry arrays.
+
+Validation: the expanded release suite has 15 groups. New portal regressions
+exercise 30 strict/`-force` failures and verify that the original BSP is preserved.
+129- and 512-point portal inputs complete or report the inherited separator-cache
+limit safely; that geometric complexity limit remains explicit.
+Lighting option tests cover huge samples/dimensions, invalid shifts, non-finite
+values and oversized combined supersampling. Existing compiler/GUI paths pass.
+This hardens compiler-owned inputs; third-party image/model decoders still need
+broader sanitizer/fuzz coverage.

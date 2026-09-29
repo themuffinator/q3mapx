@@ -283,7 +283,8 @@ int numPlanarPatchesLightmapped;
  */
 
 static void FinishRawLightmap( rawLightmap_t& lm ){
-	int i, j, c, size, *sc;
+	int i, j, c, *sc;
+	size_t size;
 	float is;
 	surfaceInfo_t       *info;
 
@@ -334,6 +335,8 @@ static void FinishRawLightmap( rawLightmap_t& lm ){
 	lm.styles = { LS_NORMAL, LS_NONE, LS_NONE, LS_NONE };
 
 	/* set supersampling size */
+	if (lm.w < 1 || lm.h < 1 || superSample < 1 || lm.w > 8192 / superSample || lm.h > 8192 / superSample)
+		Error("Invalid or oversized raw lightmap dimensions");
 	lm.sw = lm.w * superSample;
 	lm.sh = lm.h * superSample;
 
@@ -415,7 +418,7 @@ static void FinishRawLightmap( rawLightmap_t& lm ){
 	}
 	size = lm.sw * lm.sh;
 	sc = lm.superClusters;
-	for ( i = 0; i < size; ++i )
+	for ( size_t pixel = 0; pixel < size; ++pixel )
 		( *sc++ ) = CLUSTER_UNMAPPED;
 
 	/* deluxemap allocation */

@@ -370,7 +370,7 @@ int ScaleBSPMain( Args& args ){
 			texscale = true;
 		}
 		if ( args.takeArg( "-spawn_ref" ) ) {
-			spawn_ref = atof( args.takeNext() );
+			spawn_ref = args.takeDouble();
 		}
 	}
 
@@ -1074,11 +1074,11 @@ int ConvertBSPMain( Args& args, bool decompile ){
 			}
 		}
 		while ( args.takeArg( "-ne" ) ) {
-			normalEpsilon = atof( args.takeNext() );
+			normalEpsilon = args.takeDouble();
 			Sys_Printf( "Normal epsilon set to %lf\n", normalEpsilon );
 		}
 		while ( args.takeArg( "-de" ) ) {
-			distanceEpsilon = atof( args.takeNext() );
+			distanceEpsilon = args.takeDouble();
 			Sys_Printf( "Distance epsilon set to %lf\n", distanceEpsilon );
 		}
 		while ( args.takeArg( "-shaderasbitmap", "-shadersasbitmap" ) ) {

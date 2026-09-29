@@ -16,12 +16,16 @@ inline int ParseIntegerOption( const char* option, const char* text, int minimum
 	return value;
 }
 
-inline float ParseFloatOption( const char* option, const char* text, float minimum, float maximum ){
+inline double ParseDoubleOption( const char* option, const char* text, double minimum, double maximum ){
 	const char* begin = text + ( text[0] == '+' );
 	const char* end = text + std::strlen(text);
-	float value = 0;
+	double value = 0;
 	const auto result = std::from_chars(begin, end, value);
 	if ( result.ec != std::errc{} || result.ptr != end || !std::isfinite(value) || value < minimum || value > maximum )
 		Error("%s expects a finite number in %g..%g, got '%s'", option, minimum, maximum, text);
 	return value;
+}
+
+inline float ParseFloatOption( const char* option, const char* text, float minimum, float maximum ){
+	return float(ParseDoubleOption(option,text,minimum,maximum));
 }

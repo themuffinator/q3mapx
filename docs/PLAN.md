@@ -40,7 +40,7 @@ Microbenchmarks and end-to-end timings are clearly distinguished.
 ## M2 — Robustness and BSP decompilation
 
 - [x] Validate BSP lump lengths, ranges, references, strings, and geometry before use.
-- [ ] Reject malformed arguments and oversized/invalid counts without memory corruption.
+- [x] Reject malformed numeric arguments and oversized/invalid worker, minimap, lightmap and portal counts before allocation/traversal.
 - [x] Repair lost texture-match candidates and ill-conditioned UV reconstruction.
 - [x] Preserve brush entities, origins, patches, and recoverable texture transforms.
 - [x] Add a convenient decompilation workflow and a machine-readable recovery report.

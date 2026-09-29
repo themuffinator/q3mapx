@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "compute.h"
+#include "area_factors.h"
 #include <algorithm>
 #include <chrono>
 #include <cstdlib>
@@ -10,6 +11,7 @@
 #define CL_TARGET_OPENCL_VERSION 120
 #include <CL/cl.h>
 #include "columns_kernel.h"
+#include "area_factors_kernel.h"
 #ifdef _WIN32
 #ifndef NOMINMAX
 #define NOMINMAX
@@ -130,9 +132,13 @@ struct Session {
     std::vector<cl_mem> buffers;
     std::vector<cl_event> events;
     explicit Session(Driver& driver) : d(driver) {}
-    ~Session(){
+    void clearWork(){
         for (auto event : events) d.clReleaseEvent(event);
         for (auto buffer : buffers) d.clReleaseMemObject(buffer);
+        events.clear(); buffers.clear();
+    }
+    ~Session(){
+        clearWork();
         if (kernel) d.clReleaseKernel(kernel);
         if (program) d.clReleaseProgram(program);
         if (queue) d.clReleaseCommandQueue(queue);
@@ -144,7 +150,14 @@ struct Session {
         cl_int error;
         auto result = d.clCreateBuffer(context,data ? CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR : CL_MEM_WRITE_ONLY,
                                        bytes,const_cast<void*>(data),&error);
-        check(error,"Allocating/transferring GPU buffer"); buffers.push_back(result); return result;
+        check(error,"Allocating/transferring GPU buffer");
+        try { buffers.push_back(result); }
+        catch (...) { d.clReleaseMemObject(result); throw; }
+        return result;
+    }
+    void trackEvent(cl_event event){
+        try { events.push_back(event); }
+        catch (...) { d.clReleaseEvent(event); throw; }
     }
     template<class T> void argument(cl_uint index,const T& value){ check(d.clSetKernelArg(kernel,index,sizeof(value),&value),"Setting GPU argument"); }
 };
@@ -159,6 +172,125 @@ std::vector<ComputeDevice> computeDevices( std::string& reason ){
         if (result.empty()) reason = "No usable OpenCL GPU found";
         return result;
     } catch (const std::exception& error) { reason = error.what(); return {}; }
+}
+
+struct AreaFactorComputer::Impl {
+    Session session;
+    Device device;
+    Impl(Driver& driver, Device selected) : session(driver), device(std::move(selected)) {}
+};
+AreaFactorComputer::AreaFactorComputer(std::unique_ptr<Impl> impl) : impl_(std::move(impl)) {}
+AreaFactorComputer::~AreaFactorComputer() = default;
+
+std::unique_ptr<AreaFactorComputer> createAreaFactorComputer(int deviceIndex, ComputeReport& report){
+    report = {};
+    const auto start = Clock::now();
+    try {
+        auto& d = driver();
+        auto devices = enumerate(d,deviceIndex == -1);
+        if (devices.empty()) throw std::runtime_error("No usable OpenCL GPU found");
+        if (deviceIndex >= int(devices.size()) || deviceIndex < -1) throw std::runtime_error("GPU device index out of range");
+        if (deviceIndex == -1) {
+            for (size_t i=0; i<devices.size(); ++i) {
+                if (!info<cl_device_fp_config>(d,devices[i].handle,CL_DEVICE_DOUBLE_FP_CONFIG)) continue;
+                if (deviceIndex == -1 || (!devices[i].details.unifiedMemory && devices[deviceIndex].details.unifiedMemory)
+                    || (devices[i].details.unifiedMemory == devices[deviceIndex].details.unifiedMemory
+                        && devices[i].details.computeUnits > devices[deviceIndex].details.computeUnits)) deviceIndex = int(i);
+            }
+            if (deviceIndex == -1) throw std::runtime_error("GPU area factors require double precision");
+        }
+        auto impl = std::make_unique<AreaFactorComputer::Impl>(d,devices[deviceIndex]);
+        const auto& selected = impl->device;
+        if (!info<cl_device_fp_config>(d,selected.handle,CL_DEVICE_DOUBLE_FP_CONFIG))
+            throw std::runtime_error("Selected GPU does not support double precision");
+        report.device = selected.details.name;
+        auto& session = impl->session;
+        cl_int error;
+        session.context = d.clCreateContext(nullptr,1,&selected.handle,nullptr,nullptr,&error); check(error,"Creating area-factor context");
+        session.queue = d.clCreateCommandQueue(session.context,selected.handle,CL_QUEUE_PROFILING_ENABLE,&error); check(error,"Creating area-factor queue");
+        const char* source = areaFactorKernelSource;
+        session.program = d.clCreateProgramWithSource(session.context,1,&source,nullptr,&error); check(error,"Creating area-factor program");
+        error = d.clBuildProgram(session.program,1,&selected.handle,"-cl-std=CL1.2",nullptr,nullptr);
+        if (error != CL_SUCCESS) {
+            size_t length = 0;
+            d.clGetProgramBuildInfo(session.program,selected.handle,CL_PROGRAM_BUILD_LOG,0,nullptr,&length);
+            std::string log(std::min(length,size_t(65536)),'\0');
+            if (!log.empty()) d.clGetProgramBuildInfo(session.program,selected.handle,CL_PROGRAM_BUILD_LOG,log.size(),log.data(),nullptr);
+            throw std::runtime_error("Area-factor kernel build failed: " + log);
+        }
+        session.kernel = d.clCreateKernel(session.program,"area_factors",&error); check(error,"Creating area-factor kernel");
+        report.setupSeconds = report.totalSeconds = seconds(start);
+        return std::unique_ptr<AreaFactorComputer>(new AreaFactorComputer(std::move(impl)));
+    } catch (const std::exception& error) { report.reason = error.what(); report.totalSeconds = seconds(start); return {}; }
+}
+
+bool AreaFactorComputer::compute(std::span<const AreaFactorSample> samples, std::span<const AreaFactorLight> lights,
+                                 std::span<const AreaFactorVertex> vertices, std::vector<float>& output, ComputeReport& report){
+    static_assert(sizeof(AreaFactorSample) == 32 && sizeof(AreaFactorLight) == 48 && sizeof(AreaFactorVertex) == 16);
+    report = {}; output.clear();
+    const auto start = Clock::now();
+    auto& s = impl_->session;
+    auto& d = s.d;
+    try {
+        if (samples.empty() || lights.empty() || samples.size() > 1048576 || lights.size() > 65536
+            || vertices.size() > 1048576 || lights.size() > (16u * 1024 * 1024) / samples.size())
+            throw std::invalid_argument("Area-factor batch exceeds bounded dimensions");
+        uint32_t maxPoints = 3;
+        for (const auto& l : lights) {
+            if (l.winding[0] > vertices.size() || l.winding[1] > vertices.size()-l.winding[0] || l.winding[1] > 1024)
+                throw std::invalid_argument("Invalid area-factor winding range");
+            maxPoints = std::max(maxPoints,l.winding[1]);
+            for (float v : l.origin) if (!std::isfinite(v)) throw std::invalid_argument("Non-finite area light");
+            for (float v : l.plane) if (!std::isfinite(v)) throw std::invalid_argument("Non-finite area plane");
+        }
+        for (const auto& p : samples) {
+            for (float v : p.origin) if (!std::isfinite(v)) throw std::invalid_argument("Non-finite area sample");
+            for (float v : p.normal) if (!std::isfinite(v)) throw std::invalid_argument("Non-finite area normal");
+        }
+        for (const auto& p : vertices) for (float v : p) if (!std::isfinite(v)) throw std::invalid_argument("Non-finite area vertex");
+        const size_t bytes = samples.size() * lights.size() * sizeof(float);
+        const auto limit = info<cl_ulong>(d,impl_->device.handle,CL_DEVICE_MAX_MEM_ALLOC_SIZE);
+        for (size_t size : { bytes, samples.size_bytes(), lights.size_bytes(), vertices.size_bytes() })
+            if (size > limit) throw std::runtime_error("Area-factor buffer exceeds device allocation limit");
+        if (bytes + samples.size_bytes() + lights.size_bytes() + vertices.size_bytes() > impl_->device.details.memoryBytes / 4)
+            throw std::runtime_error("Area-factor batch exceeds device memory budget");
+        report.device = impl_->device.details.name;
+        output.resize(samples.size()*lights.size());
+        const auto upload = Clock::now();
+        auto points = s.buffer(samples.size_bytes(),samples.data());
+        auto emitters = s.buffer(lights.size_bytes(),lights.data());
+        auto winding = s.buffer(vertices.size_bytes(),vertices.data());
+        auto result = s.buffer(bytes,nullptr);
+        s.argument(0,points); s.argument(1,emitters); s.argument(2,winding); s.argument(3,result);
+        s.argument(4,uint32_t(samples.size()));
+        report.transferSeconds = seconds(upload);
+        const uint32_t batch = std::max(1u,256u*1024/maxPoints);
+        for (uint32_t first=0; first<output.size(); first+=batch) {
+            const uint32_t count = std::min(batch,uint32_t(output.size())-first);
+            s.argument(5,first); s.argument(6,count);
+            const size_t global = count;
+            cl_event event = nullptr;
+            check(d.clEnqueueNDRangeKernel(s.queue,s.kernel,1,nullptr,&global,nullptr,0,nullptr,&event),"Dispatching area factors");
+            s.trackEvent(event);
+        }
+        check(d.clFinish(s.queue),"Waiting for area factors");
+        for (auto event : s.events) {
+            cl_ulong begin = 0,end = 0;
+            check(d.clGetEventProfilingInfo(event,CL_PROFILING_COMMAND_START,sizeof(begin),&begin,nullptr),"Profiling area-factor start");
+            check(d.clGetEventProfilingInfo(event,CL_PROFILING_COMMAND_END,sizeof(end),&end,nullptr),"Profiling area-factor end");
+            report.kernelSeconds += double(end-begin)*1e-9;
+        }
+        const auto download = Clock::now();
+        check(d.clEnqueueReadBuffer(s.queue,result,CL_TRUE,0,bytes,output.data(),0,nullptr,nullptr),"Reading area factors");
+        report.transferSeconds += seconds(download);
+        for (float value : output) if (!std::isfinite(value)) throw std::runtime_error("GPU returned non-finite area factors");
+        report.usedGPU = true; report.totalSeconds = seconds(start);
+        s.clearWork();
+        return true;
+    } catch (const std::exception& error) {
+        d.clFinish(s.queue); s.clearWork(); output.clear();
+        report.reason = error.what(); report.totalSeconds = seconds(start); return false;
+    }
 }
 
 bool computeColumns( const ColumnScene& scene, const ColumnImage& image, int deviceIndex,
@@ -232,7 +364,7 @@ bool computeColumns( const ColumnScene& scene, const ColumnImage& image, int dev
             const size_t global[2]{image.width,std::min(rows,image.height-row)};
             cl_event event = nullptr;
             check(d.clEnqueueNDRangeKernel(session.queue,session.kernel,2,nullptr,global,nullptr,0,nullptr,&event),"Dispatching minimap columns");
-            session.events.push_back(event);
+            session.trackEvent(event);
         }
         check(d.clFinish(session.queue),"Waiting for GPU columns");
         for (auto event : session.events) {
@@ -254,6 +386,16 @@ bool computeColumns( const ColumnScene& scene, const ColumnImage& image, int dev
 }
 #else
 namespace q3mapx {
+struct AreaFactorComputer::Impl {};
+AreaFactorComputer::AreaFactorComputer(std::unique_ptr<Impl> impl) : impl_(std::move(impl)) {}
+AreaFactorComputer::~AreaFactorComputer() = default;
+std::unique_ptr<AreaFactorComputer> createAreaFactorComputer(int, ComputeReport& report){
+    report = {}; report.reason = "OpenCL disabled at build time"; return {};
+}
+bool AreaFactorComputer::compute(std::span<const AreaFactorSample>, std::span<const AreaFactorLight>,
+                                 std::span<const AreaFactorVertex>, std::vector<float>& output, ComputeReport& report){
+    output.clear(); report = {}; report.reason = "OpenCL disabled at build time"; return false;
+}
 std::vector<ComputeDevice> computeDevices(std::string& reason){ reason = "OpenCL disabled at build time"; return {}; }
 bool computeColumns(const ColumnScene&,const ColumnImage&,int,float*,ComputeReport& report){
     report = {}; report.reason = "OpenCL disabled at build time"; return false;

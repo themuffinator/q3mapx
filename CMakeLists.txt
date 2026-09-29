@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.25)
-project(q3mapx VERSION 0.1.0 LANGUAGES C CXX)
+project(q3mapx VERSION 0.2.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -41,6 +41,9 @@ target_include_directories(q3mapx_io PUBLIC libs)
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/libs/q3mapx/columns.cl Q3MAPX_COLUMN_KERNEL)
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS libs/q3mapx/columns.cl)
 configure_file(cmake/columns_kernel.h.in generated/columns_kernel.h @ONLY)
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/libs/q3mapx/area_factors.cl Q3MAPX_AREA_KERNEL)
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS libs/q3mapx/area_factors.cl)
+configure_file(cmake/area_factors_kernel.h.in generated/area_factors_kernel.h @ONLY)
 add_library(q3mapx_compute STATIC libs/q3mapx/columns.cpp libs/q3mapx/compute.cpp)
 target_include_directories(q3mapx_compute PUBLIC libs PRIVATE libs/thirdparty/opencl ${CMAKE_BINARY_DIR}/generated)
 target_compile_definitions(q3mapx_compute PRIVATE Q3MAPX_ENABLE_OPENCL=$<BOOL:${Q3MAPX_ENABLE_OPENCL}>)
@@ -140,6 +143,17 @@ if(BUILD_TESTING)
     add_executable(lighting_math_test tests/lighting_math.cpp tools/quake3/q3map2/lighting_math.cpp)
     target_include_directories(lighting_math_test PRIVATE libs tools/quake3/common tools/quake3/q3map2)
     add_test(NAME lighting_math COMMAND lighting_math_test)
+    add_executable(area_factors_test tests/area_factors.cpp tools/quake3/q3map2/lighting_math.cpp)
+    target_include_directories(area_factors_test PRIVATE tools/quake3/common tools/quake3/q3map2)
+    target_link_libraries(area_factors_test PRIVATE q3mapx_compute)
+    add_test(NAME area_factors COMMAND area_factors_test)
+    set_tests_properties(area_factors PROPERTIES TIMEOUT 120 SKIP_RETURN_CODE 77)
+    add_test(NAME area_factors_disabled COMMAND area_factors_test --disabled)
+    set_tests_properties(area_factors_disabled PROPERTIES TIMEOUT 30 ENVIRONMENT "Q3MAPX_DISABLE_GPU=1")
+    add_test(NAME lighting_gpu COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/lighting_gpu.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/lighting-gpu)
+    set_tests_properties(lighting_gpu PROPERTIES TIMEOUT 180)
     add_test(NAME decompile_recovery COMMAND ${Python3_EXECUTABLE}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/decompile.py
         --compiler $<TARGET_FILE:q3mapx>

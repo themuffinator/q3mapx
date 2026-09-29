@@ -37,8 +37,8 @@ do not enable unsafe global fast-math as a substitute for algorithmic work.
 GPU support uses optional, dynamically loaded OpenCL 1.2 with embedded first-party
 kernels and Khronos headers. The executable needs no OpenCL SDK or loader to run
 CPU work. Indexed minimap column sampling has both CPU and GPU implementations;
-lighting traversal needs additional design because of
-alpha-tested shaders, material semantics, and CPU-side state.
+an experimental lighting backend batches polygon form factors while keeping
+alpha-tested shadows, material filtering and all ray traversal on the CPU.
 
 Include device information, backend selection, setup/transfer/compute timing,
 and failure diagnostics. Avoid retaining driver resources outside an owning RAII
@@ -51,6 +51,13 @@ preserve legacy coordinate precision without requiring device doubles. Floating
 point contraction is disabled in the kernel. Missing devices and runtime failures
 fall back in automatic mode; explicit GPU mode fails visibly. `-devices` lists JSON
 capabilities, and `-compute-report` explains selection and timing.
+
+Area-light factors use a reusable FP64 OpenCL program. A stable set of four large
+raw lightmaps streams groups of lights through bounded caches; workers serialize
+device submission and independently consume results with the original CPU tracer.
+Failure clears the affected offsets before CPU fallback. The default stays CPU
+because complete bake measurements have not justified automatic use. See
+[lighting design and limits](GPU-LIGHTING.md).
 
 ## Validation and observability
 

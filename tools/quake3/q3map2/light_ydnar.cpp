@@ -32,6 +32,7 @@
 #include "q3map2.h"
 #include "lighting_jobs.h"
 #include "light_sample_culling.h"
+#include "light_gpu.h"
 #include "timer.h"
 
 
@@ -2113,7 +2114,8 @@ inline void FreeTraceLights( trace_t *trace ){
  */
 static void FloodlightIlluminateLightmap( rawLightmap_t *lm );
 
-void IlluminateRawLightmap( int rawLightmapNum ){
+template<bool Gpu>
+static void IlluminateRawLightmapImpl( int rawLightmapNum ){
 	SeedLightingRandom( 3, rawLightmapNum );
 	int t, x, y, sx, sy, size, luxelFilterRadius, lightmapNum;
 	int                 mapped, lighted, totalLighted;
@@ -2284,6 +2286,8 @@ void IlluminateRawLightmap( int rawLightmapNum ){
 		//%		Sys_Printf( "Lightmap %9d: 0 lights, axis: %.2f, %.2f, %.2f\n", rawLightmapNum, lm->axis[ 0 ], lm->axis[ 1 ], lm->axis[ 2 ] );
 
 		/* walk light list */
+		q3mapx::LightFactorCache areaFactors;
+		if constexpr ( Gpu ) areaFactors = q3mapx::cacheLightFactors( rawLightmapNum, *lm, trace );
 		q3mapx::LightSampleTiles lightTiles;
 		const bool useLightTiles = lightTileCulling && lm->sw * lm->sh >= 256 && trace.numLights >= 8;
 		if ( useLightTiles ) {
@@ -2294,6 +2298,7 @@ void IlluminateRawLightmap( int rawLightmapNum ){
 		{
 			/* setup trace */
 			trace.light = trace.lights[ i ];
+			if constexpr ( Gpu ) areaFactors.prepare( i );
 			const bool cullSamples = useLightTiles && trace.light->type != ELightType::Sun;
 			if ( cullSamples ) lightTiles.select( trace.light->origin, trace.light->envelope );
 
@@ -2371,7 +2376,12 @@ void IlluminateRawLightmap( int rawLightmapNum ){
 						trace.normal = lm->getSuperNormal( x, y );
 
 						/* get light for this sample */
-						LightContributionToSample( &trace );
+						if constexpr ( Gpu ) {
+							if ( const float* factor = areaFactors.factor( i, size_t( y ) * lm->sw + x ) )
+								LightContributionWithAreaFactor( &trace, *factor );
+							else LightContributionToSample( &trace );
+						}
+						else LightContributionToSample( &trace );
 						lightLuxel.value = trace.color;
 
 						/* add the contribution to the deluxemap */
@@ -2846,6 +2856,11 @@ void IlluminateRawLightmap( int rawLightmapNum ){
 }
 
 
+
+void IlluminateRawLightmap( int rawLightmapNum ){
+	if ( q3mapx::lightingGpuEnabled() ) IlluminateRawLightmapImpl<true>( rawLightmapNum );
+	else IlluminateRawLightmapImpl<false>( rawLightmapNum );
+}
 
 /*
    IlluminateVertexes()

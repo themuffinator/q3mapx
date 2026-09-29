@@ -117,7 +117,8 @@ actual Linux execution to close gaps that minimap benchmarks cannot establish.
 - [x] Repair issues found by those checks and record exact platform evidence.
 - [x] Add material-aware lighting parity fixtures and end-to-end benchmarks.
 - [x] Reduce measured lighting costs while preserving shader/shadow semantics.
-- [ ] Implement and measure batched GPU lighting work where profiling justifies it.
+- [x] Implement and measure batched GPU lighting work (experimental area factors;
+  complete-bake timings retain CPU as the default, with evidence in GPU-LIGHTING.md).
 - [ ] Refresh release artifacts and documentation after the additional task commits.
 
 Acceptance: main lighting workloads have measured evidence and output checks;

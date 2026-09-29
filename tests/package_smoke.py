@@ -35,7 +35,7 @@ def run(command,label,timeout=180,extra=None):
     return result
 
 run([compiler,'--version'],'version')
-for name in ('integration','decompile','minimap','gpu'):
+for name in ('integration','decompile','minimap','gpu','lighting','lighting_gpu'):
     run([sys.executable,ROOT/'tests'/f'{name}.py','--compiler',compiler,'--work-dir',root/name],name)
 gui=package/'bin/q3mapx-workbench.exe'
 if gui.is_file():

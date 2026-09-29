@@ -126,5 +126,6 @@ contrast and sharpening. Output differed by at most one 8-bit grayscale level.
 is disabled; driver floating-point differences can still affect samples very near
 geometric boundaries. Report unexpected parity failures with the input/options.
 
-Lighting remains on CPU. Its [GPU evaluation](GPU-LIGHTING.md) describes measured
-costs and the material semantics that a future implementation must preserve.
+Lighting defaults to CPU. Its [experimental GPU area-factor implementation](GPU-LIGHTING.md)
+retains material tracing on CPU. Complete-bake measurements, rather than kernel
+throughput, determine whether GPU selection is useful for a given workload.

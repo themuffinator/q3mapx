@@ -53,7 +53,7 @@ Window::Window(const QString& stateDirectory):stateDirectory_(stateDirectory),qu
     build->addAction("&Cancel active job",QKeySequence("Shift+Escape"),&queue_,&JobQueue::cancel);
     auto* view=menuBar()->addMenu("&View");
     view->addAction("Toggle &light / dark theme",this,[this]{ theme_=theme_=="dark" ? "light" : "dark"; applyTheme(); });
-    menuBar()->addMenu("&Help")->addAction("About q3mapx",this,[this]{ QMessageBox::about(this,"q3mapx", "q3mapx Workbench 0.1\nStandalone map compilation and BSP recovery.\nBased on NetRadiant-custom q3map2.\nGPL-3.0-or-later · Qt 6\nGPU acceleration currently applies to minimaps."); });
+    menuBar()->addMenu("&Help")->addAction("About q3mapx",this,[this]{ QMessageBox::about(this,"q3mapx", "q3mapx Workbench 0.2\nStandalone map compilation and BSP recovery.\nBased on NetRadiant-custom q3map2.\nGPL-3.0-or-later · Qt 6\nGPU acceleration currently applies to minimaps."); });
     connect(navigation_,&QListWidget::currentRowChanged,pages_,&QStackedWidget::setCurrentIndex);
     connect(run_,&QPushButton::clicked,this,[this]{ enqueue(true); }); connect(cancel_,&QPushButton::clicked,&queue_,&JobQueue::cancel);
     connect(&queue_,&JobQueue::changed,this,&Window::refreshQueue);
@@ -130,7 +130,7 @@ QWidget* Window::configuration(){
     size_=new QSpinBox; size_->setRange(1,8192); size_->setSingleStep(256); options->addRow("Minimap &size",size_);
     samples_=new QSpinBox; samples_->setRange(1,256); options->addRow("Minimap sa&mples",samples_);
     format_=new QComboBox; format_->addItem("Valve 220 · recommended for texture recovery","map_220"); format_->addItem("Brush primitives","map_bp"); format_->addItem("Classic Quake texture coordinates","map"); options->addRow("Recovery &format",format_);
-    auto* note=new QLabel("GPU selection affects minimaps. BSP, visibility and lighting use CPU workers. Recovery includes a JSON report of retained and approximated data."); note->setWordWrap(true); note->setObjectName("notice"); options->addRow(note); tabs->addTab(scrollable(tuning),"Quality && compute");
+    auto* note=new QLabel("GPU selection here affects minimaps. Lighting defaults to CPU workers. Recovery includes a JSON report of retained and approximated data."); note->setWordWrap(true); note->setObjectName("notice"); options->addRow(note); tabs->addTab(scrollable(tuning),"Quality && compute");
     auto* advanced=new QWidget; auto* advancedLayout=new QVBoxLayout(advanced);
     auto* tip=new QLabel("Additional arguments · one argument per line. Values containing spaces stay a single argument; do not add shell quotes."); tip->setWordWrap(true); advancedLayout->addWidget(tip);
     auto* extra=new QTabWidget;
@@ -182,7 +182,7 @@ QWidget* Window::historyPage(){
 QWidget* Window::hardwarePage(){
     auto* page=new QWidget; auto* layout=new QVBoxLayout(page); layout->setContentsMargins(0,0,0,0);
     auto* title=new QLabel("Compute devices"); title->setObjectName("pageTitle"); layout->addWidget(title);
-    auto* note=new QLabel("Minimaps can use OpenCL GPUs. Automatic mode chooses CPU for small workloads and falls back if GPU compute is unavailable. Lighting uses the CPU job pool."); note->setWordWrap(true); note->setObjectName("notice"); layout->addWidget(note);
+    auto* note=new QLabel("Minimaps can use OpenCL GPUs. Automatic mode chooses CPU for small workloads and falls back if GPU compute is unavailable. Lighting defaults to the CPU job pool; experimental GPU area factors are available through advanced LIGHT arguments."); note->setWordWrap(true); note->setObjectName("notice"); layout->addWidget(note);
     auto* discover=new QPushButton("Refresh device inventory"); connect(discover,&QPushButton::clicked,this,&Window::discoverHardware); layout->addWidget(discover,0,Qt::AlignLeft);
     hardware_=codeView(); hardware_->setPlainText("Refresh to query the configured compiler.\n\nCPU workers: automatic detection, or 1–1024.\nGPU backend: OpenCL 1.2 or later.\nNo GPU SDK is required to run q3mapx."); layout->addWidget(hardware_,1); return page;
 }

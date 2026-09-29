@@ -25,6 +25,9 @@ def main():
     parser.add_argument("--repeat", type=int, default=5)
     parser.add_argument("--samples", type=int, default=4)
     parser.add_argument("--bounce", type=int, default=1)
+    parser.add_argument("--accurate", action="store_true", help="Keep full light envelopes by omitting -fast")
+    parser.add_argument("--backend", choices=("cpu", "gpu"), default="cpu", help="Backend for --compiler; --baseline always uses CPU")
+    parser.add_argument("--gpu-device", type=int)
     parser.add_argument("--no-grid-lighting", action="store_true", help="Isolate surface lighting when comparing legacy nondeterministic grid sampling")
     args = parser.parse_args()
     if args.repeat < 2 or not 3 <= args.grid <= 63 or args.grid % 2 != 1:
@@ -39,7 +42,9 @@ def main():
     bsp_path = source.with_suffix(".bsp")
     original = bsp_path.read_bytes()
     records = []
-    options = ["-light", "-fast", "-samples", args.samples, "-bounce", args.bounce]
+    options = ["-light", "-samples", args.samples, "-bounce", args.bounce]
+    if not args.accurate:
+        options.insert(1, "-fast")
     if args.no_grid_lighting:
         options.append("-nogrid")
     for threads in args.threads:
@@ -49,8 +54,17 @@ def main():
                 label = f"{name}-{threads}-{iteration}"
                 bsp_path.write_bytes(original)
                 profile_path = root / f"{label}.json"
-                result = run(exe, [*base, "-threads", threads, "-profile", profile_path, *options, source],
+                compute_path = root / f"{label}-compute.json"
+                extra = []
+                if name == "q3mapx" and args.backend == "gpu":
+                    extra = ["-light-backend", "gpu", "-compute-report", compute_path]
+                    if args.gpu_device is not None:
+                        extra += ["-gpu-device", args.gpu_device]
+                result = run(exe, [*base, "-threads", threads, "-profile", profile_path, *options, *extra, source],
                              root, label, timeout=600)
+                if extra:
+                    result["compute"] = json.loads(compute_path.read_text())
+                    assert result["compute"]["backend"] == "hybrid", f"{label}: GPU did not execute any lighting work"
                 bsp = Bsp(bsp_path)
                 output = {n: bsp.lump(n) for n in LIGHT_LUMPS}
                 if expected is None:
@@ -72,6 +86,7 @@ def main():
     report = {"schema_version": 1, "kind": "whole_process_material_lighting",
               "timestamp_utc": datetime.now(timezone.utc).isoformat(), "platform": platform.platform(),
               "processor": platform.processor(), "logical_cpus": os.cpu_count(), "fixture_grid": args.grid,
+              "q3mapx_backend": args.backend,
               "fixture_sha256": hashlib.sha256(source.read_bytes()).hexdigest(), "options": options,
               "visibility_mode": "fast", "warmup_runs": 1, "measured_runs": args.repeat,
               "summaries": summaries, "records": records}

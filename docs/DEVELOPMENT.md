@@ -87,6 +87,13 @@ streams and ordered bounce-light publication make these checks independent of
 scheduling. This is repeatability within one build, not cross-platform floating-point
 identity. Randomized output differs from the old shared C-library RNG sequence.
 
+`area_factors` tests actual OpenCL polygon integrals on available native FP64
+devices, including repeated batches, degenerate/large polygons and rejected
+inputs. `lighting_gpu` compares hybrid/CPU baked data across material modes and
+a dense streamed-cache case. Missing runtime/FP64 is an explicit hardware skip;
+CPU-only configurations still verify that requested GPU startup fails without
+modifying the input BSP. Kernel build/dispatch/parity failures are test failures.
+
 Use explicit subprocess timeouts and capture stdout/stderr in test failure reports.
 Do not introduce brittle tests that only mirror internal implementation details.
 Do not launch a game fullscreen or control input. For any idTech rendering checks,
@@ -115,6 +122,19 @@ on PATH. The harness generates its own dense room, preserves VIS portal input wi
 `benchmark.json`. [Initial results](benchmarks/baseline-win-x64.json) are a baseline,
 not an optimization claim. CI definitions cover Windows/MinGW and Linux; a workflow
 definition does not imply a remote run has passed.
+
+For alternating complete lighting comparisons:
+
+```sh
+python benchmarks/lighting.py --baseline build/reference/bin/q3mapx --compiler build/release/bin/q3mapx --work-dir build/lighting-benchmark --grid 21 --threads 1 20 --repeat 5
+```
+
+Add `--backend gpu` to use GPU area factors in the candidate executable (the
+baseline remains CPU). `--accurate` omits the fast light-envelope cutoff; it can
+increase runtime substantially, so start with `--grid 9`. The harness restores
+the unlit BSP before every bake, checks all lighting lumps and verifies that
+neither executable changed during measurement. GPU reports are embedded in the
+result so an accidentally unused backend cannot produce a speedup claim.
 
 Enable `Q3MAPX_BUILD_BENCHMARKS` to build `scheduler_benchmark`. This compares the
 old scheduler's mutex-per-item/fresh-thread algorithm with the new job pool using

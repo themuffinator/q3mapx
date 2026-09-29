@@ -29,7 +29,8 @@ def main():
     run(exe, [*base, '-threads', 'auto', '-meta', source], root, 'bsp')
     for option,value in [('-super','999999'),('-samples','-5'),('-lightmapsize','2147483647'),
                          ('-lightmapsearchpower','-1'),('-lightmapsearchpower','32'),('-samplescale','9999999'),
-                         ('-bounce','-1'),('-gamma','nan'),('-scale','inf'),('-dirtdepth','1e999')]:
+                         ('-bounce','-1'),('-gamma','nan'),('-scale','inf'),('-dirtdepth','1e999'),
+                         ('-light-backend','unknown'),('-gpu-device','-1'),('-compute-report','output.bsp')]:
         result=subprocess.run([str(exe),*map(str,base),'-light',option,value,str(source)],cwd=root,capture_output=True,timeout=10)
         assert result.returncode!=0 and b'ERROR' in result.stdout,(option,value,result.stdout[-2000:])
     for options in [['-light','-super','8','-lightmapsize','2048'],['-light','-lightmapsearchpower','20'],['-profile','x'*1001]]:

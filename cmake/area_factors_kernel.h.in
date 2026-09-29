@@ -1,0 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+#pragma once
+inline constexpr const char* areaFactorKernelSource = R"Q3MAPX_CL(
+@Q3MAPX_AREA_KERNEL@
+)Q3MAPX_CL";

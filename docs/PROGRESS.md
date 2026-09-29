@@ -461,3 +461,50 @@ are `.agents/tmp/linux-deps/{build,test}-lighting-culling.log`.
 
 No new unrelated issue was found. Previously recorded inherited compiler
 warnings, broader fuzz/manual-validation gaps and the cleanup policy block remain.
+
+## 2026-09-29 — Batched GPU area-light evaluation and CPU-default decision
+
+Implemented optional OpenCL polygon-light integrals with matching mixed-precision
+math, reusable context/program ownership, bounded dispatches and streamed caches.
+The four largest eligible lightmaps may use at most 64 MiB of result storage each;
+larger light sets stream in groups. The existing CPU code retains material tracing,
+alpha/colored transmission, sun/point/spot lighting, adaptive samples, vertices
+and lightgrid. `-light -light-backend gpu` is explicitly experimental;
+`-compute-report` distinguishes actual hybrid work from CPU/fallback execution.
+Startup failure is visible before baking, and failed batches clear cached offsets
+before CPU fallback. The Intel driver lacks the required FP64; NVIDIA is tested.
+
+Validation: Windows release 21 passed; Windows CPU-only and Linux release each
+20 passed plus one hardware skip; Linux ASan/UBSan 18 passed plus one hardware
+skip. Linux has no usable GPU and its bake parity cases explicitly skip after
+checking failure behavior. NVIDIA unit math matched exactly through 1,024-point
+windings; complete material bakes match at one/four workers, including full and
+approximate lighting modes. The dense 20-worker case streams 44,211,000 factors
+in ten batches with exact CPU output. Qt queue/preview checks pass; the native
+offscreen widget preview was inspected without input injection or OS capture.
+
+Benchmarking does not justify changing the default. Fast grid=21 medians (five
+alternating measured runs) were CPU/hybrid 2.2287/2.5518 s at one worker and
+1.0780/1.4624 s at 20 workers. Full-envelope grid=9 (three runs) measured
+18.4584/18.3714 s and 1.2532/1.8160 s, respectively. The tiny single-worker
+full-envelope difference is within the observed spread. Cold/warmup and setup
+costs are material. Raw profiles, all observations and parity evidence are in
+`benchmarks/light-gpu-{fast,accurate,parity}-win-x64.json`; see `GPU-LIGHTING.md`.
+No lighting GPU acceleration claim is made. Automatic minimap GPU selection and
+the measured CPU lighting optimization remain the recommended paths.
+
+A follow-up caught overhead from cache checks in the ordinary CPU path. CPU/GPU
+inner loops are now separate compile-time specializations. Five alternating CPU
+runs against the pre-GPU build measured 2.2600/2.2061 s at one worker and
+0.9222/0.8896 s at 20 workers, with exact output and no observed regression.
+See `benchmarks/light-gpu-cpu-dispatch-win-x64.json`. Allocation fallback also
+releases optional host caches before continuing CPU work. Lighting checks were
+repeated after these changes. Release metadata is advanced to 0.2.0; the portable
+smoke harness now includes material and hybrid lighting checks.
+
+The first full-envelope grid=21 trial was stopped during its long initial
+single-worker warmup and replaced with grid=9; it is not used as timing evidence.
+Useful local outputs are under `build/lighting-gpu-*`; platform logs remain in
+`.agents/tmp/linux-deps`. No new unrelated defects were found. Existing inherited
+warnings, broader real-map/fuzz/manual-accessibility gaps and cleanup policy limits
+remain documented.

@@ -32,6 +32,7 @@
 #include "q3map2.h"
 #include "lighting_jobs.h"
 #include "lighting_math.h"
+#include "light_gpu.h"
 #include "bspfile_rbsp.h"
 #include <set>
 
@@ -738,7 +739,8 @@ float PointToPolygonFormFactor( const Vector3& point, const Vector3& normal, con
    determines the amount of light reaching a sample (luxel or vertex) from a given light
  */
 
-int LightContributionToSample( trace_t *trace ){
+template<bool CachedArea>
+static int LightContributionToSampleImpl( trace_t *trace, float precomputedAreaFactor ){
 	float angle;
 	float add;
 	float dist;
@@ -856,7 +858,8 @@ int LightContributionToSample( trace_t *trace ){
 		else
 		{
 			/* calculate the contribution */
-			factor = PointToPolygonFormFactor( pushedOrigin, trace->normal, light->w );
+			if constexpr ( CachedArea ) factor = precomputedAreaFactor;
+			else factor = PointToPolygonFormFactor( pushedOrigin, trace->normal, light->w );
 			if ( factor == 0 ) {
 				return 0;
 			}
@@ -1141,6 +1144,14 @@ int LightContributionToSample( trace_t *trace ){
 }
 
 
+
+// Compile separate inner paths: CPU samples do not pay for a GPU-cache branch.
+int LightContributionToSample( trace_t* trace ){
+	return LightContributionToSampleImpl<false>( trace, 0 );
+}
+int LightContributionWithAreaFactor( trace_t* trace, float factor ){
+	return LightContributionToSampleImpl<true>( trace, factor );
+}
 
 /*
    LightingAtSample()
@@ -1996,6 +2007,7 @@ static void LightWorld( bool fastAllocate, bool bounceStore ){
 	lightsClusterCulled = 0;
 
 	Sys_Printf( "--- IlluminateRawLightmap ---\n" );
+	q3mapx::prepareLightingGpuPass();
 	RunThreadsOnIndividual( numRawLightmaps, true, IlluminateRawLightmap, "IlluminateRawLightmap" );
 	Sys_Printf( "%9llu luxels illuminated\n", static_cast<unsigned long long>( numLuxelsIlluminated ) );
 
@@ -2070,6 +2082,7 @@ static void LightWorld( bool fastAllocate, bool bounceStore ){
 		lightsClusterCulled = 0;
 
 		Sys_Printf( "--- IlluminateRawLightmap ---\n" );
+		q3mapx::prepareLightingGpuPass();
 		RunThreadsOnIndividual( numRawLightmaps, true, IlluminateRawLightmap, "IlluminateRawLightmap" );
 		Sys_Printf( "%9llu luxels illuminated\n", static_cast<unsigned long long>( numLuxelsIlluminated ) );
 		Sys_Printf( "%9llu vertexes illuminated\n", static_cast<unsigned long long>( numVertsIlluminated ) );
@@ -2844,6 +2857,7 @@ int LightMain( Args& args ){
 			lightmapPink = true;
 		}
 		/* unhandled args */
+		q3mapx::parseLightingGpuOptions( args );
 		while( !args.empty() )
 		{
 			Sys_Warning( "Unknown argument \"%s\"\n", args.takeFront() );
@@ -2945,7 +2959,9 @@ int LightMain( Args& args ){
 	SetupTraceNodes();
 
 	/* light the world */
+	q3mapx::beginLightingGpu();
 	LightWorld( fastAllocate, bounceStore );
+	q3mapx::finishLightingGpu();
 
 	/* ydnar: export lightmaps */
 	if ( exportLightmaps && !externalLightmaps ) {

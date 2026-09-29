@@ -4,7 +4,7 @@ An independent, performance-focused continuation of the q3map2 compiler from
 [NetRadiant-custom (NRC)](https://github.com/Garux/netradiant-custom), with a native
 desktop workbench and the existing command-line workflow.
 
-q3mapx 0.1.0 is a development release with persistent CPU jobs, optional OpenCL
+q3mapx 0.2.0 is a development release with persistent CPU jobs, optional OpenCL
 minimap acceleration, stronger input validation, improved BSP recovery, and a
 native Qt workbench. It starts from NRC revision `8216133` (latest at retrieval on
 2026-09-29). See the [implementation plan](docs/PLAN.md) and [task log](docs/PROGRESS.md)
@@ -47,7 +47,9 @@ minimaps were **29.8x faster** than the imported sampler; a sufficiently large G
 minimap was **1.93x faster** than the optimized CPU; single-worker VIS used **12.1%
 less elapsed time** on the alternating grid=9 test. CPU lighting culling reduced
 elapsed time by **22.3%** at 20 workers on the dense material fixture, with identical
-lighting data. These are workload-specific results. Lighting remains CPU based. See
+lighting data. These are workload-specific results. Lighting defaults to the CPU;
+[experimental GPU area factors](docs/GPU-LIGHTING.md) are available for comparison
+but have not improved measured complete-bake times. See
 [measurements, hardware and reproduction details](docs/PERFORMANCE.md).
 
 ## Documentation

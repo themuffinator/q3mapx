@@ -74,7 +74,7 @@ def main():
     parser.add_argument('--build-dir',type=Path,default=ROOT/'build/release')
     parser.add_argument('--msys-root',type=Path,default=Path('C:/msys64'))
     parser.add_argument('--prefix',default='mingw64',choices=['mingw64','ucrt64'])
-    parser.add_argument('--name',default='q3mapx-0.1.0-windows-x64')
+    parser.add_argument('--name',default='q3mapx-0.2.0-windows-x64')
     parser.add_argument('--cli-only',action='store_true')
     parser.add_argument('--allow-dirty',action='store_true',help='Include current uncommitted source in a local development snapshot')
     parser.add_argument('--fetch-dependency-sources',action='store_true',help='Download exact MSYS2 source packages beside the portable archive')

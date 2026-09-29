@@ -2,7 +2,7 @@
 
 ## Portable Windows build
 
-Extract the complete `q3mapx-0.1.0-windows-x64.zip` folder, then run
+Extract the complete `q3mapx-0.2.0-windows-x64.zip` folder, then run
 `bin/q3mapx-workbench.exe` or `bin/q3mapx.exe -help`. Keep the DLLs, Qt plugins,
 `qt.conf`, documentation and license notices with the executables. The package
 does not require MSYS2 on PATH and does not install services or change the system.
@@ -17,9 +17,9 @@ appropriate game assets, a MAP/BSP source and an output directory. See the
 The current release is a development release. Windows x64/MinGW and Linux x64
 (Ubuntu 24.04 under WSL, GCC 13 and Qt 6.4) are locally validated, including Linux
 ASan/UBSan checks. MSVC, macOS, manual accessibility testing and a broad corpus of
-real game maps are not certified by this release. The original 0.1.0 archive
-predates the additional Linux/material fixes recorded in the task log; rebuild
-from current source to include them.
+real game maps are not certified by this release. Version 0.2.0 adds deterministic
+lighting, conservative sample culling, Linux/material fixes and optional GPU
+area-factor experiments. It supersedes the original 0.1.0 development archive.
 
 ## Recreate the Windows package
 
@@ -27,7 +27,7 @@ Build and test the release preset, commit its source, then run from the project:
 
 ```powershell
 python tools/package_windows.py --msys-root C:/msys64 --fetch-dependency-sources
-python tests/package_smoke.py --package-dir build/package/q3mapx-0.1.0-windows-x64 --work-dir build/package-validation --workbench-test build/release/bin/workbench_test.exe
+python tests/package_smoke.py --package-dir build/package/q3mapx-0.2.0-windows-x64 --work-dir build/package-validation-0.2.0 --workbench-test build/release/bin/workbench_test.exe
 ```
 
 The packager requires Python 3.9+, the configured MinGW toolchain, CMake,
@@ -70,14 +70,15 @@ change executable/archive hashes; this is a reproducible packaging procedure,
 not a claim of bit-identical cross-toolchain builds.
 
 The smoke harness verifies recorded file hashes and runs full compile/recovery,
-CPU/GPU minimap checks, the Qt queue integration and direct offscreen widget
+CPU/GPU minimap and lighting checks, the Qt queue integration and direct offscreen widget
 rendering with development dependency directories removed from PATH. It retains
 logs, a GUI preview and `validation.json` in the selected project-local work folder.
 
 ## Known limits
 
-- GPU acceleration currently applies to minimap sampling. Lighting remains on CPU;
-  its profiling and future requirements are in [GPU-LIGHTING.md](GPU-LIGHTING.md).
+- Automatic GPU acceleration applies to sufficiently large minimaps. Lighting
+  defaults to CPU; its opt-in GPU polygon-factor backend is experimental and has
+  not reduced measured complete-bake time. See [GPU-LIGHTING.md](GPU-LIGHTING.md).
 - Default legacy VIS scheduling can vary a few visibility bits between runs on
   some inputs. Select `-vis -reproducible` for repeatability across worker counts.
 - Decompilation recovers compiled geometry and texture data; it cannot recreate

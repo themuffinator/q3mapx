@@ -1803,6 +1803,7 @@ int                         VisMain( Args& args );
 /* light.c  */
 float                       PointToPolygonFormFactor( const Vector3& point, const Vector3& normal, const winding_t& w );
 int                         LightContributionToSample( trace_t *trace );
+int                         LightContributionWithAreaFactor( trace_t *trace, float factor );
 void                        LightingAtSample( trace_t * trace, Array4<byte>& styles, Array4<Vector3>& colors, const Vector3& ambientColor );
 int                         LightMain( Args& args );
 

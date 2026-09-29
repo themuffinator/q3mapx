@@ -66,6 +66,8 @@ controls and text follow Qt's DPI scaling. Manual assistive-technology testing
 and broad real-game project testing are still needed before a production release.
 
 The workbench is a compiler/recovery application, not a map editor. BSP recovery
-limits are described in [DECOMPILATION.md](DECOMPILATION.md). Lighting remains CPU
-based. Legacy compiler fatal exits are surfaced through process status/logs even
+limits are described in [DECOMPILATION.md](DECOMPILATION.md). Lighting defaults to
+CPU. Experimental GPU area factors can be selected through extra LIGHT arguments
+(`-light-backend` and `gpu` on separate lines); see [limits and measurements](GPU-LIGHTING.md).
+The regular backend/device controls still apply to minimaps. Legacy compiler fatal exits are surfaced through process status/logs even
 when no CPU profile was produced.

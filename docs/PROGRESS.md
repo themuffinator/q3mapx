@@ -727,3 +727,34 @@ missing-image fallback and hidden-face UV fallback. No game or input control was
 used. No proprietary assets or external implementation text are committed. The
 existing decoder/compiler-warning/cleanup limits remain; no new unrelated defect
 was discovered.
+
+## 2026-09-29 — Early Quake III formats and inferred brush materials
+
+Added native IBSP 43/44/45 recovery profiles, direct record conversion, validated
+head-node ownership, linear stable model ordering, and source metadata in JSON.
+Versions 43/44 have no brush-side material names; the existing triangle indexes
+now infer names for these profiles by positive coplanar overlap. Fast recovery
+keeps explicit fallback faces. Other profiles retain material-constrained lookup.
+
+All four available IHV maps and sixteen archive entries across six public test
+releases pass native validation. Nine real MAP/OBJ recovery probes pass with no
+skipped collision brushes. The 1.05 `q3test1` recovers 2,529 brushes/177 patches
+and infers 6,167 face materials; its stale declared model range is preserved in
+the report instead of trusted. Private outputs are under
+`build/native-{validation,recovery}/{q3-ihv,q3test44,q3test45}`. Evidence is
+`validation/native-early-win-x64.json`, with no proprietary bytes.
+
+Generated tests exercise real differing strides, unaligned data, deliberately
+reversed geometry, stale ranges, brush-entity preservation and texture-sensitive
+MAP/Quake-III round trips. Malformed origins, graph cycles, invalid head nodes,
+shared model ownership, strings, vertices and indices fail even with `-force`
+and preserve existing MAP outputs. Windows native/catalog/recovery checks and
+Linux release native/inspection/catalog/window checks pass (6/6, including the
+queue fixture). Linux ASan/UBSan native/recovery checks pass (2/2, 43.1 seconds,
+documented CLI leak setting). Logs are `.agents/tmp/game-coverage/*early*.log`.
+
+Separate export defects discovered: OBJ/ASE omit Bezier patches, OBJ ignores
+brush-entity origins, and ASE normal lookup ignores each surface's vertex base.
+These are queued for a dedicated export repair. Early shader dialect warnings
+and missing-image fallbacks remain explicit. Existing decoder, platform and
+cleanup limits are unchanged; no game launch or input control was used.

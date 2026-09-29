@@ -140,16 +140,18 @@ and validation requirements. Continue committing each completed task separately.
   aliases, and use the catalog in the workbench rather than a partial static list.
 - [x] Add BSP inspection with format identification, bounded parsing, actionable
   compatibility diagnostics and explicit ambiguity for shared file signatures.
-- [ ] Extend native BSP recovery to the missing fnTech3 format families, beginning
+- [x] Extend native BSP recovery to the missing fnTech3 format families, beginning
   with Alice/F.A.K.K.2, and cover Medal of Honor and early Quake III formats.
   Alice/F.A.K.K.2 recovery, FTX textures and unavailable-writer protection are
-  implemented and validated, as is Medal of Honor terrain/placement recovery;
-  early Quake III remains next.
+  implemented and validated, as are Medal of Honor terrain/placement recovery
+  and the three early Quake III record formats.
   Preserve recoverable geometry/entities/material data and report format-specific
   losses. Native writing must not be advertised until its own contracts are met.
 - [x] Exercise the existing writable game families through full synthetic compiler
   pipelines, decompilation and malformed inputs; add legitimate read-only map
   checks where available without redistributing proprietary assets.
+- [ ] Repair mesh-export gaps exposed by native-map checks: curved patches,
+  brush-entity origins and ASE surface normals; expose mesh export in the GUI.
 - [ ] Measure further optimizations, run the relevant Windows/Linux/sanitizer
   checks, update user documentation and deliver refreshed binaries.
 

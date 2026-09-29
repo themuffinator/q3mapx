@@ -149,3 +149,27 @@ are named in `native_losses`.
 `normalized_unused_native_equations` counts the narrow repair for zero equation
 references in maps with neither fence contents nor an equation table. Invalid
 active references are rejected. See [coverage and evidence](GAME-COVERAGE.md).
+
+## Early Quake III recovery
+
+Use `-game q3-ihv` for IBSP 43, `-game q3test44` for public Q3Test 1.02–1.05, or
+`-game q3test45` for 1.06–1.08. `-inspect` identifies the version without loading
+assets. IHV's root contains `baseq3`; public Q3Test's contains `demoq3`. These
+profiles support recovery and brush minimaps, with native writing disabled.
+
+Versions 43/44 do not contain brush-side material names. Standard recovery
+infers visible-face names and texture axes from overlapping rendered triangles
+within each model. Unmatched faces use `common/caulk`. `-fast` skips triangle
+matching, so it cannot infer those names. Native 45 retains its shader records.
+The native shader dialect is partially supported; missing textures and unusual
+directives can still require manual correction.
+
+Reports retain `native_models` (origin, head node, declared surface range),
+`native_brush_contents` and `native_side_flags` in source order. For 43/44,
+`native_surface_source_indices` and `native_brush_source_indices` map recovered
+geometry indices back to the input order. Submodel ownership is derived from
+validated trees because some native declared surface ranges are stale.
+`inferred_material_faces` counts faces where spatial matching supplies a name;
+`matched_uv_faces` independently counts usable UV reconstruction. Native fog
+visible sides are shader dependent and are not reconstructed. See the
+[format-specific evidence and limits](GAME-COVERAGE.md).

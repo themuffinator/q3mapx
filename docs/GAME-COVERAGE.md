@@ -37,8 +37,8 @@ fixtures, not retail-game runtime tests.
 | Heavy Metal: F.A.K.K.2 | FAKK 12, checksum and 20 lumps | Initially missing; `fakk2` recovery added |
 | American McGee's Alice | FAKK 42, checksum and 20 lumps | Initially missing; `alice` recovery added |
 | Medal of Honor: Allied Assault | 2015 19, 28 lumps, terrain/static-model extensions | Initially missing; `mohaa` recovery added |
-| Quake III IHV Test | IBSP 43 | Missing |
-| Public Q3Test releases | IBSP 44 and 45, different record layouts | Missing |
+| Quake III IHV Test | IBSP 43 | Initially missing; `q3-ihv` recovery added |
+| Public Q3Test releases | IBSP 44 and 45, different record layouts | Initially missing; `q3test44`, `q3test45` recovery added |
 
 This table records the format boundary, not complete game compatibility. Shared
 ident/version pairs do not establish a game's shader flags, paths or behavior.
@@ -169,6 +169,57 @@ cross-checked against
 [OpenMoHAA](https://github.com/openmoh/openmohaa/tree/ab43a0def6c4feccedae36fdb58c2e007d7e4c35).
 These references are GPL-2.0-or-later, compatible with q3mapx's GPL-3.0-or-later;
 no translator or terrain implementation text was copied.
+
+### Early Quake III recovery
+
+Three explicit recovery profiles cover IBSP 43 (`q3-ihv`), 44 (`q3test44`, public
+releases 1.02–1.05) and 45 (`q3test45`, 1.06–1.08). The catalog now has 25 profiles
+and retains 19 native writers. Explicit versioned Q3Test names avoid silently
+choosing one of its incompatible record layouts. IHV assets live in `baseq3`;
+the public tests use `demoq3`. Native writing is disabled for all three.
+
+The reader converts real plane, model, fog and surface layouts directly from
+the source buffer. Versions 43/44 have no shader table: brush contents and side
+flags are retained independently, while surfaces supply inline material names.
+Planar faces become triangle fans; 44 also supports indexed triangles. Model
+ranges come from validated head-node trees, then a stable linear counting order
+makes geometry contiguous and updates leaf/fog references. This avoids trusting
+stale declared ranges found in 1.05's `q3test1`. Cycles, invalid references,
+overlapping submodel ownership and excessive recovery allocations fail before
+output. Model origins/head nodes and original range metadata remain in JSON.
+
+Visible brush-face material names in 43/44 are inferred from the largest positive
+coplanar overlap with a rendered triangle in that model. The existing spatial
+indexes bound candidate searches. Reports count these separately as
+`inferred_material_faces`; a matched name can still have an unusable UV transform.
+Unmatched faces use `common/caulk` and fallback axes. Native brush contents and
+side flags are retained in source order, with output-to-source geometry index
+arrays. This is recovery, not proof that source materials or native shader
+semantics have been reconstructed exactly. Fog visible-side rules are shader
+dependent and are not fabricated from a fixed brush-side number.
+
+All four local IHV maps and all sixteen map entries across six public Q3Test
+releases validate. The latter count includes repeated shipped versions and the
+1.07 patch archive. Actual MAP/OBJ exports pass for all four IHV maps, the two
+1.05 maps and the three 1.08 maps, with zero skipped brushes. Examples:
+`ihv_test1` recovers 45 brushes/63 patches and infers 195 face materials;
+1.05 `q3test1` recovers 2,529 brushes/177 patches and infers 6,167 face materials.
+Native shader warnings and missing-image fallbacks remain (0–11 per tested map).
+[Evidence](validation/native-early-win-x64.json) records counts and hashes without
+redistributing assets. No module, network, gameplay or native writing claim is
+made. At this task's completion the inherited OBJ/ASE exporters still omit
+patches; mesh-export defects found here are tracked as the next task.
+
+Generated fixtures deliberately reverse geometry, provide stale model ranges,
+mix planar fans/indexed triangles, preserve a moving brush entity, and verify
+texture alignment after real Quake III recompilation. Native malformed records,
+cycles, conflicting ownership, bad origins and existing-output protection are
+checked on Windows, Linux and ASan/UBSan. The independently written reader uses
+observations from fnTech3's pinned
+[Q3Test contracts](https://github.com/themuffinator/fnTech3/blob/a1251ede2c382190b18c154b45357f6979d8171c/code/qcommon/bsp_q3test.h),
+[IHV record declarations](https://github.com/themuffinator/fnTech3/blob/a1251ede2c382190b18c154b45357f6979d8171c/code/qcommon/qfiles.h)
+and [IHV adapter notes](https://github.com/themuffinator/fnTech3/blob/a1251ede2c382190b18c154b45357f6979d8171c/code/qcommon/bsp_v43.h).
+No translator implementation was incorporated.
 
 ### Ongoing coverage requirements
 

@@ -30,6 +30,7 @@
 #include "bspfile_ibsp.h"
 #include "bspfile_rbsp.h"
 #include "bspfile_native.h"
+#include "bspfile_early.h"
 #include "qstringops.h"
 #include "inout.h"
 #include "rapidjson/prettywriter.h"
@@ -1006,6 +1007,14 @@ struct game_mohaa : game_fakk2 {
 	}
 };
 
+struct game_q3early : game_quake3 {
+	game_q3early(int version,const char* id,const char* label) {
+		arg=id; title=label; aliases.clear(); bspVersion=version;
+		load=LoadEarlyBSPFile; write=nullptr;
+		if(version!=43) { gamePath="demoq3"; homeBasePath=".q3test"; magic="q3test"; }
+	}
+};
+
 const std::vector<game_t> g_games = { game_quake3(),
                                       game_quakelive(),
                                       game_nexuiz(),
@@ -1028,6 +1037,9 @@ const std::vector<game_t> g_games = { game_quake3(),
                                       game_fakk2(),
                                       game_alice(),
                                       game_mohaa(),
+                                      game_q3early(43,"q3-ihv","Quake III IHV Test (recovery)"),
+                                      game_q3early(44,"q3test44","Q3Test 1.02–1.05 (recovery)"),
+                                      game_q3early(45,"q3test45","Q3Test 1.06–1.08 (recovery)"),
                                     };
 const game_t *g_game = &g_games[0];
 

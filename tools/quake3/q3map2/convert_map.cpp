@@ -32,6 +32,7 @@
 #include "q3map2.h"
 #include "bspfile_abstract.h"
 #include "bspfile_native.h"
+#include "bspfile_early.h"
 #include "bspfile_rbsp.h"
 #include "qspatial.h"
 #include "decompile.h"
@@ -43,7 +44,7 @@
 struct DecompileStats {
 	size_t brushes = 0, skippedBrushes = 0, faces = 0, matchedFaces = 0;
 	size_t fallbackFaces = 0, degenerateUVs = 0, degenerateTriangles = 0;
-	size_t patches = 0, approximateQuakeFaces = 0;
+	size_t patches = 0, approximateQuakeFaces = 0, inferredMaterials = 0;
 };
 static DecompileStats recovery;
 static std::vector<bool> detailBrushes;
@@ -156,7 +157,7 @@ public:
 
 		for( auto& [ k, values ] : m_modelTriangles ) values.build();
 	}
-	TriRef GetBestSurfaceTriangleMatchForBrushside( const side_t& buildSide ) const {
+	TriRef GetBestSurfaceTriangleMatchForBrushside( side_t& buildSide ) const {
 		const float nepsilon = normalEpsilon * 100; // default target 0.005 - gives worthy results practically
 		const float depsilon = 2;
 		winding_t polygon;
@@ -167,9 +168,15 @@ public:
 
 		// first, start out with NULLs
 		TriRef bestVert{ nullptr };
+		const char* bestMaterial=nullptr;
+		const bool inferMaterial=bspEarlyVersion==43 || bspEarlyVersion==44;
 
-		// Query triangles belonging to the face material.
-		if( const auto triangles = m_modelTriangles.find( buildSide.shaderInfo->shader.c_str() ); triangles != m_modelTriangles.end() ){
+		// Older BSPs do not store brush-side material names. Search each material's
+		// spatial index and retain the largest positive coplanar overlap.
+		const auto known=m_modelTriangles.find(buildSide.shaderInfo->shader.c_str());
+		const auto begin=inferMaterial ? m_modelTriangles.begin() : known;
+		const auto end=inferMaterial || known==m_modelTriangles.end() ? m_modelTriangles.end() : std::next(known);
+		for(auto triangles=begin;triangles!=end;++triangles){
 			MinMax minmax;
 			for( const Vector3& v : buildSide.winding )
 				minmax.extend( Vector3( spatial_distance( v ), v.y(), v.z() ) );
@@ -233,6 +240,7 @@ public:
 				if ( thisarea > bestarea ) {
 					bestarea = thisarea;
 					bestVert = vert;
+					bestMaterial=triangles->first.c_str();
 				}
 		exwinding:
 				;
@@ -240,6 +248,10 @@ public:
 		}
 		//if( !striEqualPrefix( buildSide.shaderInfo->shader, "textures/common/" ) )
 		//	fprintf( stderr, "brushside with %s: %d matches (%f area)\n", buildSide.shaderInfo->shader, matches, bestarea );
+		if(inferMaterial && bestMaterial) {
+			buildSide.shaderInfo=&ShaderInfoForShader(bestMaterial);
+			++recovery.inferredMaterials;
+		}
 		return bestVert;
 	}
 };
@@ -1117,6 +1129,26 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ){
 		count( "normalized_unused_lightmap_uv_pairs", bspNormalizedUnusedLightmapPairs );
 		count( "normalized_unused_flare_fogs", bspNormalizedUnusedFlareFogs );
 		count( "normalized_unused_native_equations", bspNormalizedUnusedNativeEquations );
+		count( "inferred_material_faces", recovery.inferredMaterials );
+		if(bspEarlyVersion) {
+			writer.Key("native_models"); writer.StartArray();
+			for(const auto& model:bspEarlyModels) {
+				writer.StartObject(); writer.Key("origin"); writer.StartArray(); for(float v:model.origin) writer.Double(v); writer.EndArray();
+				writer.Key("head_node"); writer.Int(model.headNode);
+				writer.Key("declared_first_surface"); writer.Int(model.declaredFirstSurface);
+				writer.Key("declared_surface_count"); writer.Int(model.declaredSurfaceCount); writer.EndObject();
+			}
+			writer.EndArray();
+			const auto values=[&](const char* key,const auto& data,bool flags) {
+				writer.Key(key); writer.StartArray();
+				for(int v:data) { if(flags) writer.Uint(uint32_t(v)); else writer.Int(v); }
+				writer.EndArray();
+			};
+			values("native_brush_contents",bspEarlyBrushContents,true);
+			values("native_side_flags",bspEarlySideFlags,true);
+			values("native_surface_source_indices",bspEarlySurfaceSources,false);
+			values("native_brush_source_indices",bspEarlyBrushSources,false);
+		}
 		count( "approximate_quake_uv_faces", recovery.approximateQuakeFaces );
 		count( "triangle_soup_surfaces", std::count_if( bspDrawSurfaces.begin(), bspDrawSurfaces.end(),
 		    []( const auto& surface ){ return surface.surfaceType == MST_TRIANGLE_SOUP; } ) );
@@ -1126,6 +1158,8 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ){
 		writer.String( "Baked lightmaps and lightgrid data are not reconstructed as source lights by MAP export." );
 		if(!g_game->write) writer.String("Native shader flags and subdivisions are retained in this report; standard MAP syntax does not reproduce all native compiler semantics. Native BSP writing is unavailable.");
 		if(!bspNativeFenceMasks.empty()) writer.String("Native terrain is retained in this report and OBJ/ASE export, not as MAP brushes or Bezier patches. Static-model placements are retained here; their external model meshes are not imported.");
+		if(bspEarlyVersion) writer.String("Early BSP model origins/head nodes are retained here. Fog visible sides depend on native shader semantics and are not reconstructed. The native shader dialect is only partially supported.");
+		if(bspEarlyVersion==43 || bspEarlyVersion==44) writer.String("This format has no brush-side material names. Visible face names and UVs are inferred from rendered triangles; unmatched faces use common/caulk and fallback UVs. Raw brush contents and side flags remain in source order in this report.");
 		writer.String( "Triangle soup geometry is not exported separately; collision brushes may approximate it." );
 		writer.String( "Fallback texture axes are used on faces without a usable rendered triangle, including hidden faces." );
 		writer.EndArray();

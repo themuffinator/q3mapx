@@ -4,6 +4,7 @@
 #include "bspfile_abstract.h"
 #include "bspfile_ibsp.h"
 #include "bspfile_native.h"
+#include "bspfile_early.h"
 #include "bsp_formats.h"
 #include <cmath>
 #include "q3mapx/terrain.h"
@@ -22,6 +23,7 @@ static std::vector<std::array<int,2>> leafTerrainRanges;
 static std::vector<unsigned> terrainReferences;
 
 void ResetBSPRecoveryMetadata() {
+    ResetEarlyBSPRecovery();
     bspRecoveryLosses.clear();
     bspNativeShaderSubdivisions.clear();
     bspNativeSurfaceSubdivisions.clear();
@@ -188,6 +190,7 @@ void LoadMOHAABSPFile(const char* filename) {
 }
 
 void CompleteBSPNativeRecovery() {
+    CompleteEarlyBSPRecovery();
     if(bspNativeTerrain.empty()) return;
     uint64_t referenceCount=0;
     for(size_t i=0;i<bspLeafs.size();++i)

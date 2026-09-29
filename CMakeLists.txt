@@ -163,6 +163,10 @@ if(BUILD_TESTING)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/native_mohaa.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/native-mohaa)
     set_tests_properties(native_mohaa PROPERTIES TIMEOUT 180)
+    add_test(NAME native_early COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/native_early.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_CURRENT_BINARY_DIR}/tests/native_early)
+    set_tests_properties(native_early PROPERTIES TIMEOUT 240)
     add_executable(decompile_math_test tests/decompile_math.cpp)
     target_include_directories(decompile_math_test PRIVATE libs)
     add_test(NAME decompile_math COMMAND decompile_math_test)

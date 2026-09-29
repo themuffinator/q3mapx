@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
     require(catalog.error().isEmpty() && catalog.profiles().size() >= 19, "Real compiler catalog failed");
     require(catalog.find("JKA-SP") && catalog.find("JKA-SP")->id == "ja", "Case-insensitive alias resolution failed");
     require(catalog.find("sof2") && catalog.find("prophecy"), "Catalog omitted previously hidden profiles");
-    for(const auto* id:{"alice","fakk2"}) {
+    for(const auto* id:{"alice","fakk2","q3-ihv","q3test44","q3test45"}) {
         const auto* profile=catalog.find(id);
         require(profile && !profile->nativeWrite && profile->workflows.contains("decompile")
             && !profile->workflows.contains("build"), "Native recovery profile advertised an unsupported writer");

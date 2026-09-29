@@ -217,41 +217,38 @@ void LoadIBSPFile( const char *filename ){
 	/* load the file */
 	MemBuffer file = LoadFile( filename );
 
-	ibspHeader_t    *header = file.data();
-
-	/* swap the header (except the first 4 bytes) */
-	SwapBlock( (int*) ( (byte*) header + 4 ), sizeof( *header ) - 4 );
+	const bspHeader_t header = ReadBSPHeader( file, ( g_game->load != LoadIBSPFile || strEqual( g_game->arg, "quakelive" ) ) ? 18 : 17 );
 
 	/* make sure it matches the format we're trying to load */
-	if ( !force && memcmp( header->ident, g_game->bspIdent, 4 ) ) {
+	if ( !force && memcmp( header.ident, g_game->bspIdent, 4 ) ) {
 		Error( "%s is not a %s file", filename, g_game->bspIdent );
 	}
-	if ( !force && header->version != g_game->bspVersion ) {
-		Error( "%s is version %d, not %d", filename, header->version, g_game->bspVersion );
+	if ( !force && header.version != g_game->bspVersion ) {
+		Error( "%s is version %d, not %d", filename, header.version, g_game->bspVersion );
 	}
 
 	/* load/convert lumps */
-	CopyLump( (bspHeader_t*) header, LUMP_SHADERS, bspShaders );
-	CopyLump( (bspHeader_t*) header, LUMP_MODELS, bspModels );
-	CopyLump( (bspHeader_t*) header, LUMP_PLANES, bspPlanes );
-	CopyLump( (bspHeader_t*) header, LUMP_LEAFS, bspLeafs );
-	CopyLump( (bspHeader_t*) header, LUMP_NODES, bspNodes );
-	CopyLump( (bspHeader_t*) header, LUMP_LEAFSURFACES, bspLeafSurfaces );
-	CopyLump( (bspHeader_t*) header, LUMP_LEAFBRUSHES, bspLeafBrushes );
-	CopyLump( (bspHeader_t*) header, LUMP_BRUSHES, bspBrushes );
-	CopyLump<bspBrushSide_t, ibspBrushSide_t>( (bspHeader_t*) header, LUMP_BRUSHSIDES, bspBrushSides );
-	CopyLump<bspDrawVert_t, ibspDrawVert_t>( (bspHeader_t*) header, LUMP_DRAWVERTS, bspDrawVerts );
-	CopyLump<bspDrawSurface_t, ibspDrawSurface_t>( (bspHeader_t*) header, LUMP_SURFACES, bspDrawSurfaces );
-	CopyLump( (bspHeader_t*) header, LUMP_FOGS, bspFogs );
-	CopyLump( (bspHeader_t*) header, LUMP_DRAWINDEXES, bspDrawIndexes );
-	CopyLump( (bspHeader_t*) header, LUMP_VISIBILITY, bspVisBytes );
-	CopyLump( (bspHeader_t*) header, LUMP_LIGHTMAPS, bspLightBytes );
-	CopyLump( (bspHeader_t*) header, LUMP_ENTITIES, bspEntData );
-	CopyLump<bspGridPoint_t, ibspGridPoint_t>( (bspHeader_t*) header, LUMP_LIGHTGRID, bspGridPoints );
+	CopyLump( header, file, LUMP_SHADERS, bspShaders );
+	CopyLump( header, file, LUMP_MODELS, bspModels );
+	CopyLump( header, file, LUMP_PLANES, bspPlanes );
+	CopyLump( header, file, LUMP_LEAFS, bspLeafs );
+	CopyLump( header, file, LUMP_NODES, bspNodes );
+	CopyLump( header, file, LUMP_LEAFSURFACES, bspLeafSurfaces );
+	CopyLump( header, file, LUMP_LEAFBRUSHES, bspLeafBrushes );
+	CopyLump( header, file, LUMP_BRUSHES, bspBrushes );
+	CopyLump<bspBrushSide_t, ibspBrushSide_t>( header, file, LUMP_BRUSHSIDES, bspBrushSides );
+	CopyLump<bspDrawVert_t, ibspDrawVert_t>( header, file, LUMP_DRAWVERTS, bspDrawVerts );
+	CopyLump<bspDrawSurface_t, ibspDrawSurface_t>( header, file, LUMP_SURFACES, bspDrawSurfaces );
+	CopyLump( header, file, LUMP_FOGS, bspFogs );
+	CopyLump( header, file, LUMP_DRAWINDEXES, bspDrawIndexes );
+	CopyLump( header, file, LUMP_VISIBILITY, bspVisBytes );
+	CopyLump( header, file, LUMP_LIGHTMAPS, bspLightBytes );
+	CopyLump( header, file, LUMP_ENTITIES, bspEntData );
+	CopyLump<bspGridPoint_t, ibspGridPoint_t>( header, file, LUMP_LIGHTGRID, bspGridPoints );
 
 	/* advertisements */
-	if ( header->version == 47 && strEqual( g_game->arg, "quakelive" ) ) { // quake live's bsp version minus wolf, et, etut
-		CopyLump( (bspHeader_t*) header, LUMP_ADVERTISEMENTS, bspAds );
+	if ( header.version == 47 && strEqual( g_game->arg, "quakelive" ) ) { // quake live's bsp version minus wolf, et, etut
+		CopyLump( header, file, LUMP_ADVERTISEMENTS, bspAds );
 	}
 	else{
 		bspAds.clear();
@@ -267,28 +264,25 @@ void LoadIBSPorRBSPFilePartially( const char *filename ){
 	/* load the file */
 	MemBuffer file = LoadFile( filename );
 
-	ibspHeader_t    *header = file.data();
-
-	/* swap the header (except the first 4 bytes) */
-	SwapBlock( (int*) ( (byte*) header + 4 ), sizeof( *header ) - 4 );
+	const bspHeader_t header = ReadBSPHeader( file, ( g_game->load != LoadIBSPFile || strEqual( g_game->arg, "quakelive" ) ) ? 18 : 17 );
 
 	/* make sure it matches the format we're trying to load */
-	if ( !force && memcmp( header->ident, g_game->bspIdent, 4 ) ) {
+	if ( !force && memcmp( header.ident, g_game->bspIdent, 4 ) ) {
 		Error( "%s is not a %s file", filename, g_game->bspIdent );
 	}
-	if ( !force && header->version != g_game->bspVersion ) {
-		Error( "%s is version %d, not %d", filename, header->version, g_game->bspVersion );
+	if ( !force && header.version != g_game->bspVersion ) {
+		Error( "%s is version %d, not %d", filename, header.version, g_game->bspVersion );
 	}
 
 	/* load/convert lumps */
-	CopyLump( (bspHeader_t*) header, LUMP_SHADERS, bspShaders );
+	CopyLump( header, file, LUMP_SHADERS, bspShaders );
 	if( g_game->load == LoadIBSPFile )
-		CopyLump<bspDrawSurface_t, ibspDrawSurface_t>( (bspHeader_t*) header, LUMP_SURFACES, bspDrawSurfaces );
+		CopyLump<bspDrawSurface_t, ibspDrawSurface_t>( header, file, LUMP_SURFACES, bspDrawSurfaces );
 	else
-		CopyLump( (bspHeader_t*) header, LUMP_SURFACES, bspDrawSurfaces );
+		CopyLump( header, file, LUMP_SURFACES, bspDrawSurfaces );
 
-	CopyLump( (bspHeader_t*) header, LUMP_FOGS, bspFogs );
-	CopyLump( (bspHeader_t*) header, LUMP_ENTITIES, bspEntData );
+	CopyLump( header, file, LUMP_FOGS, bspFogs );
+	CopyLump( header, file, LUMP_ENTITIES, bspEntData );
 }
 
 /*

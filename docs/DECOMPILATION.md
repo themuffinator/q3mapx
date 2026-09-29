@@ -42,3 +42,12 @@ or unavailable. Do not fabricate source metadata.
 Round-trip checks compare recoverable geometry, entity data, finite texture
 coordinates, and successful recompilation. Exact byte equality is inappropriate
 when compiler-generated ordering or metadata changes.
+
+## Implemented validation
+
+The loader checks headers and all loaded lump ranges before access, then verifies
+cross-lump references, strings, finite geometry, patch dimensions, node graphs,
+visibility dimensions, and Raven lightgrid indirection. Entity model references
+are checked before conversion. `-force` cannot bypass these safety checks. Node
+depth is capped at 1024 to protect legacy recursive traversals. A valid unaligned
+lump is copied safely rather than rejected solely for its alignment.

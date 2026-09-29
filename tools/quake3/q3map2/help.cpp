@@ -452,7 +452,7 @@ static void HelpCommon()
 {
 	const std::vector<HelpOption> options = {
 		{ "-connect <address>", "Talk to a NetRadiant instance using a specific XML based protocol" },
-		{ "-force", "Allow reading some broken/unsupported BSP files e.g. when decompiling, may crash" },
+		{ "-force", "Allow format/version mismatches and discard odd-sized lumps; memory-safety checks remain enabled" },
 		{ "-fs_basepath <path>", "Sets the given path as main directory of the game (can be used more than once to look in multiple paths)" },
 		{ "-fs_forbiddenpath <pattern>", "Pattern to ignore directories, pk3, and pk3dir; example pak?.pk3 (can be used more than once to look for multiple patterns)" },
 		{ "-fs_game <gamename>", "Sets extra game directory name to additionally load mod's resources from at higher priority (by default for Q3A 'baseq3' is loaded, -fs_game cpma will also load 'cpma'; can be used more than once)" },

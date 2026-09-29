@@ -82,17 +82,20 @@ struct rbspHeader_t
 #define LG_EPSILON          4
 
 
-static void CopyLightGridLumps( rbspHeader_t *header ){
+static void CopyLightGridLumps( const bspHeader_t& header, const MemBuffer& file ){
 	std::vector<bspGridPoint_t> gridPoints;
 	std::vector<unsigned short> gridArray;
-	CopyLump( (bspHeader_t*) header, LUMP_LIGHTGRID, gridPoints );
-	CopyLump( (bspHeader_t*) header, LUMP_LIGHTARRAY, gridArray );
+	CopyLump( header, file, LUMP_LIGHTGRID, gridPoints );
+	CopyLump( header, file, LUMP_LIGHTARRAY, gridArray );
 
 	bspGridPoints.clear();
 	bspGridPoints.reserve( gridArray.size() );
 
-	for( const auto id : gridArray )
+	for( const auto rawId : gridArray ) {
+		const auto id = uint16_t( LittleShort( rawId ) );
+		if ( id >= gridPoints.size() ) Error( "Invalid BSP: lightgrid array index %u exceeds %zu entries", unsigned( id ), gridPoints.size() );
 		bspGridPoints.push_back( gridPoints[ id ] );
+	}
 }
 
 
@@ -183,37 +186,34 @@ void LoadRBSPFile( const char *filename ){
 	/* load the file */
 	MemBuffer file = LoadFile( filename );
 
-	rbspHeader_t    *header = file.data();
-
-	/* swap the header (except the first 4 bytes) */
-	SwapBlock( (int*) ( (byte*) header + 4 ), sizeof( *header ) - 4 );
+	const bspHeader_t header = ReadBSPHeader( file, 18 );
 
 	/* make sure it matches the format we're trying to load */
-	if ( !force && memcmp( header->ident, g_game->bspIdent, 4 ) ) {
+	if ( !force && memcmp( header.ident, g_game->bspIdent, 4 ) ) {
 		Error( "%s is not a %s file", filename, g_game->bspIdent );
 	}
-	if ( !force && header->version != g_game->bspVersion ) {
-		Error( "%s is version %d, not %d", filename, header->version, g_game->bspVersion );
+	if ( !force && header.version != g_game->bspVersion ) {
+		Error( "%s is version %d, not %d", filename, header.version, g_game->bspVersion );
 	}
 
 	/* load/convert lumps */
-	CopyLump( (bspHeader_t*) header, LUMP_SHADERS, bspShaders );
-	CopyLump( (bspHeader_t*) header, LUMP_MODELS, bspModels );
-	CopyLump( (bspHeader_t*) header, LUMP_PLANES, bspPlanes );
-	CopyLump( (bspHeader_t*) header, LUMP_LEAFS, bspLeafs );
-	CopyLump( (bspHeader_t*) header, LUMP_NODES, bspNodes );
-	CopyLump( (bspHeader_t*) header, LUMP_LEAFSURFACES, bspLeafSurfaces );
-	CopyLump( (bspHeader_t*) header, LUMP_LEAFBRUSHES, bspLeafBrushes );
-	CopyLump( (bspHeader_t*) header, LUMP_BRUSHES, bspBrushes );
-	CopyLump( (bspHeader_t*) header, LUMP_BRUSHSIDES, bspBrushSides );
-	CopyLump( (bspHeader_t*) header, LUMP_DRAWVERTS, bspDrawVerts );
-	CopyLump( (bspHeader_t*) header, LUMP_SURFACES, bspDrawSurfaces );
-	CopyLump( (bspHeader_t*) header, LUMP_FOGS, bspFogs );
-	CopyLump( (bspHeader_t*) header, LUMP_DRAWINDEXES, bspDrawIndexes );
-	CopyLump( (bspHeader_t*) header, LUMP_VISIBILITY, bspVisBytes );
-	CopyLump( (bspHeader_t*) header, LUMP_LIGHTMAPS, bspLightBytes );
-	CopyLump( (bspHeader_t*) header, LUMP_ENTITIES, bspEntData );
-	CopyLightGridLumps( header );
+	CopyLump( header, file, LUMP_SHADERS, bspShaders );
+	CopyLump( header, file, LUMP_MODELS, bspModels );
+	CopyLump( header, file, LUMP_PLANES, bspPlanes );
+	CopyLump( header, file, LUMP_LEAFS, bspLeafs );
+	CopyLump( header, file, LUMP_NODES, bspNodes );
+	CopyLump( header, file, LUMP_LEAFSURFACES, bspLeafSurfaces );
+	CopyLump( header, file, LUMP_LEAFBRUSHES, bspLeafBrushes );
+	CopyLump( header, file, LUMP_BRUSHES, bspBrushes );
+	CopyLump( header, file, LUMP_BRUSHSIDES, bspBrushSides );
+	CopyLump( header, file, LUMP_DRAWVERTS, bspDrawVerts );
+	CopyLump( header, file, LUMP_SURFACES, bspDrawSurfaces );
+	CopyLump( header, file, LUMP_FOGS, bspFogs );
+	CopyLump( header, file, LUMP_DRAWINDEXES, bspDrawIndexes );
+	CopyLump( header, file, LUMP_VISIBILITY, bspVisBytes );
+	CopyLump( header, file, LUMP_LIGHTMAPS, bspLightBytes );
+	CopyLump( header, file, LUMP_ENTITIES, bspEntData );
+	CopyLightGridLumps( header, file );
 }
 
 

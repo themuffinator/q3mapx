@@ -88,12 +88,17 @@ if(BUILD_TESTING)
     add_test(NAME cli_help COMMAND q3mapx -help)
     set_tests_properties(cli_help PROPERTIES PASS_REGULAR_EXPRESSION "Usage:" TIMEOUT 15)
     add_test(NAME cli_games COMMAND q3mapx -help -game)
-    set_tests_properties(cli_games PROPERTIES PASS_REGULAR_EXPRESSION "quake3" TIMEOUT 15)
+    set_tests_properties(cli_games PROPERTIES PASS_REGULAR_EXPRESSION "Available games:" TIMEOUT 15)
     add_test(NAME compiler_pipeline COMMAND ${Python3_EXECUTABLE}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/integration.py
         --compiler $<TARGET_FILE:q3mapx>
         --work-dir ${CMAKE_BINARY_DIR}/tests/integration)
     set_tests_properties(compiler_pipeline PROPERTIES TIMEOUT 180)
+    add_test(NAME bsp_validation COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/bsp_validation.py
+        --compiler $<TARGET_FILE:q3mapx>
+        --work-dir ${CMAKE_BINARY_DIR}/tests/bsp-validation)
+    set_tests_properties(bsp_validation PROPERTIES TIMEOUT 180)
 endif()
 
 include(GNUInstallDirs)

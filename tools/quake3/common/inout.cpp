@@ -405,10 +405,10 @@ void Error( const char *error, ... ){
 	va_list argptr;
 
 	va_start( argptr, error );
-	vsprintf( tmp, error, argptr );
+	vsnprintf( tmp, sizeof( tmp ), error, argptr );
 	va_end( argptr );
 
-	sprintf( out_buffer, "************ ERROR ************\n%s\n", tmp );
+	snprintf( out_buffer, sizeof( out_buffer ), "************ ERROR ************\n%s\n", tmp );
 
 	FPrintf( SYS_ERR, out_buffer );
 	xml_message_flush();
@@ -419,7 +419,9 @@ void Error( const char *error, ... ){
 
 	//++timo HACK ALERT .. if we shut down too fast the xml stream won't reach the listener.
 	// a clean solution is to send a sync request node in the stream and wait for an answer before exiting
-	std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+	if ( brdcst_socket ) {
+		std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+	}
 
 	exit( 1 );
 }

@@ -25,6 +25,13 @@
 
 /* dependencies */
 #include "q3map2.h"
+#include <bit>
+#include <type_traits>
+
+// File offsets are validated independently of -force; it must never disable memory safety.
+bspHeader_t ReadBSPHeader( const MemBuffer& file, int lumpCount );
+void ValidateBSPStrings();
+void ValidateBSPData( bool partial = false );
 
 /*
    AddLump()
@@ -50,10 +57,10 @@ void AddLump( FILE *file, bspLump_t& lump, const std::vector<T>& data ){
    copies a bsp file lump into a destination buffer
  */
 template<typename DstT, typename SrcT = DstT>
-void CopyLump( bspHeader_t *header, int lump, std::vector<DstT>& data ){
+void CopyLump( const bspHeader_t& header, const MemBuffer& file, int lump, std::vector<DstT>& data ){
 	/* get lump length and offset */
-	const int length = header->lumps[ lump ].length;
-	const int offset = header->lumps[ lump ].offset;
+	const int length = header.lumps[ lump ].length;
+	const int offset = header.lumps[ lump ].offset;
 
 	/* handle erroneous cases */
 	if ( length <= 0 ) {
@@ -72,5 +79,21 @@ void CopyLump( bspHeader_t *header, int lump, std::vector<DstT>& data ){
 	}
 
 	/* copy block of memory and return */
-	data = { ( SrcT* )( (byte*) header + offset ), ( SrcT* )( (byte*) header + offset + length ) };
+	static_assert( std::is_trivially_copyable_v<SrcT> );
+	const byte* bytes = static_cast<byte*>( file.data() ) + offset;
+	const size_t count = size_t( length ) / sizeof( SrcT );
+	if constexpr ( std::is_same_v<DstT, SrcT> ) {
+		data.resize( count );
+		std::memcpy( data.data(), bytes, size_t( length ) );
+	}
+	else {
+		// memcpy/bit_cast also handles deliberately unaligned lump offsets safely.
+		data.clear();
+		data.reserve( count );
+		for ( size_t i = 0; i < count; ++i ) {
+			std::array<byte, sizeof( SrcT )> element;
+			std::memcpy( element.data(), bytes + i * sizeof( SrcT ), sizeof( SrcT ) );
+			data.push_back( std::bit_cast<SrcT>( element ) );
+		}
+	}
 }

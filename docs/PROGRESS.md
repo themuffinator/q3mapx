@@ -88,3 +88,25 @@ the thread option should be treated as run-order/system variance. VIS's shared
 pruning can change the amount of work with scheduling; its scaling is not a pure
 scheduler comparison. No game content, game launch, or input injection was used.
 Remote CI has not been executed locally. Next: BSP boundary validation.
+
+## 2026-09-29 — BSP boundary and reference validation
+
+Added checked 17/18-lump headers, overflow-safe range checks, alignment-safe lump
+copies, terminated name checks, finite geometry checks, model/brush/surface/leaf
+references, patch dimensions, triangle indices, iterative node-cycle/depth checks,
+visibility dimensions, entity model references, and RBSP lightgrid indirection.
+`-force` still permits version mismatches but cannot bypass memory-safety checks.
+Partial loads used by the packager retain their supported behavior.
+
+Bounded fatal-error formatting and removed the unconditional one-second error
+delay when no Radiant connection exists. The delay remains for connected clients.
+
+Validation: release build and 4/4 CTest tests pass. The corruption suite exercises
+strict and `-force` failures, ordinary and unaligned payloads, classic 17-lump Q3
+headers, Quake Live IBSP47, Jedi Academy RBSP (including invalid lightgrid indices),
+and partial loading. All corrupt cases return controlled errors rather than crashes.
+Full compiler/decompiler pipeline remains passing.
+
+Remaining robustness work includes checked large-file I/O, transactional output
+replacement, additional numeric option validation, and broader sanitizer/fuzz
+coverage. Existing legacy asset decoders are not covered by these BSP checks.

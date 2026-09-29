@@ -31,7 +31,11 @@
 /* dependencies */
 #include "q3map2.h"
 #include "bspfile_ibsp.h"
+#include "bspfile_abstract.h"
 #include <ctime>
+#include <charconv>
+
+static bool bspLoadedPartially = false;
 
 
 
@@ -131,6 +135,7 @@ static void SwapBSPFile(){
 
 	// vis
 	if( !bspVisBytes.empty() ){
+		if ( bspVisBytes.size() < 8 ) Error( "Invalid BSP: truncated visibility header" );
 		( (int*) bspVisBytes.data() )[ 0 ] = LittleLong( ( (int*) bspVisBytes.data() )[ 0 ] );
 		( (int*) bspVisBytes.data() )[ 1 ] = LittleLong( ( (int*) bspVisBytes.data() )[ 1 ] );
 	}
@@ -191,6 +196,7 @@ static void SwapBSPFile(){
  */
 
 void LoadBSPFile( const char *filename ){
+	bspLoadedPartially = false;
 	/* dummy check */
 	if ( g_game == nullptr || g_game->load == nullptr ) {
 		Error( "LoadBSPFile: unsupported BSP file format" );
@@ -198,7 +204,9 @@ void LoadBSPFile( const char *filename ){
 
 	/* load it, then byte swap the in-memory version */
 	g_game->load( filename );
+	ValidateBSPStrings();
 	SwapBSPFile();
+	ValidateBSPData();
 }
 
 /*
@@ -207,6 +215,7 @@ void LoadBSPFile( const char *filename ){
  */
 
 void LoadBSPFilePartially( const char *filename ){
+	bspLoadedPartially = true;
 	/* dummy check */
 	if ( g_game == nullptr || g_game->load == nullptr ) {
 		Error( "LoadBSPFile: unsupported BSP file format" );
@@ -215,7 +224,9 @@ void LoadBSPFilePartially( const char *filename ){
 	/* load it, then byte swap the in-memory version */
 	//g_game->load( filename );
 	LoadIBSPorRBSPFilePartially( filename );
+	ValidateBSPStrings();
 	SwapBSPFile();
+	ValidateBSPData( true );
 }
 
 /*
@@ -415,6 +426,23 @@ void ParseEntities(){
 	entities.clear();
 	ParseFromMemory( bspEntData.data(), bspEntData.size() );
 	while ( ParseEntity() ){};
+	if ( entities.empty() ) Error( "Invalid BSP: entity data contains no worldspawn" );
+	for ( size_t i = 0; i < entities.size(); ++i ) {
+		const char* model = entities[i].valueForKey( "model" );
+		if ( model[0] == '*' ) {
+			int number = -1;
+			const char* end = model + std::strlen( model );
+			const auto parsed = std::from_chars( model + 1, end, number );
+			if ( parsed.ec != std::errc{} || parsed.ptr != end || number < 0
+			  || ( !bspLoadedPartially && size_t( number ) >= bspModels.size() ) ) {
+				Error( "Invalid BSP: entity %zu references invalid model '%s'", i, model );
+			}
+			const Vector3 origin = entities[i].vectorForKey( "origin" );
+			for ( int axis = 0; axis < 3; ++axis ) {
+				if ( !std::isfinite( origin[axis] ) ) Error( "Invalid BSP: entity %zu has non-finite origin", i );
+			}
+		}
+	}
 
 	/* ydnar: set number of bsp entities in case a map is loaded on top */
 	numBSPEntities = entities.size();

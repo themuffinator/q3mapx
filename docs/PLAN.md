@@ -150,7 +150,7 @@ and validation requirements. Continue committing each completed task separately.
 - [x] Exercise the existing writable game families through full synthetic compiler
   pipelines, decompilation and malformed inputs; add legitimate read-only map
   checks where available without redistributing proprietary assets.
-- [ ] Repair mesh-export gaps exposed by native-map checks: curved patches,
+- [x] Repair mesh-export gaps exposed by native-map checks: curved patches,
   brush-entity origins and ASE surface normals; expose mesh export in the GUI.
 - [ ] Measure further optimizations, run the relevant Windows/Linux/sanitizer
   checks, update user documentation and deliver refreshed binaries.

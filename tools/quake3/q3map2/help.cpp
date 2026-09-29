@@ -328,6 +328,7 @@ static void HelpConvert()
 		{ "-modelclip", "Decompile model autoclip brushes during bsp to map conversion (they are skipped by default)" },
 		{ "-ne <F>", "Normal epsilon for the conversion (only when reading map)" },
 		{ "-patchmeta", "Turn patches into triangle meshes for display (only when reading map)" },
+		{ "-patchsteps <N>", "OBJ/ASE quadratic patch samples per span (1..32, default 8); bounded parallel tessellation" },
 		{ "-readbsp", "Force converting bsp to selected format" },
 		{ "-readmap", "Force converting map to selected format" },
 		{ "-shadersasbitmap", "Save shader names as bitmap names in the model so it works as a prefab (only when writing ase and obj)" },

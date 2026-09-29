@@ -8,6 +8,7 @@ import subprocess
 
 from fixtures import create_fixture
 from integration import Bsp, run
+from mesh_export import obj_data
 
 
 def pack(lumps):
@@ -80,17 +81,25 @@ def main():
     base_faces = sum(struct.unpack_from("<i", bsp.lump(13), i + 24)[0] // 3
                      for i in range(0, len(bsp.lump(13)), 104)
                      if struct.unpack_from("<i", bsp.lump(13), i + 8)[0] in (1, 3))
-    assert sum(line.startswith("f ") for line in obj.splitlines()) == base_faces + 254
+    assert sum(line.startswith("f ") for line in obj.splitlines()) == base_faces + 254 + 128  # one curved patch
     assert "v -64.000000 50.000000 128.000000" in obj
     # The world terrain insertion precedes the fixture's brush entity surfaces.
     # OBJ must still export that entity's original geometry after index remapping.
     insertion = sum(struct.unpack_from("<ii", bsp.lump(7), 24))
     assert f"model0surf{insertion}" in obj and f"model0surf{insertion+1}" in obj
     assert "model1surf" in obj
+    vertices, normals, _, groups = obj_data(obj)
+    for surface in (insertion,insertion+1):
+        terrain_mesh = next(g for name,g in groups.items() if name.endswith(f"model0surf{surface}"))
+        for face in terrain_mesh["faces"]:
+            a,b,c=(vertices[f[0]] for f in face)
+            ab=[b[i]-a[i] for i in range(3)]; ac=[c[i]-a[i] for i in range(3)]
+            cross=(ab[1]*ac[2]-ab[2]*ac[1],ab[2]*ac[0]-ab[0]*ac[2],ab[0]*ac[1]-ab[1]*ac[0])
+            assert sum(cross[i]*normals[face[0][2]][i] for i in range(3))>0, "Terrain winding opposes its normals"
     assert path.read_bytes() == data
     catalog = json.loads(subprocess.check_output([str(exe), "-games"], cwd=root))
     profile = next(p for p in catalog["profiles"] if p["id"] == "mohaa")
-    assert profile["workflows"] == ["decompile"] and profile["native_write"] is False
+    assert set(profile["workflows"]) == {"decompile", "obj", "ase"} and profile["native_write"] is False
     minimap = root / "keep.tga"; minimap.write_bytes(b"keep")
     p = subprocess.run([str(exe), *map(str, base), "-minimap", "-o", str(minimap), str(path)],
                        cwd=root, capture_output=True, timeout=15)

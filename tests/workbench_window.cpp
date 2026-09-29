@@ -6,6 +6,10 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QPushButton>
+#include <QSpinBox>
+#include <QTabWidget>
+#include <QPlainTextEdit>
+#include <QDir>
 #include <QTimer>
 #include <iostream>
 
@@ -33,6 +37,22 @@ int main(int argc, char** argv) {
         require(button, "Run button missing");
         profiles->setCurrentText("alice");
         require(!button->isEnabled(), "Recovery-only profile enabled compilation in the window");
+        auto* workflow=window.findChild<QComboBox*>("workflow");
+        auto* detail=window.findChild<QSpinBox*>("meshPatchSteps");
+        require(workflow && detail && detail->value()==8,"Mesh controls/default missing");
+        workflow->setCurrentIndex(workflow->findData("obj")); detail->setValue(5);
+        require(button->isEnabled(),"Recovery-only profile did not enable mesh export");
+        bool command=false;
+        for(auto* edit:window.findChildren<QPlainTextEdit*>())
+            command|=edit->toPlainText().contains("-patchsteps 5");
+        require(command,"Mesh detail did not reach the command preview");
+        QTabWidget* options=nullptr;
+        for(auto* tabs:window.findChildren<QTabWidget*>())
+            if(tabs->count()>1 && tabs->tabText(1).contains("Quality")) options=tabs;
+        require(options,"Project options tabs missing");
+        options->setCurrentIndex(1);
+        require(window.renderPreview(QDir(argv[2]).filePath("mesh-options.png")),"Mesh options did not render");
+        options->setCurrentIndex(0); workflow->setCurrentIndex(workflow->findData("build"));
         profiles->setCurrentText(project.game);
         require(button->isEnabled(), "Returning to a writable profile did not enable build");
         QAction* run = nullptr;

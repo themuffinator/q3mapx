@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "scope": "OBJ/ASE generated geometry verification and selected native OBJ exports, default 8 curve steps; no external static meshes or gameplay claim",
+  "synthetic": {
+    "schema_version": 1,
+    "compiler_sha256": "49d4647e37977496002a352e4e0170eeb22a104a94e055a8fe4147fcdff7fc33",
+    "fixture_sha256": "d0e08a4ebe4a6ac20f055d8aefdbb3829eac7671ce352e86b92d115fdbaf1722",
+    "patch_center": [
+      -128,
+      -128,
+      52
+    ],
+    "patch_steps": [
+      2,
+      8
+    ],
+    "workers": [
+      1,
+      4
+    ],
+    "formats": [
+      "obj",
+      "ase"
+    ],
+    "result": "passed"
+  },
+  "reports": [
+    {
+      "schema_version": 1,
+      "timestamp_utc": "2026-09-29T20:02:59.788363+00:00",
+      "kind": "native_archive_recovery",
+      "game": "mohaa",
+      "compiler_sha256": "49d4647e37977496002a352e4e0170eeb22a104a94e055a8fe4147fcdff7fc33",
+      "passed": 2,
+      "total": 2,
+      "records": [
+        {
+          "archive": "Pak5.pk3",
+          "map": "maps/DM/mohdm3.bsp",
+          "bytes": 8032692,
+          "sha256": "a8f0ae02fbddb27cbcca596236d855c73e4f305d0ce7b99d604019b7c371fa7c",
+          "exit_code": 0,
+          "seconds": 1.5929593999753706,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0,
+          "missing_texture_warnings": 1,
+          "brushes": 4834,
+          "patches": 86,
+          "faces": 29417,
+          "matched_uv_faces": 8535,
+          "fallback_uv_faces": 20882,
+          "skipped_brushes": 0,
+          "native_loss_bytes": {
+            "lightgrid_palette": 768,
+            "lightgrid_offsets": 114950,
+            "lightgrid_data": 201537,
+            "sphere_lights": 4144,
+            "sphere_light_visibility": 40040,
+            "light_definitions": 449332,
+            "static_model_colors": 135864
+          },
+          "native_terrain_patches": 22,
+          "native_static_models": 294,
+          "native_terrain_triangles": 2689,
+          "native_terrain_removed_triangles": 127,
+          "normalized_unused_native_equations": 0,
+          "inferred_material_faces": 0,
+          "obj_exit_code": 0,
+          "obj_vertices": 59323,
+          "obj_faces": 56272,
+          "obj_sha256": "b8e9692e9bfaa4a4f478b83e75a274c74c3ac1c997b7f54dd4799733e85403d4"
+        },
+        {
+          "archive": "Pak5.pk3",
+          "map": "maps/m1l1.bsp",
+          "bytes": 7354304,
+          "sha256": "38ab956dd4dcd89b0068ceca4c24bd46bc6142415a0491d59850d361de87f514",
+          "exit_code": 0,
+          "seconds": 0.718157900031656,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0,
+          "missing_texture_warnings": 1,
+          "brushes": 2711,
+          "patches": 615,
+          "faces": 16170,
+          "matched_uv_faces": 3753,
+          "fallback_uv_faces": 12417,
+          "skipped_brushes": 0,
+          "native_loss_bytes": {
+            "lightgrid_palette": 768,
+            "lightgrid_offsets": 506964,
+            "lightgrid_data": 1004500,
+            "sphere_lights": 7896,
+            "sphere_light_visibility": 24200,
+            "light_definitions": 222040,
+            "static_model_colors": 36396
+          },
+          "native_terrain_patches": 18,
+          "native_static_models": 135,
+          "native_terrain_triangles": 1128,
+          "native_terrain_removed_triangles": 1176,
+          "normalized_unused_native_equations": 0,
+          "inferred_material_faces": 0,
+          "obj_exit_code": 0,
+          "obj_vertices": 81327,
+          "obj_faces": 113222,
+          "obj_sha256": "2dc099952e159894199f0ac88e691a2c3d6131be839f5139a4ee46da1bf64f69"
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "timestamp_utc": "2026-09-29T20:02:54.575229+00:00",
+      "kind": "native_archive_mesh_export",
+      "game": "q3-ihv",
+      "compiler_sha256": "49d4647e37977496002a352e4e0170eeb22a104a94e055a8fe4147fcdff7fc33",
+      "passed": 2,
+      "total": 2,
+      "records": [
+        {
+          "archive": null,
+          "map": "ihv_test1.bsp",
+          "bytes": 759672,
+          "sha256": "874311cffc880f79c1fdd4fc85bed1062baf976835b4402c9de54460af20281b",
+          "exit_code": 0,
+          "seconds": 0.062170499993953854,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0,
+          "missing_texture_warnings": 0,
+          "obj_exit_code": 0,
+          "obj_vertices": 46694,
+          "obj_faces": 85601,
+          "obj_sha256": "2b58266571c429d3af513b077b0fe9a88a3d8d9dff2b95029021c012cba8ad8b"
+        },
+        {
+          "archive": null,
+          "map": "km_portal.bsp",
+          "bytes": 3259316,
+          "sha256": "33f422e61940929c160fc843fd8f7e3a00d7d237dd0f1887897cd0d3450297c9",
+          "exit_code": 0,
+          "seconds": 0.056584600009955466,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0,
+          "missing_texture_warnings": 0,
+          "obj_exit_code": 0,
+          "obj_vertices": 47211,
+          "obj_faces": 63559,
+          "obj_sha256": "22992d65e373b764315bcf25e2f790083f109c230bf985aab01933c263511226"
+        }
+      ]
+    }
+  ]
+}

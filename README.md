@@ -37,6 +37,10 @@ See [decompilation options and limits](docs/DECOMPILATION.md). The traditional
   replacement and safer diagnostics.
 - Decompilation with improved texture matching and UV reconstruction, preserved
   brush entities/origins/patches, Valve 220 output and a JSON recovery report.
+- Native Alice, F.A.K.K.2, Allied Assault and early Quake III recovery; terrain
+  meshes, retained model placements and inference of missing early face materials.
+- OBJ/ASE exports with parallel curve tessellation, preserved entity placement
+  and configurable detail, available from both CLI and workbench.
 - Qt projects, quality presets, asynchronous queues, cancellation, searchable logs,
   diagnostics, reports, build history, hardware discovery and light/dark themes.
 - Separate CLI, optional Qt-free and GPU-disabled builds, portable runtime/source

@@ -45,7 +45,7 @@ static void ConvertSurface( FILE *f, int modelNum, int surfaceNum, const Vector3
 	char name[ 1024 ];
 	const bspDrawSurface_t& ds = bspDrawSurfaces[ surfaceNum ];
 
-	/* ignore patches for now */
+	/* Patches are tessellated by the shared mesh-export preparation. */
 	if ( ds.surfaceType != MST_PLANAR && ds.surfaceType != MST_TRIANGLE_SOUP ) {
 		return;
 	}
@@ -63,7 +63,7 @@ static void ConvertSurface( FILE *f, int modelNum, int surfaceNum, const Vector3
 	fprintf( f, "\t\t*TM_ROW1\t0\t1.0\t0\r\n" );
 	fprintf( f, "\t\t*TM_ROW2\t0\t0\t1.0\r\n" );
 	fprintf( f, "\t\t*TM_ROW3\t0\t0\t0\r\n" );
-	fprintf( f, "\t\t*TM_POS\t%f\t%f\t%f\r\n", origin[ 0 ], origin[ 1 ], origin[ 2 ] );
+	fprintf( f, "\t\t*TM_POS\t0\t0\t0\r\n" ); // vertices below are in world space
 	fprintf( f, "\t}\r\n" );
 
 	/* print mesh header */
@@ -88,7 +88,8 @@ static void ConvertSurface( FILE *f, int modelNum, int surfaceNum, const Vector3
 	for ( int i = 0; i < ds.numVerts; ++i )
 	{
 		const bspDrawVert_t& dv = bspDrawVerts[ ds.firstVert + i ];
-		fprintf( f, "\t\t\t*MESH_VERTEX\t%d\t%f\t%f\t%f\r\n", i, dv.xyz[ 0 ], dv.xyz[ 1 ], dv.xyz[ 2 ] );
+		const DoubleVector3 position=DoubleVector3(dv.xyz)+DoubleVector3(origin);
+		fprintf( f, "\t\t\t*MESH_VERTEX\t%d\t%f\t%f\t%f\r\n", i, position[0], position[1], position[2] );
 	}
 	fprintf( f, "\t\t}\r\n" );
 
@@ -141,10 +142,13 @@ static void ConvertSurface( FILE *f, int modelNum, int surfaceNum, const Vector3
 		const int a = bspDrawIndexes[ i + ds.firstIndex ];
 		const int b = bspDrawIndexes[ i + ds.firstIndex + 1 ];
 		const int c = bspDrawIndexes[ i + ds.firstIndex + 2 ];
-		const Vector3 normal = VectorNormalized( bspDrawVerts[ a ].normal + bspDrawVerts[ b ].normal + bspDrawVerts[ c ].normal );
+		const DoubleVector3 pa(bspDrawVerts[ds.firstVert+a].xyz), pb(bspDrawVerts[ds.firstVert+b].xyz), pc(bspDrawVerts[ds.firstVert+c].xyz);
+		auto normal=vector3_cross(pc-pa,pb-pa); // exported ASE winding is a,c,b
+		if(vector3_length_squared(normal)>1e-24) normal=vector3_normalised(normal);
+		else normal=DoubleVector3(bspDrawVerts[ds.firstVert+a].normal);
 		fprintf( f, "\t\t\t*MESH_FACENORMAL\t%d\t%f\t%f\t%f\r\n", face, normal[ 0 ], normal[ 1 ], normal[ 2 ] );
-		for( const auto idx : { a, b, c } ){
-			const bspDrawVert_t& dv = bspDrawVerts[ idx ];
+		for( const auto idx : { a, c, b } ){
+			const bspDrawVert_t& dv = bspDrawVerts[ ds.firstVert + idx ];
 			fprintf( f, "\t\t\t\t*MESH_VERTEXNORMAL\t%d\t%f\t%f\t%f\r\n", idx, dv.normal[ 0 ], dv.normal[ 1 ], dv.normal[ 2 ] );
 		}
 	}
@@ -163,11 +167,11 @@ static void ConvertSurface( FILE *f, int modelNum, int surfaceNum, const Vector3
 		                : lmIndices[ds.shaderNum] >= 0?
 		                  lmIndices[ds.shaderNum]
 		                : ds.lightmapNum[0];
-		if ( lmNum >= 0 && lmNum + (int)deluxemap < numLightmapsASE ) {
+		if ( lmNum >= 0 && int64_t(lmNum) + int(deluxemap) < numLightmapsASE ) {
 			fprintf( f, "\t*MATERIAL_REF\t%d\r\n", lmNum + deluxemap );
 		}
 		else{
-			Sys_Warning( "lightmap %d out of range, not exporting\n", lmNum + deluxemap );
+			Sys_Warning( "lightmap %lld out of range, not exporting\n", static_cast<long long>(lmNum) + int(deluxemap) );
 		}
 	}
 	else{
@@ -325,7 +329,11 @@ int ConvertBSPToASE( char *bspName ){
 	const auto dirname = StringStream( PathExtensionless( bspName ) );
 	const auto name = StringStream( dirname, ".ase" );
 	Sys_Printf( "writing %s\n", name.c_str() );
-	const auto base = StringStream<64>( PathFilename( bspName ) );
+	const auto base = StringStream( PathFilename( dirname.c_str() ) );
+	if(lightmapsAsTexcoord) {
+		numLightmapsASE=Convert_CountLightmaps(dirname);
+		Convert_ReferenceLightmaps(base,lmIndices);
+	}
 
 	/* open it */
 	f = SafeOpenWrite( name );
@@ -346,11 +354,9 @@ int ConvertBSPToASE( char *bspName ){
 	/* print materials */
 	fprintf( f, "*MATERIAL_LIST\t{\r\n" );
 	if ( lightmapsAsTexcoord ) {
-		numLightmapsASE = Convert_CountLightmaps( dirname );
 		fprintf( f, "\t*MATERIAL_COUNT\t%d\r\n", numLightmapsASE );
 		for ( int i = 0; i < numLightmapsASE; ++i )
 			ConvertLightmap( f, base, i );
-		Convert_ReferenceLightmaps( base, lmIndices );
 	}
 	else
 	{

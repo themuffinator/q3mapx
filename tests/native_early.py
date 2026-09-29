@@ -112,7 +112,7 @@ def main():
     catalog = json.loads(subprocess.check_output([str(exe), "-games"], cwd=root))
     for version, game in ((43, "q3-ihv"), (44, "q3test44"), (45, "q3test45")):
         profile = next(p for p in catalog["profiles"] if p["id"] == game)
-        assert not profile["native_write"] and set(profile["workflows"]) == {"decompile", "minimap"}
+        assert not profile["native_write"] and set(profile["workflows"]) == {"decompile", "minimap", "obj", "ase"}
         folder = root / game
         create_fixture(folder, game_directory="baseq3" if version == 43 else "demoq3")
         base = ["-game", game, "-fs_basepath", folder, "-fs_homepath", folder / "home", "-threads", 2]

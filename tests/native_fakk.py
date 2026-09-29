@@ -48,7 +48,7 @@ def main():
     catalog = json.loads(subprocess.check_output([str(exe), "-games"], cwd=root))
     for game, version, directory in (("fakk2", 12, "fakk"), ("alice", 42, "base")):
         profile = next(p for p in catalog["profiles"] if p["id"] == game)
-        assert profile["native_write"] is False and set(profile["workflows"]) == {"decompile", "minimap"}
+        assert profile["native_write"] is False and set(profile["workflows"]) == {"decompile", "minimap", "obj", "ase"}
         folder = root / game
         create_fixture(folder, game_directory=directory)
         texture = folder / directory / "textures/q3mapx/checker"

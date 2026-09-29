@@ -229,7 +229,10 @@ void CompleteBSPNativeRecovery() {
                                      (terrain.lightmapT+0.5+v*8*std::max(1,terrain.lightmapScale))/128.0);
             vertex.color[0]=Color4b(255); bspDrawVerts.push_back(vertex);
         }
-        bspDrawIndexes.insert(bspDrawIndexes.end(),triangles.begin(),triangles.end());
+        // The terrain helper emits upward counterclockwise triangles. The
+        // canonical BSP convention is clockwise; OBJ/ASE reverse it on export.
+        for(size_t i=0;i<triangles.size();i+=3)
+            bspDrawIndexes.insert(bspDrawIndexes.end(),{triangles[i],triangles[i+2],triangles[i+1]});
         bspNativeTerrainTriangles+=triangles.size()/3; surfaces.push_back(surface);
     }
     bspDrawSurfaces.insert(bspDrawSurfaces.begin()+insertion,surfaces.begin(),surfaces.end());

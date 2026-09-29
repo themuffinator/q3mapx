@@ -31,6 +31,7 @@
 /* dependencies */
 #include "q3map2.h"
 #include "decompile.h"
+#include "export_mesh.h"
 
 
 
@@ -1034,6 +1035,8 @@ static void PseudoCompileBSP( bool need_tree ){
  */
 
 int ConvertBSPMain( Args& args, bool decompile ){
+	int meshPatchSteps=8;
+	bool patchStepsSpecified=false;
 	int ( *convertFunc )( char * );
 	const game_t  *convertGame;
 	bool map_allowed, force_bsp, force_map;
@@ -1123,6 +1126,10 @@ int ConvertBSPMain( Args& args, bool decompile ){
 		while ( args.takeArg( "-fast" ) ) {
 			fast = true;
 		}
+		while ( args.takeArg( "-patchsteps" ) ) {
+			meshPatchSteps=args.takeInt(); patchStepsSpecified=true;
+			if(meshPatchSteps<1 || meshPatchSteps>32) Error("Mesh patch steps must be between 1 and 32");
+		}
 		while ( args.takeArg( "-modelclip" ) ) {
 			g_decompile_modelClip = true;
 		}
@@ -1139,6 +1146,8 @@ int ConvertBSPMain( Args& args, bool decompile ){
 		}
 	}
 	if ( !args.empty() ) Error( "Unknown conversion option '%s'", args.takeFront() );
+	const bool meshExport=!convertGame && (convertFunc==ConvertBSPToOBJ || convertFunc==ConvertBSPToASE);
+	if(patchStepsSpecified && !meshExport) Error("-patchsteps requires OBJ or ASE export");
 	if (convertGame && (!convertGame->write || !g_game->write))
 		Error("Native recovery-only profiles cannot be BSP conversion sources or targets; use MAP, OBJ or ASE export");
 	if (!g_game->write && (force_map || path_extension_is(fileName,"map")))
@@ -1188,5 +1197,6 @@ int ConvertBSPMain( Args& args, bool decompile ){
 	}
 
 	/* normal convert */
+	if(meshExport) PrepareBSPMeshExport(meshPatchSteps);
 	return convertFunc( source );
 }

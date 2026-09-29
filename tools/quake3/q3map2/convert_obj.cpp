@@ -30,6 +30,7 @@
 
 /* dependencies */
 #include "q3map2.h"
+#include <set>
 
 
 
@@ -38,8 +39,7 @@
    converts a bsp drawsurface to an obj chunk
  */
 
-static int firstLightmap = 0;
-static int lastLightmap = -1;
+static std::set<int> objLightmaps;
 
 static int objVertexCount = 0;
 static int objLastShaderNum = -1;
@@ -47,7 +47,7 @@ static int objLastShaderNum = -1;
 static void ConvertSurfaceToOBJ( FILE *f, int modelNum, int surfaceNum, const Vector3& origin, const std::vector<int>& lmIndices ){
 	const bspDrawSurface_t& ds = bspDrawSurfaces[ surfaceNum ];
 
-	/* ignore patches for now */
+	/* Patches are tessellated by the shared mesh-export preparation. */
 	if ( ds.surfaceType != MST_PLANAR && ds.surfaceType != MST_TRIANGLE_SOUP ) {
 		return;
 	}
@@ -72,18 +72,12 @@ static void ConvertSurfaceToOBJ( FILE *f, int modelNum, int surfaceNum, const Ve
 		                : lmIndices[ds.shaderNum] >= 0?
 		                  lmIndices[ds.shaderNum]
 		                : ds.lightmapNum[0];
-		if ( objLastShaderNum != lmNum ) {
-			fprintf( f, "usemtl lm_%04d\r\n", lmNum + deluxemap );
-			objLastShaderNum = lmNum + deluxemap;
+		const int material=lmNum<0 ? lmNum : lmNum+int(deluxemap);
+		if ( objLastShaderNum != material ) {
+			fprintf( f, "usemtl lm_%04d\r\n", material );
+			objLastShaderNum = material;
 		}
-		if ( lmNum + (int)deluxemap < firstLightmap ) {
-			Sys_Warning( "lightmap %d out of range (exporting anyway)\n", lmNum + deluxemap );
-			firstLightmap = lmNum + deluxemap;
-		}
-		if ( lmNum > lastLightmap ) {
-			Sys_Warning( "lightmap %d out of range (exporting anyway)\n", lmNum + deluxemap );
-			lastLightmap = lmNum + deluxemap;
-		}
+		objLightmaps.insert(material);
 	}
 	else
 	{
@@ -98,7 +92,8 @@ static void ConvertSurfaceToOBJ( FILE *f, int modelNum, int surfaceNum, const Ve
 	{
 		const bspDrawVert_t& dv = bspDrawVerts[ ds.firstVert + i ];
 		fprintf( f, "# vertex %d\r\n", i + objVertexCount + 1 );
-		fprintf( f, "v %f %f %f\r\n", dv.xyz[ 0 ], dv.xyz[ 2 ], -dv.xyz[ 1 ] );
+		const DoubleVector3 position=DoubleVector3(dv.xyz)+DoubleVector3(origin);
+		fprintf( f, "v %f %f %f\r\n", position[0], position[2], -position[1] );
 		fprintf( f, "vn %f %f %f\r\n", dv.normal[ 0 ], dv.normal[ 2 ], -dv.normal[ 1 ] );
 		if ( lightmapsAsTexcoord ) {
 			fprintf( f, "vt %f %f\r\n", dv.lightmap[0][0], ( 1.0 - dv.lightmap[0][1] ) ); // dv.lightmap[0][1] internal, ( 1.0 - dv.lightmap[0][1] ) external
@@ -193,10 +188,7 @@ static void ConvertLightmapToMTL( FILE *f, const char *base, int lightmapNum ){
 
 
 int Convert_CountLightmaps( const char* dirname ){
-	int lightmapCount;
-	//FIXME numBSPLightmaps is 0, must be bspLightBytes / ( g_game->lightmapSize * g_game->lightmapSize * 3 )
-	for ( lightmapCount = 0; lightmapCount < numBSPLightmaps; ++lightmapCount )
-		;
+	int lightmapCount=int(bspLightBytes.size()/(size_t(g_game->lightmapSize)*g_game->lightmapSize*3));
 	for ( ; ; ++lightmapCount )
 	{
 		char buf[1024];
@@ -210,19 +202,17 @@ int Convert_CountLightmaps( const char* dirname ){
 
 /* manage external lms, possibly referenced by q3map2_%mapname%.shader */
 void Convert_ReferenceLightmaps( const char* base, std::vector<int>& lmIndices ){
-	char shaderfile[256];
-	sprintf( shaderfile, "%s/q3map2_%s.shader", g_game->shaderPath, base );
-	LoadScriptFile( shaderfile );
+	const auto shaderfile=StringStream(g_game->shaderPath,"/q3map2_",base,".shader");
+	LoadScriptFile( shaderfile.c_str() );
 	/* tokenize it */
 	while ( GetToken( true ) ) /* test for end of file */
 	{
-		char shadername[256];
-		strcpy( shadername, token );
+		const CopiedString shadername(token);
 
 		/* handle { } section */
 		if ( !( GetToken( true ) && strEqual( token, "{" ) ) )
 			Error( "ParseShaderFile: %s, line %d: { not found!\nFound instead: %s\nFile location be: %s",
-			       shaderfile, scriptline, token, g_loadedScriptLocation.c_str() );
+			       shaderfile.c_str(), scriptline, token, g_loadedScriptLocation.c_str() );
 		while ( GetToken( true ) && !strEqual( token, "}" ) )
 		{
 			/* parse stage directives */
@@ -230,7 +220,7 @@ void Convert_ReferenceLightmaps( const char* base, std::vector<int>& lmIndices )
 				while ( GetToken( true ) && !strEqual( token, "}" ) )
 				{
 					if ( strEqual( token, "{" ) )
-						Sys_FPrintf( SYS_WRN, "WARNING9: %s : line %d : opening brace inside shader stage\n", shaderfile, scriptline );
+						Sys_FPrintf( SYS_WRN, "WARNING9: %s : line %d : opening brace inside shader stage\n", shaderfile.c_str(), scriptline );
 
 					/* digest any images */
 					if ( striEqual( token, "map" ) ) {
@@ -240,10 +230,11 @@ void Convert_ReferenceLightmaps( const char* base, std::vector<int>& lmIndices )
 							// map maps/bake_test_1/lm_0004.tga
 							int lmindex;
 							int okcount = 0;
-							if( sscanf( token + strlen( token ) - ( strlen( EXTERNAL_LIGHTMAP ) + 1 ), "/" EXTERNAL_LIGHTMAP "%n", &lmindex, &okcount )
+							if( strlen(token)>=strlen(EXTERNAL_LIGHTMAP)+1
+							    && sscanf( token + strlen( token ) - ( strlen( EXTERNAL_LIGHTMAP ) + 1 ), "/" EXTERNAL_LIGHTMAP "%n", &lmindex, &okcount )
 							    && okcount == ( strlen( EXTERNAL_LIGHTMAP ) + 1 ) ){
 								for ( size_t i = 0; i < bspShaders.size(); ++i ){ // find bspShaders[i]<->lmindex pair
-									if( strEqual( bspShaders[i].shader, shadername ) ){
+									if( strEqual( bspShaders[i].shader, shadername.c_str() ) ){
 										lmIndices[i] = lmindex;
 										break;
 									}
@@ -266,6 +257,7 @@ void Convert_ReferenceLightmaps( const char* base, std::vector<int>& lmIndices )
  */
 
 int ConvertBSPToOBJ( char *bspName ){
+	objVertexCount=0; objLastShaderNum=INT_MIN; objLightmaps.clear();
 	int modelNum;
 	FILE            *f, *fmtl;
 	entity_t        *e;
@@ -282,7 +274,8 @@ int ConvertBSPToOBJ( char *bspName ){
 	Sys_Printf( "writing %s\n", name.c_str() );
 	const auto mtlname = StringStream( dirname, ".mtl" );
 	Sys_Printf( "writing %s\n", mtlname.c_str() );
-	const auto base = StringStream<64>( PathFilename( bspName ) );
+	const auto base = StringStream( PathFilename( dirname.c_str() ) );
+	if(lightmapsAsTexcoord) Convert_ReferenceLightmaps(base,lmIndices);
 
 	/* open it */
 	f = SafeOpenWrite( name );
@@ -294,11 +287,7 @@ int ConvertBSPToOBJ( char *bspName ){
 	fprintf( f, "mtllib %s.mtl\r\n", base.c_str() );
 
 	fprintf( fmtl, "# Generated by Q3Map2 (ydnar) -convert -format obj\r\n" );
-	if ( lightmapsAsTexcoord ) {
-		lastLightmap = Convert_CountLightmaps( dirname ) - 1;
-		Convert_ReferenceLightmaps( base, lmIndices );
-	}
-	else
+	if ( !lightmapsAsTexcoord )
 	{
 		for ( const bspShader_t& shader : bspShaders )
 		{
@@ -328,7 +317,7 @@ int ConvertBSPToOBJ( char *bspName ){
 	}
 
 	if ( lightmapsAsTexcoord ) {
-		for ( int i = firstLightmap; i <= lastLightmap; ++i )
+		for ( int i : objLightmaps )
 			ConvertLightmapToMTL( fmtl, base, i );
 	}
 

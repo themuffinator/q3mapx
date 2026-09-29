@@ -14,7 +14,7 @@ remains a separate executable and can be built without Qt using
 5. Inspect the command preview. Press **F5** to queue and run, or add several
    workflows before starting the queue.
 6. Review stage results, searchable logs, diagnostics and JSON reports. Open the
-   output folder to use the resulting BSP, recovered MAP, minimap or profiles.
+   output folder to use the resulting BSP, recovered MAP, OBJ/ASE mesh, minimap or profiles.
 
 Every workflow stages an independent copy of its input in a unique run directory.
 It does not compile over the original source/BSP. A full build runs BSP, VIS and
@@ -40,6 +40,8 @@ with its discovery failure shown beside the selection.
   saved projects without this setting retain their previous behavior.
 - Minimap: automatic/CPU/GPU/reference backend, device index, size and samples.
 - Recovery: Valve 220, brush primitives or classic coordinates; automatic loss report.
+- Mesh export: OBJ/MTL or ASE, including curves and native MOHAA terrain. Curve
+  detail is 1–32 samples per span (default 8); higher values create larger meshes.
 - Advanced: separate extra arguments for BSP, VIS and LIGHT, one argument per
   line. Arguments with spaces remain intact; do not add shell quotes.
 - Build queue: stage status, elapsed time, logs, diagnostics and generated reports.
@@ -61,10 +63,13 @@ configuration directory; `--state-dir PATH` selects an isolated location.
 ## Validation and limits
 
 Automated tests run the real compiler through the Qt queue, including complete
-builds, recovery, minimaps, paths with spaces, failed process starts, dependency
+builds, recovery, OBJ/ASE exports, minimaps, paths with spaces, failed process starts, dependency
 skipping and cancellation. An offscreen window test also discovers the compiler's
 profiles and invokes its build action directly, without input injection. Catalog
 tests exercise malformed replies, output limits, timeouts and stale responses.
+The window test also checks recovery-only mesh capabilities and curve-detail
+command construction, and directly renders the quality controls without input
+events. Mesh export limitations are in the [recovery guide](DECOMPILATION.md).
 The GUI can render its own widget tree directly to PNG:
 
 ```sh

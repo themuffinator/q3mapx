@@ -9,7 +9,7 @@ struct Project {
     QString name = "Untitled project";
     QString source, gameRoot, outputRoot, compiler;
     QString game = "quake3", mod, quality = "balanced", backend = "auto", mapFormat = "map_220";
-    int workers = 0, gpuDevice = -1, minimapSize = 1024, minimapSamples = 4;
+    int workers = 0, gpuDevice = -1, minimapSize = 1024, minimapSamples = 4, meshPatchSteps = 8;
     bool reproducibleVis = true;
     QStringList bspOptions, visOptions, lightOptions;
     QJsonObject toJson() const;

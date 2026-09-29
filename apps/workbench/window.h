@@ -28,7 +28,7 @@ private:
     QMap<int,QString> logs_;
     QLineEdit *name_, *source_, *gameRoot_, *outputRoot_, *compiler_, *mod_, *search_;
     QComboBox *game_, *quality_, *backend_, *format_, *workflow_, *reports_;
-    QSpinBox *workers_, *gpu_, *size_, *samples_;
+    QSpinBox *workers_, *gpu_, *size_, *samples_, *patchSteps_;
     QCheckBox* reproducibleVis_;
     QPlainTextEdit *bspOptions_, *visOptions_, *lightOptions_, *preview_, *logView_, *reportView_, *hardware_;
     QTableWidget *jobs_, *historyView_;

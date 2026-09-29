@@ -173,3 +173,46 @@ validated trees because some native declared surface ranges are stale.
 `matched_uv_faces` independently counts usable UV reconstruction. Native fog
 visible sides are shader dependent and are not reconstructed. See the
 [format-specific evidence and limits](GAME-COVERAGE.md).
+
+## OBJ and ASE mesh export
+
+```sh
+q3mapx -game quake3 -convert -format obj -patchsteps 8 input.bsp
+q3mapx -game mohaa -convert -format ase -patchsteps 8 input.bsp
+```
+
+The workbench offers **Export OBJ mesh** and **Export ASE mesh**, with **Mesh
+curve detail** under Quality & compute. Both exports include planar geometry,
+triangle meshes, native MOHAA terrain, and tessellated quadratic Bezier patches.
+Brush-entity origins are applied to vertex positions. OBJ uses `(x,z,-y)` axes;
+ASE keeps game axes and writes world-space vertices with identity node transforms.
+External model assets, entity animation and a game's runtime shader effects are
+not reconstructed. Material files reference assets; they do not extract textures
+from installed archives.
+
+`-patchsteps` sets samples per quadratic span, from 1 to 32 (default 8). More
+samples make smoother, larger meshes. This is a fixed-resolution export, not an
+engine's distance-dependent LOD. Positions and texture/lightmap coordinates are
+evaluated on the curve; normals use its tangents, with finite fallbacks for
+degenerate spans. The compiler's persistent worker pool processes independent
+rows into fixed ranges, preserving the same geometry and bytes across worker
+counts. MAP recovery keeps the original control points.
+
+Before allocation or opening outputs, expanded storage is capped at 4,194,304
+vertices and 25,165,824 indices. Lower curve detail for a map that exceeds this
+budget. Invalid options, unsafe expansion and non-finite entity origins fail
+before existing exports are replaced. Output I/O is still the inherited direct
+writer; interruption or a disk error can leave an incomplete mesh file.
+
+OBJ references its actual sibling MTL filename. `-lightmapsastexcoord` and
+`-deluxemapsastexcoord` retain their existing meaning; only referenced OBJ
+lightmap materials are emitted, so a sparse high index does not allocate or
+write every intervening material. External-lightmap shader lookup checks short
+names before suffix access and uses bounded token storage. Baked lightmap image
+files must be supplied separately for material previews.
+
+[Geometry validation](validation/mesh-export-win-x64.json) includes an analytic
+curve center, UVs, triangle winding, surface-local normals, brush-entity bounds,
+one/four-worker byte parity and output preservation. Real OBJ probes include
+IHV `ihv_test1`/`km_portal` and MOHAA `mohdm3`/`m1l1`. These exports include
+curves omitted by the inherited exporters.

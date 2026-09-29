@@ -67,7 +67,7 @@ Window::Window(const QString& stateDirectory):stateDirectory_(stateDirectory),qu
     });
     for(auto* edit:{name_,source_,gameRoot_,outputRoot_,compiler_,mod_}) connect(edit,&QLineEdit::textChanged,this,&Window::updatePreview);
     for(auto* combo:{game_,quality_,backend_,format_,workflow_}) connect(combo,&QComboBox::currentTextChanged,this,&Window::updatePreview);
-    for(auto* spin:{workers_,gpu_,size_,samples_}) connect(spin,&QSpinBox::valueChanged,this,&Window::updatePreview);
+    for(auto* spin:{workers_,gpu_,size_,samples_,patchSteps_}) connect(spin,&QSpinBox::valueChanged,this,&Window::updatePreview);
     for(auto* edit:{bspOptions_,visOptions_,lightOptions_}) connect(edit,&QPlainTextEdit::textChanged,this,&Window::updatePreview);
     connect(&catalog_,&GameCatalog::changed,this,[this]{
         if(!catalog_.loading() && !catalog_.profiles().isEmpty()) {
@@ -156,6 +156,8 @@ QWidget* Window::configuration(){
     size_=new QSpinBox; size_->setRange(1,8192); size_->setSingleStep(256); options->addRow("Minimap &size",size_);
     samples_=new QSpinBox; samples_->setRange(1,256); options->addRow("Minimap sa&mples",samples_);
     format_=new QComboBox; format_->addItem("Valve 220 · recommended for texture recovery","map_220"); format_->addItem("Brush primitives","map_bp"); format_->addItem("Classic Quake texture coordinates","map"); options->addRow("Recovery &format",format_);
+    patchSteps_=new QSpinBox; patchSteps_->setObjectName("meshPatchSteps"); patchSteps_->setRange(1,32); options->addRow("Mesh curve &detail",patchSteps_);
+    patchSteps_->setToolTip("Samples along each curve span for OBJ/ASE export. Higher values create smoother, larger meshes. Default: 8.");
     auto* note=new QLabel("GPU selection here affects minimaps. Lighting defaults to CPU workers. Recovery includes a JSON report of retained and approximated data."); note->setWordWrap(true); note->setObjectName("notice"); options->addRow(note); tabs->addTab(scrollable(tuning),"Quality && compute");
     auto* advanced=new QWidget; auto* advancedLayout=new QVBoxLayout(advanced);
     auto* tip=new QLabel("Additional arguments · one argument per line. Values containing spaces stay a single argument; do not add shell quotes."); tip->setWordWrap(true); advancedLayout->addWidget(tip);
@@ -164,6 +166,8 @@ QWidget* Window::configuration(){
     extra->addTab(bspOptions_,"BSP"); extra->addTab(visOptions_,"VIS"); extra->addTab(lightOptions_,"LIGHT"); advancedLayout->addWidget(extra); tabs->addTab(advanced,"Advanced arguments"); layout->addWidget(tabs,1);
     auto* commandHeader=new QHBoxLayout; auto* commandLabel=new QLabel("Workflow & command preview"); commandLabel->setObjectName("sectionTitle"); commandHeader->addWidget(commandLabel); commandHeader->addStretch();
     workflow_=new QComboBox; workflow_->addItem("Full build · BSP → VIS → LIGHT","build"); workflow_->addItem("BSP only","bsp"); workflow_->addItem("Visibility","vis"); workflow_->addItem("Lighting","light"); workflow_->addItem("Minimap","minimap"); workflow_->addItem("Decompile BSP","decompile");
+    workflow_->addItem("Export OBJ mesh","obj"); workflow_->addItem("Export ASE mesh","ase");
+    workflow_->setObjectName("workflow");
     workflow_->setAccessibleName("Workflow"); commandHeader->addWidget(workflow_);
     auto* enqueueButton=new QPushButton("Add to queue"); connect(enqueueButton,&QPushButton::clicked,this,[this]{ enqueue(false); }); commandHeader->addWidget(enqueueButton); layout->addLayout(commandHeader);
     preview_=codeView(); preview_->setMaximumHeight(135); preview_->setAccessibleName("Command preview"); layout->addWidget(preview_); return page;
@@ -217,6 +221,7 @@ Project Window::project() const {
     p.outputRoot=QDir::fromNativeSeparators(outputRoot_->text()); p.compiler=QDir::fromNativeSeparators(compiler_->text());
     p.game=game_->currentText(); p.mod=mod_->text(); p.quality=quality_->currentData().toString(); p.backend=backend_->currentText(); p.mapFormat=format_->currentData().toString();
     p.workers=workers_->value(); p.gpuDevice=gpu_->value(); p.minimapSize=size_->value(); p.minimapSamples=samples_->value();
+    p.meshPatchSteps=patchSteps_->value();
     p.reproducibleVis=reproducibleVis_->isChecked();
     p.bspOptions=optionLines(bspOptions_); p.visOptions=optionLines(visOptions_); p.lightOptions=optionLines(lightOptions_); return p;
 }
@@ -226,6 +231,7 @@ void Window::setProject(const Project& p){
     outputRoot_->setText(QDir::toNativeSeparators(p.outputRoot)); compiler_->setText(QDir::toNativeSeparators(p.compiler));
     game_->setCurrentText(p.game); mod_->setText(p.mod); quality_->setCurrentIndex(quality_->findData(p.quality)); backend_->setCurrentText(p.backend); format_->setCurrentIndex(format_->findData(p.mapFormat));
     workers_->setValue(p.workers); gpu_->setValue(p.gpuDevice); size_->setValue(p.minimapSize); samples_->setValue(p.minimapSamples);
+    patchSteps_->setValue(p.meshPatchSteps);
     reproducibleVis_->setChecked(p.reproducibleVis);
     bspOptions_->setPlainText(p.bspOptions.join('\n')); visOptions_->setPlainText(p.visOptions.join('\n')); lightOptions_->setPlainText(p.lightOptions.join('\n'));
     workflow_->setCurrentIndex(QFileInfo(p.source).suffix().compare("bsp",Qt::CaseInsensitive)==0 ? 5 : 0);

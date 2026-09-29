@@ -88,8 +88,8 @@ records and shared-vertex boundary without depending on retail files.
 
 ### Alice and F.A.K.K.2 recovery
 
-`alice` and `fakk2` are native recovery profiles, bringing the catalog to 21
-profiles while retaining 19 native writers. They load their actual FAKK 42/12
+`alice` and `fakk2` add native recovery without additional native writers.
+They load their actual FAKK 42/12
 checksum-bearing directories, 76-byte shaders and 108-byte surfaces. The reader
 converts record prefixes directly from the input buffer; it does not construct
 an intermediate IBSP image. Geometry, entities, patch controls and texture UVs
@@ -129,7 +129,7 @@ are independently written; no SDK or translator implementation text is copied.
 ### Medal of Honor: Allied Assault recovery
 
 The `mohaa` profile loads the native `2015` version 19 directory and its extended
-records. There are now 22 catalog profiles and 19 native writers. Brushes,
+records, without adding a native writer. Brushes,
 entities, patches and rendered mesh geometry can be recovered. Native terrain
 is expanded at full grid resolution for OBJ/ASE, retaining the two variance-tree
 orientations and each terminal triangle's hole flag. Terrain is also retained as
@@ -207,8 +207,10 @@ releases validate. The latter count includes repeated shipped versions and the
 Native shader warnings and missing-image fallbacks remain (0–11 per tested map).
 [Evidence](validation/native-early-win-x64.json) records counts and hashes without
 redistributing assets. No module, network, gameplay or native writing claim is
-made. At this task's completion the inherited OBJ/ASE exporters still omit
-patches; mesh-export defects found here are tracked as the next task.
+made. The subsequent [mesh-export repair](DECOMPILATION.md#obj-and-ase-mesh-export)
+adds Bezier tessellation, origin placement and correct surface-local normals.
+Earlier native evidence records the pre-repair mesh counts; the separate
+[mesh evidence](validation/mesh-export-win-x64.json) records refreshed exports.
 
 Generated fixtures deliberately reverse geometry, provide stale model ranges,
 mix planar fans/indexed triangles, preserve a moving brush entity, and verify

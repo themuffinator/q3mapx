@@ -1080,6 +1080,7 @@ int PrintGameCatalog(){
 		if ( game.load ) {
 			if(game.supportsMinimap) writer.String( "minimap" );
 			writer.String( "decompile" );
+			writer.String( "obj" ); writer.String( "ase" );
 		}
 		writer.EndArray();
 		writer.EndObject();

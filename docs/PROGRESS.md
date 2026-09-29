@@ -758,3 +758,43 @@ brush-entity origins, and ASE normal lookup ignores each surface's vertex base.
 These are queued for a dedicated export repair. Early shader dialect warnings
 and missing-image fallbacks remain explicit. Existing decoder, platform and
 cleanup limits are unchanged; no game launch or input control was used.
+
+## 2026-09-29 — Complete curved mesh export and workbench workflows
+
+OBJ/ASE now include bounded quadratic patch tessellation, with configurable
+1–32 samples per span (default 8). Independent rows use the persistent job pool
+and fixed output ranges; one/four-worker exports are byte identical. Positions,
+UVs/lightmap coordinates and colors interpolate the controls, with tangent
+normals and finite degenerate fallbacks. Allocation limits are checked before
+dispatch or output. MAP recovery retains its original patch controls.
+
+Repaired OBJ entity origins and sibling MTL names, ASE world-space placement and
+surface-local normals. Geometry checks also exposed MOHAA terrain's opposite
+winding in the canonical BSP representation; it now faces the same direction as
+its normals. External-lightmap lookup no longer subtracts past short tokens or
+copies arbitrarily long shader names into a 256-byte array. OBJ emits only used
+lightmap material IDs, avoiding work proportional to a hostile sparse index;
+deluxemap integer overflow is rejected. Embedded lightmap counts use actual
+loaded bytes. Shader lookup precedes opening mesh outputs.
+
+The catalog and workbench expose OBJ and ASE workflows for every reader,
+including recovery-only profiles. Project JSON saves mesh curve detail and
+defaults missing older fields to 8. Queue tests run both real exports, and the
+offscreen window test verifies capability gating, option preview and direct
+widget painting. The Windows quality-controls image was inspected; no input
+events or operating-system capture were used.
+
+Windows mesh/native/GUI checks pass; a test-local name collision initially
+shadowed the MOHAA fixture builder and was corrected. Linux release mesh/native/
+GUI checks pass (5/5). Linux ASan/UBSan mesh/MOHAA checks pass (2/2, 30.7 seconds,
+documented CLI leak setting). Geometry-sensitive tests check the exact curved
+center at (-128,-128,52), texture coordinates, triangle orientation, surface
+normals, translated door bounds, malformed limits and preservation of outputs.
+
+Real exports now include the previously absent curves: `mohdm3` has 56,272 faces,
+`m1l1` 113,222, `ihv_test1` 85,601 and `km_portal` 63,559, at default detail.
+Evidence is `validation/mesh-export-win-x64.json`; private outputs are under
+`build/native-mesh/`, and logs are `.agents/tmp/game-coverage/*mesh*.log`.
+External TIKI meshes, native shader effects and interrupted-output transactions
+remain limitations. The separately discovered export defects are fixed; no new
+unrelated issue remains from this task.

@@ -43,6 +43,11 @@ int main(int argc,char** argv){
         require(plan[1].arguments.contains("-reproducible"),"Reproducible visibility option missing");
         auto older=p.toJson(); older.remove("reproducible_vis");
         require(!Project::fromJson(older).reproducibleVis,"Older project behavior changed");
+        older.remove("mesh_patch_steps");
+        require(Project::fromJson(older).meshPatchSteps==8,"Older project mesh detail default changed");
+        invalid=p.toJson(); invalid["mesh_patch_steps"]=33; rejected=false;
+        try { Project::fromJson(invalid); } catch(...) { rejected=true; }
+        require(rejected,"Invalid mesh curve detail accepted");
         const auto original=QFileInfo(p.source).lastModified();
         JobQueue queue; queue.enqueue(plan); finishQueue(queue);
         for(const auto& job:queue.jobs()) { require(job.state=="Succeeded",qPrintable(job.error)); require(QFileInfo(job.logPath).size()>0,"Missing persistent log"); }
@@ -50,9 +55,10 @@ int main(int argc,char** argv){
         require(QFileInfo(p.source).lastModified()==original,"Source was modified");
         const auto snapshot=Project::load(directory+"/project.q3mapx.json"); require(snapshot.source.startsWith(directory),"Run snapshot did not retain staged source");
         p.source=plan.back().outputPath;
-        for(const auto& workflow:QStringList{"decompile","minimap"}) {
+        p.meshPatchSteps=4;
+        for(const auto& workflow:QStringList{"decompile","minimap","obj","ase"}) {
             const auto output=prepareRun(p,workflow); auto jobs=buildPlan(p,workflow,output);
-            queue.enqueue(jobs); finishQueue(queue); require(queue.jobs().back().state=="Succeeded","Recovery/minimap failed");
+            queue.enqueue(jobs); finishQueue(queue); require(queue.jobs().back().state=="Succeeded","Recovery/minimap/mesh export failed");
             require(QFileInfo(jobs.back().outputPath).size()>0,"Missing workflow output");
         }
         Job bad; bad.group="bad"; bad.label="Broken executable"; bad.program=root+"/missing-compiler"; bad.directory=root; bad.logPath=root+"/bad.log";

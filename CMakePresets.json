@@ -47,6 +47,24 @@
       "cacheVariables": {
         "Q3MAPX_ENABLE_OPENCL": "OFF"
       }
+    },
+    {
+      "name": "cli",
+      "displayName": "Release CLI without Qt",
+      "inherits": "release",
+      "cacheVariables": {
+        "Q3MAPX_BUILD_GUI": "OFF"
+      }
+    },
+    {
+      "name": "sanitized",
+      "displayName": "Linux address/undefined behavior checks",
+      "inherits": "debug",
+      "cacheVariables": {
+        "Q3MAPX_ENABLE_SANITIZERS": "ON",
+        "Q3MAPX_ENABLE_OPENCL": "OFF",
+        "Q3MAPX_BUILD_GUI": "OFF"
+      }
     }
   ],
   "buildPresets": [
@@ -65,6 +83,14 @@
     {
       "name": "cpu-only",
       "configurePreset": "cpu-only"
+    },
+    {
+      "name": "cli",
+      "configurePreset": "cli"
+    },
+    {
+      "name": "sanitized",
+      "configurePreset": "sanitized"
     }
   ],
   "testPresets": [
@@ -87,6 +113,24 @@
       "configurePreset": "cpu-only",
       "output": {
         "outputOnFailure": true
+      }
+    },
+    {
+      "name": "cli",
+      "configurePreset": "cli",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "sanitized",
+      "configurePreset": "sanitized",
+      "output": {
+        "outputOnFailure": true
+      },
+      "environment": {
+        "ASAN_OPTIONS": "detect_leaks=0",
+        "UBSAN_OPTIONS": "print_stacktrace=1"
       }
     }
   ]

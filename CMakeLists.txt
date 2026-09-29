@@ -14,6 +14,16 @@ option(Q3MAPX_BUILD_BENCHMARKS "Build standalone performance measurement tools" 
 option(Q3MAPX_ENABLE_OPENCL "Enable optional dynamically loaded OpenCL GPU compute" ON)
 option(Q3MAPX_BUILD_GUI "Build the Qt 6 desktop workbench" ON)
 
+# Instrument first-party support libraries and regression targets as well as the
+# executable. Instrumenting only q3mapx misses defects inside static libraries.
+if(Q3MAPX_ENABLE_SANITIZERS)
+    if(MINGW OR NOT CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        message(FATAL_ERROR "ASan/UBSan preset requires GCC/Clang on Linux; MinGW/MSVC runtimes are not supported by this preset")
+    endif()
+    add_compile_options(-fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all)
+    add_link_options(-fsanitize=address,undefined)
+endif()
+
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GLIB REQUIRED IMPORTED_TARGET glib-2.0)
 pkg_check_modules(XML REQUIRED IMPORTED_TARGET libxml-2.0)
@@ -85,10 +95,6 @@ else()
         -include ${CMAKE_CURRENT_SOURCE_DIR}/cmake/compiler_config.h)
     if(MINGW)
         target_link_options(q3mapx PRIVATE -Wl,--stack,4194304)
-    endif()
-    if(Q3MAPX_ENABLE_SANITIZERS)
-        target_compile_options(q3mapx PRIVATE -fsanitize=address,undefined -fno-omit-frame-pointer)
-        target_link_options(q3mapx PRIVATE -fsanitize=address,undefined)
     endif()
 endif()
 
@@ -162,7 +168,8 @@ if(BUILD_TESTING)
     set_tests_properties(portal_validation PROPERTIES TIMEOUT 90)
     add_test(NAME vis_reproducible COMMAND ${Python3_EXECUTABLE}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/vis_reproducible.py
-        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/vis-reproducible)
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/vis-reproducible
+        --grid $<IF:$<BOOL:${Q3MAPX_ENABLE_SANITIZERS}>,5,9>)
     set_tests_properties(vis_reproducible PROPERTIES TIMEOUT 180)
 endif()
 

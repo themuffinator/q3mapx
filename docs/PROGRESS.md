@@ -324,3 +324,21 @@ plugin diagnostics confirm the packaged offscreen plugin was loaded. File hashes
 were checked before running. The final clean-source archive follows the integration
 commit. All 24 corresponding dependency source archives are retained under
 `build/package/dependency-sources` (some packages share one source archive).
+
+## 2026-09-29 — Build matrix and final integration
+
+Validated Windows release with GPU support and workbench (16/16 CTest groups),
+GPU-disabled workbench build (16/16), and Qt-free CLI build (14/14). Portable runtime
+smoke checks also pass with only package/system DLL paths available. The test
+matrix includes corrupt inputs, actual compile/recover pipelines, original NRC
+VIS hashes, scheduling, reproducible VIS, atomic files, CPU/GPU output parity and
+asynchronous GUI workflows.
+
+Added named CLI-only and Linux sanitizer presets and expanded CI matrices. ASan/
+UBSan instrumentation now covers the static support libraries and regression
+targets, not just the main executable. The sanitizer preset uses the smaller
+grid=5 VIS stress fixture and disables legacy process-lifetime leak reporting;
+address and undefined-behavior diagnostics remain fatal. Linux and sanitizer CI
+have not been executed from this Windows environment, and MSVC/macOS remain
+unvalidated. Broader real-map, decoder fuzzing and manual accessibility work are
+recorded as limitations rather than implied by the synthetic suite.

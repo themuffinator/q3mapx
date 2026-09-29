@@ -5,15 +5,23 @@ on:
 jobs:
   linux:
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        preset: [release, cpu-only, cli, sanitized]
     steps:
       - uses: actions/checkout@v4
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -y ninja-build pkg-config libglib2.0-dev libxml2-dev libassimp-dev libpng-dev libjpeg-dev zlib1g-dev qt6-base-dev
-      - run: cmake --preset release
-      - run: cmake --build --preset release --parallel 2
-      - run: ctest --preset release
+      - run: cmake --preset ${{ matrix.preset }}
+      - run: cmake --build --preset ${{ matrix.preset }} --parallel 2
+      - run: ctest --preset ${{ matrix.preset }}
   windows:
     runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        preset: [release, cpu-only, cli]
     defaults:
       run:
         shell: msys2 {0}
@@ -24,6 +32,6 @@ jobs:
           msystem: MINGW64
           update: true
           install: mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja mingw-w64-x86_64-pkgconf mingw-w64-x86_64-glib2 mingw-w64-x86_64-libxml2 mingw-w64-x86_64-assimp mingw-w64-x86_64-libpng mingw-w64-x86_64-libjpeg-turbo mingw-w64-x86_64-zlib mingw-w64-x86_64-python mingw-w64-x86_64-qt6-base
-      - run: cmake --preset release
-      - run: cmake --build --preset release --parallel 2
-      - run: ctest --preset release
+      - run: cmake --preset ${{ matrix.preset }}
+      - run: cmake --build --preset ${{ matrix.preset }} --parallel 2
+      - run: ctest --preset ${{ matrix.preset }}

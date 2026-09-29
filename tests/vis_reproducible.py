@@ -9,9 +9,10 @@ from integration import Bsp,run
 parser=argparse.ArgumentParser()
 parser.add_argument('--compiler',type=Path,required=True)
 parser.add_argument('--work-dir',type=Path,required=True)
+parser.add_argument('--grid',type=int,default=9)
 args=parser.parse_args()
 root,exe=args.work_dir.resolve(),args.compiler.resolve()
-source=create_fixture(root,dense=True,grid=9)
+source=create_fixture(root,dense=True,grid=args.grid)
 base=['-game','quake3','-fs_basepath',root]
 run(exe,[*base,'-threads',1,'-meta',source],root,'bsp')
 original=source.with_suffix('.bsp').read_bytes()

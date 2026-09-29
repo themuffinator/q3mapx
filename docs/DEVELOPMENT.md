@@ -34,12 +34,19 @@ libxml2-dev libassimp-dev libpng-dev libjpeg-dev zlib1g-dev qt6-base-dev` and us
 commands. The executable is `build/release/bin/q3mapx`.
 
 The GUI executable is `build/release/bin/q3mapx-workbench`. Use
-`-DQ3MAPX_BUILD_GUI=OFF` for a Qt-free CLI-only build. See [workbench usage](WORKBENCH.md).
+the `cli` configure/build/test preset (or `-DQ3MAPX_BUILD_GUI=OFF`) for a Qt-free
+CLI-only build. See [workbench usage](WORKBENCH.md) and [packaging](RELEASE.md).
 
 `debug` and `profile` presets provide debug and optimized-with-symbols builds.
 Optional `-DQ3MAPX_ENABLE_LTO=ON` enables release IPO after a compiler capability
 check; `-DQ3MAPX_ENABLE_SANITIZERS=ON` enables ASan/UBSan on supporting GCC/Clang
-toolchains. Baseline comparisons use LTO off and no fast-math.
+toolchains, including support libraries and test targets. The `sanitized` preset
+targets Linux GCC/Clang, disables GUI/GPU code and fails on sanitizer diagnostics.
+Its leak detector is disabled because the inherited CLI intentionally retains many
+process-lifetime compiler allocations; address and undefined-behavior checks stay
+enabled. MinGW/MSVC sanitizer configurations are rejected explicitly. Baseline
+comparisons use LTO off and no fast-math. Sanitizer CI is defined but has not been
+run from this Windows environment.
 
 OpenCL support is enabled by default but dynamically loads the installed GPU
 driver only for compute/device queries. No OpenCL SDK is required to build.

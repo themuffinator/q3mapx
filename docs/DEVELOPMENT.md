@@ -2,10 +2,44 @@
 
 ## Build policy
 
-The initial build task will add CMake presets and exact commands here. The local
-environment has CMake, Ninja, MSYS2 MinGW-w64 dependencies, Qt 6, and an NVIDIA GPU.
-Do not require a developer-specific absolute dependency path in the portable
-project configuration; local paths belong in environment variables or ignored
+Requires CMake 3.25+, Ninja, a C++20 compiler, pkg-config, GLib, libxml2, Assimp,
+libpng, libjpeg, and zlib. Qt 6 will be required by the GUI milestone. No game
+assets are needed to build the compiler. GCC/MinGW is the initially validated
+toolchain; MSVC is not yet validated against all inherited source constructs.
+
+On Windows, install the following from an MSYS2 MINGW64 shell if not already present:
+
+```sh
+pacman -S --needed mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake \
+  mingw-w64-x86_64-ninja mingw-w64-x86_64-pkgconf mingw-w64-x86_64-glib2 \
+  mingw-w64-x86_64-libxml2 mingw-w64-x86_64-assimp mingw-w64-x86_64-libpng \
+  mingw-w64-x86_64-libjpeg-turbo mingw-w64-x86_64-zlib
+```
+
+Then, from the repository in PowerShell (adjust the MSYS2 path if needed):
+
+```powershell
+$env:PATH = 'C:\msys64\mingw64\bin;' + $env:PATH
+cmake --preset release
+cmake --build --preset release --parallel 8
+ctest --preset release
+.\build\release\bin\q3mapx.exe -help
+```
+
+The MSYS2 DLL directory must remain on PATH when running unbundled development
+executables. The project does not change persistent environment settings.
+
+On Debian/Ubuntu, install `build-essential cmake ninja-build pkg-config libglib2.0-dev
+libxml2-dev libassimp-dev libpng-dev libjpeg-dev zlib1g-dev` and use the same CMake
+commands. The executable is `build/release/bin/q3mapx`.
+
+`debug` and `profile` presets provide debug and optimized-with-symbols builds.
+Optional `-DQ3MAPX_ENABLE_LTO=ON` enables release IPO after a compiler capability
+check; `-DQ3MAPX_ENABLE_SANITIZERS=ON` enables ASan/UBSan on supporting GCC/Clang
+toolchains. Baseline comparisons use LTO off and no fast-math.
+
+Do not require developer-specific absolute dependency paths in portable project
+configuration; local paths belong in environment variables or ignored
 `CMakeUserPresets.json`.
 
 Build outputs belong under `build/`. Disposable scripts, logs, downloaded inputs,

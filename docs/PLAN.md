@@ -19,7 +19,7 @@ are required for the initial test suite.
 - [x] Inspect licenses before incorporating code.
 - [x] Record architecture, implementation order, and acceptance criteria.
 - [x] Import the compiler, required libraries, and upstream regression fixtures.
-- [ ] Add standalone CMake/Ninja presets and a documented build.
+- [x] Add standalone CMake/Ninja presets and a documented build.
 
 Acceptance: a clean configure and release build, working help/game listing, exact
 upstream revision recorded, license texts and attribution included. No editor

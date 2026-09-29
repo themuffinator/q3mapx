@@ -44,3 +44,21 @@ remain unchanged. This is an inherited licensing detail, not a compiler change.
 
 Validation: checked actual file notices and Apache's published GPL compatibility
 guidance; retained the original import manifest unchanged.
+
+## 2026-09-29 — Standalone release build
+
+Added CMake/Ninja release, debug, and profile presets, explicit system dependencies,
+CTest help/game smoke checks, optional LTO and sanitizer switches, and license
+installation rules. No imported compiler source changes were needed.
+
+Validation: Windows x64 release built with MSYS2 GCC 15.2.0; 2/2 CTest tests passed.
+Preserved the baseline binary at `build/baseline/bin/q3mapx.exe` (SHA-256
+`5BEE5356D9B4D0C94A80B6E206C940340DB11F807FE44B416EEB366AD210336E`).
+Build log: `.agents/tmp/bootstrap/build.log`. Dependencies: GLib 2.86.2, libxml2
+2.15.1, Assimp 6.0.2, PNG 1.6.51, zlib 1.3.1, libjpeg ABI 80.
+
+Additional findings: this MSYS2 Assimp pkg-config file contains non-relocatable
+paths; using its CMake config resolves that packaging issue. Upstream produces
+warnings for non-standard-layout `offsetof` and direct libxml buffer access.
+Linux and MSVC execution are not locally validated yet. Next: asset-independent
+integration fixtures and timing baseline.

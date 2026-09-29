@@ -8,6 +8,9 @@ The project is in active development. Planned features are described in the
 [implementation plan](docs/PLAN.md); they are not claims of completed functionality.
 See the [task log](docs/PROGRESS.md) for implemented and validated work.
 
+The standalone CLI builds with CMake/Ninja; see [build instructions](docs/DEVELOPMENT.md).
+Release output is `build/release/bin/q3mapx` (`.exe` on Windows).
+
 ## Objectives
 
 - Faster BSP, visibility, lighting, conversion, and minimap workflows, backed by measurements.

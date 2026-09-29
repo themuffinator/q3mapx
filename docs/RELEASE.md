@@ -28,9 +28,19 @@ parsing, recovery limits and gameplay claims.
 The package's `runtime-manifest.json` identifies its exact clean source revision,
 runtime files and dependency sources. Its adjacent SHA-256 file identifies the
 ZIP. Final integration and portable validation are recorded in the
-[task log](PROGRESS.md); the previous [0.2.0 audit](releases/0.2.0-windows-x64.json)
-remains available as historical evidence. Archives stay under `build/package/`
-and have not been published remotely.
+[task log](PROGRESS.md). The [0.3.0 artifact audit](releases/0.3.0-windows-x64.json)
+identifies the validated 40,141,164-byte archive, its 180 entries and clean source
+revision `95c37a655e6f9d9f8c4b056464f7ed1ab1286410`. All 350 embedded source files
+match that checkout; all 23 dependency source archives were hash-verified. The
+previous [0.2.0 audit](releases/0.2.0-windows-x64.json) remains historical evidence.
+Archives stay under `build/package/` and have not been published remotely.
+
+The [final integration matrix](validation/release-0.3.0.json) records 35 Windows
+release passes, 34 Linux release passes and 30 Linux ASan/UBSan passes. Each Linux
+configuration skips its unavailable GPU area-factor hardware test; fallback and
+rejection checks still run. Portable Windows verification passes all 18 groups,
+including native NVIDIA/Intel minimap parity and hybrid lighting. The final audit
+documentation follows the packaged source commit; the archive remains unchanged.
 
 ## Recreate the Windows package
 
@@ -86,7 +96,8 @@ CPU/GPU minimap and lighting checks, the Qt queue integration and direct offscre
 rendering with development dependency directories removed from PATH. It retains
 logs, a GUI preview and `validation.json` in the selected project-local work folder.
 It also covers all native writers, the new recovery families, curved mesh exports,
-Raven compatibility/packing and bounded native inspection using generated inputs.
+Raven compatibility/packing, bounded native inspection and concurrent fatal exits
+using generated inputs.
 
 ## Known limits
 

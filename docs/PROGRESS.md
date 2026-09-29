@@ -840,3 +840,39 @@ archives match their previously validated hashes (452,131,078 bytes total).
 Release and targeted sanitizer results are recorded above; full instrumented and
 portable delivery results belong to the following artifact audit. No new
 unrelated issue was discovered during release preparation.
+
+## 2026-09-29 — Validated 0.3.0 delivery
+
+Final integration passes: Windows release 35/35 (78.07 seconds), Linux release
+34 passed with one hardware skip (116.13 seconds), and Linux ASan/UBSan 30 passed
+with one hardware skip (673.19 seconds). The sanitizer configuration also builds
+without Qt or GPU support. Linux lacks a suitable OpenCL device; the GPU scripts
+still check unavailable-device rejection and CPU fallback. Instrumentation keeps
+address/undefined-behavior checks enabled and uses the documented CLI leak setting.
+The [integration matrix](validation/release-0.3.0.json) records configurations,
+binary hashes, every test and the parallel-fatal-exit repair found during this run.
+
+The portable Windows package passes all 18 groups with development DLL paths
+removed, including all nineteen writer pipelines, six native recovery profiles,
+curved exports, Raven packing, inspection, fatal failure handling, the Qt queue
+and direct widget painting. Actual minimap parity executes on the NVIDIA RTX 4060
+Laptop GPU and Intel Iris Xe; hybrid lighting parity also passes. The packaged
+workbench image was inspected without input events or operating-system capture.
+
+The archive is `build/package/q3mapx-0.3.0-windows-x64.zip`: 40,141,164 bytes,
+180 members, clean source revision `95c37a655e6f9d9f8c4b056464f7ed1ab1286410`.
+All 350 embedded source files match that checkout. Its 40 executable/DLL hashes
+match the manifest; both executables match the tested Windows release. All 23
+corresponding dependency source archives match their recorded hashes. The
+[artifact audit](releases/0.3.0-windows-x64.json) records its SHA-256 and portable
+results. This documentation audit follows the packaged source commit; no binary
+or source archive has been altered, and no remote push or publication occurred.
+
+Useful evidence remains under `.agents/tmp/game-coverage`,
+`build/package-validation-0.3.0` and the private `build/native-*` directories;
+dependency sources remain beside the archive. The earlier M6 staging-cleanup
+denial is unchanged and was not retried or bypassed. No new unrelated defect was
+found during delivery. Inherited compiler warnings, third-party decoder fuzzing,
+manual accessibility, MSVC/macOS and game-runtime validation remain open limits.
+New game profiles are recovery-only, and GPU lighting remains experimental with
+CPU as its default; the coverage and performance guides state those boundaries.

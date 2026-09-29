@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "version": "0.3.0",
+  "source_revision": "95c37a655e6f9d9f8c4b056464f7ed1ab1286410",
+  "clean_source_snapshot": true,
+  "archive": "q3mapx-0.3.0-windows-x64.zip",
+  "archive_bytes": 40141164,
+  "archive_members": 180,
+  "sha256": "b503bc43567bdea3c09432d7c1a460ddbf7f6018447db6cb4f0cc574447edaa5",
+  "embedded_source_files": 350,
+  "embedded_source_matches_clean_worktree": true,
+  "source_archive_sha256": "33600eaefd48b4cf184c5c81e521315142a53c3b64bee708ebfc43732daf4145",
+  "runtime_packages": 24,
+  "runtime_files": 40,
+  "dependency_source_archives": 23,
+  "source_archive_hashes_verified": true,
+  "binaries_match_tested_release": true,
+  "portable_validation": {
+    "schema_version": 1,
+    "package": "E:\\Repositories\\q3mapx\\build\\package\\q3mapx-0.3.0-windows-x64",
+    "revision": "95c37a655e6f9d9f8c4b056464f7ed1ab1286410",
+    "compiler_version": "q3mapx 0.3.0 (NRC 8216133984031afaa9a857b56ea66dd9c3d54b26)",
+    "restricted_path": "E:\\Repositories\\q3mapx\\build\\package\\q3mapx-0.3.0-windows-x64\\bin;C:\\WINDOWS\\System32;C:\\WINDOWS",
+    "runtime_hashes_verified": 40,
+    "source_archive_hash_verified": true,
+    "checks": [
+      "version",
+      "integration",
+      "decompile",
+      "minimap",
+      "gpu",
+      "lighting",
+      "lighting_gpu",
+      "game_profiles",
+      "native_fakk",
+      "native_mohaa",
+      "native_early",
+      "mesh_export",
+      "bsp_inspect",
+      "raven_compat",
+      "lightgrid_cli",
+      "portal_validation",
+      "workbench",
+      "preview"
+    ],
+    "result": "passed"
+  },
+  "gui_preview": {
+    "path": "build/package-validation-0.3.0/workbench.png",
+    "method": "Direct offscreen Qt widget painting; visually inspected without OS capture or input injection"
+  },
+  "integration_record": "../validation/release-0.3.0.json"
+}

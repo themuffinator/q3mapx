@@ -152,8 +152,12 @@ and validation requirements. Continue committing each completed task separately.
   checks where available without redistributing proprietary assets.
 - [x] Repair mesh-export gaps exposed by native-map checks: curved patches,
   brush-entity origins and ASE surface normals; expose mesh export in the GUI.
-- [ ] Measure further optimizations, run the relevant Windows/Linux/sanitizer
+- [x] Measure further optimizations, run the relevant Windows/Linux/sanitizer
   checks, update user documentation and deliver refreshed binaries.
+
+Delivered as 0.3.0, with the [integration matrix](validation/release-0.3.0.json)
+and [portable artifact audit](releases/0.3.0-windows-x64.json). The earlier M6
+staging-cleanup restriction remains separate and has not been bypassed.
 
 Acceptance: actual format readers and workflow tests establish coverage; aliases
 alone do not. Optimization reports compare identical inputs and output contracts,

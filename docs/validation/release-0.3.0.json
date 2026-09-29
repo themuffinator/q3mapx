@@ -1,0 +1,604 @@
+{
+  "schema_version": 1,
+  "version": "0.3.0",
+  "timestamp_utc": "2026-09-29T20:32:37.760859+00:00",
+  "release_source_revision": "95c37a655e6f9d9f8c4b056464f7ed1ab1286410",
+  "builds": [
+    {
+      "build_directory": "build/release",
+      "platform": "Windows x64",
+      "gcc": "15.2.0",
+      "qt": "6.10.1",
+      "configuration": {
+        "Q3MAPX_BUILD_GUI": "ON",
+        "Q3MAPX_ENABLE_OPENCL": "ON",
+        "Q3MAPX_ENABLE_SANITIZERS": "OFF"
+      },
+      "binary_sha256": {
+        "q3mapx": "d5c17199086c47aea490759f79bce98235b75005fc03fc34be9a8e5d227b0440",
+        "q3mapx-workbench": "053404c9b70586db554552a588fd063ef50c1068498fec12c6a9f88a1a3b20ea"
+      },
+      "registered": 35,
+      "passed": 35,
+      "skipped": [],
+      "total_seconds": 78.07,
+      "log": ".agents/tmp/game-coverage/test-release-0.3-fixed.log",
+      "tests": [
+        {
+          "name": "cli_help",
+          "result": "passed",
+          "seconds": 0.21
+        },
+        {
+          "name": "cli_games",
+          "result": "passed",
+          "seconds": 0.02
+        },
+        {
+          "name": "game_profiles",
+          "result": "passed",
+          "seconds": 4.6
+        },
+        {
+          "name": "compiler_pipeline",
+          "result": "passed",
+          "seconds": 0.82
+        },
+        {
+          "name": "lighting_materials",
+          "result": "passed",
+          "seconds": 4.16
+        },
+        {
+          "name": "bsp_validation",
+          "result": "passed",
+          "seconds": 1.91
+        },
+        {
+          "name": "bsp_inspect",
+          "result": "passed",
+          "seconds": 3.06
+        },
+        {
+          "name": "bsp_analyze",
+          "result": "passed",
+          "seconds": 0.7
+        },
+        {
+          "name": "ftx",
+          "result": "passed",
+          "seconds": 0.02
+        },
+        {
+          "name": "terrain",
+          "result": "passed",
+          "seconds": 0.01
+        },
+        {
+          "name": "native_fakk",
+          "result": "passed",
+          "seconds": 1.26
+        },
+        {
+          "name": "native_mohaa",
+          "result": "passed",
+          "seconds": 1.34
+        },
+        {
+          "name": "native_early",
+          "result": "passed",
+          "seconds": 1.79
+        },
+        {
+          "name": "mesh_export",
+          "result": "passed",
+          "seconds": 0.79
+        },
+        {
+          "name": "decompile_math",
+          "result": "passed",
+          "seconds": 0.02
+        },
+        {
+          "name": "lighting_math",
+          "result": "passed",
+          "seconds": 0.02
+        },
+        {
+          "name": "area_factors",
+          "result": "passed",
+          "seconds": 0.99
+        },
+        {
+          "name": "area_factors_disabled",
+          "result": "passed",
+          "seconds": 0.01
+        },
+        {
+          "name": "lighting_gpu",
+          "result": "passed",
+          "seconds": 13.77
+        },
+        {
+          "name": "decompile_recovery",
+          "result": "passed",
+          "seconds": 0.47
+        },
+        {
+          "name": "job_pool",
+          "result": "passed",
+          "seconds": 0.07
+        },
+        {
+          "name": "lightgrid",
+          "result": "passed",
+          "seconds": 0.23
+        },
+        {
+          "name": "lightgrid_cli",
+          "result": "passed",
+          "seconds": 0.32
+        },
+        {
+          "name": "raven_compat",
+          "result": "passed",
+          "seconds": 0.74
+        },
+        {
+          "name": "cli_options",
+          "result": "passed",
+          "seconds": 1.63
+        },
+        {
+          "name": "atomic_file",
+          "result": "passed",
+          "seconds": 0.03
+        },
+        {
+          "name": "columns",
+          "result": "passed",
+          "seconds": 0.08
+        },
+        {
+          "name": "minimap",
+          "result": "passed",
+          "seconds": 1.0
+        },
+        {
+          "name": "gpu_columns",
+          "result": "passed",
+          "seconds": 8.86
+        },
+        {
+          "name": "portal_validation",
+          "result": "passed",
+          "seconds": 2.5
+        },
+        {
+          "name": "vis_reproducible",
+          "result": "passed",
+          "seconds": 23.46
+        },
+        {
+          "name": "game_catalog",
+          "result": "passed",
+          "seconds": 0.36
+        },
+        {
+          "name": "workbench",
+          "result": "passed",
+          "seconds": 1.93
+        },
+        {
+          "name": "workbench_window",
+          "result": "passed",
+          "seconds": 0.49
+        },
+        {
+          "name": "workbench_preview",
+          "result": "passed",
+          "seconds": 0.22
+        }
+      ]
+    },
+    {
+      "build_directory": "build/linux-release",
+      "platform": "Ubuntu 24.04 x64 under WSL",
+      "gcc": "13.3.0",
+      "qt": "6.4.2",
+      "configuration": {
+        "Q3MAPX_BUILD_GUI": "ON",
+        "Q3MAPX_ENABLE_OPENCL": "ON",
+        "Q3MAPX_ENABLE_SANITIZERS": "OFF"
+      },
+      "binary_sha256": {
+        "q3mapx": "983cbc0892bceb58f672afd2ae1f6aa38976a6a9101bb40164266d1553e08d19",
+        "q3mapx-workbench": "7d8449102e3efb60e853c5bab139b42a3c33ba83ac667578e52dafacf29c86a9"
+      },
+      "registered": 35,
+      "passed": 34,
+      "skipped": [
+        "area_factors"
+      ],
+      "total_seconds": 116.13,
+      "log": ".agents/tmp/game-coverage/test-linux-0.3-fixed.log",
+      "tests": [
+        {
+          "name": "cli_help",
+          "result": "passed",
+          "seconds": 0.05
+        },
+        {
+          "name": "cli_games",
+          "result": "passed",
+          "seconds": 0.05
+        },
+        {
+          "name": "game_profiles",
+          "result": "passed",
+          "seconds": 17.58
+        },
+        {
+          "name": "compiler_pipeline",
+          "result": "passed",
+          "seconds": 3.02
+        },
+        {
+          "name": "lighting_materials",
+          "result": "passed",
+          "seconds": 11.48
+        },
+        {
+          "name": "bsp_validation",
+          "result": "passed",
+          "seconds": 5.81
+        },
+        {
+          "name": "bsp_inspect",
+          "result": "passed",
+          "seconds": 10.76
+        },
+        {
+          "name": "bsp_analyze",
+          "result": "passed",
+          "seconds": 3.38
+        },
+        {
+          "name": "ftx",
+          "result": "passed",
+          "seconds": 0.04
+        },
+        {
+          "name": "terrain",
+          "result": "passed",
+          "seconds": 0.04
+        },
+        {
+          "name": "native_fakk",
+          "result": "passed",
+          "seconds": 8.63
+        },
+        {
+          "name": "native_mohaa",
+          "result": "passed",
+          "seconds": 3.33
+        },
+        {
+          "name": "native_early",
+          "result": "passed",
+          "seconds": 7.46
+        },
+        {
+          "name": "mesh_export",
+          "result": "passed",
+          "seconds": 2.87
+        },
+        {
+          "name": "decompile_math",
+          "result": "passed",
+          "seconds": 0.04
+        },
+        {
+          "name": "lighting_math",
+          "result": "passed",
+          "seconds": 0.04
+        },
+        {
+          "name": "area_factors",
+          "result": "skipped",
+          "seconds": 0.04
+        },
+        {
+          "name": "area_factors_disabled",
+          "result": "passed",
+          "seconds": 0.03
+        },
+        {
+          "name": "lighting_gpu",
+          "result": "passed",
+          "seconds": 0.71
+        },
+        {
+          "name": "decompile_recovery",
+          "result": "passed",
+          "seconds": 0.98
+        },
+        {
+          "name": "job_pool",
+          "result": "passed",
+          "seconds": 0.08
+        },
+        {
+          "name": "lightgrid",
+          "result": "passed",
+          "seconds": 0.17
+        },
+        {
+          "name": "lightgrid_cli",
+          "result": "passed",
+          "seconds": 0.93
+        },
+        {
+          "name": "raven_compat",
+          "result": "passed",
+          "seconds": 3.04
+        },
+        {
+          "name": "cli_options",
+          "result": "passed",
+          "seconds": 3.8
+        },
+        {
+          "name": "atomic_file",
+          "result": "passed",
+          "seconds": 0.1
+        },
+        {
+          "name": "columns",
+          "result": "passed",
+          "seconds": 0.09
+        },
+        {
+          "name": "minimap",
+          "result": "passed",
+          "seconds": 3.05
+        },
+        {
+          "name": "gpu_columns",
+          "result": "passed",
+          "seconds": 3.56
+        },
+        {
+          "name": "portal_validation",
+          "result": "passed",
+          "seconds": 5.56
+        },
+        {
+          "name": "vis_reproducible",
+          "result": "passed",
+          "seconds": 15.72
+        },
+        {
+          "name": "game_catalog",
+          "result": "passed",
+          "seconds": 0.72
+        },
+        {
+          "name": "workbench",
+          "result": "passed",
+          "seconds": 1.46
+        },
+        {
+          "name": "workbench_window",
+          "result": "passed",
+          "seconds": 0.9
+        },
+        {
+          "name": "workbench_preview",
+          "result": "passed",
+          "seconds": 0.25
+        }
+      ],
+      "hardware_limit": "No suitable OpenCL GPU under WSL; GPU scripts check rejection/fallback and skip their hardware parity sections."
+    },
+    {
+      "build_directory": "build/linux-sanitized",
+      "platform": "Ubuntu 24.04 x64 under WSL",
+      "gcc": "13.3.0",
+      "qt": null,
+      "configuration": {
+        "Q3MAPX_BUILD_GUI": "OFF",
+        "Q3MAPX_ENABLE_OPENCL": "OFF",
+        "Q3MAPX_ENABLE_SANITIZERS": "ON"
+      },
+      "binary_sha256": {
+        "q3mapx": "43fc9fce7c06a2ab704eb1c29c47a39913958b8f9b836b943b302de1d938c3eb"
+      },
+      "registered": 31,
+      "passed": 30,
+      "skipped": [
+        "area_factors"
+      ],
+      "total_seconds": 673.19,
+      "log": ".agents/tmp/game-coverage/test-sanitized-0.3-fixed.log",
+      "tests": [
+        {
+          "name": "cli_help",
+          "result": "passed",
+          "seconds": 0.6
+        },
+        {
+          "name": "cli_games",
+          "result": "passed",
+          "seconds": 0.63
+        },
+        {
+          "name": "game_profiles",
+          "result": "passed",
+          "seconds": 110.19
+        },
+        {
+          "name": "compiler_pipeline",
+          "result": "passed",
+          "seconds": 16.69
+        },
+        {
+          "name": "lighting_materials",
+          "result": "passed",
+          "seconds": 70.28
+        },
+        {
+          "name": "bsp_validation",
+          "result": "passed",
+          "seconds": 52.81
+        },
+        {
+          "name": "bsp_inspect",
+          "result": "passed",
+          "seconds": 90.69
+        },
+        {
+          "name": "bsp_analyze",
+          "result": "passed",
+          "seconds": 21.42
+        },
+        {
+          "name": "ftx",
+          "result": "passed",
+          "seconds": 0.05
+        },
+        {
+          "name": "terrain",
+          "result": "passed",
+          "seconds": 0.13
+        },
+        {
+          "name": "native_fakk",
+          "result": "passed",
+          "seconds": 38.61
+        },
+        {
+          "name": "native_mohaa",
+          "result": "passed",
+          "seconds": 18.63
+        },
+        {
+          "name": "native_early",
+          "result": "passed",
+          "seconds": 37.48
+        },
+        {
+          "name": "mesh_export",
+          "result": "passed",
+          "seconds": 15.08
+        },
+        {
+          "name": "decompile_math",
+          "result": "passed",
+          "seconds": 0.07
+        },
+        {
+          "name": "lighting_math",
+          "result": "passed",
+          "seconds": 0.24
+        },
+        {
+          "name": "area_factors",
+          "result": "skipped",
+          "seconds": 0.08
+        },
+        {
+          "name": "area_factors_disabled",
+          "result": "passed",
+          "seconds": 0.06
+        },
+        {
+          "name": "lighting_gpu",
+          "result": "passed",
+          "seconds": 4.11
+        },
+        {
+          "name": "decompile_recovery",
+          "result": "passed",
+          "seconds": 4.94
+        },
+        {
+          "name": "job_pool",
+          "result": "passed",
+          "seconds": 0.23
+        },
+        {
+          "name": "lightgrid",
+          "result": "passed",
+          "seconds": 4.82
+        },
+        {
+          "name": "lightgrid_cli",
+          "result": "passed",
+          "seconds": 3.58
+        },
+        {
+          "name": "raven_compat",
+          "result": "passed",
+          "seconds": 13.46
+        },
+        {
+          "name": "cli_options",
+          "result": "passed",
+          "seconds": 35.24
+        },
+        {
+          "name": "atomic_file",
+          "result": "passed",
+          "seconds": 0.3
+        },
+        {
+          "name": "columns",
+          "result": "passed",
+          "seconds": 0.58
+        },
+        {
+          "name": "minimap",
+          "result": "passed",
+          "seconds": 19.21
+        },
+        {
+          "name": "gpu_columns",
+          "result": "passed",
+          "seconds": 31.64
+        },
+        {
+          "name": "portal_validation",
+          "result": "passed",
+          "seconds": 55.43
+        },
+        {
+          "name": "vis_reproducible",
+          "result": "passed",
+          "seconds": 25.55
+        }
+      ],
+      "hardware_limit": "No suitable OpenCL GPU under WSL; GPU scripts check rejection/fallback and skip their hardware parity sections.",
+      "asan_options": "detect_leaks=0:abort_on_error=1",
+      "sanitizer_scope": "Address and undefined-behavior instrumentation covers compiler/support/test targets; external shared dependencies were not rebuilt. Inherited process-lifetime allocations exclude leak checking."
+    }
+  ],
+  "passed": 99,
+  "hardware_skips": 2,
+  "initial_integration_finding": {
+    "issue": "Concurrent fatal exits ran cleanup while workers still used shared compiler state",
+    "linux_reproduction_before_fix": {
+      "runs": 12,
+      "segmentation_faults": 3
+    },
+    "fix_revision": "4d024ba",
+    "regression": "Repeated 129/512-point portal traversal with 1/4/16 workers requires controlled failure and unchanged BSP output."
+  },
+  "limits": [
+    "Local execution, not a remote CI run",
+    "No game runtime or manual assistive-technology certification",
+    "No thread-sanitizer or comprehensive third-party decoder fuzz coverage",
+    "MSVC and macOS unverified"
+  ],
+  "result": "passed"
+}

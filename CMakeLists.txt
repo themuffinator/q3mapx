@@ -26,6 +26,8 @@ target_include_directories(q3mapx_jobs PUBLIC libs)
 target_link_libraries(q3mapx_jobs PUBLIC Threads::Threads)
 add_library(q3mapx_io STATIC libs/q3mapx/atomic_file.cpp)
 target_include_directories(q3mapx_io PUBLIC libs)
+add_library(q3mapx_compute STATIC libs/q3mapx/columns.cpp)
+target_include_directories(q3mapx_compute PUBLIC libs)
 
 # Preserve NRC's source layout so changes remain easy to compare with upstream.
 file(GLOB Q3MAPX_COMPILER_SOURCES CONFIGURE_DEPENDS tools/quake3/q3map2/*.cpp)
@@ -45,7 +47,7 @@ target_include_directories(q3mapx PRIVATE tools/quake3/common libs include)
 target_link_libraries(q3mapx PRIVATE
     PkgConfig::GLIB PkgConfig::XML assimp::assimp
     PNG::PNG JPEG::JPEG ZLIB::ZLIB Threads::Threads
-    q3mapx_jobs q3mapx_io
+    q3mapx_jobs q3mapx_io q3mapx_compute
 )
 target_compile_definitions(q3mapx PRIVATE
     Q3MAP_VERSION="2.5.17n-q3mapx-${PROJECT_VERSION}"
@@ -131,6 +133,14 @@ if(BUILD_TESTING)
     add_executable(atomic_file_test tests/atomic_file.cpp)
     target_link_libraries(atomic_file_test PRIVATE q3mapx_io)
     add_test(NAME atomic_file COMMAND atomic_file_test ${CMAKE_BINARY_DIR}/tests/atomic-file)
+    add_executable(columns_test tests/columns.cpp)
+    target_link_libraries(columns_test PRIVATE q3mapx_compute)
+    add_test(NAME columns COMMAND columns_test)
+    add_test(NAME minimap COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/minimap.py
+        --compiler $<TARGET_FILE:q3mapx>
+        --work-dir ${CMAKE_BINARY_DIR}/tests/minimap)
+    set_tests_properties(minimap PROPERTIES TIMEOUT 90)
 endif()
 
 include(GNUInstallDirs)

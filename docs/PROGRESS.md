@@ -185,3 +185,22 @@ successful replacement, interrupted writes, independent temporary names, and a
 failed replacement that preserves existing contents. Compiler round trips and
 corrupt-BSP checks continue to pass. Legacy paths outside BSP/`SaveFile`, including
 some direct text exporters and asset decoders, still need broader hardening.
+
+## 2026-09-29 — Indexed CPU minimaps
+
+Replaced the per-sample full brush scan with compact spatial candidate lists and
+contiguous plane data. Removed assumptions about brush-side ordering and made
+random sampling deterministic across workers. Added a reference backend, random
+seed option, strict minimap numeric bounds, finite nonempty extents, and buffer
+cleanup. The same data layout is suitable for the upcoming GPU implementation.
+
+Validation: release build and 11/11 CTest groups pass. Fifty thousand randomized
+column queries, brush boundaries, shuffled planes and nonaxial brushes match the
+exhaustive reference. Real minimap images match at 1/4 workers and across reference
+and indexed paths, including random samples and postprocessing. Invalid arguments
+fail cleanly.
+
+Alternating five-run end-to-end benchmark on the 968-brush, 2048², four-sample
+fixture: NRC median 2.5647 s, indexed CPU 0.0862 s, **29.8x speedup with exact image
+parity**. Evidence: `docs/benchmarks/minimap-cpu-win-x64.json`. This is a minimap
+speedup; it does not imply faster BSP construction or lighting.

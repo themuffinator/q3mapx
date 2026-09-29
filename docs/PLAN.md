@@ -57,7 +57,7 @@ irrecoverable data is reported explicitly. See [decompilation design](DECOMPILAT
 - [x] Remove fixed worker-array limits and validate requested thread counts.
 - [x] Keep compiler data locks separate from scheduling/progress locks.
 - [x] Add structured per-pass timings and useful build reports.
-- [ ] Profile expensive compiler stages and optimize measured bottlenecks.
+- [x] Profile expensive compiler stages and optimize measured bottlenecks (minimap brush traversal).
 
 Acceptance: exactly-once execution at varied worker counts, zero/small job handling,
 safe shutdown/error propagation, regression parity, and repeatable timing evidence.

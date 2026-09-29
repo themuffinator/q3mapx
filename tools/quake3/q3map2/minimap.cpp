@@ -30,6 +30,9 @@
 
 /* dependencies */
 #include "q3map2.h"
+#include "arguments.h"
+#include "q3mapx/columns.h"
+#include "timer.h"
 
 /* minimap stuff */
 
@@ -50,96 +53,19 @@ struct minimap_t
 
 static minimap_t minimap;
 
-static bool BrushIntersectionWithLine( const bspBrush_t& brush, const Vector3& start, const Vector3& dir, float *t_in, float *t_out ){
-	bool in = false, out = false;
-
-	for ( const bspBrushSide_t& side : Span( &bspBrushSides[brush.firstSide], brush.numSides ) )
-	{
-		const bspPlane_t& p = bspPlanes[side.planeNum];
-		float sn = vector3_dot( start, p.normal() );
-		float dn = vector3_dot( dir, p.normal() );
-		if ( dn == 0 ) {
-			if ( sn > p.dist() ) {
-				return false; // outside!
-			}
-		}
-		else
-		{
-			float t = ( p.dist() - sn ) / dn;
-			if ( dn < 0 ) {
-				if ( !in || t > *t_in ) {
-					*t_in = t;
-					in = true;
-					// as t_in can only increase, and t_out can only decrease, early out
-					if ( out && *t_in >= *t_out ) {
-						return false;
-					}
-				}
-			}
-			else
-			{
-				if ( !out || t < *t_out ) {
-					*t_out = t;
-					out = true;
-					// as t_in can only increase, and t_out can only decrease, early out
-					if ( in && *t_in >= *t_out ) {
-						return false;
-					}
-				}
-			}
-		}
-	}
-	return in && out;
-}
+static q3mapx::ColumnScene columns;
+static bool referenceSampling = false;
+static uint32_t randomSeed = 0;
 
 static float MiniMapSample( float x, float y ){
-	float t0, t1;
-	float samp;
-	int cnt;
-
-	const Vector3 org( x, y, 0 );
-	const Vector3 dir( g_vector3_axis_z );
-
-	cnt = 0;
-	samp = 0;
-	for ( int i = 0; i < minimap.model->numBSPBrushes; ++i )
-	{
-		const int bi = minimap.model->firstBSPBrush + i;
-		if ( opaqueBrushes[bi] ) {
-			const bspBrush_t& b = bspBrushes[bi];
-
-			// sort out mins/maxs of the brush
-			const bspBrushSide_t *s = &bspBrushSides[b.firstSide];
-			if ( x < -bspPlanes[s[0].planeNum].dist() ) {
-				continue;
-			}
-			if ( x > +bspPlanes[s[1].planeNum].dist() ) {
-				continue;
-			}
-			if ( y < -bspPlanes[s[2].planeNum].dist() ) {
-				continue;
-			}
-			if ( y > +bspPlanes[s[3].planeNum].dist() ) {
-				continue;
-			}
-
-			if ( BrushIntersectionWithLine( b, org, dir, &t0, &t1 ) ) {
-				samp += t1 - t0;
-				++cnt;
-			}
-		}
-	}
-
-	return samp;
+	return columns.sample(x, y, !referenceSampling);
 }
 
-inline void RandomVector2f( float v[2] ){
-	do
-	{
-		v[0] = 2 * Random() - 1;
-		v[1] = 2 * Random() - 1;
-	}
-	while ( v[0] * v[0] + v[1] * v[1] > 1 );
+inline void RandomVector2f( float v[2], uint32_t& state ){
+	do {
+		v[0] = 2.0f * q3mapx::columnRandom(state) - 1.0f;
+		v[1] = 2.0f * q3mapx::columnRandom(state) - 1.0f;
+	} while ( v[0] * v[0] + v[1] * v[1] > 1.0f );
 }
 
 static void MiniMapRandomlySupersampled( int y ){
@@ -155,10 +81,11 @@ static void MiniMapRandomlySupersampled( int y ){
 	{
 		float xmin = minimap.mins[0] + minimap.size[0] * ( x / (float) minimap.width );
 		float val = 0;
+		uint32_t state = uint32_t(y * minimap.width + x) ^ randomSeed;
 
 		for ( i = 0; i < minimap.samples; ++i )
 		{
-			RandomVector2f( uv );
+			RandomVector2f( uv, state );
 			thisval = MiniMapSample(
 			              xmin + ( uv[0] + 0.5 ) * dx, /* exaggerated random pattern for better results */
 			              ymin + ( uv[1] + 0.5 ) * dy  /* exaggerated random pattern for better results */
@@ -310,9 +237,25 @@ static void MiniMapMakeMinsMaxs( Vector3& mins, Vector3& maxs, float border, boo
 
 static void MiniMapSetupBrushes(){
 	SetupBrushesFlags( C_SOLID | C_SKY, C_SOLID, 0, 0 );
-	// at least one must be solid
-	// none may be sky
-	// not all may be nodraw
+	Timer timer;
+	columns = {};
+	for ( int i = 0; i < minimap.model->numBSPBrushes; ++i ) {
+		const int index = minimap.model->firstBSPBrush + i;
+		if ( !opaqueBrushes[index] ) continue;
+		const auto& brush = bspBrushes[index];
+		q3mapx::ColumnBrush item{};
+		item.first = uint32_t(columns.planes.size());
+		item.count = uint32_t(brush.numSides);
+		for ( int j = 0; j < brush.numSides; ++j ) {
+			const auto& p = bspPlanes[bspBrushSides[brush.firstSide + j].planeNum];
+			columns.planes.push_back({p.normal().x(), p.normal().y(), p.normal().z(), p.dist()});
+		}
+		columns.brushes.push_back(item);
+	}
+	try { columns.buildIndex(minimap.mins.x(), minimap.mins.y(), minimap.mins.x() + minimap.size.x(), minimap.mins.y() + minimap.size.y()); }
+	catch ( const std::exception& error ) { Error("Minimap index: %s", error.what()); }
+	Sys_Printf("Column index: %zu brushes, %ux%u cells, %zu references (%.3f s)\n",
+	    columns.brushes.size(), columns.grid, columns.grid, columns.references.size(), timer.elapsed_sec());
 }
 
 static bool MiniMapEvaluateSampleOffsets( int *bestj, int *bestk, float *bestval ){
@@ -487,28 +430,28 @@ int MiniMapBSPMain( Args& args ){
 	/* process arguments */
 	{
 		while( args.takeArg( "-size" ) ) {
-			minimap.width = minimap.height = atoi( args.takeNext() );
+			minimap.width = minimap.height = ParseIntegerOption("-size", args.takeNext(), 1, 8192);
 			Sys_Printf( "Image size set to %i\n", minimap.width );
 		}
 		while( args.takeArg( "-sharpen" ) ) {
-			minimapSharpen = atof( args.takeNext() );
+			minimapSharpen = ParseFloatOption("-sharpen", args.takeNext(), -1, 16);
 			Sys_Printf( "Sharpening coefficient set to %f\n", minimapSharpen );
 		}
 		while( args.takeArg( "-samples" ) ) {
-			minimap.samples = atoi( args.takeNext() );
+			minimap.samples = ParseIntegerOption("-samples", args.takeNext(), 1, 256);
 			Sys_Printf( "Samples set to %i\n", minimap.samples );
 			free( minimap.sample_offsets );
 			minimap.sample_offsets = safe_malloc( 2 * sizeof( *minimap.sample_offsets ) * minimap.samples );
 			MiniMapMakeSampleOffsets();
 		}
 		while( args.takeArg( "-random" ) ) {
-			minimap.samples = atoi( args.takeNext() );
+			minimap.samples = ParseIntegerOption("-random", args.takeNext(), 1, 4096);
 			Sys_Printf( "Random samples set to %i\n", minimap.samples );
 			free( minimap.sample_offsets );
 			minimap.sample_offsets = nullptr;
 		}
 		while( args.takeArg( "-border" ) ) {
-			border = atof( args.takeNext() );
+			border = ParseFloatOption("-border", args.takeNext(), 0, 0.49f);
 			Sys_Printf( "Border set to %f\n", border );
 		}
 		while( args.takeArg( "-keepaspect" ) ) {
@@ -520,16 +463,18 @@ int MiniMapBSPMain( Args& args ){
 			Sys_Printf( "Not keeping aspect ratio\n", border );
 		}
 		while( args.takeArg( "-o" ) ) {
-			strcpy( minimapFilename, args.takeNext() );
+			const char* output = args.takeNext();
+			if ( strlen(output) >= sizeof(minimapFilename) ) Error("Minimap output path too long");
+			strcpy( minimapFilename, output );
 			Sys_Printf( "Output file name set to %s\n", minimapFilename );
 		}
 		while( args.takeArg( "-minmax" ) ) {
-			mins[0] = atof( args.takeNext() );
-			mins[1] = atof( args.takeNext() );
-			mins[2] = atof( args.takeNext() );
-			maxs[0] = atof( args.takeNext() );
-			maxs[1] = atof( args.takeNext() );
-			maxs[2] = atof( args.takeNext() );
+			mins[0] = ParseFloatOption("-minmax", args.takeNext(), -1e9f, 1e9f);
+			mins[1] = ParseFloatOption("-minmax", args.takeNext(), -1e9f, 1e9f);
+			mins[2] = ParseFloatOption("-minmax", args.takeNext(), -1e9f, 1e9f);
+			maxs[0] = ParseFloatOption("-minmax", args.takeNext(), -1e9f, 1e9f);
+			maxs[1] = ParseFloatOption("-minmax", args.takeNext(), -1e9f, 1e9f);
+			maxs[2] = ParseFloatOption("-minmax", args.takeNext(), -1e9f, 1e9f);
 			Sys_Printf( "Map mins/maxs overridden\n" );
 		}
 		while( args.takeArg( "-gray" ) ) {
@@ -545,15 +490,15 @@ int MiniMapBSPMain( Args& args ){
 			Sys_Printf( "Writing as white alpha image\n" );
 		}
 		while( args.takeArg( "-boost" ) ) {
-			minimap.boost = atof( args.takeNext() );
+			minimap.boost = ParseFloatOption("-boost", args.takeNext(), 0.001f, 1000);
 			Sys_Printf( "Contrast boost set to %f\n", minimap.boost );
 		}
 		while( args.takeArg( "-brightness" ) ) {
-			minimap.brightness = atof( args.takeNext() );
+			minimap.brightness = ParseFloatOption("-brightness", args.takeNext(), -1000, 1000);
 			Sys_Printf( "Brightness set to %f\n", minimap.brightness );
 		}
 		while( args.takeArg( "-contrast" ) ) {
-			minimap.contrast = atof( args.takeNext() );
+			minimap.contrast = ParseFloatOption("-contrast", args.takeNext(), -1000, 1000);
 			Sys_Printf( "Contrast set to %f\n", minimap.contrast );
 		}
 		while( args.takeArg( "-autolevel" ) ) {
@@ -566,6 +511,17 @@ int MiniMapBSPMain( Args& args ){
 		}
 	}
 
+	while ( args.takeArg("-backend") ) {
+		const char* value = args.takeNext();
+		if ( strEqual(value, "reference") ) referenceSampling = true;
+		else if ( strEqual(value, "cpu") || strEqual(value, "auto") ) referenceSampling = false;
+		else Error("Unknown minimap backend '%s'", value);
+	}
+	while ( args.takeArg("-seed") ) randomSeed = uint32_t(ParseIntegerOption("-seed", args.takeNext(), 0, INT_MAX));
+	if ( !args.empty() ) Error("Unknown minimap option: %s", args.takeFront());
+	for ( int axis = 0; axis < 3; ++axis )
+		if ( !std::isfinite(mins[axis]) || !std::isfinite(maxs[axis]) || maxs[axis] <= mins[axis] )
+			Error("Minimap bounds must have positive finite extent on every axis");
 	MiniMapMakeMinsMaxs( mins, maxs, border, keepaspect );
 
 	if ( strEmpty( minimapFilename ) ) {
@@ -728,6 +684,10 @@ int MiniMapBSPMain( Args& args ){
 		Sys_Printf( " done.\n" );
 	}
 
+	free(minimap.data1f);
+	free(minimap.sharpendata1f);
+	free(minimap.sample_offsets);
+	free(data4b);
 	/* return to sender */
 	return 0;
 }

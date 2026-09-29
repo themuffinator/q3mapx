@@ -34,6 +34,7 @@ See [decompilation options and limits](docs/DECOMPILATION.md). The traditional
 - [Implementation plan and acceptance criteria](docs/PLAN.md)
 - [Architecture and decisions](docs/ARCHITECTURE.md)
 - [Development and validation](docs/DEVELOPMENT.md)
+- [Measured performance and backend options](docs/PERFORMANCE.md)
 - [BSP decompilation design](docs/DECOMPILATION.md)
 - [Upstream provenance and credits](docs/UPSTREAM.md)
 - [Completed tasks and known issues](docs/PROGRESS.md)

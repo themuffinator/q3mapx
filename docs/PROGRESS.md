@@ -568,3 +568,33 @@ though the referencing surface marks those slots unused. The successful native
 benchmark uses an unmodified map with finite records; the other maps were not
 silently sanitized for comparison. Fixing inactive-slot validation is the next
 task. Existing inherited warnings and cleanup restrictions remain documented.
+
+## 2026-09-29 — Native Raven unused-field compatibility
+
+Retail-map validation exposed unused NaNs in both extra lightmap slots and
+vertex-lit patches' primary slots. The loader now proves a coordinate unused
+against every referencing surface before normalizing it. Used coordinates,
+including shared vertices, still fail on non-finite values under strict and
+`-force` modes. Sparse sorted candidate queries avoid a full vertex scan for
+every overlapping surface. Eleven zero-geometry flare records in Jedi Outcast's
+`yavin_temple` also refer to fog 0 despite an empty fog lump; those become no-fog
+references. Geometry-bearing invalid fog references still fail. Diagnostics and
+recovery JSON report both repairs.
+
+Windows malformed-file/recovery/grid/native-record regressions passed (4/4);
+Linux ASan/UBSan malformed-file/recovery/native-record checks passed (3/3, using
+the documented leak-detector setting). The optional archive harness validates
+61 Jedi Academy entries, including patched versions, and 41 Jedi Outcast entries:
+102/102 pass. Of those entries, 73 contain unused non-finite lightmap coordinates.
+Two real decompilations, `t3_stamp` and `yavin_temple`, recover 4,118/2,725 brushes
+and 338/289 patches respectively, with no skipped brushes. Unrecoverable/hidden
+brush faces still use reported fallback UVs; this does not promise the original
+editor source or gameplay validation.
+
+Source archives were read-only, compiler/input hashes were checked, and no retail
+assets are committed. `validation/native-raven-win-x64.json` records the evidence;
+local outputs are in `build/native-{validation,recovery}` and logs in
+`.agents/tmp/game-coverage`. Format observations are credited to the pinned
+fnTech3/OpenJK references in `GAME-COVERAGE.md`; no external implementation text
+was copied. No new unrelated issue was found beyond the already documented
+inherited process-lifetime allocations, compiler warnings and cleanup restriction.

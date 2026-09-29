@@ -1,0 +1,1104 @@
+{
+  "schema_version": 1,
+  "scope": "native BSP validation and two recovery probes; not gameplay validation",
+  "archive_reports": [
+    {
+      "schema_version": 1,
+      "timestamp_utc": "2026-09-29T18:14:36.211509+00:00",
+      "kind": "native_archive_validation",
+      "game": "ja",
+      "compiler_sha256": "0d94ed5e4823ecc3349a7717ed3a1b75f39085bcff2677c7fad6a93ded82f500",
+      "passed": 61,
+      "total": 61,
+      "records": [
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/academy1.bsp",
+          "bytes": 1770292,
+          "sha256": "d50ad832c18a08c5f57c9cc1e1e6048d9a7cd50b33b6d70c3897ff9fffbc3ad3",
+          "exit_code": 0,
+          "seconds": 0.029277299996465445,
+          "normalized_unused_lightmap_uv_pairs": 2,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/academy2.bsp",
+          "bytes": 1606072,
+          "sha256": "0d90065d0abb3831a5e076729044608fc3ac918610c8531c51383669a3bdcdd5",
+          "exit_code": 0,
+          "seconds": 0.02301959996111691,
+          "normalized_unused_lightmap_uv_pairs": 2,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/academy3.bsp",
+          "bytes": 1601976,
+          "sha256": "d5f21febdf169f7f66661dd3c7a4db0e34caf9e6633bc9329abaab3e036868a1",
+          "exit_code": 0,
+          "seconds": 0.019606899993959814,
+          "normalized_unused_lightmap_uv_pairs": 2,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/academy4.bsp",
+          "bytes": 1687236,
+          "sha256": "ca034a412105046fbe3f561855649caa9d91bc3661f34f4184d65ed1f577d023",
+          "exit_code": 0,
+          "seconds": 0.024250499962363392,
+          "normalized_unused_lightmap_uv_pairs": 2,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/academy5.bsp",
+          "bytes": 1601176,
+          "sha256": "55c8b1919b86fa2a98501cc4ae9de535c7f066143c2d69e4a22adc16ba662ed4",
+          "exit_code": 0,
+          "seconds": 0.021949100017081946,
+          "normalized_unused_lightmap_uv_pairs": 2,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/academy6.bsp",
+          "bytes": 4098704,
+          "sha256": "e0b93d90d637602159874a3b746d25496b97b3f021db63a5210dc76058752889",
+          "exit_code": 0,
+          "seconds": 0.033579999988432974,
+          "normalized_unused_lightmap_uv_pairs": 2,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/hoth2.bsp",
+          "bytes": 13970616,
+          "sha256": "3fc5d0a469c7246d09cb9d0be4500fc0f9a5923ca9a23fdee51aba9eceb3f71d",
+          "exit_code": 0,
+          "seconds": 0.04615520004881546,
+          "normalized_unused_lightmap_uv_pairs": 111,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/hoth3.bsp",
+          "bytes": 13920700,
+          "sha256": "821e6413f10e1e4aca7b6a5fd1bc57a6731bce5d9075cb0175208915cee5cb32",
+          "exit_code": 0,
+          "seconds": 0.03323350002756342,
+          "normalized_unused_lightmap_uv_pairs": 432,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/kor1.bsp",
+          "bytes": 12565400,
+          "sha256": "6f70c0e44ed63ab8f73a4739e2697d4ed500b1d75bc46697a2e797a05e918223",
+          "exit_code": 0,
+          "seconds": 0.03969100001268089,
+          "normalized_unused_lightmap_uv_pairs": 54,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/kor2.bsp",
+          "bytes": 11963536,
+          "sha256": "b3e222b0fecf9fdeb8b5b03d2202d6ad203bc2f9753fbcc2ac47f3a482d2de8f",
+          "exit_code": 0,
+          "seconds": 0.03156819997821003,
+          "normalized_unused_lightmap_uv_pairs": 225,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/mp/ctf1.bsp",
+          "bytes": 11452192,
+          "sha256": "3565da72c3f248b68bc19b5a326b5cc447b6b6d8d1f3fe81d82970e17225b8ac",
+          "exit_code": 0,
+          "seconds": 0.0336638999870047,
+          "normalized_unused_lightmap_uv_pairs": 4046,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/mp/ctf2.bsp",
+          "bytes": 8343136,
+          "sha256": "1436683cfa0ef0545949ac2244140828eff06a2e544d01de8204104b4bf3b442",
+          "exit_code": 0,
+          "seconds": 0.029262099997140467,
+          "normalized_unused_lightmap_uv_pairs": 639,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/mp/ctf3.bsp",
+          "bytes": 8488040,
+          "sha256": "f1b13a2352c08aa385e7c61a3bde41dd76c0713aeb11843d09767ae24a147616",
+          "exit_code": 0,
+          "seconds": 0.02553119999356568,
+          "normalized_unused_lightmap_uv_pairs": 2,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/mp/ctf4.bsp",
+          "bytes": 7481568,
+          "sha256": "a51183edbf3ee261066c776d9f2109aa6cb32c25a68002b007bd100f220ce9f2",
+          "exit_code": 0,
+          "seconds": 0.025580299959983677,
+          "normalized_unused_lightmap_uv_pairs": 604,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/mp/ctf5.bsp",
+          "bytes": 11444984,
+          "sha256": "0e999ee26a19883cadf3c62fbd90ebb18766cb0033d9f55e2a3d5e00c77b72dc",
+          "exit_code": 0,
+          "seconds": 0.040113800030667335,
+          "normalized_unused_lightmap_uv_pairs": 95,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/mp/duel1.bsp",
+          "bytes": 3036068,
+          "sha256": "113bdcf0732ae1abc15ef1e43d13c00bcdca64d465e87c08534e50e2a19b92f2",
+          "exit_code": 0,
+          "seconds": 0.02107590000377968,
+          "normalized_unused_lightmap_uv_pairs": 46,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/mp/duel10.bsp",
+          "bytes": 3778576,
+          "sha256": "6112dfeeb7f224697c3a96794e9c0cb0f05d421c712b64b70c635f11e81de461",
+          "exit_code": 0,
+          "seconds": 0.02899670001352206,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/mp/duel2.bsp",
+          "bytes": 6073332,
+          "sha256": "073d7598a2d4f14d93329d3e5168703affa2b6ee1f83641cb2008dd147c5f48e",
+          "exit_code": 0,
+          "seconds": 0.02560509997420013,
+          "normalized_unused_lightmap_uv_pairs": 8,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/mp/duel3.bsp",
+          "bytes": 2456616,
+          "sha256": "025f0bdc9302ff2f1065a6455c80838d3973452fe403340c276a687643191790",
+          "exit_code": 0,
+          "seconds": 0.01945490000071004,
+          "normalized_unused_lightmap_uv_pairs": 343,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/mp/duel4.bsp",
+          "bytes": 1167576,
+          "sha256": "6575914ae34291ae645889a14650184157774a83f094e3fc43feed2a88ff65f0",
+          "exit_code": 0,
+          "seconds": 0.02137199998833239,
+          "normalized_unused_lightmap_uv_pairs": 5,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/mp/duel5.bsp",
+          "bytes": 6900108,
+          "sha256": "61f10807019f500f806530dca29983e712fa8b388bac5a5c78999a5652abe3ca",
+          "exit_code": 0,
+          "seconds": 0.030884999956469983,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/mp/duel6.bsp",
+          "bytes": 7619140,
+          "sha256": "809e34d89b4803501da145a174421c7df95212614c246dafabf4083d502b0e2c",
+          "exit_code": 0,
+          "seconds": 0.028460800007451326,
+          "normalized_unused_lightmap_uv_pairs": 137,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/mp/duel7.bsp",
+          "bytes": 2730040,
+          "sha256": "8ae1d672900e668e989befad1c152cb1f4e79e41a1fb283cb4189f5f151409ca",
+          "exit_code": 0,
+          "seconds": 0.022280699980910867,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/mp/duel8.bsp",
+          "bytes": 5689552,
+          "sha256": "c2f45d181dc27d7fd15e5673d4e22483a79a2bc0d1da751ea05cfd11a513d1f6",
+          "exit_code": 0,
+          "seconds": 0.03008959995349869,
+          "normalized_unused_lightmap_uv_pairs": 410,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/mp/duel9.bsp",
+          "bytes": 5004800,
+          "sha256": "d24e57f38b0f3912da89ad95e241c427a5bf3a98718cff477b95a6089677c8c4",
+          "exit_code": 0,
+          "seconds": 0.029896199994254857,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/mp/ffa1.bsp",
+          "bytes": 4617652,
+          "sha256": "87c7732e8439ab01cc7b7d2bc17333133102a16d42b086636b4af0a7ed0d6f9a",
+          "exit_code": 0,
+          "seconds": 0.0295060999924317,
+          "normalized_unused_lightmap_uv_pairs": 1,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/mp/ffa2.bsp",
+          "bytes": 8168232,
+          "sha256": "31f2213300fa712d1a53e22d26e5d7b93a35d46c7f3e0eba6a8fd399129a8f0d",
+          "exit_code": 0,
+          "seconds": 0.02821120002772659,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/mp/ffa3.bsp",
+          "bytes": 7577200,
+          "sha256": "2a448530b908761dd797a02f6530bbe2deb6597f1bc58d9c458e6d62619d5b05",
+          "exit_code": 0,
+          "seconds": 0.02480790001573041,
+          "normalized_unused_lightmap_uv_pairs": 387,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/mp/ffa4.bsp",
+          "bytes": 7430960,
+          "sha256": "e03434915b363de24d4e695616b3577d8af969032ce8ea6ca649a50e70d8607d",
+          "exit_code": 0,
+          "seconds": 0.026873999973759055,
+          "normalized_unused_lightmap_uv_pairs": 175,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/mp/ffa5.bsp",
+          "bytes": 9402608,
+          "sha256": "1c7588718f30566c4d8ded86982dc2092ec7fccad3215f46baba912ac15e4034",
+          "exit_code": 0,
+          "seconds": 0.03226499998709187,
+          "normalized_unused_lightmap_uv_pairs": 159,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/mp/siege_desert.bsp",
+          "bytes": 11003576,
+          "sha256": "1df3401c7d57c85d291397a5217da41ce4718f4a0184347e205ca22f262e79b1",
+          "exit_code": 0,
+          "seconds": 0.043860599980689585,
+          "normalized_unused_lightmap_uv_pairs": 64,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/mp/siege_hoth.bsp",
+          "bytes": 11127580,
+          "sha256": "77c245169a6cfc34827817191f1d9356ec40f41e8c655a576127316c6c02ffbc",
+          "exit_code": 0,
+          "seconds": 0.0344518999918364,
+          "normalized_unused_lightmap_uv_pairs": 2893,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/mp/siege_korriban.bsp",
+          "bytes": 10658028,
+          "sha256": "9fbc39ab918b38dfa3a46c5bfdb03a24e66fcda90fb21fd3f78b7943c53081a2",
+          "exit_code": 0,
+          "seconds": 0.037061600014567375,
+          "normalized_unused_lightmap_uv_pairs": 2,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/t1_danger.bsp",
+          "bytes": 10833924,
+          "sha256": "6a24f3cd86d93766034fd064be480cd3f3e70cd512733c9826ecbc64cc444ca3",
+          "exit_code": 0,
+          "seconds": 0.029550099978223443,
+          "normalized_unused_lightmap_uv_pairs": 528,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/t1_fatal.bsp",
+          "bytes": 13503020,
+          "sha256": "cc70ab3a7e5867bb72cc215430790a3e82078fbf40fb598a2306d4f2a2752de5",
+          "exit_code": 0,
+          "seconds": 0.04064019996440038,
+          "normalized_unused_lightmap_uv_pairs": 939,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/t1_inter.bsp",
+          "bytes": 730168,
+          "sha256": "99fbc13b225212ed5d4ab687fcaa3d53c715e014772e02dbf9732f2aa72526b8",
+          "exit_code": 0,
+          "seconds": 0.025727200030814856,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/t1_rail.bsp",
+          "bytes": 14293596,
+          "sha256": "56d4a5e115592160404ba770366ea6055ed9ae494fc4ff12c776c6c6ef3df5db",
+          "exit_code": 0,
+          "seconds": 0.04992449999554083,
+          "normalized_unused_lightmap_uv_pairs": 666,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/t1_sour.bsp",
+          "bytes": 10203160,
+          "sha256": "f73090ab42d074a5cce2b771c15fac7cd1bad534e2615aa9b589e07b410253b9",
+          "exit_code": 0,
+          "seconds": 0.03724119998514652,
+          "normalized_unused_lightmap_uv_pairs": 229,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/t1_surprise.bsp",
+          "bytes": 10551572,
+          "sha256": "f13bb500d627b7fef809df16a69c108209100b0397bee60504c3cbfd02e2526e",
+          "exit_code": 0,
+          "seconds": 0.03771460003918037,
+          "normalized_unused_lightmap_uv_pairs": 639,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/t2_dpred.bsp",
+          "bytes": 12371844,
+          "sha256": "9cd59f4e789d23b5e329ebf1e43f9beb785e56e581d1933bff12efb178ba16e2",
+          "exit_code": 0,
+          "seconds": 0.04817979998188093,
+          "normalized_unused_lightmap_uv_pairs": 78,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/t2_rancor.bsp",
+          "bytes": 16977060,
+          "sha256": "fb05a9542681f168fa2788a09efc0264bea6f95035b940ae28dc773e6f0b80aa",
+          "exit_code": 0,
+          "seconds": 0.0585471999947913,
+          "normalized_unused_lightmap_uv_pairs": 1586,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/t2_rogue.bsp",
+          "bytes": 12342268,
+          "sha256": "f99457555d9119591e006b775cf1af22d6fc53b2f1ac39f548eb15e050af201e",
+          "exit_code": 0,
+          "seconds": 0.04968699999153614,
+          "normalized_unused_lightmap_uv_pairs": 53,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/t2_trip.bsp",
+          "bytes": 14157324,
+          "sha256": "1427cdb3ebd9061b62376defe0b56728a9b2d5a0cd61b44938fe73f40cb44c24",
+          "exit_code": 0,
+          "seconds": 0.04428470000857487,
+          "normalized_unused_lightmap_uv_pairs": 298,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/t2_wedge.bsp",
+          "bytes": 13861188,
+          "sha256": "9288e95c18d9fa8517041632e8c932be138eebe8e31b698252c86515a567c5a9",
+          "exit_code": 0,
+          "seconds": 0.047391399974003434,
+          "normalized_unused_lightmap_uv_pairs": 450,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/t3_bounty.bsp",
+          "bytes": 15817700,
+          "sha256": "41d07425d8560c5e6dd8086021485646df3d9d04f45546a51b5d0ec8b606c5fa",
+          "exit_code": 0,
+          "seconds": 0.045019200013484806,
+          "normalized_unused_lightmap_uv_pairs": 79,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/t3_byss.bsp",
+          "bytes": 10690544,
+          "sha256": "5f548263a1b36fcc823c30a7769e3c8cb4913e395a6022bf390684de5525841d",
+          "exit_code": 0,
+          "seconds": 0.04665460000978783,
+          "normalized_unused_lightmap_uv_pairs": 209,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/t3_hevil.bsp",
+          "bytes": 10431564,
+          "sha256": "fc8c69596123f0919684ead355e5b91088330beda7b5cfe30824f67f612c9bf7",
+          "exit_code": 0,
+          "seconds": 0.0349493000539951,
+          "normalized_unused_lightmap_uv_pairs": 174,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/t3_rift.bsp",
+          "bytes": 13029872,
+          "sha256": "4fa3f617d901bca18fb3c016da52de1e335a2e0614fd91907e1ef2a9520eab09",
+          "exit_code": 0,
+          "seconds": 0.041383199975825846,
+          "normalized_unused_lightmap_uv_pairs": 24,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/t3_stamp.bsp",
+          "bytes": 12754764,
+          "sha256": "886680f55a494d9accd5fcd7de70b952962e8d8741169dedf15f3a5f91e62101",
+          "exit_code": 0,
+          "seconds": 0.04391809995286167,
+          "normalized_unused_lightmap_uv_pairs": 457,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/taspir1.bsp",
+          "bytes": 15512472,
+          "sha256": "42e022cc643416a6687c7cf2596b7f0d4353f0a072b958c224281790e1cfe263",
+          "exit_code": 0,
+          "seconds": 0.03976159996818751,
+          "normalized_unused_lightmap_uv_pairs": 120,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/taspir2.bsp",
+          "bytes": 18006316,
+          "sha256": "11c2a02368faf274dbcd6cdad30201ecf868564829cb162e1809641c609075ca",
+          "exit_code": 0,
+          "seconds": 0.0505047999904491,
+          "normalized_unused_lightmap_uv_pairs": 164,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/vjun1.bsp",
+          "bytes": 14290148,
+          "sha256": "d17595a53591676c0d7e3c0ec9463fb0144aa83df2333c904031b914e55b2180",
+          "exit_code": 0,
+          "seconds": 0.054350599995814264,
+          "normalized_unused_lightmap_uv_pairs": 77,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/vjun2.bsp",
+          "bytes": 13339312,
+          "sha256": "cf81f39198d71a6e5f0ecf9ed7b08382d76397674492934cb07057835c49a343",
+          "exit_code": 0,
+          "seconds": 0.04910810000728816,
+          "normalized_unused_lightmap_uv_pairs": 263,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/vjun3.bsp",
+          "bytes": 13711492,
+          "sha256": "b64d53773082a5b4abe773b0857803accab9ec1b430996398692c9f0ef256181",
+          "exit_code": 0,
+          "seconds": 0.040181999967899173,
+          "normalized_unused_lightmap_uv_pairs": 131,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/yavin1.bsp",
+          "bytes": 8153500,
+          "sha256": "d953735df25f95a63f602b0afc2bee456ebd199a47bb1696a7b04e803d163aa3",
+          "exit_code": 0,
+          "seconds": 0.039358000038191676,
+          "normalized_unused_lightmap_uv_pairs": 73,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/yavin1b.bsp",
+          "bytes": 10959860,
+          "sha256": "bc1a632f2615d90d43187b16587e6f05eeb48033a7cd8c89057608f170c450c5",
+          "exit_code": 0,
+          "seconds": 0.03857319999951869,
+          "normalized_unused_lightmap_uv_pairs": 133,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/yavin2.bsp",
+          "bytes": 14463500,
+          "sha256": "419ce33427fb689dacc8445bf2676ed1da3e561c0d43207968b39b3039a1913c",
+          "exit_code": 0,
+          "seconds": 0.03905940003460273,
+          "normalized_unused_lightmap_uv_pairs": 111,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets3.pk3",
+          "map": "maps/mp/ctf1.bsp",
+          "bytes": 8269312,
+          "sha256": "375ba6a60ec25efde0a9744286d1e2998ff2a039eb9374290d0dc3b6e8d7bd36",
+          "exit_code": 0,
+          "seconds": 0.030200100038200617,
+          "normalized_unused_lightmap_uv_pairs": 569,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets3.pk3",
+          "map": "maps/mp/ctf2.bsp",
+          "bytes": 7863876,
+          "sha256": "74aac9245380a89f867b76dd9442f566bc5f92352df8f492e032d21fdbee21c8",
+          "exit_code": 0,
+          "seconds": 0.031767699983902276,
+          "normalized_unused_lightmap_uv_pairs": 22,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets3.pk3",
+          "map": "maps/mp/ctf4.bsp",
+          "bytes": 7521088,
+          "sha256": "f4ee5ef33c197208299b58c7ef1eeead216c7e70d284dd8f9380030206e9ef9f",
+          "exit_code": 0,
+          "seconds": 0.028340699966065586,
+          "normalized_unused_lightmap_uv_pairs": 847,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets3.pk3",
+          "map": "maps/mp/ctf5.bsp",
+          "bytes": 9502232,
+          "sha256": "f9d54f49f12ab7d639003fae92e6f0e8dd106ad25db7d8a626c4d470f6e21d4b",
+          "exit_code": 0,
+          "seconds": 0.03308119997382164,
+          "normalized_unused_lightmap_uv_pairs": 74,
+          "normalized_unused_flare_fogs": 0
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "timestamp_utc": "2026-09-29T18:14:34.831499+00:00",
+      "kind": "native_archive_validation",
+      "game": "jk2",
+      "compiler_sha256": "0d94ed5e4823ecc3349a7717ed3a1b75f39085bcff2677c7fad6a93ded82f500",
+      "passed": 41,
+      "total": 41,
+      "records": [
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/artus_detention.bsp",
+          "bytes": 20455688,
+          "sha256": "1170c1f9706c2f1459ffb478930efabd2086ac975f4d281e525b2fce8521f684",
+          "exit_code": 0,
+          "seconds": 0.057020300009753555,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/artus_mine.bsp",
+          "bytes": 19717228,
+          "sha256": "dd519aa731a994b85527adec7708793411293a4bd072adb93c78dd3834d2c9d3",
+          "exit_code": 0,
+          "seconds": 0.043103600037284195,
+          "normalized_unused_lightmap_uv_pairs": 57,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/artus_topside.bsp",
+          "bytes": 9458984,
+          "sha256": "8188bd2d0c0bc64aa25590dbbcea034b98e11ba449a0f618601b83005cff8031",
+          "exit_code": 0,
+          "seconds": 0.026970400009304285,
+          "normalized_unused_lightmap_uv_pairs": 2,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/bespin_platform.bsp",
+          "bytes": 7964256,
+          "sha256": "432cfedbf1a0a25a327a9debe27dc509eb961096bdcd20536ee6e58b4f95a31c",
+          "exit_code": 0,
+          "seconds": 0.03361879999283701,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/bespin_streets.bsp",
+          "bytes": 11831640,
+          "sha256": "8ce54db4ec6d8f8c4f79086eb7f953a0f2a5df910f292ae28da6192d8c53d6c6",
+          "exit_code": 0,
+          "seconds": 0.04741980001563206,
+          "normalized_unused_lightmap_uv_pairs": 37,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/bespin_undercity.bsp",
+          "bytes": 12862784,
+          "sha256": "4c3f7c1bc61518babefd3894942fd2f1040c5ebc5af935bce609e9f42d91d183",
+          "exit_code": 0,
+          "seconds": 0.04623759997775778,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/cairn_assembly.bsp",
+          "bytes": 14969384,
+          "sha256": "cd68803236048e26b640880c5f5c5627bd37f3a699fb3885e470f0e2df074130",
+          "exit_code": 0,
+          "seconds": 0.04097219998948276,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/cairn_bay.bsp",
+          "bytes": 14087576,
+          "sha256": "3f1d71b0c70246963b6c57127b0b08bcc90b9f57afe98272b0568984a0d1a548",
+          "exit_code": 0,
+          "seconds": 0.0450196000165306,
+          "normalized_unused_lightmap_uv_pairs": 20,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/cairn_dock1.bsp",
+          "bytes": 13813720,
+          "sha256": "5e6b5b96745c950b18410343940d3f763c51c3a25c8f3c32c175382a1815f60a",
+          "exit_code": 0,
+          "seconds": 0.041201100044418126,
+          "normalized_unused_lightmap_uv_pairs": 156,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/cairn_reactor.bsp",
+          "bytes": 15140980,
+          "sha256": "f7a1176fb84cc51707a642dc174324a32b91472d3e162c7f44dc5a259ba82554",
+          "exit_code": 0,
+          "seconds": 0.03989090002141893,
+          "normalized_unused_lightmap_uv_pairs": 40,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/ctf_bespin.bsp",
+          "bytes": 4457356,
+          "sha256": "41f88e28984279d3b38167ec4e66729633edbd01a89e3b51bbed1b81b1f7ec55",
+          "exit_code": 0,
+          "seconds": 0.026556700002402067,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/ctf_imperial.bsp",
+          "bytes": 3875264,
+          "sha256": "12541f0487bc63b6dae188c0ff5d87c6910741170980868a1c908ebab38ed791",
+          "exit_code": 0,
+          "seconds": 0.022423500020522624,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/ctf_ns_streets.bsp",
+          "bytes": 6565836,
+          "sha256": "b72d59ca9349afefd02656f78b1e42dd88a574d237847596da26dea25f3c6fc1",
+          "exit_code": 0,
+          "seconds": 0.029031399986706674,
+          "normalized_unused_lightmap_uv_pairs": 2,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/ctf_yavin.bsp",
+          "bytes": 4603380,
+          "sha256": "5850e21b5147afe64274bbf27924c4666046abd25b90b1e388b68124bb267655",
+          "exit_code": 0,
+          "seconds": 0.0306099999579601,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/doom_comm.bsp",
+          "bytes": 18096408,
+          "sha256": "d2b6f43c6c8f12842451141b381bb7910ef97665ecc7b24f0379e3221cdc215b",
+          "exit_code": 0,
+          "seconds": 0.04624660004628822,
+          "normalized_unused_lightmap_uv_pairs": 86,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/doom_detention.bsp",
+          "bytes": 16794856,
+          "sha256": "6ee3f1b0286c07c7cab496c7e59a73a7cb0c7f186715e030353b95017906540b",
+          "exit_code": 0,
+          "seconds": 0.039828999957535416,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/doom_shields.bsp",
+          "bytes": 8500528,
+          "sha256": "f80f804f9631bf649a3f93ee2a43cb4bd7ff436a9c14e2a9612b5e2f100e8a37",
+          "exit_code": 0,
+          "seconds": 0.02786440000636503,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/duel_bay.bsp",
+          "bytes": 1105996,
+          "sha256": "5cf78280a67eba667fe310da9257a6cb50a69539b3d91d69efd037fd98b486ca",
+          "exit_code": 0,
+          "seconds": 0.019886399968527257,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/duel_carbon.bsp",
+          "bytes": 910684,
+          "sha256": "cf07ccaaf7ec892565407a8055b229a2e0207b3861f70a4764d683611eff4e69",
+          "exit_code": 0,
+          "seconds": 0.018703299982007593,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/duel_jedi.bsp",
+          "bytes": 807276,
+          "sha256": "86c23f9a136cc85a176979e5735069e51ea8f91b52545db06ecc3e3f85f35dee",
+          "exit_code": 0,
+          "seconds": 0.026138900022488087,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/duel_pit.bsp",
+          "bytes": 675560,
+          "sha256": "ce4faea9bd63fc05ad059053eb02bfe31c94cc579e274142368e0d8dfe9805ea",
+          "exit_code": 0,
+          "seconds": 0.023782000003848225,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/ffa_bespin.bsp",
+          "bytes": 4162580,
+          "sha256": "8215efa398336f6413ef9708a46cacac974bff15a65a031fee9ebb87290f7060",
+          "exit_code": 0,
+          "seconds": 0.02739639999344945,
+          "normalized_unused_lightmap_uv_pairs": 395,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/ffa_deathstar.bsp",
+          "bytes": 6930420,
+          "sha256": "4e7b34c430b81791dd3bdbb1d0e7e1f7b3b65f7d9dba5e836c1c6f919d51e918",
+          "exit_code": 0,
+          "seconds": 0.029868200013879687,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/ffa_imperial.bsp",
+          "bytes": 4739844,
+          "sha256": "22951e4a4b3194c6dd94ada673dd9001c182ee1848766949dca2dada45fdc8dc",
+          "exit_code": 0,
+          "seconds": 0.030453699990175664,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/ffa_ns_hideout.bsp",
+          "bytes": 3742096,
+          "sha256": "adeed0ae69259537f02fe84ee13a67b75141cab28d0b23266a49c73e0fff307b",
+          "exit_code": 0,
+          "seconds": 0.023690500005614012,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/ffa_ns_streets.bsp",
+          "bytes": 5172592,
+          "sha256": "48fc8c6cd7395b6a63b806108167e94b6c61b5ba4d64c29008ec22a148bc985f",
+          "exit_code": 0,
+          "seconds": 0.02698009996674955,
+          "normalized_unused_lightmap_uv_pairs": 9,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/ffa_raven.bsp",
+          "bytes": 1151088,
+          "sha256": "a85692defe4c242afe4d971076a423ea33a2d3486fcc5a367be763e8b247a044",
+          "exit_code": 0,
+          "seconds": 0.023781900003086776,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/ffa_yavin.bsp",
+          "bytes": 3859052,
+          "sha256": "2d6bcb4ae65e9254107bb60e6a52ed6ef50b0f012d8c184e0c7335dfc1668cde",
+          "exit_code": 0,
+          "seconds": 0.02522710000630468,
+          "normalized_unused_lightmap_uv_pairs": 10,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/kejim_base.bsp",
+          "bytes": 12803632,
+          "sha256": "fc08f6e381a374b6df84a6613392b93b5c944dafb75accce9b0d09fd5a023ee6",
+          "exit_code": 0,
+          "seconds": 0.0320499999797903,
+          "normalized_unused_lightmap_uv_pairs": 1,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/kejim_post.bsp",
+          "bytes": 16404644,
+          "sha256": "7758dd300182c96fc99bba3aa65ef2fba48daacf77d10a66af3c98429725fa48",
+          "exit_code": 0,
+          "seconds": 0.04897289996733889,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/ns_hideout.bsp",
+          "bytes": 14959428,
+          "sha256": "4482b69c6aa3b1c52bea10bdf937a1109723347edfb23a6d938859f5adeb416f",
+          "exit_code": 0,
+          "seconds": 0.05181949998950586,
+          "normalized_unused_lightmap_uv_pairs": 2,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/ns_starpad.bsp",
+          "bytes": 11660120,
+          "sha256": "708a522728d90856a828968eede3403590410b929957c12d45dccd31433cac59",
+          "exit_code": 0,
+          "seconds": 0.03553669998655096,
+          "normalized_unused_lightmap_uv_pairs": 50,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/ns_streets.bsp",
+          "bytes": 12715340,
+          "sha256": "5881380092cdbf670f2dad7b774849d9372a12f597d117dfadb0c10620dec9b9",
+          "exit_code": 0,
+          "seconds": 0.04412320000119507,
+          "normalized_unused_lightmap_uv_pairs": 294,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/pit.bsp",
+          "bytes": 574288,
+          "sha256": "c9e10c1a858dc18cced3c45453b42d587b884d595b897ed322155c75e8f9eb1d",
+          "exit_code": 0,
+          "seconds": 0.027082599990535527,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/valley.bsp",
+          "bytes": 2345548,
+          "sha256": "3b466d16d13563f38b42327f06770f0a25a99cda828205c67dd9aa3ce84fec00",
+          "exit_code": 0,
+          "seconds": 0.02950770000461489,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/yavin_canyon.bsp",
+          "bytes": 17878552,
+          "sha256": "6e29566bc73682bf4ba2448be94426c076617dbb23d4173aeb9767b26edc8e6b",
+          "exit_code": 0,
+          "seconds": 0.05485809996025637,
+          "normalized_unused_lightmap_uv_pairs": 7,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/yavin_courtyard.bsp",
+          "bytes": 8008636,
+          "sha256": "13393996f7eb28bfa7fd9968136219af301efb6052b31a37d4dfc7709a6f3e03",
+          "exit_code": 0,
+          "seconds": 0.03923469997243956,
+          "normalized_unused_lightmap_uv_pairs": 2,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/yavin_final.bsp",
+          "bytes": 5936144,
+          "sha256": "f0aae4537e1d64fd545b483323fe2a70996691f145528a2503daed05fc6f473a",
+          "exit_code": 0,
+          "seconds": 0.03499449999071658,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/yavin_swamp.bsp",
+          "bytes": 19109536,
+          "sha256": "5e12ec383fa9373d0c83f53932b0f06af3c939a82d5c1bcb8fe803d74ade716f",
+          "exit_code": 0,
+          "seconds": 0.05141039995942265,
+          "normalized_unused_lightmap_uv_pairs": 3,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/yavin_temple.bsp",
+          "bytes": 7723688,
+          "sha256": "0681d890a8eeac19f6c8cebea0473a8af00a89abe5d86a1eab7ae78169ea596a",
+          "exit_code": 0,
+          "seconds": 0.034159299975726753,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 11
+        },
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/yavin_trial.bsp",
+          "bytes": 7719060,
+          "sha256": "6fb13575f8bea3e66dd22b845d7677b07818fb25c5472ff44be289fdd0d58d84",
+          "exit_code": 0,
+          "seconds": 0.03382970002712682,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        }
+      ]
+    }
+  ],
+  "recovery_reports": [
+    {
+      "schema_version": 1,
+      "timestamp_utc": "2026-09-29T18:15:22.593621+00:00",
+      "kind": "native_archive_recovery",
+      "game": "ja",
+      "compiler_sha256": "0d94ed5e4823ecc3349a7717ed3a1b75f39085bcff2677c7fad6a93ded82f500",
+      "passed": 1,
+      "total": 1,
+      "records": [
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/t3_stamp.bsp",
+          "bytes": 12754764,
+          "sha256": "886680f55a494d9accd5fcd7de70b952962e8d8741169dedf15f3a5f91e62101",
+          "exit_code": 0,
+          "seconds": 0.9225175000028685,
+          "normalized_unused_lightmap_uv_pairs": 457,
+          "normalized_unused_flare_fogs": 0,
+          "brushes": 4118,
+          "patches": 338,
+          "faces": 26791,
+          "matched_uv_faces": 12514,
+          "fallback_uv_faces": 14277,
+          "skipped_brushes": 0
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "timestamp_utc": "2026-09-29T18:15:22.359539+00:00",
+      "kind": "native_archive_recovery",
+      "game": "jk2",
+      "compiler_sha256": "0d94ed5e4823ecc3349a7717ed3a1b75f39085bcff2677c7fad6a93ded82f500",
+      "passed": 1,
+      "total": 1,
+      "records": [
+        {
+          "archive": "assets0.pk3",
+          "map": "maps/yavin_temple.bsp",
+          "bytes": 7723688,
+          "sha256": "0681d890a8eeac19f6c8cebea0473a8af00a89abe5d86a1eab7ae78169ea596a",
+          "exit_code": 0,
+          "seconds": 0.7290193000226282,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 11,
+          "brushes": 2725,
+          "patches": 289,
+          "faces": 16137,
+          "matched_uv_faces": 6157,
+          "fallback_uv_faces": 9980,
+          "skipped_brushes": 0
+        }
+      ]
+    }
+  ]
+}

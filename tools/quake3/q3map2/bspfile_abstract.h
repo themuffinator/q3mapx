@@ -32,6 +32,8 @@
 bspHeader_t ReadBSPHeader( const MemBuffer& file, int lumpCount );
 void ValidateBSPStrings();
 void ValidateBSPData( bool partial = false );
+extern size_t bspNormalizedUnusedLightmapPairs;
+extern size_t bspNormalizedUnusedFlareFogs;
 
 /*
    AddLump()

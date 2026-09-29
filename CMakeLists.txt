@@ -171,6 +171,10 @@ if(BUILD_TESTING)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/lightgrid_cli.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/lightgrid)
     set_tests_properties(lightgrid_cli PROPERTIES TIMEOUT 60)
+    add_test(NAME raven_compat COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/raven_compat.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/raven-compat)
+    set_tests_properties(raven_compat PROPERTIES TIMEOUT 90)
     add_test(NAME cli_options COMMAND ${Python3_EXECUTABLE}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_options.py
         --compiler $<TARGET_FILE:q3mapx>

@@ -30,6 +30,7 @@
 
 /* dependencies */
 #include "q3map2.h"
+#include "bspfile_abstract.h"
 #include "bspfile_rbsp.h"
 #include "qspatial.h"
 #include "decompile.h"
@@ -1057,6 +1058,8 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ){
 		count( "fallback_uv_faces", recovery.fallbackFaces );
 		count( "degenerate_uv_transforms", recovery.degenerateUVs );
 		count( "degenerate_triangles", recovery.degenerateTriangles );
+		count( "normalized_unused_lightmap_uv_pairs", bspNormalizedUnusedLightmapPairs );
+		count( "normalized_unused_flare_fogs", bspNormalizedUnusedFlareFogs );
 		count( "approximate_quake_uv_faces", recovery.approximateQuakeFaces );
 		count( "triangle_soup_surfaces", std::count_if( bspDrawSurfaces.begin(), bspDrawSurfaces.end(),
 		    []( const auto& surface ){ return surface.surfaceType == MST_TRIANGLE_SOUP; } ) );

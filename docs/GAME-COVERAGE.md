@@ -42,7 +42,26 @@ The packing task is now implemented and validated: dictionary references and
 payload order match the inherited scan, capacity errors preserve existing files,
 and measured native-map rewrite times are recorded in [performance](PERFORMANCE.md).
 Reading other retail Jedi maps also exposed non-finite coordinates in unused
-lightmap slots; that separate validation compatibility issue remains to be fixed.
+lightmap slots. Validation now checks every surface that could use a coordinate
+before normalizing an unused non-finite pair to zero. This includes vertex-lit
+patches' primary slots. Active coordinates, including vertices shared with an
+active surface, remain strict. Zero-geometry flares with fog 0 in a map with
+no fog lump are normalized to no fog; geometry-bearing fog references remain
+strict. Both repairs print diagnostics and appear in recovery JSON.
+
+All 61 map entries across the installed Jedi Academy archives (including four
+patched versions) and all 41 Jedi Outcast entries pass native BSP validation.
+`t3_stamp` and `yavin_temple` also pass actual MAP recovery with installed assets
+read-only. [Recorded hashes and results](validation/native-raven-win-x64.json)
+contain no retail map bytes. These checks establish parsing/recovery coverage,
+not gameplay or lossless reconstruction of the original editor source.
+
+The used-slot rule follows Raven's negative lightmap numbers and style sentinel
+contract, checked against
+[OpenJK's reader](https://github.com/JACoders/OpenJK/blob/1a6a643427aa347553e9073dac5570b33337c4d9/codemp/rd-vanilla/tr_bsp.cpp)
+and [style handling](https://github.com/JACoders/OpenJK/blob/1a6a643427aa347553e9073dac5570b33337c4d9/codemp/rd-vanilla/tr_shader.cpp).
+No implementation text was copied. Generated regression fixtures cover the same
+records and shared-vertex boundary without depending on retail files.
 
 ## Evidence and implementation rules
 

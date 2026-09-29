@@ -6,6 +6,9 @@
 #include <cstring>
 #include <limits>
 
+size_t bspNormalizedUnusedLightmapPairs = 0;
+size_t bspNormalizedUnusedFlareFogs = 0;
+
 bspHeader_t ReadBSPHeader( const MemBuffer& file, int lumpCount ){
 	const size_t headerSize = 8 + size_t( lumpCount ) * sizeof( bspLump_t );
 	if ( lumpCount < 1 || lumpCount > 100 || file.size() < headerSize ) {
@@ -90,6 +93,8 @@ void ValidateBSPStrings(){
 }
 
 void ValidateBSPData( bool partial ){
+	bspNormalizedUnusedLightmapPairs = 0;
+	bspNormalizedUnusedFlareFogs = 0;
 	ValidateBSPStrings();
 	for ( size_t i = 0; i < bspDrawSurfaces.size(); ++i ) {
 		index( bspDrawSurfaces[i].shaderNum, bspShaders.size(), "surface shader", i );
@@ -122,9 +127,16 @@ void ValidateBSPData( bool partial ){
 		if ( side.surfaceNum != -1 ) index( side.surfaceNum, bspDrawSurfaces.size(), "brush side surface", i );
 	}
 	for ( size_t i = 0; i < bspDrawSurfaces.size(); ++i ) {
-		const auto& surface = bspDrawSurfaces[i];
+		auto& surface = bspDrawSurfaces[i];
 		range( surface.firstVert, surface.numVerts, bspDrawVerts.size(), "surface vertices", i );
 		range( surface.firstIndex, surface.numIndexes, bspDrawIndexes.size(), "surface indices", i );
+		// Raven's retail yavin_temple has a zero-geometry flare with fog 0
+		// despite an empty fog lump. No fog exists to preserve for that flare.
+		if ( surface.surfaceType == MST_FLARE && surface.numVerts == 0 && surface.numIndexes == 0
+		  && surface.fogNum == 0 && bspFogs.empty() ) {
+			surface.fogNum = -1;
+			++bspNormalizedUnusedFlareFogs;
+		}
 		if ( surface.fogNum != -1 ) index( surface.fogNum, bspFogs.size(), "surface fog", i );
 		if ( surface.surfaceType < MST_BAD || surface.surfaceType > MST_FOLIAGE ) {
 			Error( "Invalid BSP: surface %zu has unknown type %d", i, int( surface.surfaceType ) );
@@ -142,13 +154,38 @@ void ValidateBSPData( bool partial ){
 			}
 		}
 	}
+	std::array<std::vector<size_t>, MAX_LIGHTMAPS> unusedCandidates;
 	for ( size_t i = 0; i < bspDrawVerts.size(); ++i ) {
 		const auto& vertex = bspDrawVerts[i];
 		finite( vertex.xyz, 3, "vertex", i );
 		finite( vertex.normal, 3, "vertex normal", i );
 		finite( vertex.st, 2, "texture coordinate", i );
-		for ( const auto& uv : vertex.lightmap ) finite( uv, 2, "lightmap coordinate", i );
+		for ( size_t slot = 0; slot < MAX_LIGHTMAPS; ++slot ) {
+			const auto& uv = vertex.lightmap[slot];
+			if ( !std::isfinite( uv[0] ) || !std::isfinite( uv[1] ) ) unusedCandidates[slot].push_back( i );
+		}
 	}
+	// Retail Raven patches can contain NaNs in unused lighting slots, including
+	// slot zero when the surface uses vertex lighting (lightmap number -3).
+	// Check every referencing surface before normalizing them. A vertex shared
+	// with an active slot must still fail, including under -force. Sorted sparse
+	// candidates avoid walking each surface's entire (possibly shared) span.
+	for ( size_t slot = 0; slot < MAX_LIGHTMAPS; ++slot ) {
+		const auto& candidates = unusedCandidates[slot];
+		if ( candidates.empty() ) continue;
+		for ( const auto& surface : bspDrawSurfaces ) {
+			if ( surface.lightmapStyles[slot] >= LS_UNUSED || surface.lightmapNum[slot] < 0 ) continue;
+			const auto found = std::lower_bound( candidates.begin(), candidates.end(), size_t( surface.firstVert ) );
+			if ( found != candidates.end() && *found < size_t( surface.firstVert ) + size_t( surface.numVerts ) )
+				Error( "Invalid BSP: active lightmap coordinate %zu in slot %zu is non-finite", *found, slot );
+		}
+		for ( const size_t vertex : candidates ) bspDrawVerts[vertex].lightmap[slot] = Vector2( 0 );
+		bspNormalizedUnusedLightmapPairs += candidates.size();
+	}
+	if ( bspNormalizedUnusedLightmapPairs )
+		Sys_Warning( "Normalized %zu non-finite UV pairs in unused lightmap slots\n", bspNormalizedUnusedLightmapPairs );
+	if ( bspNormalizedUnusedFlareFogs )
+		Sys_Warning( "Normalized %zu zero-geometry flare fog references with no fog lump\n", bspNormalizedUnusedFlareFogs );
 	for ( size_t i = 0; i < bspLeafs.size(); ++i ) {
 		const auto& leaf = bspLeafs[i];
 		range( leaf.firstBSPLeafBrush, leaf.numBSPLeafBrushes, bspLeafBrushes.size(), "leaf brushes", i );

@@ -87,3 +87,13 @@ visibility dimensions, and Raven lightgrid indirection. Entity model references
 are checked before conversion. `-force` cannot bypass these safety checks. Node
 depth is capped at 1024 to protect legacy recursive traversals. A valid unaligned
 lump is copied safely rather than rejected solely for its alignment.
+
+Native Raven maps can carry non-finite lightmap UVs in slots their surfaces do
+not use, including primary slots on vertex-lit patches. The loader checks every
+referencing surface, then zeros only unused non-finite pairs and emits a warning.
+Non-finite coordinates used by any surface still fail, including under `-force`.
+Zero-geometry flares referring to fog 0 with an empty fog lump are repaired to no
+fog; equivalent references on actual geometry are rejected. Recovery JSON records
+these changes as `normalized_unused_lightmap_uv_pairs` and
+`normalized_unused_flare_fogs`. Finite texture coordinates and active lightmap
+coordinates are preserved.

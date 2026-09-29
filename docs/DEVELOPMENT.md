@@ -161,6 +161,24 @@ one. The GUI must use the child process exit code as the authoritative result.
 q3mapx -threads auto -profile light-profile.json -light -fast map.bsp
 ```
 
+## Optional installed-map coverage
+
+The generated CTest fixtures remain independent of game installations. Additional
+native-map evidence can be collected from user-owned PK3 archives:
+
+```sh
+python tests/native_maps.py --compiler build/release/bin/q3mapx --game ja --pak /path/to/base/assets0.pk3 --work-dir build/native-validation/ja
+```
+
+Repeat `--pak` for patch archives. Add `--map maps/example.bsp --decompile
+--game-root /path/to/game` for recovery with installed textures read-only. The
+harness uses one private staged input, logs, reports and outputs beneath the
+chosen work directory; it never extracts archive paths into the filesystem or
+writes to the installation. Reports contain names, hashes, counts and outcomes,
+not proprietary assets. A BSP-validation pass is not a gameplay compatibility
+claim. Source archives and compiler identity are checked for changes during each
+probe.
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

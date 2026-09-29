@@ -297,14 +297,15 @@ static void FinishRawLightmap( rawLightmap_t& lm ){
 
 		/* dummy check */
 		if ( asi == nullptr ) {
-			return true;
+			return bsi != nullptr || a < b;
 		}
 		if ( bsi == nullptr ) {
 			return false;
 		}
 
-		/* compare shader names */
-		return strcmp( asi->shader, bsi->shader ) < 0;
+		/* Keep equal shaders in surface order, including across allocator layouts. */
+		const int order = strcmp( asi->shader, bsi->shader );
+		return order != 0 ? order < 0 : a < b;
 	} );
 
 	/* count clusters */
@@ -836,12 +837,9 @@ struct CompareSurfaceInfo
 			return true;
 		}
 
-		/* 27: then shader! */
-		if ( aInfo.si < bInfo.si ) {
-			return false;
-		}
-		else if ( aInfo.si > bInfo.si ) {
-			return true;
+		/* Shader addresses vary with the allocator/ASLR. Use semantic order. */
+		if ( const int order = strcmp( aInfo.si->shader, bInfo.si->shader ); order != 0 ) {
+			return order > 0;
 		}
 
 
@@ -900,8 +898,8 @@ struct CompareSurfaceInfo
 			}
 		}
 
-		/* these are functionally identical (this should almost never happen) */
-		return false;
+		/* Stable tie-breaker for coincident surfaces. */
+		return a < b;
 	}
 };
 
@@ -961,7 +959,7 @@ void SetupSurfaceLightmaps(){
 			surfaceInfo_t& info = surfaceInfos[ num ];
 
 			/* basic setup */
-			info.modelindex = i;
+			info.modelindex = int( &model - bspModels.data() );
 			info.lm = nullptr;
 			info.plane = nullptr;
 			info.firstSurfaceCluster = numSurfaceClusters;
@@ -2132,8 +2130,8 @@ struct CompareRawLightmap
 		if ( diff != 0 ) {
 			return diff < 0;
 		}
-		/* must be equivalent */
-		return false;
+		/* Equal-sized lightmaps still need a reproducible packing order. */
+		return a < b;
 	}
 };
 

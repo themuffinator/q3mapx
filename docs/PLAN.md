@@ -107,6 +107,24 @@ Acceptance: reproducible release artifacts and clear evidence for implemented
 features, with no unqualified claim of production readiness. Report unrelated
 issues discovered during the work. Keep incomplete items visible in this plan.
 
+## M7 — Broader lighting performance and platform verification
+
+The initial release is a tested baseline, not the end of the original optimization
+scope. The continuing audit uses representative lighting/material fixtures and
+actual Linux execution to close gaps that minimap benchmarks cannot establish.
+
+- [x] Build and run the Linux release/GUI and sanitizer suites using available WSL.
+- [x] Repair issues found by those checks and record exact platform evidence.
+- [ ] Add material-aware lighting parity fixtures and end-to-end benchmarks.
+- [ ] Reduce measured lighting costs while preserving shader/shadow semantics.
+- [ ] Implement and measure batched GPU lighting work where profiling justifies it.
+- [ ] Refresh release artifacts and documentation after the additional task commits.
+
+Acceptance: main lighting workloads have measured evidence and output checks;
+GPU paths preserve supported material behavior or explicitly route it through
+the CPU. Linux and sanitizer claims are backed by executed tests. No scope item
+is treated as complete solely because it was deferred in an earlier document.
+
 ## Execution order
 
 Start with M0 and M1. Advance robustness and decompilation before using complex

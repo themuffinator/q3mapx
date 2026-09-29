@@ -87,3 +87,65 @@ q3mapx/stone
     path = game / "maps/fixture.map"
     path.write_text(text, encoding="utf-8")
     return path
+
+
+def create_lighting_fixture(root: Path, *, dense=False, grid=11) -> Path:
+    """Exercise texture-filtered shadows, sky, emitters, patches and model origins."""
+    source = create_fixture(root, dense=dense, grid=grid)
+    game = source.parent.parent
+    scripts = game / "scripts/q3mapx_tests.shader"
+    scripts.write_text(scripts.read_text(encoding="utf-8") + """
+textures/q3mapx/fence
+{
+    q3map_lightimage textures/q3mapx/fence.tga
+    surfaceparm trans
+    surfaceparm nonsolid
+    surfaceparm alphashadow
+    cull none
+    { map textures/q3mapx/fence.tga alphaFunc GE128 }
+}
+textures/q3mapx/filter
+{
+    q3map_lightimage textures/q3mapx/filter.tga
+    surfaceparm trans
+    surfaceparm nonsolid
+    surfaceparm lightfilter
+    cull none
+    { map textures/q3mapx/filter.tga blendFunc filter }
+}
+textures/q3mapx/sky
+{
+    q3map_lightimage textures/q3mapx/checker.tga
+    surfaceparm sky
+    surfaceparm noimpact
+    surfaceparm nolightmap
+    q3map_sun 1 0.85 0.7 90 35 60
+    skyparms - 512 -
+}
+textures/q3mapx/emitter
+{
+    q3map_lightimage textures/q3mapx/checker.tga
+    q3map_surfacelight 600
+    { map textures/q3mapx/checker.tga }
+}
+""", encoding="utf-8")
+    header = struct.pack("<BBBHHBHHHHBB", 0, 0, 2, 0, 0, 0, 0, 0, 64, 64, 32, 0x28)
+    fence, filtered = bytearray(), bytearray()
+    for y in range(64):
+        for x in range(64):
+            fence.extend((220, 220, 220, 255 if (x // 8 + y // 8) % 2 else 0))
+            filtered.extend((45, 220, 65, 128))  # TGA BGRA: green filter
+    (game / "textures/q3mapx/fence.tga").write_bytes(header + fence)
+    (game / "textures/q3mapx/filter.tga").write_bytes(header + filtered)
+    text = source.read_text(encoding="utf-8")
+    extent = (grid // 2 + 1) * 128 if dense else 256
+    ceiling = ((-extent-16, -extent-16, 256), (extent+16, extent+16, 272))
+    text = text.replace(box(*ceiling), box(*ceiling, "q3mapx/sky"))
+    panels = box((-224, 32, 144), (-64, 224, 148), "q3mapx/fence", "0 0 0 1 1")
+    panels += box((64, 32, 144), (224, 224, 148), "q3mapx/filter", "0 0 0 1 1")
+    panels += box((-32, -240, 96), (32, -232, 160), "q3mapx/emitter")
+    marker = '\n}\n{\n"classname" "info_player_deathmatch"'
+    assert text.count(marker) == 1
+    text = text.replace(marker, "\n" + panels + marker)
+    source.write_text(text, encoding="utf-8")
+    return source

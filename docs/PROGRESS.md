@@ -366,3 +366,34 @@ profile/temp-file behavior, and missing Linux/sanitizer/manual-accessibility run
 GPU lighting is an explicitly documented future parity gate; minimap GPU work is
 implemented and tested on both available native GPUs. All changes are committed
 locally; no remote push or publication has been performed.
+
+## 2026-09-29 — Linux validation and material-aware lighting fixes
+
+Used Ubuntu 24.04.3 under WSL with GCC 13.3 and Qt 6.4.2. Missing Assimp,
+Draco, PugiXML and Minizip packages were extracted beneath the project, without
+changing the system installation. Corrected a designated aggregate initializer
+that GCC 13 rejected. Windows release and Linux release now pass 17 CTest groups;
+Linux ASan/UBSan passes 15 (GUI/GPU disabled by the sanitizer preset). Linux has
+no usable OpenCL GPU, so its hardware parity cases explicitly skip; Windows
+continues to exercise the native NVIDIA and Intel drivers. Build/test logs remain
+under `.agents/tmp/linux-deps`; Linux test artifacts are in `build/linux-release`
+and `build/linux-sanitized`. These are local runs, not remote CI results.
+
+Added an original material fixture covering alpha shadows, colored transmission,
+sun/sky, emitters, a patch and a brush-model origin. Tests check adaptive sampling,
+bounces, deluxemaps and ordered supersampling at one and four workers. Independent
+alpha/RGB image mutations and a no-trace comparison prove those paths affect the
+result. This exposed an adaptive-sampling null deluxel reference under UBSan and
+an incorrect reuse of the first subsample's visibility cluster. Both are fixed.
+
+Repeated runs also exposed allocator-dependent shader-pointer sorting. Lightmap
+setup and packing now use shader names and stable surface/lightmap indices, and
+setup records the actual BSP model index. Twenty repeated Windows material tests
+pass with exact lighting-lump parity. Corrected sampling and packing can change
+older outputs intentionally. The original portable archive predates these fixes;
+the final package will be refreshed after the remaining lighting work.
+
+Unrelated inherited limits: `offsetof` and non-trivial-object `memset` warnings
+remain; ASan/UBSan does not certify thread-race freedom or third-party decoder
+fuzz coverage. Shared lighting statistics and bounce-light publication order are
+next audit targets. The previously reported cleanup policy block remains.

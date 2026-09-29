@@ -14,10 +14,12 @@ appropriate game assets, a MAP/BSP source and an output directory. See the
 [workbench guide](WORKBENCH.md), [decompilation guide](DECOMPILATION.md), and
 [performance/options reference](PERFORMANCE.md). No game assets are included.
 
-The current release is a development release. Windows x64/MinGW is locally
-validated. Linux has a build/CI definition; a definition alone is not evidence of
-a successful Linux run. MSVC, macOS, manual accessibility testing and a broad
-corpus of real game maps are not certified by this release.
+The current release is a development release. Windows x64/MinGW and Linux x64
+(Ubuntu 24.04 under WSL, GCC 13 and Qt 6.4) are locally validated, including Linux
+ASan/UBSan checks. MSVC, macOS, manual accessibility testing and a broad corpus of
+real game maps are not certified by this release. The original 0.1.0 archive
+predates the additional Linux/material fixes recorded in the task log; rebuild
+from current source to include them.
 
 ## Recreate the Windows package
 

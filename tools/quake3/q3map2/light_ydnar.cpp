@@ -1822,7 +1822,7 @@ static void SubsampleRawLuxel_r( rawLightmap_t *lm, trace_t *trace, const Vector
 		luxel[ b ].count = lightLuxel.count + 1;
 
 		/* setup trace */
-		trace->cluster = *cluster;
+		trace->cluster = cluster[ b ];
 		trace->origin = origin[ b ];
 		trace->normal = normal[ b ];
 
@@ -2439,7 +2439,7 @@ void IlluminateRawLightmap( int rawLightmapNum ){
 									continue;
 								}
 								SuperLuxel& lightLuxel = tmplm.getSuperLuxel( 0, sx, sy );
-								Vector3* lightDeluxel = &tmplm.getSuperDeluxel( sx, sy );
+								Vector3* lightDeluxel = deluxemap ? &tmplm.getSuperDeluxel( sx, sy ) : nullptr;
 								const Vector3& origin = lm->getSuperOrigin( sx, sy );
 
 								/* only subsample shadowed luxels */
@@ -2448,10 +2448,10 @@ void IlluminateRawLightmap( int rawLightmapNum ){
 
 								/* subsample it */
 								if ( lightRandomSamples ) {
-									RandomSubsampleRawLuxel( lm, &trace, origin, sx, sy, 0.5f * lightSamplesSearchBoxSize, lightLuxel, deluxemap ? lightDeluxel : nullptr );
+									RandomSubsampleRawLuxel( lm, &trace, origin, sx, sy, 0.5f * lightSamplesSearchBoxSize, lightLuxel, lightDeluxel );
 								}
 								else{
-									SubsampleRawLuxel_r( lm, &trace, origin, sx, sy, 0.25f * lightSamplesSearchBoxSize, lightLuxel, deluxemap ? lightDeluxel : nullptr );
+									SubsampleRawLuxel_r( lm, &trace, origin, sx, sy, 0.25f * lightSamplesSearchBoxSize, lightLuxel, lightDeluxel );
 								}
 
 								flag |= FLAG_ALREADY_SUBSAMPLED;

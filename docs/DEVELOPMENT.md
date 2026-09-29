@@ -4,8 +4,8 @@
 
 Requires CMake 3.25+, Ninja, a C++20 compiler, pkg-config, GLib, libxml2, Assimp,
 libpng, libjpeg, and zlib. Qt 6.4+ Core/Gui/Widgets builds the desktop workbench. No game
-assets are needed to build the compiler. GCC/MinGW is the initially validated
-toolchain; MSVC is not yet validated against all inherited source constructs.
+assets are needed to build the compiler. Windows GCC/MinGW and Linux GCC are
+validated toolchains; MSVC is not yet validated against inherited constructs.
 
 On Windows, install the following from an MSYS2 MINGW64 shell if not already present:
 
@@ -45,8 +45,8 @@ targets Linux GCC/Clang, disables GUI/GPU code and fails on sanitizer diagnostic
 Its leak detector is disabled because the inherited CLI intentionally retains many
 process-lifetime compiler allocations; address and undefined-behavior checks stay
 enabled. MinGW/MSVC sanitizer configurations are rejected explicitly. Baseline
-comparisons use LTO off and no fast-math. Sanitizer CI is defined but has not been
-run from this Windows environment.
+comparisons use LTO off and no fast-math. The sanitizer suite is also executed
+locally under Ubuntu 24.04 WSL; local results do not imply a remote CI run.
 
 OpenCL support is enabled by default but dynamically loads the installed GPU
 driver only for compute/device queries. No OpenCL SDK is required to build.
@@ -73,6 +73,13 @@ write test output into a real game installation or reference asset directory.
 5. Test malformed BSP lengths and cross-references.
 6. Check scheduling and GPU parity at varied thread/backend settings.
 7. Check GUI project serialization, command arguments, queues, and process failures.
+
+`lighting_materials` generates alpha textures, colored filters, an emissive panel,
+sun/sky, a curved patch and a brush model with an origin. It checks adaptive,
+bounced, deluxe and supersampled lighting at one and four workers. Mutating alpha
+and RGB texels independently verifies the material paths actually affect the bake.
+It also detects unstable lightmap packing, which previously depended on shader
+allocation addresses. Surface ordering now uses shader names and stable indices.
 
 Use explicit subprocess timeouts and capture stdout/stderr in test failure reports.
 Do not introduce brittle tests that only mirror internal implementation details.

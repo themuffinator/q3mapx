@@ -126,7 +126,37 @@ GPU paths preserve supported material behavior or explicitly route it through
 the CPU. Linux and sanitizer claims are backed by executed tests. No scope item
 is treated as complete solely because it was deferred in an earlier document.
 
-## Execution order
+## Continuing work — game coverage, functionality and optimization
+
+The next user-requested work uses the sibling fnTech3 repository as a format
+reference. Its engine compatibility claims do not establish compiler support.
+See [game coverage](GAME-COVERAGE.md) for the source revision, format distinctions
+and validation requirements. Continue committing each completed task separately.
+
+- [x] Audit the existing profiles against the reference and record the next work.
+- [ ] Optimize Raven lightgrid packing while preserving first-match output; repair
+  dictionary exhaustion and validate boundary, malformed and real-command cases.
+- [ ] Publish a machine-readable game/capability catalog, accept useful fnTech3
+  aliases, and use the catalog in the workbench rather than a partial static list.
+- [ ] Add BSP inspection with format identification, bounded parsing, actionable
+  compatibility diagnostics and explicit ambiguity for shared file signatures.
+- [ ] Extend native BSP recovery to the missing fnTech3 format families, beginning
+  with Alice/F.A.K.K.2, and cover Medal of Honor and early Quake III formats.
+  Preserve recoverable geometry/entities/material data and report format-specific
+  losses. Native writing must not be advertised until its own contracts are met.
+- [ ] Exercise the existing writable game families through full synthetic compiler
+  pipelines, decompilation and malformed inputs; add legitimate read-only map
+  checks where available without redistributing proprietary assets.
+- [ ] Measure further optimizations, run the relevant Windows/Linux/sanitizer
+  checks, update user documentation and deliver refreshed binaries.
+
+Acceptance: actual format readers and workflow tests establish coverage; aliases
+alone do not. Optimization reports compare identical inputs and output contracts,
+include startup/serialization costs, and separate microbenchmarks from end-to-end
+results. Unsupported workflows fail before modifying the input or creating a
+misleading BSP. Existing CLI/GUI workflows remain available.
+
+## Initial execution order
 
 Start with M0 and M1. Advance robustness and decompilation before using complex
 files as optimization benchmarks. Implement scheduling before GPU integration.

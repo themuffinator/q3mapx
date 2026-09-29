@@ -123,3 +123,29 @@ Its 12-byte header and RGBA payload are checked before allocation; dimensions
 must be positive and at most 8192 per axis. Malformed images produce a diagnostic
 and the usual missing-image fallback. Texture dimensions matter to Valve 220
 scales, so installed assets or equivalent source textures should be available.
+
+## Native Allied Assault recovery
+
+```sh
+q3mapx -game mohaa -fs_basepath /path/to/MOHAA -decompile -o recovered.map input.bsp
+q3mapx -game mohaa -fs_basepath /path/to/MOHAA -convert -format obj input.bsp
+```
+
+The asset root contains `main`. The MAP contains recoverable brushes, entities
+and Bezier patches. Terrain is available in OBJ/ASE export and the mandatory
+JSON report, not as MAP brushes or patches. Native triangle hole flags are
+respected. Static-model placements are retained in JSON; external TIKI meshes
+are not imported. Native BSP writing and the brush-only minimap are disabled.
+
+Additional report fields are `native_terrain`, `native_terrain_triangles`,
+`native_terrain_removed_triangles`, `native_static_models`,
+`native_side_equations`, `native_side_equation_indices`, and `fence_mask` in each
+native shader. Terrain records contain world origin, height steps (two units
+per step), texture corners, variance flags, shader index and lightmap metadata.
+`native_surface_subdivisions` remains in original source surface order, excluding
+the generated terrain meshes. Packed lighting and static-model color omissions
+are named in `native_losses`.
+
+`normalized_unused_native_equations` counts the narrow repair for zero equation
+references in maps with neither fence contents nor an equation table. Invalid
+active references are rejected. See [coverage and evidence](GAME-COVERAGE.md).

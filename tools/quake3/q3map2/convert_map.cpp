@@ -1067,12 +1067,42 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ){
 				writer.Key("contents"); writer.Uint(uint32_t(shader.contentFlags));
 				writer.Key("surface_flags"); writer.Uint(uint32_t(shader.surfaceFlags));
 				if(i<bspNativeShaderSubdivisions.size()) { writer.Key("subdivisions"); writer.Int(bspNativeShaderSubdivisions[i]); }
+				if(i<bspNativeFenceMasks.size()) { writer.Key("fence_mask"); writer.String(bspNativeFenceMasks[i].c_str()); }
 				writer.EndObject();
 			}
 			writer.EndArray();
 			writer.Key("native_surface_subdivisions"); writer.StartArray();
 			for(float value:bspNativeSurfaceSubdivisions) writer.Double(value);
 			writer.EndArray();
+			if(!bspNativeFenceMasks.empty()) {
+				writer.Key("native_side_equations"); writer.StartArray();
+				for(const auto& eq:bspNativeSideEquations) { writer.StartArray(); for(float v:eq) writer.Double(v); writer.EndArray(); }
+				writer.EndArray();
+				writer.Key("native_side_equation_indices"); writer.StartArray();
+				for(int id:bspNativeSideEquationIndices) writer.Int(id);
+				writer.EndArray();
+				writer.Key("native_static_models"); writer.StartArray();
+				for(const auto& model:bspNativeStaticModels) {
+					writer.StartObject(); writer.Key("model"); writer.String(model.model.c_str());
+					writer.Key("origin"); writer.StartArray(); for(float v:model.origin) writer.Double(v); writer.EndArray();
+					writer.Key("angles"); writer.StartArray(); for(float v:model.angles) writer.Double(v); writer.EndArray();
+					writer.Key("scale"); writer.Double(model.scale); writer.EndObject();
+				}
+				writer.EndArray();
+				writer.Key("native_terrain_triangles"); writer.Uint64(bspNativeTerrainTriangles);
+				writer.Key("native_terrain_removed_triangles"); writer.Uint64(bspNativeTerrain.size()*128-bspNativeTerrainTriangles);
+				writer.Key("native_terrain"); writer.StartArray();
+				for(const auto& terrain:bspNativeTerrain) {
+					writer.StartObject(); writer.Key("origin"); writer.StartArray(); writer.Int(terrain.x*64); writer.Int(terrain.y*64); writer.Int(terrain.baseHeight); writer.EndArray();
+					writer.Key("shader_index"); writer.Int(terrain.shader); writer.Key("flags"); writer.Int(terrain.flags);
+					writer.Key("texture_corners"); writer.StartArray(); for(float v:terrain.corners) writer.Double(v); writer.EndArray();
+					writer.Key("height_steps"); writer.StartArray(); for(auto v:terrain.heights) writer.Uint(v); writer.EndArray();
+					writer.Key("variance_flags"); writer.StartArray(); for(auto v:terrain.variance) writer.Uint(v); writer.EndArray();
+					writer.Key("lightmap"); writer.Int(terrain.lightmap); writer.Key("lightmap_scale"); writer.Int(terrain.lightmapScale);
+					writer.Key("lightmap_st"); writer.StartArray(); writer.Int(terrain.lightmapS); writer.Int(terrain.lightmapT); writer.EndArray(); writer.EndObject();
+				}
+				writer.EndArray();
+			}
 		}
 		const auto count = [&]( const char* key, size_t value ){ writer.Key( key ); writer.Uint64( value ); };
 		count( "entities", entities.size() );
@@ -1086,14 +1116,16 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ){
 		count( "degenerate_triangles", recovery.degenerateTriangles );
 		count( "normalized_unused_lightmap_uv_pairs", bspNormalizedUnusedLightmapPairs );
 		count( "normalized_unused_flare_fogs", bspNormalizedUnusedFlareFogs );
+		count( "normalized_unused_native_equations", bspNormalizedUnusedNativeEquations );
 		count( "approximate_quake_uv_faces", recovery.approximateQuakeFaces );
 		count( "triangle_soup_surfaces", std::count_if( bspDrawSurfaces.begin(), bspDrawSurfaces.end(),
 		    []( const auto& surface ){ return surface.surfaceType == MST_TRIANGLE_SOUP; } ) );
 		writer.Key( "limitations" );
 		writer.StartArray();
-		writer.String( "Original editor groups, removed entities and source model instances are not stored in the BSP." );
+		writer.String( "Original editor groups are unavailable; removed entities and some source model instances may not be stored in the BSP." );
 		writer.String( "Baked lightmaps and lightgrid data are not reconstructed as source lights by MAP export." );
 		if(!g_game->write) writer.String("Native shader flags and subdivisions are retained in this report; standard MAP syntax does not reproduce all native compiler semantics. Native BSP writing is unavailable.");
+		if(!bspNativeFenceMasks.empty()) writer.String("Native terrain is retained in this report and OBJ/ASE export, not as MAP brushes or Bezier patches. Static-model placements are retained here; their external model meshes are not imported.");
 		writer.String( "Triangle soup geometry is not exported separately; collision brushes may approximate it." );
 		writer.String( "Fallback texture axes are used on faces without a usable rendered triangle, including hidden faces." );
 		writer.EndArray();

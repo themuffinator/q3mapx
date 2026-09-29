@@ -40,6 +40,8 @@ int main(int argc, char** argv) {
             && !profile->workflows.contains("build"), "Native recovery profile advertised an unsupported writer");
     }
     require(!catalog.find("not-a-profile"), "Unknown profile was accepted");
+    require(catalog.find("mohaa") && !catalog.find("mohaa")->workflows.contains("minimap"),
+            "MOHAA advertised a brush-only minimap that omits terrain");
     catalog.refresh("missing-q3mapx-executable"); catalog.refresh(argv[1]); finish(catalog);
     require(catalog.error().isEmpty() && catalog.find("quake3"), "Stale query replaced current catalog");
     for (const auto& mode : {"invalid", "large", "slow"}) {

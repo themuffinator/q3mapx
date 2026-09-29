@@ -986,6 +986,26 @@ struct game_alice : game_fakk2 {
 	}
 };
 
+struct game_mohaa : game_fakk2 {
+	game_mohaa() {
+		arg="mohaa"; title="Medal of Honor: Allied Assault (recovery)";
+		gamePath="main"; homeBasePath=".mohaa"; magic="mohaa";
+		bspIdent="2015"; bspVersion=19; load=LoadMOHAABSPFile;
+		supportsMinimap=false; // brush-only column sampling cannot represent terrain
+		std::erase_if(surfaceParms,[](const auto& p){return strEqual(p.name,"cameraclip") || strEqual(p.name,"ricochet");});
+		for(auto& p:surfaceParms) {
+			if(strEqual(p.name,"weaponclip")) p.contentFlags=0x40000;
+			if(strEqual(p.name,"nolightmap")) p.surfaceFlags=0x100;
+			if(strEqual(p.name,"alphashadow")) p.surfaceFlags=0x200;
+			if(strEqual(p.name,"nosteps")) p.surfaceFlags=0x400;
+			if(strEqual(p.name,"nonsolid")) p.surfaceFlags=0x800;
+			if(strEqual(p.name,"nodlight")) p.surfaceFlags=0x20000000;
+			if(strEqual(p.name,"hint")) p.surfaceFlags=0x40000000;
+		}
+		surfaceParms.push_back({"vehicleclip",0x80000,Q_CONT_SOLID,0,0,C_DETAIL|C_TRANSLUCENT,C_SOLID});
+	}
+};
+
 const std::vector<game_t> g_games = { game_quake3(),
                                       game_quakelive(),
                                       game_nexuiz(),
@@ -1007,6 +1027,7 @@ const std::vector<game_t> g_games = { game_quake3(),
                                       game_ja(),
                                       game_fakk2(),
                                       game_alice(),
+                                      game_mohaa(),
                                     };
 const game_t *g_game = &g_games[0];
 
@@ -1044,7 +1065,10 @@ int PrintGameCatalog(){
 		if ( game.write ) {
 			writer.String( "build" ); writer.String( "bsp" ); writer.String( "vis" ); writer.String( "light" );
 		}
-		if ( game.load ) { writer.String( "minimap" ); writer.String( "decompile" ); }
+		if ( game.load ) {
+			if(game.supportsMinimap) writer.String( "minimap" );
+			writer.String( "decompile" );
+		}
 		writer.EndArray();
 		writer.EndObject();
 	}

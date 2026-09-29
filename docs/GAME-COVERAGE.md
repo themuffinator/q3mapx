@@ -36,7 +36,7 @@ fixtures, not retail-game runtime tests.
 | Jedi Outcast and Jedi Academy | RBSP 1, 18 lumps | `jk2`, `ja` |
 | Heavy Metal: F.A.K.K.2 | FAKK 12, checksum and 20 lumps | Initially missing; `fakk2` recovery added |
 | American McGee's Alice | FAKK 42, checksum and 20 lumps | Initially missing; `alice` recovery added |
-| Medal of Honor: Allied Assault | 2015 19, 28 lumps, terrain/static-model extensions | Missing |
+| Medal of Honor: Allied Assault | 2015 19, 28 lumps, terrain/static-model extensions | Initially missing; `mohaa` recovery added |
 | Quake III IHV Test | IBSP 43 | Missing |
 | Public Q3Test releases | IBSP 44 and 45, different record layouts | Missing |
 
@@ -125,6 +125,50 @@ Ritual flag bit meanings were cross-checked against its v1.02 SDK's
 `utils/common/surfaceflags.h` (observation only, under the non-free
 [Ritual SDK](https://github.com/Sporesirius/fakk2) terms). All new implementations
 are independently written; no SDK or translator implementation text is copied.
+
+### Medal of Honor: Allied Assault recovery
+
+The `mohaa` profile loads the native `2015` version 19 directory and its extended
+records. There are now 22 catalog profiles and 19 native writers. Brushes,
+entities, patches and rendered mesh geometry can be recovered. Native terrain
+is expanded at full grid resolution for OBJ/ASE, retaining the two variance-tree
+orientations and each terminal triangle's hole flag. Terrain is also retained as
+height, texture-corner and variance arrays in MAP recovery JSON; it is not
+converted to MAP brushes or Bezier patches. The brush-only minimap workflow is
+disabled for this profile because it would omit terrain.
+
+Reports retain static-model names, origins, angles and scale, plus fence masks
+and side equations. External TIKI meshes are not imported, and native packed
+lightgrid, sphere-light and static-model color data are reported as omitted baked
+lighting. Native BSP writing is unavailable. Native shader directives remain
+partially supported; raw flag values are preserved rather than treated as proof
+of a complete native material compiler.
+
+All 54 installed archive maps pass geometry validation. MAP/OBJ recovery of
+`mohdm3` and `m1l1` produces 4,834/2,711 brushes and 86/615 Bezier patches, with
+no skipped brushes. Their reports retain 294/135 static-model placements and
+22/18 terrain patches, whose surviving meshes contain 2,689/1,128 triangles.
+Each emits the missing-image fallback for `textures/notexture`. Terrain counts
+also match the pinned reference's `mohdm4` and `m5l3` examples. Eight small maps
+have zero side-equation references with no equation table; these normalize to
+none only when no shader carries fence contents. Active or other invalid fence
+references remain fatal, including under `-force`.
+
+[Native evidence](validation/native-mohaa-win-x64.json) records file hashes,
+counts and loss summaries without map bytes. Generated tests cover both terrain
+orientations, all terminal hole bits, brush-entity surface remapping, placement
+and color ranges, malformed values, allocation limits and output preservation.
+Windows release, Linux release and Linux ASan/UBSan checks pass.
+
+The independently written readers and terrain triangulation use format
+observations from fnTech3's
+[MOHAA records](https://github.com/themuffinator/fnTech3/blob/a1251ede2c382190b18c154b45357f6979d8171c/code/qcommon/bsp_mohaa.h),
+[terrain contract](https://github.com/themuffinator/fnTech3/blob/a1251ede2c382190b18c154b45357f6979d8171c/code/qcommon/mohaa_terrain_squares.h)
+and [renderer](https://github.com/themuffinator/fnTech3/blob/a1251ede2c382190b18c154b45357f6979d8171c/code/renderercommon/tr_mohaa_world.c),
+cross-checked against
+[OpenMoHAA](https://github.com/openmoh/openmohaa/tree/ab43a0def6c4feccedae36fdb58c2e007d7e4c35).
+These references are GPL-2.0-or-later, compatible with q3mapx's GPL-3.0-or-later;
+no translator or terrain implementation text was copied.
 
 ### Ongoing coverage requirements
 

@@ -23,9 +23,10 @@ def main():
     parser.add_argument("--game-root", type=Path, help="Read-only installed assets for texture recovery")
     parser.add_argument("--decompile", action="store_true", help="Also produce a recovery report for each map")
     parser.add_argument("--inspect", action="store_true", help="Inspect directories without loading geometry or game assets")
+    parser.add_argument("--obj", action="store_true", help="Also export OBJ geometry and record mesh counts")
     args = parser.parse_args()
-    if args.inspect and args.decompile:
-        parser.error("--inspect and --decompile are separate probes")
+    if args.inspect and (args.decompile or args.obj):
+        parser.error("--inspect and geometry recovery are separate probes")
     if not args.inspect and not args.game:
         parser.error("--game is required for validation/recovery")
     exe, root = args.compiler.resolve(strict=True), args.work_dir.resolve()
@@ -72,13 +73,31 @@ def main():
                     for key in ("brushes", "patches", "faces", "matched_uv_faces", "fallback_uv_faces", "skipped_brushes"):
                         record[key] = recovery[key]
                     record["native_loss_bytes"] = {item["feature"]: item["bytes"] for item in recovery.get("native_losses", [])}
+                    record["native_terrain_patches"] = len(recovery.get("native_terrain", []))
+                    record["native_static_models"] = len(recovery.get("native_static_models", []))
+                    for key in ("native_terrain_triangles", "native_terrain_removed_triangles", "normalized_unused_native_equations"):
+                        record[key] = recovery.get(key, 0)
                 if args.inspect:
                     inspection = json.loads(result.stdout)
                     record["ident"], record["version"] = inspection["ident"], inspection["version"]
                     record["valid_layouts"] = [l["id"] for l in inspection["layouts"] if l["valid"]]
+                if args.obj and result.returncode == 0:
+                    mesh = subprocess.run([*base, "-convert", "-format", "obj", str(staged)], cwd=root, capture_output=True, timeout=180)
+                    (root / f"mesh-{len(records):03d}.log").write_bytes(mesh.stdout + mesh.stderr)
+                    record["obj_exit_code"] = mesh.returncode
+                    if mesh.returncode:
+                        record["exit_code"] = mesh.returncode
+                    else:
+                        digest = hashlib.sha256(); faces = vertices = 0
+                        with staged.with_suffix(".obj").open("rb") as obj:
+                            for line in obj:
+                                digest.update(line)
+                                vertices += line.startswith(b"v ")
+                                faces += line.startswith(b"f ")
+                        record.update(obj_vertices=vertices, obj_faces=faces, obj_sha256=digest.hexdigest())
                 records.append(record)
                 assert staged.read_bytes() == data, "Probe modified its input"
-                print(args.game or "inspect", info.filename, "passed" if result.returncode == 0 else "FAILED", flush=True)
+                print(args.game or "inspect", info.filename, "passed" if record["exit_code"] == 0 else "FAILED", flush=True)
         after = archive_path.stat()
         assert (stat.st_size, stat.st_mtime_ns) == (after.st_size, after.st_mtime_ns), "Source archive changed"
     if args.map and set(args.map) - visited:
@@ -86,7 +105,7 @@ def main():
     assert records, "No BSPs selected"
     assert hashlib.sha256(exe.read_bytes()).hexdigest() == executable_hash, "Compiler changed during probe"
     report = {"schema_version": 1, "timestamp_utc": datetime.now(timezone.utc).isoformat(),
-              "kind": "native_directory_inspection" if args.inspect else "native_archive_recovery" if args.decompile else "native_archive_validation",
+              "kind": "native_directory_inspection" if args.inspect else "native_archive_recovery" if args.decompile else "native_archive_mesh_export" if args.obj else "native_archive_validation",
               "game": args.game, "compiler_sha256": executable_hash,
               "passed": sum(r["exit_code"] == 0 for r in records), "total": len(records), "records": records}
     (root / "validation.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")

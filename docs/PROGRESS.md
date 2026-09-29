@@ -696,3 +696,34 @@ in `build/native-{validation,recovery}/{alice,fakk2}`, with logs under
 text are committed. Unknown native shader directives and the existing decoder,
 compiler-warning and cleanup limits remain; full native writing/gameplay is not
 claimed. No new unrelated defect was discovered.
+
+## 2026-09-29 — Native Allied Assault terrain and placement recovery
+
+Added the read-only `mohaa` profile with actual 2015/19 records, checked fence
+equations, static-model placements and native terrain. Full-resolution OBJ/ASE
+terrain respects both orientations and terminal hole bits. MAP JSON retains raw
+terrain arrays and model placements; it explicitly identifies missing external
+TIKI meshes and baked-light data. The catalog disables brush-only minimaps for
+this profile. Resource limits bound terrain and expanded leaf references.
+
+All 54 installed maps validate. Eight briefing/credits/void maps exposed zero
+equation references without an equation table; only absence of every fence
+contents flag permits normalization. Active invalid references remain fatal.
+Real MAP/OBJ recovery of `mohdm3` and `m1l1` has no skipped brushes and retains
+2,689/1,128 terrain triangles and 294/135 static-model placements. `mohdm4`'s
+21,475 removed terrain triangles match the pinned fnTech3 observation. Evidence
+is `validation/native-mohaa-win-x64.json`; private inputs/outputs stay under
+`build/native-{validation,recovery}/mohaa`.
+
+Windows terrain/native/catalog checks pass (4/4). Linux release terrain/native/
+catalog/window checks pass (5/5 including the queue fixture), and Linux ASan/UBSan
+terrain/native checks pass (2/2, 21.0 seconds, documented CLI leak setting).
+Generated checks cover geometry insertion before brush submodels, all terminal
+hole bits, malformed extensions, hard allocation limits and existing output
+preservation. Logs are `.agents/tmp/game-coverage/*mohaa*.log`.
+
+Known recovery limits include native shader warnings, the `textures/notexture`
+missing-image fallback and hidden-face UV fallback. No game or input control was
+used. No proprietary assets or external implementation text are committed. The
+existing decoder/compiler-warning/cleanup limits remain; no new unrelated defect
+was discovered.

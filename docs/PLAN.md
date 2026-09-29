@@ -143,7 +143,8 @@ and validation requirements. Continue committing each completed task separately.
 - [ ] Extend native BSP recovery to the missing fnTech3 format families, beginning
   with Alice/F.A.K.K.2, and cover Medal of Honor and early Quake III formats.
   Alice/F.A.K.K.2 recovery, FTX textures and unavailable-writer protection are
-  implemented and validated; Medal of Honor and early Quake III remain next.
+  implemented and validated, as is Medal of Honor terrain/placement recovery;
+  early Quake III remains next.
   Preserve recoverable geometry/entities/material data and report format-specific
   losses. Native writing must not be advertised until its own contracts are met.
 - [x] Exercise the existing writable game families through full synthetic compiler

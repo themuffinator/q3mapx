@@ -152,10 +152,17 @@ if(BUILD_TESTING)
     add_executable(ftx_test tests/ftx.cpp)
     target_include_directories(ftx_test PRIVATE libs)
     add_test(NAME ftx COMMAND ftx_test)
+    add_executable(terrain_test tests/terrain.cpp)
+    target_include_directories(terrain_test PRIVATE libs)
+    add_test(NAME terrain COMMAND terrain_test)
     add_test(NAME native_fakk COMMAND ${Python3_EXECUTABLE}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/native_fakk.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/native-fakk)
     set_tests_properties(native_fakk PROPERTIES TIMEOUT 180)
+    add_test(NAME native_mohaa COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/native_mohaa.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/native-mohaa)
+    set_tests_properties(native_mohaa PROPERTIES TIMEOUT 180)
     add_executable(decompile_math_test tests/decompile_math.cpp)
     target_include_directories(decompile_math_test PRIVATE libs)
     add_test(NAME decompile_math COMMAND decompile_math_test)

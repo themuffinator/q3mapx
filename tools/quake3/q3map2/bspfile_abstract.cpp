@@ -210,6 +210,7 @@ void LoadBSPFile( const char *filename ){
 	ValidateBSPStrings();
 	SwapBSPFile();
 	ValidateBSPData();
+	CompleteBSPNativeRecovery();
 }
 
 /*

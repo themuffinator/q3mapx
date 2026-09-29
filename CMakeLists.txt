@@ -149,6 +149,13 @@ if(BUILD_TESTING)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/bsp_analyze.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/bsp-analyze)
     set_tests_properties(bsp_analyze PROPERTIES TIMEOUT 90)
+    add_executable(ftx_test tests/ftx.cpp)
+    target_include_directories(ftx_test PRIVATE libs)
+    add_test(NAME ftx COMMAND ftx_test)
+    add_test(NAME native_fakk COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/native_fakk.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/native-fakk)
+    set_tests_properties(native_fakk PROPERTIES TIMEOUT 180)
     add_executable(decompile_math_test tests/decompile_math.cpp)
     target_include_directories(decompile_math_test PRIVATE libs)
     add_test(NAME decompile_math COMMAND decompile_math_test)

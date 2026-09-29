@@ -664,3 +664,35 @@ the instrumented subprocess suite). The first Windows assertion exposed CRLF in
 captured text; the harness now normalizes line endings before comparison. Local
 logs are `.agents/tmp/game-coverage/*analyze*.log`. The issue found during the
 inspection task is fixed; no additional unrelated defect was discovered.
+
+## 2026-09-29 — Native Alice/F.A.K.K.2 recovery and FTX textures
+
+Added recovery-only `alice` and `fakk2` profiles, direct native directory/record
+adapters, mandatory MAP loss reports and retained shader/subdivision metadata.
+Unsupported compilation, modification and BSP conversion fail before stage
+outputs are created. The workbench discovers both profiles and disables build
+for them. Shared IBSP prefix conversion retains the existing native writers.
+
+Actual recovery initially exposed missing texture lookups: both games primarily
+use FTX. Added an independently written bounded RGBA reader. The generated
+fixture uses unequal texture dimensions and verifies UVs after recovery and
+Quake III recompilation, exposing missing-image fallback rather than merely
+checking that export succeeded. Native strides, metadata, wrong versions,
+malformed geometry, minimaps and output protection are also covered.
+
+Windows native/profile/validation/recovery/catalog checks pass (6/6), followed
+by catalog and actual-window build-gating checks (3/3 with the queue fixture).
+Linux release native/inspection/window checks pass (5/5). Linux ASan/UBSan
+validation, FTX and native recovery checks pass (3/3, 63.3 seconds), with the
+documented process-lifetime leak setting.
+
+All 36 Alice and 30 F.A.K.K.2 maps pass native geometry validation. Real MAP
+recovery of `centipede1` and `towncenter_good` produces 1,149/2,768 brushes and
+44/35 patches, zero skipped brushes and zero missing-texture warnings after FTX
+support. Native baked-light extension loss and hidden-face UV fallbacks remain
+explicit. Evidence is `validation/native-fakk-win-x64.json`; private outputs are
+in `build/native-{validation,recovery}/{alice,fakk2}`, with logs under
+`.agents/tmp/game-coverage`. No proprietary assets or external implementation
+text are committed. Unknown native shader directives and the existing decoder,
+compiler-warning and cleanup limits remain; full native writing/gameplay is not
+claimed. No new unrelated defect was discovered.

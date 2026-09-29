@@ -29,6 +29,7 @@
 #include "games.h"
 #include "bspfile_ibsp.h"
 #include "bspfile_rbsp.h"
+#include "bspfile_native.h"
 #include "qstringops.h"
 #include "inout.h"
 #include "rapidjson/prettywriter.h"
@@ -948,6 +949,43 @@ struct game_ja : game_sof2
 
 
 
+// Read-only recovery profiles. Ritual's overlapping flag values must not be
+// interpreted as Quake III teleporter/jumppad/metalstep flags. The relevant bit
+// meanings are observed format contracts (see GAME-COVERAGE.md); no SDK code.
+struct game_fakk2 : game_default {
+	game_fakk2() {
+		arg="fakk2"; title="Heavy Metal: F.A.K.K.2 (recovery)";
+		gamePath="fakk"; homeBasePath=".fakk2"; magic="fakk";
+		bspIdent="FAKK"; bspVersion=12; load=LoadFAKKBSPFile; write=nullptr;
+		std::erase_if(surfaceParms,[](const auto& p) {
+			for(const char* unsupported : {"teleporter","jumppad","clusterportal","donotenter","botclip","trigger",
+			    "flesh","metalsteps","dust","pointlight","lightfilter"})
+				if(strEqual(p.name,unsupported)) return true;
+			return false;
+		});
+		for(auto& p:surfaceParms) {
+			if(strEqual(p.name,"alphashadow")) p.surfaceFlags=0x800;
+			if(strEqual(p.name,"nolightmap")) p.surfaceFlags=0x400;
+			if(strEqual(p.name,"nodlight")) p.surfaceFlags=0x800000;
+			if(strEqual(p.name,"hint")) p.surfaceFlags=0x1000000;
+		}
+		surfaceParms.insert(surfaceParms.end(),{
+			{"cameraclip",0x40000,Q_CONT_SOLID,0,0,C_DETAIL|C_TRANSLUCENT,C_SOLID},
+			{"weaponclip",0x80000,Q_CONT_SOLID,0,0,C_DETAIL|C_TRANSLUCENT,C_SOLID},
+			{"shootable",0x100000,Q_CONT_SOLID,0,0,C_TRANSLUCENT,C_SOLID},
+			{"castshadow",0,0,0x40,0,0,0},
+			{"ricochet",0,0,0x8000,0,0,0}
+		});
+		brushBevelsSurfaceFlagsMask=0;
+	}
+};
+struct game_alice : game_fakk2 {
+	game_alice() {
+		arg="alice"; title="American McGee's Alice (recovery)";
+		gamePath="base"; homeBasePath=".alice"; magic="alice"; bspVersion=42;
+	}
+};
+
 const std::vector<game_t> g_games = { game_quake3(),
                                       game_quakelive(),
                                       game_nexuiz(),
@@ -967,6 +1005,8 @@ const std::vector<game_t> g_games = { game_quake3(),
                                       game_sof2(),
                                       game_jk2(),
                                       game_ja(),
+                                      game_fakk2(),
+                                      game_alice(),
                                     };
 const game_t *g_game = &g_games[0];
 

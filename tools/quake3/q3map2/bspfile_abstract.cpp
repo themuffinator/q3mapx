@@ -33,6 +33,7 @@
 #include "q3mapx/atomic_file.h"
 #include "bspfile_ibsp.h"
 #include "bspfile_abstract.h"
+#include "bspfile_native.h"
 #include <ctime>
 #include <charconv>
 
@@ -197,6 +198,7 @@ static void SwapBSPFile(){
  */
 
 void LoadBSPFile( const char *filename ){
+	ResetBSPRecoveryMetadata();
 	bspLoadedPartially = false;
 	/* dummy check */
 	if ( g_game == nullptr || g_game->load == nullptr ) {
@@ -216,6 +218,8 @@ void LoadBSPFile( const char *filename ){
  */
 
 void LoadBSPFilePartially( const char *filename ){
+	if (g_game && !g_game->write) { LoadBSPFile(filename); return; }
+	ResetBSPRecoveryMetadata();
 	bspLoadedPartially = true;
 	/* dummy check */
 	if ( g_game == nullptr || g_game->load == nullptr ) {

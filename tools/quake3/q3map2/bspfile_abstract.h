@@ -29,7 +29,7 @@
 #include <type_traits>
 
 // File offsets are validated independently of -force; it must never disable memory safety.
-bspHeader_t ReadBSPHeader( const MemBuffer& file, int lumpCount );
+bspHeader_t ReadBSPHeader( const MemBuffer& file, int lumpCount, size_t directoryOffset = 8 );
 void ValidateBSPStrings();
 void ValidateBSPData( bool partial = false );
 extern size_t bspNormalizedUnusedLightmapPairs;

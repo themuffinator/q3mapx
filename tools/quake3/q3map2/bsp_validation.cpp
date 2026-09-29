@@ -9,13 +9,17 @@
 size_t bspNormalizedUnusedLightmapPairs = 0;
 size_t bspNormalizedUnusedFlareFogs = 0;
 
-bspHeader_t ReadBSPHeader( const MemBuffer& file, int lumpCount ){
-	const size_t headerSize = 8 + size_t( lumpCount ) * sizeof( bspLump_t );
-	if ( lumpCount < 1 || lumpCount > 100 || file.size() < headerSize ) {
+bspHeader_t ReadBSPHeader( const MemBuffer& file, int lumpCount, size_t directoryOffset ){
+	if ( lumpCount < 1 || lumpCount > 100 || (directoryOffset != 8 && directoryOffset != 12) )
+		Error( "Invalid BSP: unsupported directory layout" );
+	const size_t headerSize = directoryOffset + size_t( lumpCount ) * sizeof( bspLump_t );
+	if ( file.size() < headerSize ) {
 		Error( "Invalid BSP: truncated header (need %zu bytes, have %zu)", headerSize, file.size() );
 	}
 	bspHeader_t header{};
-	std::memcpy( &header, file.data(), headerSize );
+	std::memcpy( &header, file.data(), 8 );
+	std::memcpy( header.lumps, static_cast<const byte*>(file.data()) + directoryOffset,
+	    size_t(lumpCount) * sizeof(bspLump_t) );
 	header.version = LittleLong( header.version );
 	for ( int i = 0; i < lumpCount; ++i ) {
 		auto& lump = header.lumps[i];

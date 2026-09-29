@@ -31,6 +31,7 @@
 /* dependencies */
 #include "q3map2.h"
 #include "bspfile_abstract.h"
+#include "bspfile_ibsp.h"
 #include <ctime>
 
 
@@ -227,18 +228,45 @@ void LoadIBSPFile( const char *filename ){
 		Error( "%s is version %d, not %d", filename, header.version, g_game->bspVersion );
 	}
 
-	/* load/convert lumps */
-	CopyLump( header, file, LUMP_SHADERS, bspShaders );
+	LoadIBSPGeometry(header, file);
+
+	/* advertisements */
+	if ( header.version == 47 && strEqual( g_game->arg, "quakelive" ) ) {
+		CopyLump( header, file, LUMP_ADVERTISEMENTS, bspAds );
+	}
+	else bspAds.clear();
+}
+
+template<typename DstT, typename SrcT=DstT>
+static void CopyPrefixLump(const bspHeader_t& header, const MemBuffer& file,
+                          int lump, std::vector<DstT>& data, unsigned stride) {
+	if (stride == sizeof(SrcT)) { CopyLump<DstT,SrcT>(header,file,lump,data); return; }
+	const auto& range=header.lumps[lump];
+	if (stride < sizeof(SrcT) || range.length < 0 || unsigned(range.length)%stride)
+		Error("Invalid BSP: lump %d has an invalid extended record size",lump);
+	const auto* bytes=static_cast<const byte*>(file.data())+range.offset;
+	const size_t count=size_t(range.length)/stride;
+	data.clear(); data.reserve(count);
+	for(size_t i=0;i<count;++i) {
+		std::array<byte,sizeof(SrcT)> record;
+		std::memcpy(record.data(),bytes+i*stride,sizeof(SrcT));
+		data.push_back(std::bit_cast<SrcT>(record));
+	}
+}
+
+void LoadIBSPGeometry(const bspHeader_t& header, const MemBuffer& file,
+                     unsigned shaderBytes, unsigned surfaceBytes, unsigned leafBytes, unsigned sideBytes) {
+	CopyPrefixLump( header, file, LUMP_SHADERS, bspShaders, shaderBytes );
 	CopyLump( header, file, LUMP_MODELS, bspModels );
 	CopyLump( header, file, LUMP_PLANES, bspPlanes );
-	CopyLump( header, file, LUMP_LEAFS, bspLeafs );
+	CopyPrefixLump( header, file, LUMP_LEAFS, bspLeafs, leafBytes );
 	CopyLump( header, file, LUMP_NODES, bspNodes );
 	CopyLump( header, file, LUMP_LEAFSURFACES, bspLeafSurfaces );
 	CopyLump( header, file, LUMP_LEAFBRUSHES, bspLeafBrushes );
 	CopyLump( header, file, LUMP_BRUSHES, bspBrushes );
-	CopyLump<bspBrushSide_t, ibspBrushSide_t>( header, file, LUMP_BRUSHSIDES, bspBrushSides );
+	CopyPrefixLump<bspBrushSide_t, ibspBrushSide_t>( header, file, LUMP_BRUSHSIDES, bspBrushSides, sideBytes );
 	CopyLump<bspDrawVert_t, ibspDrawVert_t>( header, file, LUMP_DRAWVERTS, bspDrawVerts );
-	CopyLump<bspDrawSurface_t, ibspDrawSurface_t>( header, file, LUMP_SURFACES, bspDrawSurfaces );
+	CopyPrefixLump<bspDrawSurface_t, ibspDrawSurface_t>( header, file, LUMP_SURFACES, bspDrawSurfaces, surfaceBytes );
 	CopyLump( header, file, LUMP_FOGS, bspFogs );
 	CopyLump( header, file, LUMP_DRAWINDEXES, bspDrawIndexes );
 	CopyLump( header, file, LUMP_VISIBILITY, bspVisBytes );
@@ -246,13 +274,6 @@ void LoadIBSPFile( const char *filename ){
 	CopyLump( header, file, LUMP_ENTITIES, bspEntData );
 	CopyLump<bspGridPoint_t, ibspGridPoint_t>( header, file, LUMP_LIGHTGRID, bspGridPoints );
 
-	/* advertisements */
-	if ( header.version == 47 && strEqual( g_game->arg, "quakelive" ) ) { // quake live's bsp version minus wolf, et, etut
-		CopyLump( header, file, LUMP_ADVERTISEMENTS, bspAds );
-	}
-	else{
-		bspAds.clear();
-	}
 }
 
 /*

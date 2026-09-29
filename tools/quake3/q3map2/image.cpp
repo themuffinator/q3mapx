@@ -34,6 +34,7 @@
 #include "ddslib.h"
 #include "crnlib/crnlib.h"
 #include "webplib/webplib.h"
+#include "q3mapx/ftx.h"
 
 
 
@@ -301,7 +302,7 @@ const image_t *ImageLoad( const char *name ){
 
 	/* none found, so let's create a new one */
 	byte *pixels = nullptr;
-	int width, height;
+	int width = 0, height = 0;
 	char filename[ 1024 ];
 	MemBuffer buffer;
 	bool alphaHack = false;
@@ -351,6 +352,16 @@ const image_t *ImageLoad( const char *name ){
 	else if( path_set_extension( filename, ".webp" ); ( buffer = vfsLoadFile( filename ) ) )
 	{
 		pixels = ConvertWebptoRGBA( buffer.data(), buffer.size(), width, height );
+	}
+	else if( path_set_extension( filename, ".ftx" ); ( buffer = vfsLoadFile( filename ) ) )
+	{
+		try {
+			const auto view=q3mapx::readFtx({static_cast<const uint8_t*>(buffer.data()),buffer.size()});
+			width=int(view.width); height=int(view.height);
+			pixels=safe_malloc(view.rgba.size());
+			std::memcpy(pixels,view.rgba.data(),view.rgba.size());
+		}
+		catch(const std::exception& error) { Sys_Warning("%s: %s\n",filename,error.what()); }
 	}
 
 	/* make sure everything's kosher */

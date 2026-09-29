@@ -5,6 +5,7 @@
 #include <QComboBox>
 #include <QFile>
 #include <QFileInfo>
+#include <QPushButton>
 #include <QTimer>
 #include <iostream>
 
@@ -28,6 +29,12 @@ int main(int argc, char** argv) {
         auto* profiles = window.findChild<QComboBox*>("gameProfiles");
         require(profiles && profiles->count() >= 19, "Window did not use the compiler catalog");
         require(profiles->currentText() == project.game, "Catalog replaced the saved project selection");
+        auto* button=window.findChild<QPushButton*>("primary");
+        require(button, "Run button missing");
+        profiles->setCurrentText("alice");
+        require(!button->isEnabled(), "Recovery-only profile enabled compilation in the window");
+        profiles->setCurrentText(project.game);
+        require(button->isEnabled(), "Returning to a writable profile did not enable build");
         QAction* run = nullptr;
         for (auto* action : window.findChildren<QAction*>())
             if (action->shortcut() == QKeySequence(Qt::Key_F5)) run = action;

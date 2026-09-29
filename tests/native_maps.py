@@ -66,10 +66,12 @@ def main():
                           "exit_code": result.returncode, "seconds": elapsed,
                           "normalized_unused_lightmap_uv_pairs": int(normalized[1]) if normalized else 0,
                           "normalized_unused_flare_fogs": int(flare_fogs[1]) if flare_fogs else 0}
+                record["missing_texture_warnings"] = log.count(b"Couldn't find image for shader")
                 if args.decompile and result.returncode == 0:
                     recovery = json.loads(Path(str(recovered) + ".recovery.json").read_text())
                     for key in ("brushes", "patches", "faces", "matched_uv_faces", "fallback_uv_faces", "skipped_brushes"):
                         record[key] = recovery[key]
+                    record["native_loss_bytes"] = {item["feature"]: item["bytes"] for item in recovery.get("native_losses", [])}
                 if args.inspect:
                     inspection = json.loads(result.stdout)
                     record["ident"], record["version"] = inspection["ident"], inspection["version"]

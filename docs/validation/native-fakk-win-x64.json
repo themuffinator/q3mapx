@@ -1,0 +1,754 @@
+{
+  "schema_version": 1,
+  "scope": "native BSP geometry validation and selected MAP recovery; no gameplay claim",
+  "reports": [
+    {
+      "schema_version": 1,
+      "timestamp_utc": "2026-09-29T19:03:56.868750+00:00",
+      "kind": "native_archive_validation",
+      "game": "alice",
+      "compiler_sha256": "796b324948627089c3ac44b43d524d2c0d339bbbf34504441ca7c5956aa30852",
+      "passed": 36,
+      "total": 36,
+      "records": [
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/centipede1.bsp",
+          "bytes": 4562996,
+          "sha256": "36773ad709086fffa9c348e8dfcea1c3c1825d5a68cd7b3e46cd6f4d69dc832a",
+          "exit_code": 0,
+          "seconds": 0.5390874000149779,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/centipede2.bsp",
+          "bytes": 3317608,
+          "sha256": "442285f92be2d0a9fa0a2f9cf8baf90a3e70d5312ed0b34108c549508cb37162",
+          "exit_code": 0,
+          "seconds": 0.036387500003911555,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/facade.bsp",
+          "bytes": 5667704,
+          "sha256": "c72321517c76ad6c395e6cf36c187f7ee522a4cc2c500bf7c92cb2284cd728d8",
+          "exit_code": 0,
+          "seconds": 0.035907199955545366,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/fortress1.bsp",
+          "bytes": 4503220,
+          "sha256": "8154555e66ed937f6d95a831a357b745ce1ea706b6a98254f4ed7c29c50f6a10",
+          "exit_code": 0,
+          "seconds": 0.03135069995187223,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/fortress2.bsp",
+          "bytes": 5836804,
+          "sha256": "d64e1ecea002a901c1370756768662662a2ec82bd982c6c573d24907b84eca09",
+          "exit_code": 0,
+          "seconds": 0.03365779999876395,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/funhouse.bsp",
+          "bytes": 7145896,
+          "sha256": "04aa77a56d32e6cdf2fa91b11cf9608593d925a8afb2fb68720d1ae062a55ed1",
+          "exit_code": 0,
+          "seconds": 0.053634900017641485,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/garden1.bsp",
+          "bytes": 6323368,
+          "sha256": "37e02f5be66f053fdb67652fcc46a87886d2cb40916fe761afa8a0f1568b57c8",
+          "exit_code": 0,
+          "seconds": 0.030765799980144948,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/garden2.bsp",
+          "bytes": 8172832,
+          "sha256": "ca3c2cd77ba92796520b9ca20d357b11973297e7c2e875cc34ab0c5806cf6820",
+          "exit_code": 0,
+          "seconds": 0.03349900001194328,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/garden3.bsp",
+          "bytes": 3429376,
+          "sha256": "0eeaac85dfdf1b8bee447a620aef56e6d4fc09b74abc01b80136a5084b436e13",
+          "exit_code": 0,
+          "seconds": 0.03082619997439906,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/garden4.bsp",
+          "bytes": 5763900,
+          "sha256": "21df007755adee0045e78cfb52bfee29db1c0b83191db3c1a59d3b8335caa1f7",
+          "exit_code": 0,
+          "seconds": 0.026789899973664433,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/grounds1.bsp",
+          "bytes": 2521040,
+          "sha256": "6e28ed62ae342ce495f043210ee65ee9cb56236fc1aa361f1a7f43b69b8cf926",
+          "exit_code": 0,
+          "seconds": 0.025866499985568225,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/grounds2.bsp",
+          "bytes": 4891724,
+          "sha256": "335f9bcc8d313630b0d0cdeff5995cbb649c3e5d200c26bef5d7d874dca04f62",
+          "exit_code": 0,
+          "seconds": 0.027626600000075996,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/gvillage.bsp",
+          "bytes": 4013332,
+          "sha256": "e682523799c6424e0f576a2aab9f9a25a94deded5bd879284471df3ce07390ac",
+          "exit_code": 0,
+          "seconds": 0.02490119996946305,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/hatter1.bsp",
+          "bytes": 6951076,
+          "sha256": "dd4d51423a55133583dd68ea3ab3ace742a7fa3beca130015d2e12f226a77793",
+          "exit_code": 0,
+          "seconds": 0.028307799948379397,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/hatter2.bsp",
+          "bytes": 2182600,
+          "sha256": "0869141c1b1e46d79463a51a757f7ac2def0a7cfb472130a6b7163cb63ff82a9",
+          "exit_code": 0,
+          "seconds": 0.025114300020504743,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/hedge1.bsp",
+          "bytes": 2678552,
+          "sha256": "7827eef5ff54aacd8d3f97ec257229833275015db7427d0b7c902b2805e1e8e8",
+          "exit_code": 0,
+          "seconds": 0.02886930003296584,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/hedge2.bsp",
+          "bytes": 5257304,
+          "sha256": "107824f31f0572f30d9d40070718ac28ab352f971f0279bcad5040dd94d1915a",
+          "exit_code": 0,
+          "seconds": 0.02803929999936372,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/hedge3.bsp",
+          "bytes": 9370732,
+          "sha256": "b26ede3e6123afa2375de792641155b55c0e57ffcb1b1f62eea2e2e4c631f672",
+          "exit_code": 0,
+          "seconds": 0.03684709995286539,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/jlair1.bsp",
+          "bytes": 7741340,
+          "sha256": "055ac6f1d1b4f434f65ff2bb4dd40295912acf818e9bebfede4b35d35f509eb5",
+          "exit_code": 0,
+          "seconds": 0.02959049999481067,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/jlair2.bsp",
+          "bytes": 1921312,
+          "sha256": "bec146d1b4aaf2a521e240ea4de6e57d591462a239f70707bfaed29e06dc3485",
+          "exit_code": 0,
+          "seconds": 0.030500799999572337,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/keep.bsp",
+          "bytes": 4501380,
+          "sha256": "8c73bcde06a1747c18dca974d4f076ccadafed932d80fc2c898e532f1959a089",
+          "exit_code": 0,
+          "seconds": 0.028278599958866835,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/pandemonium.bsp",
+          "bytes": 5675452,
+          "sha256": "e934e1a6de5e5766601d32b4b703c7242fafa46399cb9836abebbd48d0cfd021",
+          "exit_code": 0,
+          "seconds": 0.03126349998638034,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/potears1.bsp",
+          "bytes": 7165892,
+          "sha256": "a4619eedd99f16b53e6070e31723e630a0b883dad48001281808bcaee8154b4e",
+          "exit_code": 0,
+          "seconds": 0.0321496999822557,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/potears2.bsp",
+          "bytes": 3777348,
+          "sha256": "3a3540ba150691271a25d7590fee78d973c191cd12a9480659d261a215b40901",
+          "exit_code": 0,
+          "seconds": 0.025410600006580353,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/potears3.bsp",
+          "bytes": 1014216,
+          "sha256": "aabfcdf2ce406f9fc1873872f1341f6ed0b782f14d9c7b50337a5a720b0881a4",
+          "exit_code": 0,
+          "seconds": 0.025283199967816472,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/qlair.bsp",
+          "bytes": 1441292,
+          "sha256": "79c46ee755cc92853858739567e565ebe984e82233249addea059225683bc0ec",
+          "exit_code": 0,
+          "seconds": 0.02184800000395626,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/rchess1.bsp",
+          "bytes": 5344008,
+          "sha256": "c134b9f56c828d1a85b5a470c360be4a753e84fa806a89565263e13a69637cb1",
+          "exit_code": 0,
+          "seconds": 0.02939209999749437,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/skool1.bsp",
+          "bytes": 6402760,
+          "sha256": "544188d4193cd72567036606de8df37ef0d87931b96573bb153de87f81bee3e5",
+          "exit_code": 0,
+          "seconds": 0.0328579000197351,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/skool2.bsp",
+          "bytes": 6374344,
+          "sha256": "e2fc3b36d95ac0d0ef4b8dd064bd043b01fcab09eb1d15fdc9e89a3568581b69",
+          "exit_code": 0,
+          "seconds": 0.0295685000019148,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/tower1.bsp",
+          "bytes": 2183428,
+          "sha256": "a767bee01797fc67ee426865301bfd48c8532d23ce41225e2324cc358b71aae8",
+          "exit_code": 0,
+          "seconds": 0.021214399952441454,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/tower2.bsp",
+          "bytes": 3209560,
+          "sha256": "7a65625518ca12e219e5945be7f3a1c301a29dd9c50f20beb6cde6a99f06347d",
+          "exit_code": 0,
+          "seconds": 0.02668519999133423,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/tower3.bsp",
+          "bytes": 3404896,
+          "sha256": "36a5ab5a3de6a261f5a33d1cd41c69844a4906c41a9aee7db7830f988a26e676",
+          "exit_code": 0,
+          "seconds": 0.024770700023509562,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/utemple.bsp",
+          "bytes": 8102944,
+          "sha256": "85836fc1ff9d105a3e87a2ab2e2ceb3b4e4855e5718f60f94b4a8f3abf6e272a",
+          "exit_code": 0,
+          "seconds": 0.0379650000249967,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/wchess1.bsp",
+          "bytes": 7012340,
+          "sha256": "433217552eccd1df6ec381008b505ca7ac6dea1e9a19a5b0c85bb43e0271857e",
+          "exit_code": 0,
+          "seconds": 0.032941200013738126,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/wchess2.bsp",
+          "bytes": 5664880,
+          "sha256": "091e469e6069d067ce18fff1ec67e6133208045d2ec0798b0b40b6d4979ab7dc",
+          "exit_code": 0,
+          "seconds": 0.027858000015839934,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/wforest.bsp",
+          "bytes": 6998372,
+          "sha256": "e7006b5ad52108e7f159d181813a44daa508c5dec9732e91f040898ff1a06578",
+          "exit_code": 0,
+          "seconds": 0.031234900001436472,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "timestamp_utc": "2026-09-29T19:03:58.927698+00:00",
+      "kind": "native_archive_validation",
+      "game": "fakk2",
+      "compiler_sha256": "796b324948627089c3ac44b43d524d2c0d339bbbf34504441ca7c5956aa30852",
+      "passed": 30,
+      "total": 30,
+      "records": [
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/blood.bsp",
+          "bytes": 4562660,
+          "sha256": "180533471198cb142ea05ca31c89afa79bb11932849ec767b68fba6f76fafe7b",
+          "exit_code": 0,
+          "seconds": 0.024417400010861456,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/cemetery.bsp",
+          "bytes": 8646548,
+          "sha256": "9d5a99857ee7d6c3dbdf898aa5faf617166f82cca43f7fe2ac6af40aeade69d6",
+          "exit_code": 0,
+          "seconds": 0.025487400009296834,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/cliff1.bsp",
+          "bytes": 7010520,
+          "sha256": "ca686373756c745d241131b221cf824bd9c49e5d0a910470264ddb5d6c76da59",
+          "exit_code": 0,
+          "seconds": 0.03363489999901503,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/cliff2.bsp",
+          "bytes": 7482120,
+          "sha256": "a0dcee3899c329c121b5f19aa0284381d4006cebf89cc63e4d471954b8445718",
+          "exit_code": 0,
+          "seconds": 0.04729100002441555,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/creeperpens.bsp",
+          "bytes": 5712988,
+          "sha256": "4cf6475f8c698f8c296812828b0917f0dc27689973e383b3710c14ecd720ce29",
+          "exit_code": 0,
+          "seconds": 0.03642630000831559,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/end.bsp",
+          "bytes": 1764168,
+          "sha256": "92d634c757c98d336bc8ff64bcfc6542fb5ed664cd53bea8bb002718ba2b3382",
+          "exit_code": 0,
+          "seconds": 0.030254699988290668,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/fakkhouse.bsp",
+          "bytes": 4700748,
+          "sha256": "24e243a8e029f37f57fc3a8ba947bff1e1d9ac8ce5c762fb2fb39ac9fbb07beb",
+          "exit_code": 0,
+          "seconds": 0.03517480002483353,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/fog.bsp",
+          "bytes": 7795180,
+          "sha256": "6f793e4471dbd798ba2927e747ee700a08c495a901ed6aada62b443b7f63aea9",
+          "exit_code": 0,
+          "seconds": 0.036588800023309886,
+          "normalized_unused_lightmap_uv_pairs": 1,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/gruff.bsp",
+          "bytes": 7865368,
+          "sha256": "5b8a675d380a5de4eddfa34f977fa6fc351b2521ac639dd5037aa3af7e8f9f23",
+          "exit_code": 0,
+          "seconds": 0.05190350004704669,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/gruff_cinema.bsp",
+          "bytes": 4396736,
+          "sha256": "9c17f1ebae43be9337daa287f67120aaec20c83f6a2b080a3d51192eb5109137",
+          "exit_code": 0,
+          "seconds": 0.04388040001504123,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/homes1.bsp",
+          "bytes": 4059388,
+          "sha256": "3752119a2987a77dfcfa360427f9025af2c73c41e04568f8f677b65216f2b8f7",
+          "exit_code": 0,
+          "seconds": 0.03049730003112927,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/homes1_fullvis.bsp",
+          "bytes": 4088964,
+          "sha256": "7734ae59011aca1ded35aef91b3722e69a0d64d2b4c281533ca751bd2456820b",
+          "exit_code": 0,
+          "seconds": 0.0320132999913767,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/homes2evil.bsp",
+          "bytes": 7786072,
+          "sha256": "dc160a18257c117e1786ad152ada5fa4a91fe57f019aece91c078ca0bba47577",
+          "exit_code": 0,
+          "seconds": 0.028791400021873415,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/homes2good.bsp",
+          "bytes": 4481040,
+          "sha256": "8063c5c97dc17020779f1a4e41c80d30a1d51c09c243851992d1fc77063d6d82",
+          "exit_code": 0,
+          "seconds": 0.028025100007653236,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/intro.bsp",
+          "bytes": 156612,
+          "sha256": "1d7dbc88c0b39bd70e92f3daa823d60512c82a64d7c1bd88f0bb5631cc365dcd",
+          "exit_code": 0,
+          "seconds": 0.02241980005055666,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/landersroost.bsp",
+          "bytes": 2943760,
+          "sha256": "2529d69b65b14dc4bcb8f5859f9a7731b23c38cfbc142342d377cef0cfed97b5",
+          "exit_code": 0,
+          "seconds": 0.02699639997445047,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/oracle.bsp",
+          "bytes": 8140284,
+          "sha256": "4b60e24ca1465bc2e3770cd4b6e100a651cd602a9d4ca08d7af5a79204b1ec60",
+          "exit_code": 0,
+          "seconds": 0.03265420004026964,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/oracleway.bsp",
+          "bytes": 4031496,
+          "sha256": "46b5d7358448d9dbd1f2775aa803d4fb6e338f7edb9e8a82b2e4dd7b1e815852",
+          "exit_code": 0,
+          "seconds": 0.02891469997121021,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/otto.bsp",
+          "bytes": 4449556,
+          "sha256": "c906240923c26fd69477da99327217d3a41fa79e932c974f93a5852227966796",
+          "exit_code": 0,
+          "seconds": 0.03082330001052469,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/over.bsp",
+          "bytes": 3549872,
+          "sha256": "b78b33087fcb3cf1b144d5b397f606e2f653294e86afdda4ffa738c5cd7587ce",
+          "exit_code": 0,
+          "seconds": 0.02915369998663664,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/shield.bsp",
+          "bytes": 1820144,
+          "sha256": "0812654f2265fb241cbe6ef75537e1ef18594b9b320399ab394350fcb1c1eb8d",
+          "exit_code": 0,
+          "seconds": 0.02586870000232011,
+          "normalized_unused_lightmap_uv_pairs": 1,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/swamp1.bsp",
+          "bytes": 5973828,
+          "sha256": "35833bc2df75a1d5d9e433450ef43764fe63d56dada70b51cb1a3a4ae2a3e3a6",
+          "exit_code": 0,
+          "seconds": 0.031411999952979386,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/swamp2.bsp",
+          "bytes": 6855904,
+          "sha256": "5cc2e2c3cf90a07a85e5d3d3c02c3549590372c08ce3625e21c5f45e25a8aaaf",
+          "exit_code": 0,
+          "seconds": 0.029647600022144616,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/swamp3.bsp",
+          "bytes": 6604916,
+          "sha256": "d59cf7b136523b332a977506a26d1e94ceb817f7cd39b13a92686d319a42059b",
+          "exit_code": 0,
+          "seconds": 0.03577019996009767,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/towncenter_evil.bsp",
+          "bytes": 4256380,
+          "sha256": "c9d0f27016d8300869fb85aaed5d852bb0eee55e3a2cbaed7e4d7b04b8108bc4",
+          "exit_code": 0,
+          "seconds": 0.0420480000320822,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/towncenter_good.bsp",
+          "bytes": 7238828,
+          "sha256": "92f15b2cb9b1d73266dff366499030eb476df93dfbec1d04ee65ffef34259624",
+          "exit_code": 0,
+          "seconds": 0.04329370002960786,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/training.bsp",
+          "bytes": 7771584,
+          "sha256": "249c99bbcdc678fffad770c6f5e958d9fd61cc41e07f0334a83fb880f52ea391",
+          "exit_code": 0,
+          "seconds": 0.03142070001922548,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/under.bsp",
+          "bytes": 4871696,
+          "sha256": "376dbca04305b490ab56e079634a2864951c2b48fa5ad7abbf73bcb82664725f",
+          "exit_code": 0,
+          "seconds": 0.021595400001388043,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/water.bsp",
+          "bytes": 6908644,
+          "sha256": "a098a9fbf1742d32903b3e959839cb20e0ba6f166b61cf27e15d3366c642dc83",
+          "exit_code": 0,
+          "seconds": 0.029135399963706732,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/zoo.bsp",
+          "bytes": 1494196,
+          "sha256": "8b2a891cad15924f3a34c25f4c71897b717f675fdd59d8446b57f46cf7e554cd",
+          "exit_code": 0,
+          "seconds": 0.03260700003011152,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "timestamp_utc": "2026-09-29T19:13:05.364198+00:00",
+      "kind": "native_archive_recovery",
+      "game": "alice",
+      "compiler_sha256": "b845acfdb9bd96075ad1b05174cb9af9467ddd3d00bd9f64bd796aa9d04b8768",
+      "passed": 1,
+      "total": 1,
+      "records": [
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/centipede1.bsp",
+          "bytes": 4562996,
+          "sha256": "36773ad709086fffa9c348e8dfcea1c3c1825d5a68cd7b3e46cd6f4d69dc832a",
+          "exit_code": 0,
+          "seconds": 0.26876870001433417,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0,
+          "missing_texture_warnings": 0,
+          "brushes": 1149,
+          "patches": 44,
+          "faces": 9135,
+          "matched_uv_faces": 3457,
+          "fallback_uv_faces": 5678,
+          "skipped_brushes": 0,
+          "native_loss_bytes": {
+            "entity_lights": 6240,
+            "entity_light_visibility": 219384,
+            "light_definitions": 183716
+          }
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "timestamp_utc": "2026-09-29T19:13:05.704887+00:00",
+      "kind": "native_archive_recovery",
+      "game": "fakk2",
+      "compiler_sha256": "b845acfdb9bd96075ad1b05174cb9af9467ddd3d00bd9f64bd796aa9d04b8768",
+      "passed": 1,
+      "total": 1,
+      "records": [
+        {
+          "archive": "pak0.pk3",
+          "map": "maps/towncenter_good.bsp",
+          "bytes": 7238828,
+          "sha256": "92f15b2cb9b1d73266dff366499030eb476df93dfbec1d04ee65ffef34259624",
+          "exit_code": 0,
+          "seconds": 0.6022015999769792,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0,
+          "missing_texture_warnings": 0,
+          "brushes": 2768,
+          "patches": 35,
+          "faces": 17268,
+          "matched_uv_faces": 6773,
+          "fallback_uv_faces": 10495,
+          "skipped_brushes": 0,
+          "native_loss_bytes": {
+            "entity_lights": 33320,
+            "entity_light_visibility": 400004,
+            "light_definitions": 367484
+          }
+        }
+      ]
+    }
+  ]
+}

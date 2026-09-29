@@ -31,6 +31,7 @@
 /* dependencies */
 #include "q3map2.h"
 #include "bspfile_abstract.h"
+#include "bspfile_native.h"
 #include "bspfile_rbsp.h"
 #include "qspatial.h"
 #include "decompile.h"
@@ -1048,6 +1049,31 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ){
 		writer.Key( "output" ); writer.String( name.c_str() );
 		writer.Key( "format" ); writer.String( brushType == EBrushType::Valve220 ? "map_220" : brushType == EBrushType::Bp ? "map_bp" : "map" );
 		writer.Key( "fast" ); writer.Bool( fast );
+		writer.Key( "game" ); writer.String( g_game->arg );
+		writer.Key( "native_write_supported" ); writer.Bool( g_game->write != nullptr );
+		writer.Key( "native_losses" ); writer.StartArray();
+		for(const auto& loss:bspRecoveryLosses) {
+			writer.StartObject(); writer.Key("feature"); writer.String(loss.feature);
+			writer.Key("bytes"); writer.Uint64(loss.bytes);
+			writer.Key("reason"); writer.String(loss.reason); writer.EndObject();
+		}
+		writer.EndArray();
+		if(!g_game->write) {
+			writer.Key("native_shaders"); writer.StartArray();
+			for(size_t i=0;i<bspShaders.size();++i) {
+				const auto& shader=bspShaders[i];
+				writer.StartObject(); writer.Key("index"); writer.Uint64(i);
+				writer.Key("name"); writer.String(shader.shader);
+				writer.Key("contents"); writer.Uint(uint32_t(shader.contentFlags));
+				writer.Key("surface_flags"); writer.Uint(uint32_t(shader.surfaceFlags));
+				if(i<bspNativeShaderSubdivisions.size()) { writer.Key("subdivisions"); writer.Int(bspNativeShaderSubdivisions[i]); }
+				writer.EndObject();
+			}
+			writer.EndArray();
+			writer.Key("native_surface_subdivisions"); writer.StartArray();
+			for(float value:bspNativeSurfaceSubdivisions) writer.Double(value);
+			writer.EndArray();
+		}
 		const auto count = [&]( const char* key, size_t value ){ writer.Key( key ); writer.Uint64( value ); };
 		count( "entities", entities.size() );
 		count( "brushes", recovery.brushes );
@@ -1066,6 +1092,8 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ){
 		writer.Key( "limitations" );
 		writer.StartArray();
 		writer.String( "Original editor groups, removed entities and source model instances are not stored in the BSP." );
+		writer.String( "Baked lightmaps and lightgrid data are not reconstructed as source lights by MAP export." );
+		if(!g_game->write) writer.String("Native shader flags and subdivisions are retained in this report; standard MAP syntax does not reproduce all native compiler semantics. Native BSP writing is unavailable.");
 		writer.String( "Triangle soup geometry is not exported separately; collision brushes may approximate it." );
 		writer.String( "Fallback texture axes are used on faces without a usable rendered triangle, including hidden faces." );
 		writer.EndArray();

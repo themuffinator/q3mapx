@@ -97,3 +97,29 @@ fog; equivalent references on actual geometry are rejected. Recovery JSON record
 these changes as `normalized_unused_lightmap_uv_pairs` and
 `normalized_unused_flare_fogs`. Finite texture coordinates and active lightmap
 coordinates are preserved.
+
+## Native Alice and F.A.K.K.2 recovery
+
+```sh
+q3mapx -game alice -fs_basepath /path/to/Alice -decompile -o recovered.map input.bsp
+q3mapx -game fakk2 -fs_basepath /path/to/FAKK2 -decompile -o recovered.map input.bsp
+```
+
+The asset roots contain `base` and `fakk`, respectively. Both CLI and workbench
+offer recovery and minimaps for these native formats. BSP writing is disabled:
+recover a standard MAP or export OBJ/ASE geometry instead of rewriting a native
+file through an incompatible writer. Recovering into a different game's editor
+still requires that game's entities/materials to be adapted by the user.
+
+The mandatory MAP report includes `native_losses`, `native_shaders` (raw contents,
+surface flags and shader subdivisions), and `native_surface_subdivisions` in
+source surface order. These retain metadata outside standard MAP syntax. The
+report explicitly identifies omitted native baked-light extensions and the
+general limitations of source-light reconstruction. Native writing and lossless
+round-tripping are not claimed. See [coverage and evidence](GAME-COVERAGE.md).
+
+FTX image lookup follows the existing TGA/PNG/JPEG/DDS/KTX/CRN/WebP alternatives.
+Its 12-byte header and RGBA payload are checked before allocation; dimensions
+must be positive and at most 8192 per axis. Malformed images produce a diagnostic
+and the usual missing-image fallback. Texture dimensions matter to Valve 220
+scales, so installed assets or equivalent source textures should be available.

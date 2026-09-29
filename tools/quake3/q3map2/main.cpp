@@ -179,6 +179,16 @@ int main( int argc, char **argv ){
 	/* ydnar: new path initialization */
 	InitPaths( args );
 
+	// Read-only native adapters must fail before any stage can create auxiliary
+	// files or begin a bake. Conversion targets are checked separately.
+	if (!g_game->write && !args.empty()) {
+		const char* stage=args.getVector().front();
+		bool supported=false;
+		for(const char* allowed : {"-info","-analyze","-decompile","-convert","-minimap","-exportents","-export"})
+			if(striEqual(stage,allowed)) supported=true;
+		if(!supported) Error("Profile '%s' supports native recovery only; BSP compilation and rewriting are not implemented",g_game->arg);
+	}
+
 	/* set game options */
 	if ( !patchSubdivisions ) {
 		patchSubdivisions = g_game->patchSubdivisions;

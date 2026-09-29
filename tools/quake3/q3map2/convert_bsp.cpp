@@ -1139,6 +1139,11 @@ int ConvertBSPMain( Args& args, bool decompile ){
 		}
 	}
 	if ( !args.empty() ) Error( "Unknown conversion option '%s'", args.takeFront() );
+	if (convertGame && (!convertGame->write || !g_game->write))
+		Error("Native recovery-only profiles cannot be BSP conversion sources or targets; use MAP, OBJ or ASE export");
+	if (!g_game->write && (force_map || path_extension_is(fileName,"map")))
+		Error("Native recovery-only profiles require a BSP input");
+	if (!g_game->write && map_allowed) decompileOptions.automaticReport=true;
 	if ( !map_allowed && ( decompileOptions.output || decompileOptions.report || decompile ) ) {
 		Error( "Decompilation output/report options require map, map_bp or map_220 format" );
 	}

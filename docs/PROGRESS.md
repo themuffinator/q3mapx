@@ -306,3 +306,21 @@ algorithms produce identical bytes at 1, 4, 20 and 70 workers, including a repea
 20-worker run. This is repeatability for the same input/build, not a cross-platform
 floating-point guarantee. Batch barriers can cost performance. The Qt project
 round-trip/queue test verifies the setting and backward-compatible loading.
+
+## 2026-09-29 — Portable Windows packaging
+
+Added a project-local packager using CMake install, Qt deployment and a recursive
+PE dependency audit. It records 38 runtime DLLs from 24 installed packages, copies
+their license notices, records binary/source hashes, embeds the project source,
+and fetches exact versioned dependency sources plus build recipes. The source
+lookup handles both current zstd and older gzip archives. Windows system DLLs and
+GPU drivers stay external. The package uses relative Qt plugin lookup and does
+not change system settings. Installation and rebuild steps are in `RELEASE.md`.
+
+Validation: the staging package passed actual BSP/VIS/LIGHT, all MAP round trips,
+decompilation recovery, CPU/GPU minimap checks and the Qt queue with PATH restricted
+to the package and Windows directories. A direct Qt-painted preview was inspected;
+plugin diagnostics confirm the packaged offscreen plugin was loaded. File hashes
+were checked before running. The final clean-source archive follows the integration
+commit. All 24 corresponding dependency source archives are retained under
+`build/package/dependency-sources` (some packages share one source archive).

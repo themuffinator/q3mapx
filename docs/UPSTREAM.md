@@ -54,3 +54,20 @@ The original q3mapx workbench uses the [Qt 6 Core, Gui and Widgets framework](ht
 under its compatible open-source license terms; see [Qt licensing](https://doc.qt.io/qt-6/licensing.html).
 No Qt example code was copied. Runtime packages must retain Qt and its component
 notices and provide the applicable source/relinking information.
+
+Portable builds use unmodified shared libraries from [MSYS2](https://www.msys2.org/):
+Assimp, GLib, libxml2, Qt, PNG/JPEG/zlib support and their runtime dependencies.
+The packaging manifest identifies the exact components actually shipped and links
+their original projects and versioned source packages. License texts are copied
+from package-owned files, including ICU's separate `share/icu` notice. The runtime
+audit includes GPL/LGPL later-version permissions and GCC runtime exceptions,
+permissive BSD/MIT/zlib/Unicode terms, the FreeType license option, bzip2, libpng,
+libjpeg-turbo and CC0 notices. These shared-library terms are compatible with the
+combined GPLv3 application when their distribution conditions are retained.
+Qt's package-level metadata includes tools/documentation licenses beyond the
+Core/Gui/Widgets libraries used by this application; all supplied notices remain
+available rather than being reduced to a single package label.
+
+This software is based in part on the work of the Independent JPEG Group.
+See [release packaging](RELEASE.md) for the exact source, dependency-source
+archives, replacement-library support and license layout.

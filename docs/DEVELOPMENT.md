@@ -38,6 +38,13 @@ Optional `-DQ3MAPX_ENABLE_LTO=ON` enables release IPO after a compiler capabilit
 check; `-DQ3MAPX_ENABLE_SANITIZERS=ON` enables ASan/UBSan on supporting GCC/Clang
 toolchains. Baseline comparisons use LTO off and no fast-math.
 
+OpenCL support is enabled by default but dynamically loads the installed GPU
+driver only for compute/device queries. No OpenCL SDK is required to build.
+`cmake --preset cpu-only`, `cmake --build --preset cpu-only`, and
+`ctest --preset cpu-only` exercise a build with GPU code disabled.
+`Q3MAPX_DISABLE_GPU=1` disables runtime loading for fallback testing.
+Hardware tests use available native OpenCL GPUs and report when none are present.
+
 Do not require developer-specific absolute dependency paths in portable project
 configuration; local paths belong in environment variables or ignored
 `CMakeUserPresets.json`.

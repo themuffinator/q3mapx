@@ -1,6 +1,10 @@
 {
   "version": 6,
-  "cmakeMinimumRequired": { "major": 3, "minor": 25, "patch": 0 },
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 25,
+    "patch": 0
+  },
   "configurePresets": [
     {
       "name": "base",
@@ -16,28 +20,74 @@
       "name": "release",
       "displayName": "Release",
       "inherits": "base",
-      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
     },
     {
       "name": "debug",
       "displayName": "Debug",
       "inherits": "base",
-      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
     },
     {
       "name": "profile",
       "displayName": "Optimized with debug information",
       "inherits": "base",
-      "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo" }
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "cpu-only",
+      "displayName": "Release without GPU runtime support",
+      "inherits": "release",
+      "cacheVariables": {
+        "Q3MAPX_ENABLE_OPENCL": "OFF"
+      }
     }
   ],
   "buildPresets": [
-    { "name": "release", "configurePreset": "release" },
-    { "name": "debug", "configurePreset": "debug" },
-    { "name": "profile", "configurePreset": "profile" }
+    {
+      "name": "release",
+      "configurePreset": "release"
+    },
+    {
+      "name": "debug",
+      "configurePreset": "debug"
+    },
+    {
+      "name": "profile",
+      "configurePreset": "profile"
+    },
+    {
+      "name": "cpu-only",
+      "configurePreset": "cpu-only"
+    }
   ],
   "testPresets": [
-    { "name": "release", "configurePreset": "release", "output": { "outputOnFailure": true } },
-    { "name": "debug", "configurePreset": "debug", "output": { "outputOnFailure": true } }
+    {
+      "name": "release",
+      "configurePreset": "release",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "debug",
+      "configurePreset": "debug",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "cpu-only",
+      "configurePreset": "cpu-only",
+      "output": {
+        "outputOnFailure": true
+      }
+    }
   ]
 }

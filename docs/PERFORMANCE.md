@@ -25,8 +25,8 @@ q3mapx -threads 4 -minimap -backend reference -size 2048 -samples 4 map.bsp
 ```
 
 `reference` exhaustively visits brushes using the same plane-intersection rules.
-It is useful for parity checks. `cpu` uses the spatial index. `auto` currently uses
-the CPU; GPU selection will be enabled only with measured crossover evidence.
+It is useful for parity checks. `cpu` uses the spatial index. `auto` uses the CPU
+below 256 million pixel-samples and attempts GPU execution above that threshold.
 
 `-random N -seed N` uses a per-pixel deterministic generator, so thread count no
 longer changes random sample locations. This intentionally changes the inherited
@@ -46,3 +46,38 @@ race fix is retained regardless of benchmark results.
 Use `-profile report.json` to inspect named CPU passes. Profile timing includes
 separate execution and setup-inclusive values. See [development](DEVELOPMENT.md)
 for reproducing benchmarks and interpreting their limits.
+
+## OpenCL GPU minimaps
+
+`q3mapx -devices` prints JSON with GPU names, memory, compute units and stable
+enumeration indices for that driver configuration. Automatic selection prefers
+dedicated GPU memory and then more compute units; `-gpu-device N` overrides it.
+Native drivers are preferred over duplicate Windows translation layers.
+
+```sh
+q3mapx -minimap -backend gpu -gpu-device 0 -size 4096 -samples 16 -compute-report compute.json map.bsp
+```
+
+At 4096² pixels and 16 samples, the RTX 4060 Laptop GPU measured **0.3808 s** median
+versus **0.7364 s** for indexed CPU sampling at 20 workers: **1.93x faster**, including
+initialization, uploads, kernel execution, download, CPU postprocessing and file
+output. At 2048²/four samples the CPU measured 0.0924 s versus GPU 0.2496 s, so
+automatic selection retains the CPU for small jobs. Evidence:
+[large workload](benchmarks/gpu-large-win-x64.json),
+[small workload](benchmarks/gpu-small-win-x64.json).
+
+The 256-million-pixel-sample threshold is conservative for these warm driver-cache
+measurements, not universal calibration for every device/map. The first kernel
+compilation on this machine took about 0.96 s; cold caches can change the crossover.
+Use explicit CPU/GPU selection and reports when tuning a different machine.
+`auto` falls back on loader/device/allocation/build/dispatch/readback failure.
+Explicit `gpu` returns an error rather than silently claiming GPU execution.
+
+Real NVIDIA and Intel native-driver tests cover fixed/random samples, borders,
+contrast and sharpening. Output differed by at most one 8-bit grayscale level.
+[Hardware parity evidence](benchmarks/gpu-parity-win-x64.json). Float contraction
+is disabled; driver floating-point differences can still affect samples very near
+geometric boundaries. Report unexpected parity failures with the input/options.
+
+Lighting remains on CPU. Its [GPU evaluation](GPU-LIGHTING.md) describes measured
+costs and the material semantics that a future implementation must preserve.

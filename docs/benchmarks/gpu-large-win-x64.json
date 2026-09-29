@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "kind": "whole_process_minimap",
+  "timestamp_utc": "2026-09-29T06:56:56.330555+00:00",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+  "logical_cpus": 20,
+  "size": 4096,
+  "samples": 16,
+  "fixture_grid": 31,
+  "threads": 20,
+  "warmup_runs": 1,
+  "measured_runs": 5,
+  "reference_image_sha256": "451cc861e522bb35b205f7b90375fcccf52d579dba358038071f187fa16a654d",
+  "records": [
+    {
+      "backend": "cpu",
+      "compiler": "E:\\Repositories\\q3mapx\\build\\release\\bin\\q3mapx.exe",
+      "compiler_sha256": "358d7ab8c04bb8cf1148d52ce6c50b3de118eede66ce23c64ce5f444a7e8db75",
+      "seconds": [
+        0.736415899998974,
+        0.8516422000247985,
+        0.7231415000278503,
+        0.8157858999911696,
+        0.7326559000066482
+      ],
+      "median_seconds": 0.736415899998974,
+      "max_pixel_error": 0
+    },
+    {
+      "backend": "gpu",
+      "compiler": "E:\\Repositories\\q3mapx\\build\\release\\bin\\q3mapx.exe",
+      "compiler_sha256": "358d7ab8c04bb8cf1148d52ce6c50b3de118eede66ce23c64ce5f444a7e8db75",
+      "seconds": [
+        0.33537270000670105,
+        0.4351082000066526,
+        0.3808273000176996,
+        0.4378572999848984,
+        0.37263709999388084
+      ],
+      "median_seconds": 0.3808273000176996,
+      "max_pixel_error": 1
+    }
+  ]
+}

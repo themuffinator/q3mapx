@@ -204,3 +204,25 @@ Alternating five-run end-to-end benchmark on the 968-brush, 2048², four-sample
 fixture: NRC median 2.5647 s, indexed CPU 0.0862 s, **29.8x speedup with exact image
 parity**. Evidence: `docs/benchmarks/minimap-cpu-win-x64.json`. This is a minimap
 speedup; it does not imply faster BSP construction or lighting.
+
+## 2026-09-29 — Optional OpenCL compute
+
+Implemented real GPU column sampling with dynamic loading, device enumeration,
+explicit/automatic backend selection, bounded row dispatches, checked resource
+operations, RAII cleanup, finite-result checks and setup/transfer/kernel reports.
+Embedded first-party kernels need no runtime source files. Vendored only the
+three required Khronos Apache-2.0 headers after checking compatibility/attribution.
+Added `-devices`, `--version`, `-gpu-device`, `-compute-report`, and a CPU-only preset.
+
+Validation: 12/12 CTest groups pass in both GPU-enabled and GPU-disabled builds.
+Actual NVIDIA RTX 4060 Laptop and Intel Iris Xe execution passed image parity
+(maximum difference one grayscale level), including randomized samples and
+postprocessing. Missing-driver behavior, required-GPU failures and automatic CPU
+fallback passed. Cold compilation, small-workload overhead and platform limits
+are explicitly documented in `PERFORMANCE.md`.
+
+Final alternating whole-process comparisons: 4096²/16 samples CPU 0.7364 s versus
+GPU 0.3808 s (1.93x); 2048²/four samples CPU 0.0924 s versus GPU 0.2496 s. Automatic
+selection keeps the small case on CPU. Reports include the exact measured binary
+hash. Lighting was profiled and its material semantics evaluated; it remains on
+CPU, with the rationale and future parity requirements in `GPU-LIGHTING.md`.

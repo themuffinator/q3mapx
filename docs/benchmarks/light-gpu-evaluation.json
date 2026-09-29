@@ -1,0 +1,72 @@
+{
+    "schema_version": 1,
+    "total_seconds": 0.6101591,
+    "exit_code": 0,
+    "requested_workers": 20,
+    "passes": [
+        {
+            "name": "TraceGrid",
+            "items": 12675,
+            "workers": 20,
+            "grain": 39,
+            "seconds": 0.0111618,
+            "seconds_with_setup": 0.011563
+        },
+        {
+            "name": "MapRawLightmap",
+            "items": 4818,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0080597,
+            "seconds_with_setup": 0.0080604
+        },
+        {
+            "name": "FloodLightRawLightmap",
+            "items": 4818,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.000545,
+            "seconds_with_setup": 0.0005466
+        },
+        {
+            "name": "IlluminateRawLightmap",
+            "items": 4818,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0118603,
+            "seconds_with_setup": 0.0118619
+        },
+        {
+            "name": "IlluminateVertexes",
+            "items": 4818,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0012911,
+            "seconds_with_setup": 0.0012926
+        },
+        {
+            "name": "RadLight",
+            "items": 4818,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.005647,
+            "seconds_with_setup": 0.0056478
+        },
+        {
+            "name": "IlluminateRawLightmap",
+            "items": 4818,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.3649071,
+            "seconds_with_setup": 0.3649105
+        },
+        {
+            "name": "IlluminateVertexes",
+            "items": 4818,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0014283,
+            "seconds_with_setup": 0.0014305
+        }
+    ]
+}

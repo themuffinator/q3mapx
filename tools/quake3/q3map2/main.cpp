@@ -33,6 +33,9 @@
 #include "autopk3.h"
 #include "timer.h"
 #include "arguments.h"
+#include "q3mapx/compute.h"
+#include "rapidjson/prettywriter.h"
+#include "rapidjson/stringbuffer.h"
 
 
 
@@ -61,6 +64,34 @@ static void ExitQ3Map(){
 int main( int argc, char **argv ){
 	int r;
 	const char* profilePath = nullptr;
+	Args args( argc, argv );
+	if ( args.takeArg("--version", "-version") ) {
+		printf("q3mapx " Q3MAPX_VERSION " (NRC " Q3MAPX_UPSTREAM_REVISION ")\n");
+		return 0;
+	}
+	if ( args.takeArg("-devices") ) {
+		std::string reason;
+		const auto devices = q3mapx::computeDevices(reason);
+		rapidjson::StringBuffer buffer;
+		rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
+		writer.StartObject(); writer.Key("schema_version"); writer.Int(1);
+		writer.Key("reason"); writer.String(reason.c_str());
+		writer.Key("devices"); writer.StartArray();
+		for ( const auto& device : devices ) {
+			writer.StartObject();
+			writer.Key("index"); writer.Int(device.index);
+			writer.Key("name"); writer.String(device.name.c_str());
+			writer.Key("vendor"); writer.String(device.vendor.c_str());
+			writer.Key("version"); writer.String(device.version.c_str());
+			writer.Key("memory_bytes"); writer.Uint64(device.memoryBytes);
+			writer.Key("compute_units"); writer.Uint(device.computeUnits);
+			writer.Key("unified_memory"); writer.Bool(device.unifiedMemory);
+			writer.EndObject();
+		}
+		writer.EndArray(); writer.EndObject();
+		printf("%s\n",buffer.GetString());
+		return 0;
+	}
 
 #ifdef WIN32
 	_setmaxstdio( 2048 );
@@ -80,8 +111,6 @@ int main( int argc, char **argv ){
 
 	/* set allocation error callback */
 	std::set_new_handler( new_handler );
-
-	Args args( argc, argv );
 
 	/* read general options first */
 	{

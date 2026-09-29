@@ -24,6 +24,7 @@ def main():
     parser.add_argument('--threads',type=int,default=20)
     parser.add_argument('--repeat',type=int,default=5)
     parser.add_argument('--gpu',action='store_true')
+    parser.add_argument('--no-legacy',action='store_true',help='Compare modern CPU/GPU without the much slower original sampler')
     args=parser.parse_args()
     if args.repeat < 2: parser.error('At least two measured runs required')
     root=args.work_dir.resolve()
@@ -33,6 +34,7 @@ def main():
     run(baseline,[*base,'-meta',source],root,'bsp',timeout=300)
     methods=[('nrc',baseline,[]),('cpu',compiler,['-backend','cpu'])]
     if args.gpu: methods.append(('gpu',compiler,['-backend','gpu']))
+    if args.no_legacy: methods=[method for method in methods if method[0]!='nrc']
     records={name:[] for name,_,_ in methods}
     expected=None
     errors={}
@@ -40,7 +42,8 @@ def main():
         order=methods[iteration%len(methods):]+methods[:iteration%len(methods)]
         for name,exe,options in order:
             output=root/f'{name}.tga'
-            result=run(exe,[*base,'-minimap',*options,'-size',args.size,'-samples',args.samples,'-o',output,source],
+            report_args=[] if name=='nrc' else ['-compute-report',root/f'{name}-{iteration}.json']
+            result=run(exe,[*base,'-minimap',*options,*report_args,'-size',args.size,'-samples',args.samples,'-o',output,source],
                        root,f'{name}-{iteration}',timeout=300)
             pixels=output.read_bytes()
             if expected is None: expected=pixels

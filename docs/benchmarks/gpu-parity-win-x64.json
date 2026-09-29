@@ -1,0 +1,228 @@
+[
+  {
+    "device": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "vendor": "NVIDIA Corporation",
+      "version": "OpenCL 3.0 CUDA",
+      "memory_bytes": 8585216000,
+      "compute_units": 24,
+      "unified_memory": false
+    },
+    "options": [],
+    "max_pixel_error": 0,
+    "report": {
+      "schema_version": 1,
+      "requested_backend": "gpu",
+      "backend": "gpu",
+      "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "reason": "",
+      "setup_seconds": 0.3933463,
+      "transfer_seconds": 0.0001304,
+      "kernel_seconds": 4.883200000000001e-05,
+      "sampling_seconds": 0.3941014
+    }
+  },
+  {
+    "device": {
+      "index": 1,
+      "name": "Intel(R) Iris(R) Xe Graphics",
+      "vendor": "Intel(R) Corporation",
+      "version": "OpenCL 3.0 NEO ",
+      "memory_bytes": 19565862912,
+      "compute_units": 96,
+      "unified_memory": true
+    },
+    "options": [],
+    "max_pixel_error": 0,
+    "report": {
+      "schema_version": 1,
+      "requested_backend": "gpu",
+      "backend": "gpu",
+      "device": "Intel(R) Iris(R) Xe Graphics",
+      "reason": "",
+      "setup_seconds": 0.3121375,
+      "transfer_seconds": 0.0001819,
+      "kernel_seconds": 8.562500000000001e-05,
+      "sampling_seconds": 0.3137862
+    }
+  },
+  {
+    "device": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "vendor": "NVIDIA Corporation",
+      "version": "OpenCL 3.0 CUDA",
+      "memory_bytes": 8585216000,
+      "compute_units": 24,
+      "unified_memory": false
+    },
+    "options": [
+      "-samples",
+      4
+    ],
+    "max_pixel_error": 0,
+    "report": {
+      "schema_version": 1,
+      "requested_backend": "gpu",
+      "backend": "gpu",
+      "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "reason": "",
+      "setup_seconds": 0.3562311,
+      "transfer_seconds": 9.16e-05,
+      "kernel_seconds": 4.9184e-05,
+      "sampling_seconds": 0.356978
+    }
+  },
+  {
+    "device": {
+      "index": 1,
+      "name": "Intel(R) Iris(R) Xe Graphics",
+      "vendor": "Intel(R) Corporation",
+      "version": "OpenCL 3.0 NEO ",
+      "memory_bytes": 19565862912,
+      "compute_units": 96,
+      "unified_memory": true
+    },
+    "options": [
+      "-samples",
+      4
+    ],
+    "max_pixel_error": 0,
+    "report": {
+      "schema_version": 1,
+      "requested_backend": "gpu",
+      "backend": "gpu",
+      "device": "Intel(R) Iris(R) Xe Graphics",
+      "reason": "",
+      "setup_seconds": 0.3184711,
+      "transfer_seconds": 0.00018020000000000002,
+      "kernel_seconds": 0.000140311,
+      "sampling_seconds": 0.3201335
+    }
+  },
+  {
+    "device": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "vendor": "NVIDIA Corporation",
+      "version": "OpenCL 3.0 CUDA",
+      "memory_bytes": 8585216000,
+      "compute_units": 24,
+      "unified_memory": false
+    },
+    "options": [
+      "-random",
+      8,
+      "-seed",
+      19
+    ],
+    "max_pixel_error": 1,
+    "report": {
+      "schema_version": 1,
+      "requested_backend": "gpu",
+      "backend": "gpu",
+      "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "reason": "",
+      "setup_seconds": 0.3753858,
+      "transfer_seconds": 8.04e-05,
+      "kernel_seconds": 7.065600000000001e-05,
+      "sampling_seconds": 0.3760486
+    }
+  },
+  {
+    "device": {
+      "index": 1,
+      "name": "Intel(R) Iris(R) Xe Graphics",
+      "vendor": "Intel(R) Corporation",
+      "version": "OpenCL 3.0 NEO ",
+      "memory_bytes": 19565862912,
+      "compute_units": 96,
+      "unified_memory": true
+    },
+    "options": [
+      "-random",
+      8,
+      "-seed",
+      19
+    ],
+    "max_pixel_error": 1,
+    "report": {
+      "schema_version": 1,
+      "requested_backend": "gpu",
+      "backend": "gpu",
+      "device": "Intel(R) Iris(R) Xe Graphics",
+      "reason": "",
+      "setup_seconds": 0.316244,
+      "transfer_seconds": 0.0001846,
+      "kernel_seconds": 0.00023151,
+      "sampling_seconds": 0.3187891
+    }
+  },
+  {
+    "device": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "vendor": "NVIDIA Corporation",
+      "version": "OpenCL 3.0 CUDA",
+      "memory_bytes": 8585216000,
+      "compute_units": 24,
+      "unified_memory": false
+    },
+    "options": [
+      "-samples",
+      4,
+      "-border",
+      0.1,
+      "-sharpen",
+      0.5,
+      "-boost",
+      1.25
+    ],
+    "max_pixel_error": 0,
+    "report": {
+      "schema_version": 1,
+      "requested_backend": "gpu",
+      "backend": "gpu",
+      "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "reason": "",
+      "setup_seconds": 0.372502,
+      "transfer_seconds": 8.64e-05,
+      "kernel_seconds": 4.7808e-05,
+      "sampling_seconds": 0.3731541
+    }
+  },
+  {
+    "device": {
+      "index": 1,
+      "name": "Intel(R) Iris(R) Xe Graphics",
+      "vendor": "Intel(R) Corporation",
+      "version": "OpenCL 3.0 NEO ",
+      "memory_bytes": 19565862912,
+      "compute_units": 96,
+      "unified_memory": true
+    },
+    "options": [
+      "-samples",
+      4,
+      "-border",
+      0.1,
+      "-sharpen",
+      0.5,
+      "-boost",
+      1.25
+    ],
+    "max_pixel_error": 0,
+    "report": {
+      "schema_version": 1,
+      "requested_backend": "gpu",
+      "backend": "gpu",
+      "device": "Intel(R) Iris(R) Xe Graphics",
+      "reason": "",
+      "setup_seconds": 0.3104861,
+      "transfer_seconds": 0.0002491,
+      "kernel_seconds": 0.000131874,
+      "sampling_seconds": 0.3118527
+    }
+  }
+]

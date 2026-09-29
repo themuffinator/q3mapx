@@ -31,7 +31,9 @@
 /* dependencies */
 #include "q3map2.h"
 #include "arguments.h"
-#include "q3mapx/columns.h"
+#include "q3mapx/compute.h"
+#include "rapidjson/prettywriter.h"
+#include "rapidjson/stringbuffer.h"
 #include "timer.h"
 
 /* minimap stuff */
@@ -87,8 +89,8 @@ static void MiniMapRandomlySupersampled( int y ){
 		{
 			RandomVector2f( uv, state );
 			thisval = MiniMapSample(
-			              xmin + ( uv[0] + 0.5 ) * dx, /* exaggerated random pattern for better results */
-			              ymin + ( uv[1] + 0.5 ) * dy  /* exaggerated random pattern for better results */
+			              xmin + ( uv[0] + 0.5f ) * dx, /* exaggerated random pattern for better results */
+			              ymin + ( uv[1] + 0.5f ) * dy  /* exaggerated random pattern for better results */
 			          );
 			val += thisval;
 		}
@@ -225,6 +227,9 @@ static void MiniMapMakeMinsMaxs( Vector3& mins, Vector3& maxs, float border, boo
 
 	minimap.mins = mins;
 	minimap.size = maxs - mins;
+	for ( int axis = 0; axis < 3; ++axis )
+		if ( !std::isfinite(minimap.mins[axis]) || !std::isfinite(minimap.size[axis]) || minimap.size[axis] <= 0 )
+			Error("Minimap bounds overflow after aspect/border adjustment");
 
 	// line compatible to nexuiz mapinfo
 	Sys_Printf( "size_texcoords %f %f %f %f %f %f\n", mins[0], mins[1], mins[2], maxs[0], maxs[1], maxs[2] );
@@ -384,6 +389,9 @@ static void MergeRelativePath( char *out, const char *absolute, const char *rela
 }
 
 int MiniMapBSPMain( Args& args ){
+	const char* backend = "auto";
+	const char* computeReportPath = nullptr;
+	int gpuDevice = -1;
 	char minimapFilename[1024];
 	bool autolevel;
 	float minimapSharpen;
@@ -512,10 +520,15 @@ int MiniMapBSPMain( Args& args ){
 	}
 
 	while ( args.takeArg("-backend") ) {
-		const char* value = args.takeNext();
-		if ( strEqual(value, "reference") ) referenceSampling = true;
-		else if ( strEqual(value, "cpu") || strEqual(value, "auto") ) referenceSampling = false;
-		else Error("Unknown minimap backend '%s'", value);
+		backend = args.takeNext();
+		if ( !strEqual(backend,"cpu") && !strEqual(backend,"reference") && !strEqual(backend,"gpu") && !strEqual(backend,"auto") )
+			Error("Unknown minimap backend '%s'", backend);
+	}
+	referenceSampling = strEqual(backend,"reference");
+	while ( args.takeArg("-gpu-device") ) gpuDevice = ParseIntegerOption("-gpu-device",args.takeNext(),0,1023);
+	while ( args.takeArg("-compute-report") ) {
+		computeReportPath = args.takeNext();
+		if ( !path_extension_is(computeReportPath,"json") ) Error("Compute report must have a .json extension");
 	}
 	while ( args.takeArg("-seed") ) randomSeed = uint32_t(ParseIntegerOption("-seed", args.takeNext(), 0, INT_MAX));
 	if ( !args.empty() ) Error("Unknown minimap option: %s", args.takeFront());
@@ -547,21 +560,57 @@ int MiniMapBSPMain( Args& args ){
 
 	MiniMapSetupBrushes();
 
-	if ( minimap.samples <= 1 ) {
-		Sys_Printf( "\n--- MiniMapNoSupersampling (%d) ---\n", minimap.height );
-		RunThreadsOnIndividual( minimap.height, true, MiniMapNoSupersampling, "MiniMapNoSupersampling" );
+	q3mapx::ComputeReport computeReport;
+	const bool forceGPU = strEqual(backend,"gpu");
+	// Conservative crossover, refined by whole-process benchmarks below.
+	const bool autoGPU = strEqual(backend,"auto") && uint64_t(minimap.width) * minimap.height * minimap.samples >= 256ull * 1024 * 1024;
+	if ( forceGPU || autoGPU ) {
+		q3mapx::ColumnImage image{unsigned(minimap.width),unsigned(minimap.height),unsigned(minimap.samples),
+		    minimap.mins.x(),minimap.mins.y(),minimap.size.x(),minimap.size.y(),minimap.size.z(),minimap.sample_offsets,randomSeed};
+		q3mapx::computeColumns(columns,image,gpuDevice,minimap.data1f,computeReport);
+		if ( !computeReport.usedGPU ) {
+			if ( forceGPU ) Error("GPU minimap failed: %s", computeReport.reason.c_str());
+			Sys_Warning("GPU unavailable; using CPU: %s\n",computeReport.reason.c_str());
+		}
+		else Sys_Printf("GPU: %s; setup %.3f s, transfer %.3f s, kernel %.3f s, total %.3f s\n",
+		    computeReport.device.c_str(),computeReport.setupSeconds,computeReport.transferSeconds,computeReport.kernelSeconds,computeReport.totalSeconds);
 	}
-	else
-	{
-		if ( minimap.sample_offsets ) {
-			Sys_Printf( "\n--- MiniMapSupersampled (%d) ---\n", minimap.height );
-			RunThreadsOnIndividual( minimap.height, true, MiniMapSupersampled, "MiniMapSupersampled" );
+	else computeReport.reason = strEqual(backend,"auto") ? "CPU selected below GPU crossover threshold" : "CPU explicitly selected";
+	Timer samplingTimer;
+	if ( !computeReport.usedGPU ) {
+		if ( minimap.samples <= 1 ) {
+			Sys_Printf( "\n--- MiniMapNoSupersampling (%d) ---\n", minimap.height );
+			RunThreadsOnIndividual( minimap.height, true, MiniMapNoSupersampling, "MiniMapNoSupersampling" );
 		}
 		else
 		{
-			Sys_Printf( "\n--- MiniMapRandomlySupersampled (%d) ---\n", minimap.height );
-			RunThreadsOnIndividual( minimap.height, true, MiniMapRandomlySupersampled, "MiniMapRandomlySupersampled" );
+			if ( minimap.sample_offsets ) {
+				Sys_Printf( "\n--- MiniMapSupersampled (%d) ---\n", minimap.height );
+				RunThreadsOnIndividual( minimap.height, true, MiniMapSupersampled, "MiniMapSupersampled" );
+			}
+			else
+			{
+				Sys_Printf( "\n--- MiniMapRandomlySupersampled (%d) ---\n", minimap.height );
+				RunThreadsOnIndividual( minimap.height, true, MiniMapRandomlySupersampled, "MiniMapRandomlySupersampled" );
+			}
 		}
+	}
+	if ( !computeReport.usedGPU ) computeReport.totalSeconds += samplingTimer.elapsed_sec();
+	if ( computeReportPath ) {
+		rapidjson::StringBuffer buffer;
+		rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
+		writer.StartObject();
+		writer.Key("schema_version"); writer.Int(1);
+		writer.Key("requested_backend"); writer.String(backend);
+		writer.Key("backend"); writer.String(computeReport.usedGPU ? "gpu" : referenceSampling ? "reference" : "cpu");
+		writer.Key("device"); writer.String(computeReport.device.c_str());
+		writer.Key("reason"); writer.String(computeReport.reason.c_str());
+		writer.Key("setup_seconds"); writer.Double(computeReport.setupSeconds);
+		writer.Key("transfer_seconds"); writer.Double(computeReport.transferSeconds);
+		writer.Key("kernel_seconds"); writer.Double(computeReport.kernelSeconds);
+		writer.Key("sampling_seconds"); writer.Double(computeReport.totalSeconds);
+		writer.EndObject();
+		SaveFile(computeReportPath,buffer.GetString(),int(buffer.GetSize()));
 	}
 
 	if ( minimap.boost != 1 ) {
@@ -620,6 +669,8 @@ int MiniMapBSPMain( Args& args ){
 	}
 
 	Sys_Printf( "\nConverting..." );
+	for ( size_t i = 0; i < size_t(minimap.width) * minimap.height; ++i )
+		if ( !std::isfinite(q[i]) ) Error("Minimap produced non-finite pixel values; check geometry and contrast settings");
 
 	switch ( mode )
 	{

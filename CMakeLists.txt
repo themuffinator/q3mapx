@@ -11,6 +11,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 option(Q3MAPX_ENABLE_LTO "Enable interprocedural optimization in release builds" OFF)
 option(Q3MAPX_ENABLE_SANITIZERS "Enable address and undefined behavior sanitizers" OFF)
 option(Q3MAPX_BUILD_BENCHMARKS "Build standalone performance measurement tools" OFF)
+option(Q3MAPX_ENABLE_OPENCL "Enable optional dynamically loaded OpenCL GPU compute" ON)
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GLIB REQUIRED IMPORTED_TARGET glib-2.0)
@@ -26,8 +27,16 @@ target_include_directories(q3mapx_jobs PUBLIC libs)
 target_link_libraries(q3mapx_jobs PUBLIC Threads::Threads)
 add_library(q3mapx_io STATIC libs/q3mapx/atomic_file.cpp)
 target_include_directories(q3mapx_io PUBLIC libs)
-add_library(q3mapx_compute STATIC libs/q3mapx/columns.cpp)
-target_include_directories(q3mapx_compute PUBLIC libs)
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/libs/q3mapx/columns.cl Q3MAPX_COLUMN_KERNEL)
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS libs/q3mapx/columns.cl)
+configure_file(cmake/columns_kernel.h.in generated/columns_kernel.h @ONLY)
+add_library(q3mapx_compute STATIC libs/q3mapx/columns.cpp libs/q3mapx/compute.cpp)
+target_include_directories(q3mapx_compute PUBLIC libs PRIVATE libs/thirdparty/opencl ${CMAKE_BINARY_DIR}/generated)
+target_compile_definitions(q3mapx_compute PRIVATE Q3MAPX_ENABLE_OPENCL=$<BOOL:${Q3MAPX_ENABLE_OPENCL}>)
+target_link_libraries(q3mapx_compute PRIVATE ${CMAKE_DL_LIBS})
+if(NOT MSVC)
+    target_compile_options(q3mapx_compute PRIVATE -ffp-contract=off)
+endif()
 
 # Preserve NRC's source layout so changes remain easy to compare with upstream.
 file(GLOB Q3MAPX_COMPILER_SOURCES CONFIGURE_DEPENDS tools/quake3/q3map2/*.cpp)
@@ -141,9 +150,15 @@ if(BUILD_TESTING)
         --compiler $<TARGET_FILE:q3mapx>
         --work-dir ${CMAKE_BINARY_DIR}/tests/minimap)
     set_tests_properties(minimap PROPERTIES TIMEOUT 90)
+    add_test(NAME gpu_columns COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/gpu.py
+        --compiler $<TARGET_FILE:q3mapx>
+        --work-dir ${CMAKE_BINARY_DIR}/tests/gpu)
+    set_tests_properties(gpu_columns PROPERTIES TIMEOUT 180)
 endif()
 
 include(GNUInstallDirs)
 install(TARGETS q3mapx RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(FILES COPYING GPL LGPL LICENSE CONTRIBUTORS DESTINATION ${CMAKE_INSTALL_DATADIR}/q3mapx)
 install(DIRECTORY licenses/ DESTINATION ${CMAKE_INSTALL_DATADIR}/q3mapx/licenses)
+install(FILES libs/thirdparty/opencl/LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR}/q3mapx/licenses RENAME OpenCL-Headers.txt)

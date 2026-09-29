@@ -29,16 +29,23 @@ do not enable unsafe global fast-math as a substitute for algorithmic work.
 
 ## GPU execution
 
-GPU support is optional. Select the backend after inspecting existing system
-toolchains and portable dependency options. Begin with a bounded batch workload
-whose CPU implementation provides a correctness oracle. Minimap column sampling
-is the initial candidate; lighting traversal needs additional design because of
+GPU support uses optional, dynamically loaded OpenCL 1.2 with embedded first-party
+kernels and Khronos headers. The executable needs no OpenCL SDK or loader to run
+CPU work. Indexed minimap column sampling has both CPU and GPU implementations;
+lighting traversal needs additional design because of
 alpha-tested shaders, material semantics, and CPU-side state.
 
 Include device information, backend selection, setup/transfer/compute timing,
 and failure diagnostics. Avoid retaining driver resources outside an owning RAII
 object. Unavailable devices must not prevent ordinary CLI use. Validate numerical
 tolerances and small-workload crossover points before enabling automatic GPU use.
+
+Column planes, brush records and spatial candidate lists use matching host/kernel
+layouts. Row batches bound individual dispatch size; host-computed sample origins
+preserve legacy coordinate precision without requiring device doubles. Floating
+point contraction is disabled in the kernel. Missing devices and runtime failures
+fall back in automatic mode; explicit GPU mode fails visibly. `-devices` lists JSON
+capabilities, and `-compute-report` explains selection and timing.
 
 ## Validation and observability
 

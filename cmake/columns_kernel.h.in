@@ -1,0 +1,4 @@
+// Generated from the first-party OpenCL kernel; do not edit this copy.
+static constexpr const char* columnKernelSource = R"Q3MAPX_KERNEL(
+@Q3MAPX_COLUMN_KERNEL@
+)Q3MAPX_KERNEL";

@@ -65,12 +65,12 @@ Do not equate a scheduler microbenchmark speedup with total compile speedup.
 
 ## M4 — GPU compute
 
-- [ ] Inventory compute devices and choose a portable optional backend.
-- [ ] Implement a real batched GPU workload, starting with minimap geometry sampling.
-- [ ] Retain a tested CPU implementation and explicit backend selection.
-- [ ] Handle unavailable devices, allocation/build/dispatch failure, and small workloads.
-- [ ] Validate CPU/GPU parity and benchmark transfer plus compute time.
-- [ ] Evaluate lighting visibility/ray batches using profiling and correctness evidence.
+- [x] Inventory compute devices and choose a portable optional backend.
+- [x] Implement a real batched GPU workload, starting with minimap geometry sampling.
+- [x] Retain a tested CPU implementation and explicit backend selection.
+- [x] Handle unavailable devices, allocation/build/dispatch failure, and small workloads.
+- [x] Validate CPU/GPU parity and benchmark transfer plus compute time.
+- [x] Evaluate lighting visibility/ray batches using profiling and correctness evidence (CPU retained; see GPU-LIGHTING.md).
 
 Acceptance: a GPU executes compiler work on a real device; output is compared with
 the CPU implementation using documented tolerances; fallback works without GPU

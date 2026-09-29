@@ -41,3 +41,11 @@ GtkRadiant and NetRadiant teams, ydnar and the q3map2 contributors, and
 [Garux and NetRadiant-custom contributors](https://github.com/Garux/netradiant-custom/graphs/contributors).
 The upstream `CONTRIBUTORS` file will accompany the import. Third-party component
 licenses remain authoritative for their respective files.
+
+The optional GPU backend uses three unmodified Apache-2.0 headers from
+[Khronos OpenCL-Headers, revision e6060189](https://github.com/KhronosGroup/OpenCL-Headers/tree/e6060189f4ebe8b52d885c37af71b9a50c272154).
+The license was checked before incorporation and is compatible with the combined
+GPL-3.0-or-later project. Headers and the full license are in
+`libs/thirdparty/opencl/`. GPU kernels, the dynamic loader, and spatial sampling
+code are original q3mapx code. GPU drivers are supplied by the operating system or
+hardware vendor and are not redistributed by this repository.

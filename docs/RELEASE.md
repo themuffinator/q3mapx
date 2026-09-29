@@ -21,6 +21,14 @@ real game maps are not certified by this release. Version 0.2.0 adds determinist
 lighting, conservative sample culling, Linux/material fixes and optional GPU
 area-factor experiments. It supersedes the original 0.1.0 development archive.
 
+The locally validated archive was built from clean revision
+`2be749b9cc2b3375caf366d1940cf1c6f9e100cd`. It contains 168 entries and is
+39,817,147 bytes. Its SHA-256 is
+`f2246e0eec4c9504d3ddfd830695ae6ce6d59f59395441e87a0d9972723cfe98`.
+The [release audit record](releases/0.2.0-windows-x64.json) records successful
+portable tests and verification of all 23 corresponding dependency source archives.
+The archive is under `build/package/`; it has not been published remotely.
+
 ## Recreate the Windows package
 
 Build and test the release preset, commit its source, then run from the project:

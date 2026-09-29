@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "version": "0.2.0",
+  "source_revision": "2be749b9cc2b3375caf366d1940cf1c6f9e100cd",
+  "clean_source_snapshot": true,
+  "archive": "q3mapx-0.2.0-windows-x64.zip",
+  "archive_bytes": 39817147,
+  "archive_members": 168,
+  "sha256": "f2246e0eec4c9504d3ddfd830695ae6ce6d59f59395441e87a0d9972723cfe98",
+  "runtime_packages": 24,
+  "dependency_source_archives": 23,
+  "source_archive_hashes_verified": true,
+  "portable_validation": {
+    "schema_version": 1,
+    "package": "E:\\Repositories\\q3mapx\\build\\package\\q3mapx-0.2.0-windows-x64",
+    "revision": "2be749b9cc2b3375caf366d1940cf1c6f9e100cd",
+    "restricted_path": "E:\\Repositories\\q3mapx\\build\\package\\q3mapx-0.2.0-windows-x64\\bin;C:\\WINDOWS\\System32;C:\\WINDOWS",
+    "runtime_hashes_verified": 40,
+    "result": "passed"
+  }
+}

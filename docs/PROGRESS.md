@@ -508,3 +508,30 @@ Useful local outputs are under `build/lighting-gpu-*`; platform logs remain in
 `.agents/tmp/linux-deps`. No new unrelated defects were found. Existing inherited
 warnings, broader real-map/fuzz/manual-accessibility gaps and cleanup policy limits
 remain documented.
+
+## 2026-09-29 — Validated 0.2.0 portable delivery
+
+Built `build/package/q3mapx-0.2.0-windows-x64.zip` from clean source revision
+`2be749b9cc2b3375caf366d1940cf1c6f9e100cd`. It is 39,817,147 bytes with 168 entries;
+SHA-256 is `f2246e0eec4c9504d3ddfd830695ae6ce6d59f59395441e87a0d9972723cfe98`.
+The package contains CLI/workbench executables, 38 dependency DLLs from 24 runtime
+packages, license notices and the matching project source. All 23 unique dependency
+source archives were hash-verified; archive CRC verification also passed.
+
+The actual portable binaries passed the compile/recovery pipeline, CPU/GPU
+minimaps, material lighting, hybrid lighting, Qt queue integration and direct
+widget rendering with development DLL directories removed from PATH. The native
+preview was inspected. Evidence is in `build/package-validation-0.2.0` and
+`releases/0.2.0-windows-x64.json`. The 0.2.0 Windows lighting/GUI checks and Linux
+ASan/UBSan pipeline/lighting checks were repeated after isolating CPU/GPU dispatch.
+The final Linux release also passed eight targeted pipeline/lighting/GUI groups;
+its hardware area-factor group explicitly skipped because no GPU is available.
+
+The requested implementation areas and M7 release work are delivered. The separate
+M6 cleanup item remains blocked by the earlier automatic approval rejections;
+disposable staging copies remain under the documented project-local directories.
+No remote publication or push was performed. Unrelated inherited `offsetof`,
+non-trivial-object `memset` and possible `StringBuffer` deallocation warnings remain
+documented, along with MSVC/macOS, wider decoder/real-map and manual accessibility
+validation limits. The current material/sanitizer suites did not reproduce the
+possible `StringBuffer` issue.

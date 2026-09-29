@@ -649,3 +649,18 @@ corrected the initial MOHAA signature in GAME-COVERAGE.md from FAKK to `2015`.
 Related legacy issue discovered during the audit: the inherited `-analyze` path
 reads its guessed directory/payload before checking file ranges. The new inspector
 does not call it. Hardening that retained CLI path is the next robustness task.
+
+## 2026-09-29 — Safe legacy heuristic BSP analysis
+
+The retained `-analyze` command now bounds guessed directory entries and payload
+ranges before access, including signed/overflowing fields under `-force` and
+`-lumpswap`. Unaligned scalar reads use copies, payloads shorter than four bytes
+are not read as scalars, and string probes terminate at their actual copied length.
+It retains the heuristic unknown-format behavior; `-inspect` provides known
+native-directory interpretation.
+
+Generated tests pass on Windows release and Linux ASan/UBSan (24.1 seconds for
+the instrumented subprocess suite). The first Windows assertion exposed CRLF in
+captured text; the harness now normalizes line endings before comparison. Local
+logs are `.agents/tmp/game-coverage/*analyze*.log`. The issue found during the
+inspection task is fixed; no additional unrelated defect was discovered.

@@ -98,14 +98,6 @@ int FixAAS( Args& args ){
    analyzes a Quake engine BSP file
  */
 
-struct abspHeader_t
-{
-	char ident[ 4 ];
-	int version;
-
-	bspLump_t lumps[ 1 ];       /* unknown size */
-};
-
 struct abspLumpTest_t
 {
 	int radix, minCount;
@@ -113,7 +105,6 @@ struct abspLumpTest_t
 };
 
 int AnalyzeBSP( Args& args ){
-	abspHeader_t            *header;
 	int i, version, offset, length, lumpInt, count;
 	char ident[ 5 ];
 	void                    *lump;
@@ -158,39 +149,61 @@ int AnalyzeBSP( Args& args ){
 
 	/* load the file */
 	MemBuffer file = LoadFile( source );
-	header = file.data();
+	if ( file.size() < 8 ) Error( "Invalid BSP analysis: truncated signature/version" );
+	const auto* bytes = static_cast<const byte*>(file.data());
 
 	/* analyze ident/version */
-	memcpy( ident, header->ident, 4 );
+	memcpy( ident, bytes, 4 );
 	ident[ 4 ] = '\0';
-	version = LittleLong( header->version );
+	std::memcpy( &version, bytes + 4, sizeof(version) );
+	version = LittleLong( version );
 
 	Sys_Printf( "Identity:      %s\n", ident );
 	Sys_Printf( "Version:       %d\n", version );
 	Sys_Printf( "---------------------------------------\n" );
 
+	// Unknown formats still get the traditional bounded heuristic analysis.
+	// Stop before the earliest payload; copy unaligned entries and scalar data.
+	// Native layouts should use -inspect for reliable directory names/counts.
+	size_t firstPayload = file.size();
 	/* analyze each lump */
 	for ( i = 0; i < 100; ++i )
 	{
+		const size_t entryOffset = 8 + size_t(i) * 8;
+		if ( entryOffset == firstPayload ) break;
+		if ( entryOffset > firstPayload || firstPayload - entryOffset < 8 )
+			Error( "Invalid BSP analysis: truncated directory entry %d", i );
+		bspLump_t entry;
+		std::memcpy( &entry, bytes + entryOffset, sizeof(entry) );
 		/* call of duty swapped lump pairs */
 		if ( lumpSwap ) {
-			offset = LittleLong( header->lumps[ i ].length );
-			length = LittleLong( header->lumps[ i ].offset );
+			offset = LittleLong( entry.length );
+			length = LittleLong( entry.offset );
 		}
 
 		/* standard lump pairs */
 		else
 		{
-			offset = LittleLong( header->lumps[ i ].offset );
-			length = LittleLong( header->lumps[ i ].length );
+			offset = LittleLong( entry.offset );
+			length = LittleLong( entry.length );
 		}
+		if ( offset < 0 || length < 0 || size_t(offset) > file.size()
+		  || size_t(length) > file.size() - size_t(offset)
+		  || ( length && size_t(offset) < entryOffset + 8 ) )
+			Error( "Invalid BSP analysis: lump %d range (%d, %d) is outside the file or overlaps the directory", i, offset, length );
+		if ( length ) firstPayload = std::min(firstPayload, size_t(offset));
 
 		/* extract data */
-		lump = (byte*) header + offset;
-		lumpInt = LittleLong( *( (int*) lump ) );
-		lumpFloat = LittleFloat( *( (float*) lump ) );
-		memcpy( lumpString, (char*) lump, std::min( (size_t)length, std::size( lumpString ) - 1 ) );
-		lumpString[ std::size( lumpString ) - 1 ] = '\0';
+		lump = static_cast<byte*>(file.data()) + offset;
+		lumpInt = 0; lumpFloat = 0;
+		if ( length >= 4 ) {
+			std::memcpy( &lumpInt, lump, sizeof(lumpInt) );
+			std::memcpy( &lumpFloat, lump, sizeof(lumpFloat) );
+			lumpInt = LittleLong(lumpInt); lumpFloat = LittleFloat(lumpFloat);
+		}
+		const size_t stringBytes = std::min(size_t(length), std::size(lumpString)-1);
+		memcpy( lumpString, lump, stringBytes );
+		lumpString[stringBytes] = '\0';
 
 		/* print basic lump info */
 		Sys_Printf( "Lump:          %d\n", i );
@@ -200,13 +213,15 @@ int AnalyzeBSP( Args& args ){
 		/* only operate on valid lumps */
 		if ( length > 0 ) {
 			/* print data in 4 formats */
-			Sys_Printf( "As hex:        %08X\n", lumpInt );
-			Sys_Printf( "As int:        %d\n", lumpInt );
-			Sys_Printf( "As float:      %f\n", lumpFloat );
+			if ( length >= 4 ) {
+				Sys_Printf( "As hex:        %08X\n", lumpInt );
+				Sys_Printf( "As int:        %d\n", lumpInt );
+				Sys_Printf( "As float:      %f\n", lumpFloat );
+			}
 			Sys_Printf( "As string:     %s\n", lumpString );
 
 			/* guess lump type */
-			if ( lumpString[ 0 ] == '{' && lumpString[ 2 ] == '"' ) {
+			if ( stringBytes >= 3 && lumpString[ 0 ] == '{' && lumpString[ 2 ] == '"' ) {
 				Sys_Printf( "Type guess:    IBSP LUMP_ENTITIES\n" );
 			}
 			else if ( strstr( lumpString, "textures/" ) ) {
@@ -232,13 +247,14 @@ int AnalyzeBSP( Args& args ){
 		Sys_Printf( "---------------------------------------\n" );
 
 		/* end of file */
-		if ( offset + length >= int( file.size() ) ) {
+		if ( length && size_t(offset) + size_t(length) == file.size() ) {
+			++i;
 			break;
 		}
 	}
 
 	/* last stats */
-	Sys_Printf( "Lump count:    %d\n", i + 1 );
+	Sys_Printf( "Lump count:    %d\n", i );
 	Sys_Printf( "File size:     %zu bytes\n", file.size() );
 
 	/* return to caller */

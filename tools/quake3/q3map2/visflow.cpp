@@ -54,6 +54,11 @@ static LargeClipScratch& LargeClip(){
 	return scratch;
 }
 
+static bool PortalCanPrune(const vportal_t* portal){
+	return (!reproducibleVis || portal->flowOrder < publishedPortalCount)
+	    && portal->getStatus() == EVStatus::Done;
+}
+
 
 
 
@@ -454,7 +459,7 @@ static void RecursiveLeafFlow( int leafnum, threaddata_t *thread, pstack_t *prev
 		}
 
 		// if the portal can't see anything we haven't already seen, skip it
-		if ( p->getStatus() == EVStatus::Done ) {
+		if ( PortalCanPrune(p) ) {
 			test = (VisWord *)p->portalvis;
 		}
 		else
@@ -692,7 +697,7 @@ static void RecursivePassageFlow( vportal_t *portal, threaddata_t *thread, pstac
 		prevmight = (VisWord *)prevstack->mightsee;
 		cansee = (VisWord *)passage->cansee;
 		might = (VisWord *)stack.mightsee;
-		if ( p->getStatus() == EVStatus::Done ) {
+		if ( PortalCanPrune(p) ) {
 			portalvis = (VisWord *) p->portalvis;
 		}
 		else{
@@ -813,7 +818,7 @@ static void RecursivePassagePortalFlow( vportal_t *portal, threaddata_t *thread,
 		prevmight = (VisWord *)prevstack->mightsee;
 		cansee = (VisWord *)passage->cansee;
 		might = (VisWord *)stack.mightsee;
-		if ( p->getStatus() == EVStatus::Done ) {
+		if ( PortalCanPrune(p) ) {
 			portalvis = (VisWord *) p->portalvis;
 		}
 		else{

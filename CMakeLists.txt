@@ -160,6 +160,10 @@ if(BUILD_TESTING)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/portal_validation.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/portals)
     set_tests_properties(portal_validation PROPERTIES TIMEOUT 90)
+    add_test(NAME vis_reproducible COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/vis_reproducible.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/vis-reproducible)
+    set_tests_properties(vis_reproducible PROPERTIES TIMEOUT 180)
 endif()
 
 include(GNUInstallDirs)

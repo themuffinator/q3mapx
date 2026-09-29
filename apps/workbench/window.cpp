@@ -122,6 +122,9 @@ QWidget* Window::configuration(){
     quality_=new QComboBox; quality_->addItem("Draft · quick visibility and 1 light sample","draft"); quality_->addItem("Balanced · full visibility and 2 samples","balanced"); quality_->addItem("Production · 4 samples and 2 bounces","production");
     options->addRow("&Quality",quality_);
     workers_=new QSpinBox; workers_->setRange(0,1024); workers_->setSpecialValueText("Automatic"); options->addRow("CPU &workers",workers_);
+    reproducibleVis_=new QCheckBox("&Reproducible visibility across worker counts");
+    reproducibleVis_->setToolTip("Use fixed VIS publication batches. May take longer than unrestricted scheduling.");
+    options->addRow(reproducibleVis_); connect(reproducibleVis_,&QCheckBox::toggled,this,&Window::updatePreview);
     backend_=new QComboBox; backend_->addItems({"auto","cpu","gpu","reference"}); options->addRow("Minimap &backend",backend_);
     gpu_=new QSpinBox; gpu_->setRange(-1,1023); gpu_->setSpecialValueText("Automatic"); options->addRow("GPU &device index",gpu_);
     size_=new QSpinBox; size_->setRange(1,8192); size_->setSingleStep(256); options->addRow("Minimap &size",size_);
@@ -188,6 +191,7 @@ Project Window::project() const {
     p.outputRoot=QDir::fromNativeSeparators(outputRoot_->text()); p.compiler=QDir::fromNativeSeparators(compiler_->text());
     p.game=game_->currentText(); p.mod=mod_->text(); p.quality=quality_->currentData().toString(); p.backend=backend_->currentText(); p.mapFormat=format_->currentData().toString();
     p.workers=workers_->value(); p.gpuDevice=gpu_->value(); p.minimapSize=size_->value(); p.minimapSamples=samples_->value();
+    p.reproducibleVis=reproducibleVis_->isChecked();
     p.bspOptions=optionLines(bspOptions_); p.visOptions=optionLines(visOptions_); p.lightOptions=optionLines(lightOptions_); return p;
 }
 void Window::setProject(const Project& p){
@@ -196,6 +200,7 @@ void Window::setProject(const Project& p){
     outputRoot_->setText(QDir::toNativeSeparators(p.outputRoot)); compiler_->setText(QDir::toNativeSeparators(p.compiler));
     game_->setCurrentText(p.game); mod_->setText(p.mod); quality_->setCurrentIndex(quality_->findData(p.quality)); backend_->setCurrentText(p.backend); format_->setCurrentIndex(format_->findData(p.mapFormat));
     workers_->setValue(p.workers); gpu_->setValue(p.gpuDevice); size_->setValue(p.minimapSize); samples_->setValue(p.minimapSamples);
+    reproducibleVis_->setChecked(p.reproducibleVis);
     bspOptions_->setPlainText(p.bspOptions.join('\n')); visOptions_->setPlainText(p.visOptions.join('\n')); lightOptions_->setPlainText(p.lightOptions.join('\n'));
     workflow_->setCurrentIndex(QFileInfo(p.source).suffix().compare("bsp",Qt::CaseInsensitive)==0 ? 5 : 0);
     populating_=false; updatePreview(); dirty_=false; setWindowModified(false);

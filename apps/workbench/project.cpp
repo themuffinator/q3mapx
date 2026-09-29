@@ -22,12 +22,15 @@ QJsonObject Project::toJson() const {
     return {{"schema_version",1},{"name",name},{"source",source},{"game_root",gameRoot},{"output_root",outputRoot},
         {"compiler",compiler},{"game",game},{"mod",mod},{"quality",quality},{"backend",backend},{"map_format",mapFormat},
         {"workers",workers},{"gpu_device",gpuDevice},{"minimap_size",minimapSize},{"minimap_samples",minimapSamples},
+        {"reproducible_vis",reproducibleVis},
         {"bsp_options",QJsonArray::fromStringList(bspOptions)},{"vis_options",QJsonArray::fromStringList(visOptions)},
         {"light_options",QJsonArray::fromStringList(lightOptions)}};
 }
 Project Project::fromJson(const QJsonObject& o){
     if (o.value("schema_version").toInt()!=1) fail("Unsupported project schema; expected version 1");
     Project p;
+    if (o.contains("reproducible_vis") && !o["reproducible_vis"].isBool()) fail("Invalid project field: reproducible_vis");
+    p.reproducibleVis=o.value("reproducible_vis").toBool(false); // Older projects retain their original behavior.
     const auto string=[&](const char* key,QString& value){
         if (o.contains(key)) { if (!o[key].isString()) fail(QString("Invalid project field: ")+key); value=o[key].toString(); }
     };
@@ -106,6 +109,7 @@ QVector<Job> buildPlan(const Project& p,const QString& workflow,const QString& d
     if (workflow=="build" || workflow=="bsp") add("BSP",QStringList{"-meta","-leaktest"}+p.bspOptions,staged,bsp);
     if (workflow=="build" || workflow=="vis") {
         QStringList options{"-vis","-saveprt"}; if (p.quality=="draft") options << "-fast";
+        if (p.reproducibleVis) options << "-reproducible";
         add("VIS",options+p.visOptions,bsp,bsp);
     }
     if (workflow=="build" || workflow=="light") {

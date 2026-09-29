@@ -57,8 +57,13 @@ varied by zero to two visibility bits between runs; existing q3mapx also varies.
 Those multithreaded timings (NRC 0.2892 s, q3mapx 0.2573 s median) are characterization,
 **not** evidence of byte-identical multithreaded parity. The smaller grid=5 regression
 is identical across workers, which did not expose this larger-case limitation.
-Use one VIS worker when exact reproducibility is required pending the explicit
-reproducible mode. The earlier grid=11 run is not directly comparable to grid=9.
+Use `-vis -reproducible` when repeatability across worker counts is required. It
+uses stable portal ordering and fixed 64-job publication batches: workers can
+prune against only fully completed earlier batches. All three precise VIS modes
+passed repeated grid=9 comparisons at 1, 4, 20 and 70 workers. This mode can take
+longer and can differ from the legacy schedule; it does not promise identical
+floating-point output across architectures or compiler versions. The earlier
+grid=11 timing run is not directly comparable to grid=9.
 
 Use `-profile report.json` to inspect named CPU passes. Profile timing includes
 separate execution and setup-inclusive values. See [development](DEVELOPMENT.md)

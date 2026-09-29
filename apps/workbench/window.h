@@ -4,7 +4,7 @@
 #include <QJsonArray>
 #include <QMainWindow>
 #include <QMap>
-class QComboBox; class QLabel; class QLineEdit; class QListWidget; class QPlainTextEdit;
+class QCheckBox; class QComboBox; class QLabel; class QLineEdit; class QListWidget; class QPlainTextEdit;
 class QPushButton; class QProgressBar; class QSpinBox; class QStackedWidget; class QTableWidget; class QTreeWidget;
 
 namespace workbench {
@@ -25,6 +25,7 @@ private:
     QLineEdit *name_, *source_, *gameRoot_, *outputRoot_, *compiler_, *mod_, *search_;
     QComboBox *game_, *quality_, *backend_, *format_, *workflow_, *reports_;
     QSpinBox *workers_, *gpu_, *size_, *samples_;
+    QCheckBox* reproducibleVis_;
     QPlainTextEdit *bspOptions_, *visOptions_, *lightOptions_, *preview_, *logView_, *reportView_, *hardware_;
     QTableWidget *jobs_, *historyView_;
     QTreeWidget* diagnostics_;

@@ -27,6 +27,9 @@ Visibility-only jobs require a matching `.prt` beside their source BSP.
 
 - Project: source/assets/output/compiler paths, game/mod, saved JSON projects.
 - Quality: draft, balanced and production presets; explicit CPU worker count.
+- Reproducible visibility: enabled for new projects; fixed publication batches
+  produce repeatable VIS across worker counts at some scheduling cost. Older
+  saved projects without this setting retain their previous behavior.
 - Minimap: automatic/CPU/GPU/reference backend, device index, size and samples.
 - Recovery: Valve 220, brush primitives or classic coordinates; automatic loss report.
 - Advanced: separate extra arguments for BSP, VIS and LIGHT, one argument per

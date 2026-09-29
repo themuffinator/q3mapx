@@ -84,8 +84,15 @@ static void SortPortals(){
 	for ( int i = 0; i < numportals * 2; ++i )
 		sorted_portals[i] = &portals[i];
 
-	if ( !nosort )
-		std::ranges::sort( Span( sorted_portals, numportals * 2 ), {}, &vportal_t::nummightsee );
+	if ( !nosort ) {
+		if (reproducibleVis) {
+			std::ranges::sort(Span(sorted_portals, numportals * 2), [](const auto* a, const auto* b){
+				return a->nummightsee == b->nummightsee ? a < b : a->nummightsee < b->nummightsee;
+			});
+		}
+		else std::ranges::sort( Span( sorted_portals, numportals * 2 ), {}, &vportal_t::nummightsee );
+	}
+	for (int i = 0; i < numportals * 2; ++i) sorted_portals[i]->flowOrder = i;
 }
 
 
@@ -177,13 +184,37 @@ static void ClusterMerge( int leafnum ){
    CalcPortalVis
    ==================
  */
+static void (*batchFlow)(int);
+static int batchBegin;
+static void RunPortalBatchItem(int index){ batchFlow(batchBegin + index); }
+
+static void RunPortalFlow(void (*flow)(int), const char* name, bool progress){
+	const int total = numportals * 2;
+	if (!reproducibleVis) {
+		RunThreadsOnIndividual(total, progress, flow, name);
+		return;
+	}
+	// A fixed batch size and stable sort make the set of reusable portal results
+	// independent of worker count and completion order. Results become visible to
+	// pruning only after every job in the preceding batch has joined.
+	constexpr int batchSize = 64;
+	batchFlow = flow;
+	for (batchBegin = 0; batchBegin < total; batchBegin += batchSize) {
+		publishedPortalCount = batchBegin;
+		RunThreadsOnIndividual(std::min(batchSize, total - batchBegin), false, RunPortalBatchItem, name);
+		if (progress && batchBegin % (batchSize * 16) == 0)
+			Sys_Printf("  reproducible VIS: %d/%d portals\n", std::min(batchBegin + batchSize, total), total);
+	}
+	publishedPortalCount = total;
+}
+
 static void CalcPortalVis(){
 #ifdef MREDEBUG
 	Sys_Printf( "%6d portals out of %d", 0, numportals * 2 );
 	//get rid of the counter
-	RunThreadsOnIndividual( numportals * 2, false, PortalFlow, "PortalFlow" );
+	RunPortalFlow(PortalFlow, "PortalFlow", false);
 #else
-	RunThreadsOnIndividual( numportals * 2, true, PortalFlow, "PortalFlow" );
+	RunPortalFlow(PortalFlow, "PortalFlow", true);
 #endif
 }
 
@@ -200,14 +231,14 @@ static void CalcPassageVis(){
 	RunThreadsOnIndividual( numportals * 2, false, CreatePassages, "CreatePassages" );
 	_printf( "\n" );
 	_printf( "%6d portals out of %d", 0, numportals * 2 );
-	RunThreadsOnIndividual( numportals * 2, false, PassageFlow, "PassageFlow" );
+	RunPortalFlow(PassageFlow, "PassageFlow", false);
 	_printf( "\n" );
 #else
 	Sys_Printf( "\n--- CreatePassages (%d) ---\n", numportals * 2 );
 	RunThreadsOnIndividual( numportals * 2, true, CreatePassages, "CreatePassages" );
 
 	Sys_Printf( "\n--- PassageFlow (%d) ---\n", numportals * 2 );
-	RunThreadsOnIndividual( numportals * 2, true, PassageFlow, "PassageFlow" );
+	RunPortalFlow(PassageFlow, "PassageFlow", true);
 #endif
 }
 
@@ -224,14 +255,14 @@ static void CalcPassagePortalVis(){
 	RunThreadsOnIndividual( numportals * 2, false, CreatePassages, "CreatePassages" );
 	Sys_Printf( "\n" );
 	Sys_Printf( "%6d portals out of %d", 0, numportals * 2 );
-	RunThreadsOnIndividual( numportals * 2, false, PassagePortalFlow, "PassagePortalFlow" );
+	RunPortalFlow(PassagePortalFlow, "PassagePortalFlow", false);
 	Sys_Printf( "\n" );
 #else
 	Sys_Printf( "\n--- CreatePassages (%d) ---\n", numportals * 2 );
 	RunThreadsOnIndividual( numportals * 2, true, CreatePassages, "CreatePassages" );
 
 	Sys_Printf( "\n--- PassagePortalFlow (%d) ---\n", numportals * 2 );
-	RunThreadsOnIndividual( numportals * 2, true, PassagePortalFlow, "PassagePortalFlow" );
+	RunPortalFlow(PassagePortalFlow, "PassagePortalFlow", true);
 #endif
 }
 
@@ -880,6 +911,10 @@ int VisMain( Args& args ){
 		while ( args.takeArg( "-fast" ) ) {
 			Sys_Printf( "fastvis = true\n" );
 			fastvis = true;
+		}
+		while (args.takeArg("-reproducible")) {
+			Sys_Printf("Reproducible visibility: fixed publication batches\n");
+			reproducibleVis = true;
 		}
 		while ( args.takeArg( "-merge" ) ) {
 			Sys_Printf( "merge = true\n" );

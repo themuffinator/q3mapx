@@ -40,6 +40,9 @@ int main(int argc,char** argv){
         const auto directory=prepareRun(p,"build");
         auto plan=buildPlan(p,"build",directory);
         require(plan.size()==3 && plan[0].arguments.contains(p.gameRoot),"Command construction lost argument boundaries");
+        require(plan[1].arguments.contains("-reproducible"),"Reproducible visibility option missing");
+        auto older=p.toJson(); older.remove("reproducible_vis");
+        require(!Project::fromJson(older).reproducibleVis,"Older project behavior changed");
         const auto original=QFileInfo(p.source).lastModified();
         JobQueue queue; queue.enqueue(plan); finishQueue(queue);
         for(const auto& job:queue.jobs()) { require(job.state=="Succeeded",qPrintable(job.error)); require(QFileInfo(job.logPath).size()>0,"Missing persistent log"); }

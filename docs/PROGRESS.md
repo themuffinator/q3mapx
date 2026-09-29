@@ -292,3 +292,17 @@ The preceding q3mapx build took 2.6636 s. Full raw evidence is in
 Additional inherited issue: default multithreaded VIS can vary by one or two bits
 on grid=9, including in NRC itself. The raw results retain these differences rather
 than labeling them parity. An explicit reproducible scheduling mode follows.
+
+## 2026-09-29 — Reproducible parallel visibility
+
+Added `-vis -reproducible` with stable portal tie-breaking and a fixed 64-job
+publication frontier. A job can reuse only fully completed preceding batches,
+removing the inherited dependence on when another worker finishes a portal.
+The workbench exposes the setting and enables it for new projects; older JSON
+projects preserve their prior behavior. Legacy CLI scheduling remains available.
+
+Validation: on the grid=9 fixture that exposed the issue, all three precise VIS
+algorithms produce identical bytes at 1, 4, 20 and 70 workers, including a repeated
+20-worker run. This is repeatability for the same input/build, not a cross-platform
+floating-point guarantee. Batch barriers can cost performance. The Qt project
+round-trip/queue test verifies the setting and backward-compatible loading.

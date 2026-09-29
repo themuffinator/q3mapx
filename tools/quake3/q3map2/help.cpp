@@ -153,6 +153,7 @@ static void HelpVis()
 		{ "-nosort", "Do not sort the portals before calculating vis (usually slower)" },
 		{ "-passageOnly", "Just use PassageFlow vis (usually less fps)" },
 		{ "-saveprt", "Keep the Portal file after running vis (so you can run vis again)" },
+		{ "-reproducible", "Publish VIS results in fixed batches for worker-independent output" },
 		{ "-v -v", "Extra verbose mode for cluster debug" }, // q3map2 common takes first -v
 	};
 	HelpOptions( "VIS Stage", 0, 80, options );

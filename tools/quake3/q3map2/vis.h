@@ -56,6 +56,7 @@ enum class EVStatus
 struct vportal_t
 {
 	int num;
+	int flowOrder;                     /* deterministic sorted job index */
 	bool hint;                          /* true if this portal was created from a hint splitter */
 	bool sky;                           /* true if this portal belongs to a sky leaf */
 	bool removed;
@@ -126,6 +127,8 @@ inline bool mergevis;
 inline bool mergevisportals;
 inline bool nosort;
 inline bool saveprt;
+inline bool reproducibleVis;
+inline int publishedPortalCount;          /* changed only between joined job batches */
 inline bool hint;             /* ydnar */
 
 inline float farPlaneDist;                /* rr2do2, rf, mre, ydnar all contributed to this one... */

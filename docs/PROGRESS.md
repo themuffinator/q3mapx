@@ -798,3 +798,27 @@ Evidence is `validation/mesh-export-win-x64.json`; private outputs are under
 External TIKI meshes, native shader effects and interrupted-output transactions
 remain limitations. The separately discovered export defects are fixed; no new
 unrelated issue remains from this task.
+
+## 2026-09-29 — Controlled fatal exits during parallel compilation
+
+The full Linux release run exposed an intermittent segmentation fault after
+multiple workers hit the inherited portal separator limit. A focused rerun
+reproduced three crashes in twelve attempts: legacy `exit()` handlers destroyed
+global compiler state while other workers were still using it. Fatal errors now
+serialize one diagnostic, flush console/editor feedback, close that connection
+and terminate with status 1 without invoking those handlers or static destructors.
+Normal completion still joins workers and performs ordinary cleanup.
+
+Portal tests now require status 1 for malformed inputs and repeat 129/512-point
+windings with 1/4/16 workers, checking a single fatal diagnostic and unchanged BSP
+contents on failure. Windows release passes all 35 tests (78.07 seconds); Linux
+release passes 34 with the GPU area-factor test skipped (116.13 seconds). The
+Linux ASan/UBSan portal check passes (40.60 seconds). The original broader
+sanitizer run was stopped so it can be rerun against this repair. Evidence and
+the pre-fix reproduction logs remain in `.agents/tmp/game-coverage/*fatal*` and
+`build/linux-release/tests/portals/fatal-race-before-*.log`.
+
+Fatal paths still omit CPU profiles and may leave incomplete non-transactional
+outputs; the architecture guide states that limit. The compiler still warns
+about truncating exceptionally long diagnostics into its fixed message buffer.
+No separate new unrelated defect was discovered.

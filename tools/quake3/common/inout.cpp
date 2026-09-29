@@ -31,6 +31,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <algorithm>
+#include <cstdlib>
 #include "generic/vector.h"
 #include "timer.h"
 #include <thread>
@@ -402,6 +403,10 @@ void Sys_Warning( const char *format, ... ){
    =================
  */
 void Error( const char *error, ... ){
+	// Other workers may fail concurrently or still be using global compiler data.
+	// Serialize the fatal diagnostic with normal output, then terminate without
+	// running exit handlers or static destructors against those active workers.
+	std::lock_guard lock( mesege_mutex );
 	char out_buffer[4096];
 	char tmp[4096];
 	va_list argptr;
@@ -425,5 +430,8 @@ void Error( const char *error, ... ){
 		std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 	}
 
-	exit( 1 );
+	Broadcast_Shutdown();
+	fflush( stdout );
+	fflush( stderr );
+	std::_Exit( 1 );
 }

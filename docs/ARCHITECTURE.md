@@ -22,6 +22,12 @@ geometry locks separate. Reuse worker threads across passes; allow a synchronous
 one-thread path. Do not parallelize writes to existing shared structures without
 first establishing ownership or synchronization.
 
+Fatal CLI errors serialize their diagnostic with ordinary output, flush console
+and editor feedback, and terminate immediately with status 1. They do not run
+global destructors or exit handlers while other workers can still access that
+state. Normal completion joins the pool and runs normal cleanup. Fatal paths
+still omit CPU profiles and can leave incomplete non-transactional outputs.
+
 VIS uses 64-bit bitset intersections, heap-backed scratch frames reused per worker,
 and an iterative initial reachability flood. Optional reproducible mode sorts portal
 ties by input index and publishes only completed 64-job batches, so worker timing

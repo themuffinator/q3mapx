@@ -37,7 +37,7 @@ for name,text in cases.items():
     for force in ([],['-force']):
         result=subprocess.run([str(exe),*map(str,base),*force,'-vis','-saveprt',str(bad)],cwd=root,capture_output=True,timeout=15)
         (root/f'{name}-{bool(force)}.log').write_bytes(result.stdout+result.stderr)
-        assert result.returncode!=0 and b'ERROR' in result.stdout, (name,result.returncode,result.stdout[-2000:])
+        assert result.returncode==1 and b'ERROR' in result.stdout, (name,result.returncode,(result.stdout+result.stderr)[-2000:])
         assert bad.read_bytes()==original_bsp, name
 print(f'{len(cases)*2} portal safety checks passed; original BSP preserved')
 
@@ -58,10 +58,16 @@ for count in (129,512):
     polygon=[tuple(center[j]+radius*(math.cos(2*math.pi*i/count)*u[j]+math.sin(2*math.pi*i/count)*v[j]) for j in range(3)) for i in range(count)]
     changed[4]=' '.join([str(count),*lines[4].split()[1:4]])+' '+ ' '.join('(%0.9g %0.9g %0.9g)'%p for p in polygon)
     bad.with_suffix('.prt').write_text('\n'.join(changed)+'\n')
-    bad.write_bytes(original_bsp)
-    result=subprocess.run([str(exe),*map(str,base),'-vis','-nopassage','-saveprt',str(bad)],cwd=root,capture_output=True,timeout=30)
-    (root/f'large-winding-{count}.log').write_bytes(result.stdout+result.stderr)
-    # Very complex convex windings can exceed the inherited separator cache.
-    # A bounded diagnostic is acceptable; access violations and other failures are not.
-    assert result.returncode==0 or (result.returncode==1 and b'MAX_SEPERATORS' in result.stdout),result.stdout[-2000:]
-print('129- and 512-point portal inputs finish or report the separator limit safely')
+    # Repeated multiworker failures exposed a race between legacy exit handlers
+    # destroying shared data and other active workers (intermittent SIGSEGV).
+    for attempt,workers in enumerate((1,4,16,4,4,4)):
+        bad.write_bytes(original_bsp)
+        result=subprocess.run([str(exe),*map(str,base),'-threads',str(workers),'-vis','-nopassage','-saveprt',str(bad)],cwd=root,capture_output=True,timeout=30)
+        (root/f'large-winding-{count}-{workers}-{attempt}.log').write_bytes(result.stdout+result.stderr)
+        # Very complex convex windings can exceed the inherited separator cache.
+        # A bounded diagnostic is acceptable; access violations and other failures are not.
+        assert result.returncode==0 or (result.returncode==1 and b'MAX_SEPERATORS' in result.stdout),(count,workers,result.returncode,(result.stdout+result.stderr)[-2000:])
+        if result.returncode:
+            assert result.stdout.count(b'************ ERROR ************')==1,result.stdout[-2000:]
+            assert bad.read_bytes()==original_bsp,(count,workers)
+print('129- and 512-point portal inputs finish or report one separator-limit error safely, repeated with 1/4/16 workers')

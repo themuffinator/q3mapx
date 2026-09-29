@@ -33,8 +33,8 @@
 
 int numthreads = -1;
 namespace {
-// Explicit normal shutdown: Error() may call exit() from a worker. Registering
-// a static destructor would try to join that same worker during fatal exit.
+// Explicit normal shutdown; fatal errors terminate immediately without
+// destroying shared state that other workers may still be using.
 q3mapx::JobPool* pool = nullptr;
 std::mutex compilerMutex;
 thread_local bool holdsCompilerMutex = false;

@@ -1,0 +1,601 @@
+{
+  "schema_version": 1,
+  "label": "NRC-8216133-GCC15-O3",
+  "harness_revision": "723b23166fa2982746dfc1aa23b4535c39879a0d",
+  "timestamp_utc": "2026-09-29T05:56:17.157943+00:00",
+  "compiler": "E:\\Repositories\\q3mapx\\build\\baseline\\bin\\q3mapx.exe",
+  "compiler_sha256": "5bee5356d9b4d0c94a80b6e206c940340db11f807fe44b416eeb366ad210336e",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+  "logical_cpus": 20,
+  "warmup_runs": 1,
+  "measured_runs": 5,
+  "fixture": "generated-dense-room-v1",
+  "records": [
+    {
+      "stage": "bsp",
+      "threads": 1,
+      "seconds": [
+        0.04596800002036616,
+        0.045137700042687356,
+        0.04429079999681562,
+        0.04737280000699684,
+        0.04553809994831681
+      ],
+      "median_seconds": 0.04553809994831681,
+      "min_seconds": 0.04429079999681562,
+      "max_seconds": 0.04737280000699684,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-1",
+        "-threads",
+        "1",
+        "-meta",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-1\\baseq3\\maps\\fixture.map"
+      ],
+      "geometry_sha256": "aa108102a61258c486b5a0d3528ca12e8adf6df1457a04ce192893af554c37df",
+      "counts": {
+        "shaders": 1,
+        "planes": 160,
+        "nodes": 583,
+        "leaves": 586,
+        "models": 2,
+        "brushes": 128,
+        "sides": 768,
+        "vertices": 2477,
+        "indices": 12,
+        "surfaces": 618
+      }
+    },
+    {
+      "stage": "vis",
+      "threads": 1,
+      "seconds": [
+        22.814870800008066,
+        26.87849020003341,
+        26.82392409996828,
+        26.980416400008835,
+        25.536833900026977
+      ],
+      "median_seconds": 26.82392409996828,
+      "min_seconds": 22.814870800008066,
+      "max_seconds": 26.980416400008835,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-1",
+        "-threads",
+        "1",
+        "-vis",
+        "-saveprt",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-1\\baseq3\\maps\\fixture.bsp"
+      ],
+      "geometry_sha256": "aa108102a61258c486b5a0d3528ca12e8adf6df1457a04ce192893af554c37df",
+      "counts": {
+        "shaders": 1,
+        "planes": 160,
+        "nodes": 583,
+        "leaves": 586,
+        "models": 2,
+        "brushes": 128,
+        "sides": 768,
+        "vertices": 2477,
+        "indices": 12,
+        "surfaces": 618
+      }
+    },
+    {
+      "stage": "light",
+      "threads": 1,
+      "seconds": [
+        0.08196219999808818,
+        0.07774929999141023,
+        0.08504350000293925,
+        0.07353839999996126,
+        0.07374330004677176
+      ],
+      "median_seconds": 0.07774929999141023,
+      "min_seconds": 0.07353839999996126,
+      "max_seconds": 0.08504350000293925,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-1",
+        "-threads",
+        "1",
+        "-light",
+        "-fast",
+        "-samples",
+        "2",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-1\\baseq3\\maps\\fixture.bsp"
+      ],
+      "geometry_sha256": "aa108102a61258c486b5a0d3528ca12e8adf6df1457a04ce192893af554c37df",
+      "counts": {
+        "shaders": 1,
+        "planes": 160,
+        "nodes": 583,
+        "leaves": 586,
+        "models": 2,
+        "brushes": 128,
+        "sides": 768,
+        "vertices": 2477,
+        "indices": 12,
+        "surfaces": 618
+      }
+    },
+    {
+      "stage": "decompile",
+      "threads": 1,
+      "seconds": [
+        0.07142039999598637,
+        0.06672979996073991,
+        0.10013689997140318,
+        0.07449109997833148,
+        0.09331909997854382
+      ],
+      "median_seconds": 0.07449109997833148,
+      "min_seconds": 0.06672979996073991,
+      "max_seconds": 0.10013689997140318,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-1",
+        "-threads",
+        "1",
+        "-convert",
+        "-format",
+        "map_220",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-1\\baseq3\\maps\\fixture.bsp"
+      ],
+      "geometry_sha256": "aa108102a61258c486b5a0d3528ca12e8adf6df1457a04ce192893af554c37df",
+      "counts": {
+        "shaders": 1,
+        "planes": 160,
+        "nodes": 583,
+        "leaves": 586,
+        "models": 2,
+        "brushes": 128,
+        "sides": 768,
+        "vertices": 2477,
+        "indices": 12,
+        "surfaces": 618
+      }
+    },
+    {
+      "stage": "minimap",
+      "threads": 1,
+      "seconds": [
+        0.17585539998253807,
+        0.17730199999641627,
+        0.1677168000023812,
+        0.16659490001620725,
+        0.20757129997946322
+      ],
+      "median_seconds": 0.17585539998253807,
+      "min_seconds": 0.16659490001620725,
+      "max_seconds": 0.20757129997946322,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-1",
+        "-threads",
+        "1",
+        "-minimap",
+        "-size",
+        "512",
+        "-samples",
+        "4",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-1\\baseq3\\maps\\fixture.bsp"
+      ],
+      "geometry_sha256": "aa108102a61258c486b5a0d3528ca12e8adf6df1457a04ce192893af554c37df",
+      "counts": {
+        "shaders": 1,
+        "planes": 160,
+        "nodes": 583,
+        "leaves": 586,
+        "models": 2,
+        "brushes": 128,
+        "sides": 768,
+        "vertices": 2477,
+        "indices": 12,
+        "surfaces": 618
+      }
+    },
+    {
+      "stage": "bsp",
+      "threads": 4,
+      "seconds": [
+        0.04814630001783371,
+        0.04693240002961829,
+        0.04817170003661886,
+        0.04391350003425032,
+        0.046320200024638325
+      ],
+      "median_seconds": 0.04693240002961829,
+      "min_seconds": 0.04391350003425032,
+      "max_seconds": 0.04817170003661886,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-4",
+        "-threads",
+        "4",
+        "-meta",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-4\\baseq3\\maps\\fixture.map"
+      ],
+      "geometry_sha256": "aa108102a61258c486b5a0d3528ca12e8adf6df1457a04ce192893af554c37df",
+      "counts": {
+        "shaders": 1,
+        "planes": 160,
+        "nodes": 583,
+        "leaves": 586,
+        "models": 2,
+        "brushes": 128,
+        "sides": 768,
+        "vertices": 2477,
+        "indices": 12,
+        "surfaces": 618
+      }
+    },
+    {
+      "stage": "vis",
+      "threads": 4,
+      "seconds": [
+        2.176367800042499,
+        2.2207259999704547,
+        2.1601748000248335,
+        2.208001899998635,
+        2.2574704000144266
+      ],
+      "median_seconds": 2.208001899998635,
+      "min_seconds": 2.1601748000248335,
+      "max_seconds": 2.2574704000144266,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-4",
+        "-threads",
+        "4",
+        "-vis",
+        "-saveprt",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-4\\baseq3\\maps\\fixture.bsp"
+      ],
+      "geometry_sha256": "aa108102a61258c486b5a0d3528ca12e8adf6df1457a04ce192893af554c37df",
+      "counts": {
+        "shaders": 1,
+        "planes": 160,
+        "nodes": 583,
+        "leaves": 586,
+        "models": 2,
+        "brushes": 128,
+        "sides": 768,
+        "vertices": 2477,
+        "indices": 12,
+        "surfaces": 618
+      }
+    },
+    {
+      "stage": "light",
+      "threads": 4,
+      "seconds": [
+        0.05867350002517924,
+        0.05955450003966689,
+        0.05204840004444122,
+        0.048281600000336766,
+        0.05821559997275472
+      ],
+      "median_seconds": 0.05821559997275472,
+      "min_seconds": 0.048281600000336766,
+      "max_seconds": 0.05955450003966689,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-4",
+        "-threads",
+        "4",
+        "-light",
+        "-fast",
+        "-samples",
+        "2",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-4\\baseq3\\maps\\fixture.bsp"
+      ],
+      "geometry_sha256": "aa108102a61258c486b5a0d3528ca12e8adf6df1457a04ce192893af554c37df",
+      "counts": {
+        "shaders": 1,
+        "planes": 160,
+        "nodes": 583,
+        "leaves": 586,
+        "models": 2,
+        "brushes": 128,
+        "sides": 768,
+        "vertices": 2477,
+        "indices": 12,
+        "surfaces": 618
+      }
+    },
+    {
+      "stage": "decompile",
+      "threads": 4,
+      "seconds": [
+        0.06860500003676862,
+        0.09483479999471456,
+        0.09001549996901304,
+        0.07383329997537658,
+        0.06534220004687086
+      ],
+      "median_seconds": 0.07383329997537658,
+      "min_seconds": 0.06534220004687086,
+      "max_seconds": 0.09483479999471456,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-4",
+        "-threads",
+        "4",
+        "-convert",
+        "-format",
+        "map_220",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-4\\baseq3\\maps\\fixture.bsp"
+      ],
+      "geometry_sha256": "aa108102a61258c486b5a0d3528ca12e8adf6df1457a04ce192893af554c37df",
+      "counts": {
+        "shaders": 1,
+        "planes": 160,
+        "nodes": 583,
+        "leaves": 586,
+        "models": 2,
+        "brushes": 128,
+        "sides": 768,
+        "vertices": 2477,
+        "indices": 12,
+        "surfaces": 618
+      }
+    },
+    {
+      "stage": "minimap",
+      "threads": 4,
+      "seconds": [
+        0.05917720001889393,
+        0.05582250002771616,
+        0.05801379994954914,
+        0.05812540004262701,
+        0.05762109998613596
+      ],
+      "median_seconds": 0.05801379994954914,
+      "min_seconds": 0.05582250002771616,
+      "max_seconds": 0.05917720001889393,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-4",
+        "-threads",
+        "4",
+        "-minimap",
+        "-size",
+        "512",
+        "-samples",
+        "4",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-4\\baseq3\\maps\\fixture.bsp"
+      ],
+      "geometry_sha256": "aa108102a61258c486b5a0d3528ca12e8adf6df1457a04ce192893af554c37df",
+      "counts": {
+        "shaders": 1,
+        "planes": 160,
+        "nodes": 583,
+        "leaves": 586,
+        "models": 2,
+        "brushes": 128,
+        "sides": 768,
+        "vertices": 2477,
+        "indices": 12,
+        "surfaces": 618
+      }
+    },
+    {
+      "stage": "bsp",
+      "threads": 20,
+      "seconds": [
+        0.05198349995771423,
+        0.058686899952590466,
+        0.048643500020261854,
+        0.050120299973059446,
+        0.04905780003173277
+      ],
+      "median_seconds": 0.050120299973059446,
+      "min_seconds": 0.048643500020261854,
+      "max_seconds": 0.058686899952590466,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-20",
+        "-threads",
+        "20",
+        "-meta",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-20\\baseq3\\maps\\fixture.map"
+      ],
+      "geometry_sha256": "aa108102a61258c486b5a0d3528ca12e8adf6df1457a04ce192893af554c37df",
+      "counts": {
+        "shaders": 1,
+        "planes": 160,
+        "nodes": 583,
+        "leaves": 586,
+        "models": 2,
+        "brushes": 128,
+        "sides": 768,
+        "vertices": 2477,
+        "indices": 12,
+        "surfaces": 618
+      }
+    },
+    {
+      "stage": "vis",
+      "threads": 20,
+      "seconds": [
+        0.8731498999986798,
+        0.898848100041505,
+        0.9116596000385471,
+        0.8552728000213392,
+        0.8867010999820195
+      ],
+      "median_seconds": 0.8867010999820195,
+      "min_seconds": 0.8552728000213392,
+      "max_seconds": 0.9116596000385471,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-20",
+        "-threads",
+        "20",
+        "-vis",
+        "-saveprt",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-20\\baseq3\\maps\\fixture.bsp"
+      ],
+      "geometry_sha256": "aa108102a61258c486b5a0d3528ca12e8adf6df1457a04ce192893af554c37df",
+      "counts": {
+        "shaders": 1,
+        "planes": 160,
+        "nodes": 583,
+        "leaves": 586,
+        "models": 2,
+        "brushes": 128,
+        "sides": 768,
+        "vertices": 2477,
+        "indices": 12,
+        "surfaces": 618
+      }
+    },
+    {
+      "stage": "light",
+      "threads": 20,
+      "seconds": [
+        0.06242900004144758,
+        0.06372589996317402,
+        0.06047650001710281,
+        0.06403509998926893,
+        0.061596899991855025
+      ],
+      "median_seconds": 0.06242900004144758,
+      "min_seconds": 0.06047650001710281,
+      "max_seconds": 0.06403509998926893,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-20",
+        "-threads",
+        "20",
+        "-light",
+        "-fast",
+        "-samples",
+        "2",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-20\\baseq3\\maps\\fixture.bsp"
+      ],
+      "geometry_sha256": "aa108102a61258c486b5a0d3528ca12e8adf6df1457a04ce192893af554c37df",
+      "counts": {
+        "shaders": 1,
+        "planes": 160,
+        "nodes": 583,
+        "leaves": 586,
+        "models": 2,
+        "brushes": 128,
+        "sides": 768,
+        "vertices": 2477,
+        "indices": 12,
+        "surfaces": 618
+      }
+    },
+    {
+      "stage": "decompile",
+      "threads": 20,
+      "seconds": [
+        0.04218109999783337,
+        0.04337379999924451,
+        0.05229769996367395,
+        0.05205759999807924,
+        0.046449200017377734
+      ],
+      "median_seconds": 0.046449200017377734,
+      "min_seconds": 0.04218109999783337,
+      "max_seconds": 0.05229769996367395,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-20",
+        "-threads",
+        "20",
+        "-convert",
+        "-format",
+        "map_220",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-20\\baseq3\\maps\\fixture.bsp"
+      ],
+      "geometry_sha256": "aa108102a61258c486b5a0d3528ca12e8adf6df1457a04ce192893af554c37df",
+      "counts": {
+        "shaders": 1,
+        "planes": 160,
+        "nodes": 583,
+        "leaves": 586,
+        "models": 2,
+        "brushes": 128,
+        "sides": 768,
+        "vertices": 2477,
+        "indices": 12,
+        "surfaces": 618
+      }
+    },
+    {
+      "stage": "minimap",
+      "threads": 20,
+      "seconds": [
+        0.039543099992442876,
+        0.039264599967282265,
+        0.03643159999046475,
+        0.0383618000196293,
+        0.03739519999362528
+      ],
+      "median_seconds": 0.0383618000196293,
+      "min_seconds": 0.03643159999046475,
+      "max_seconds": 0.039543099992442876,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-20",
+        "-threads",
+        "20",
+        "-minimap",
+        "-size",
+        "512",
+        "-samples",
+        "4",
+        "E:\\Repositories\\q3mapx\\build\\baseline\\benchmark\\threads-20\\baseq3\\maps\\fixture.bsp"
+      ],
+      "geometry_sha256": "aa108102a61258c486b5a0d3528ca12e8adf6df1457a04ce192893af554c37df",
+      "counts": {
+        "shaders": 1,
+        "planes": 160,
+        "nodes": 583,
+        "leaves": 586,
+        "models": 2,
+        "brushes": 128,
+        "sides": 768,
+        "vertices": 2477,
+        "indices": 12,
+        "surfaces": 618
+      }
+    }
+  ]
+}

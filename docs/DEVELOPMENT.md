@@ -73,6 +73,21 @@ scripts in `tests/` or `benchmarks/`; put generated large data in ignored output
 
 ## Commit policy
 
+Run the repeatable benchmark from the repository root:
+
+```sh
+python benchmarks/compiler.py --compiler build/release/bin/q3mapx --work-dir build/release/benchmark --threads 1 4 --repeat 5
+```
+
+On Windows append `.exe` to the compiler path and keep the dependency DLL directory
+on PATH. The harness generates its own dense room, preserves VIS portal input with
+`-saveprt`, warms up each stage, and saves raw observations and arguments in
+`benchmark.json`. [Initial results](benchmarks/baseline-win-x64.json) are a baseline,
+not an optimization claim. CI definitions cover Windows/MinGW and Linux; a workflow
+definition does not imply a remote run has passed.
+
+## Task commits
+
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and
 commit. Do not bundle unrelated fixes into an optimization commit. Preserve
 upstream copyright headers and credit any additional incorporated external code

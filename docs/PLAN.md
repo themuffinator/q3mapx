@@ -27,11 +27,11 @@ application or game assets required to build the compiler.
 
 ## M1 — Reproducible correctness and performance baseline
 
-- [ ] Add original synthetic map fixtures that require no commercial assets.
-- [ ] Exercise BSP → VIS → LIGHT and BSP → MAP → BSP through the actual CLI.
-- [ ] Record normalized output invariants, timings, hardware, options, and versions.
-- [ ] Add a repeatable benchmark harness with warmup and multiple measured runs.
-- [ ] Add CI for supported build configurations and regression checks.
+- [x] Add original synthetic map fixtures that require no commercial assets.
+- [x] Exercise BSP → VIS → LIGHT and BSP → MAP → BSP through the actual CLI.
+- [x] Record normalized output invariants, timings, hardware, options, and versions.
+- [x] Add a repeatable benchmark harness with warmup and multiple measured runs.
+- [x] Add CI for supported build configurations and regression checks.
 
 Acceptance: fresh test outputs stay in designated build/temp directories; failures
 include actionable logs. Comparisons use identical fixtures and compiler settings.

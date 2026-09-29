@@ -62,3 +62,29 @@ paths; using its CMake config resolves that packaging issue. Upstream produces
 warnings for non-standard-layout `offsetof` and direct libxml buffer access.
 Linux and MSVC execution are not locally validated yet. Next: asset-independent
 integration fixtures and timing baseline.
+
+## 2026-09-29 — Integration fixtures and measured baseline
+
+Added first-party generated textures/maps, full BSP/VIS/LIGHT compilation, Quake,
+brush-primitive and Valve 220 decompile/recompile checks, patch/entity preservation,
+minimap output checks, and brush-geometry parity at one and four workers. Added a
+repeatable end-to-end benchmark and Windows/Linux CI definitions.
+
+Validation: 3/3 local CTest tests passed. Dense-room baseline uses GCC 15.2.0 `-O3`,
+LTO off, Intel Core i7-13700H, one warmup and five measured samples per stage and
+worker count. Full evidence is in `docs/benchmarks/baseline-win-x64.json`.
+
+| Stage | 1 worker median | 4 workers median | 20 workers median |
+| --- | ---: | ---: | ---: |
+| BSP | 0.0455 s | 0.0469 s | 0.0501 s |
+| VIS | 26.8239 s | 2.2080 s | 0.8867 s |
+| LIGHT | 0.0777 s | 0.0582 s | 0.0624 s |
+| Decompile | 0.0745 s | 0.0738 s | 0.0464 s |
+| Minimap, 512², four samples | 0.1759 s | 0.0580 s | 0.0384 s |
+
+These are inherited-compiler timings. This small lighting workload shows overhead
+at high thread counts. Decompilation is mostly serial, so its apparent change with
+the thread option should be treated as run-order/system variance. VIS's shared
+pruning can change the amount of work with scheduling; its scaling is not a pure
+scheduler comparison. No game content, game launch, or input injection was used.
+Remote CI has not been executed locally. Next: BSP boundary validation.

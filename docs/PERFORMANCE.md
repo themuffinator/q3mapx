@@ -94,6 +94,38 @@ deterministic-lighting build `dda68d7`, including lightgrid computation. All fou
 lighting lumps were byte-identical on every run. This is a synthetic material
 fixture result, not a claim for every map. [Raw measurements](benchmarks/light-culling-win-x64.json).
 
+## Raven lightgrid packing
+
+RBSP/FBSP writers now index approximate lightgrid matches by lighting style and
+three discriminating byte components. A bounded deterministic sample selects
+independent components; candidate verification retains all 24 color channels,
+both circular direction bytes, and NRC's earliest-match ordering. Small grids
+keep a direct scan. Dictionary exhaustion fails before replacing the BSP instead
+of writing an invalid reference.
+
+On the same Windows machine, a complete `-game ja -scale 1` rewrite of the retail
+Jedi Academy `maps/mp/duel9.bsp` took **8.5414 → 0.2705 s**, a **31.6x speedup**.
+Its grid has 28,749 dictionary points. Three alternating measured runs followed
+one warmup; all eighteen lump payloads were identical. This measures BSP loading,
+validation, identity scaling and serialization, not the cost of calculating the
+original lighting. The retail input is not distributed. Its hash, grid reference
+count, executable identities and observations are in the
+[native-map report](benchmarks/lightgrid-native-win-x64.json).
+
+A generated 24,000-entry, 96,000-reference high-variation grid measured
+**1.7567 → 0.1286 s** over five alternating runs after warmup, also with identical
+payloads. This deliberately stresses dictionary lookup and is not representative
+of every lighting distribution. See the
+[synthetic report](benchmarks/lightgrid-synthetic-win-x64.json). Reproduce with:
+
+```sh
+python benchmarks/lightgrid.py --baseline /path/to/old/q3mapx --compiler build/release/bin/q3mapx --work-dir build/lightgrid-benchmark
+```
+
+`--map /path/to/native.bsp` measures a private copy of an existing Raven map; the
+source is never rewritten. Existing unused-channel validation limitations found
+on other retail maps are tracked in the task log rather than bypassed here.
+
 ## OpenCL GPU minimaps
 
 `q3mapx -devices` prints JSON with GPU names, memory, compute units and stable

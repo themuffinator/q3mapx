@@ -35,8 +35,14 @@ Raven lightgrid serialization currently searches every dictionary entry for an
 approximate match, in insertion order. It also writes index 65,535 when a full
 65,535-entry dictionary cannot represent another point. That index is out of
 range. The optimization must retain the earliest matching entry and the existing
-four-byte-unit tolerance, including the inherited circular direction comparison,
+per-channel tolerance of four, including the inherited circular direction comparison,
 while making exhaustion a controlled error before replacing the destination.
+
+The packing task is now implemented and validated: dictionary references and
+payload order match the inherited scan, capacity errors preserve existing files,
+and measured native-map rewrite times are recorded in [performance](PERFORMANCE.md).
+Reading other retail Jedi maps also exposed non-finite coordinates in unused
+lightmap slots; that separate validation compatibility issue remains to be fixed.
 
 ## Evidence and implementation rules
 

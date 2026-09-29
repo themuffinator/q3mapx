@@ -1,0 +1,290 @@
+{
+  "schema_version": 1,
+  "kind": "whole_process_raven_grid_rewrite",
+  "fixture_kind": "synthetic_high_variation_grid",
+  "timestamp_utc": "2026-09-29T18:00:45.274173+00:00",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+  "logical_cpus": 20,
+  "input_sha256": "5a41b038a38221f7de87c165fb29b7db429ef23f98dcce07348b56ba7f683fb4",
+  "dictionary_points": 24000,
+  "grid_references": 96000,
+  "warmup_runs": 1,
+  "measured_runs": 5,
+  "output_lump_sha256": [
+    "4eaa16267d109c1f0918f39c6fa0a6f3a565903b049523ea6abc1aac12567fad",
+    "bba177474d10b7a6ee1abeaa3976280020851872c8ed6042581a9ed93ff35d99",
+    "64927c8798ffd46fb0cb8969a46654ebc245270f15d98ab003fdcc76e91076a3",
+    "10a2ae9f8901ddca43715e6a27020b371c57b372b74c941d9f0109e71a1a0477",
+    "06d689f70bf1c0c5206b3be83db6f3add9b85630dc090aa09e9d051befae6fd6",
+    "06b6768d404042ef0f3df51c993d0ff21630b44fcbab807b64546544c740576a",
+    "2a3304499aa781efc267c2e8204af586353655bff10154f0c09a071668d70bf9",
+    "ef6f8232edfca2501f5da493b84f546c09c304ab03eb42b0bcd046a0fb34e164",
+    "ab1d31264745e76af9d0dbc338e2379c9e0ccab5bfda3fe5139445e8b1736604",
+    "1247efd3d4350a3ce404876c9cd24035ec4d5a3ef24fc677230bc133745f6a77",
+    "a040a9ef571f1b4a4f4f45c2a3b15aabb9e7ffc880454deb8666052eacf2cace",
+    "57648a007051ec1e784e66b9006dc07047b443cf9bcfd76dbefed26d9776925f",
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "587c5d491716d2f37c3ad01378173b9a4a0683a634d131e221b999e468429c63",
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ba9917c0d98c5845cb9110dbe93101e87935c965cc748b5a9248be4b59399890",
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "450a698d1696da33fe45dfb660c4c786ff5a258b4db46d25c39f9a54f1a421dc"
+  ],
+  "summaries": [
+    {
+      "implementation": "baseline",
+      "executable_sha256": "22088aa9dabd2d60905ede99e03085646514e83aee845d0d127762ec9d3bd58b",
+      "seconds": [
+        1.4607590999803506,
+        1.6228439999977127,
+        1.7566922000260092,
+        2.017578799976036,
+        1.8345946000190452
+      ],
+      "median_seconds": 1.7566922000260092
+    },
+    {
+      "implementation": "q3mapx",
+      "executable_sha256": "2e40c2627e77908965ba89a2696fc4fb189fb183777cfb978a65c59dc27e0ddb",
+      "seconds": [
+        0.07202850002795458,
+        0.08742820000043139,
+        0.1611696999752894,
+        0.12861139996675774,
+        0.1588206000160426
+      ],
+      "median_seconds": 0.12861139996675774
+    }
+  ],
+  "records": [
+    {
+      "implementation": "baseline",
+      "warmup": true,
+      "stage": "baseline-0",
+      "seconds": 1.5842143999761902,
+      "arguments": [
+        "-game",
+        "ja",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark",
+        "-fs_basegame",
+        "baseq3",
+        "-threads",
+        "1",
+        "-scale",
+        "1",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "warmup": true,
+      "stage": "q3mapx-0",
+      "seconds": 0.09003260004101321,
+      "arguments": [
+        "-game",
+        "ja",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark",
+        "-fs_basegame",
+        "baseq3",
+        "-threads",
+        "1",
+        "-scale",
+        "1",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "warmup": false,
+      "stage": "q3mapx-1",
+      "seconds": 0.07202850002795458,
+      "arguments": [
+        "-game",
+        "ja",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark",
+        "-fs_basegame",
+        "baseq3",
+        "-threads",
+        "1",
+        "-scale",
+        "1",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "warmup": false,
+      "stage": "baseline-1",
+      "seconds": 1.4607590999803506,
+      "arguments": [
+        "-game",
+        "ja",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark",
+        "-fs_basegame",
+        "baseq3",
+        "-threads",
+        "1",
+        "-scale",
+        "1",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "warmup": false,
+      "stage": "baseline-2",
+      "seconds": 1.6228439999977127,
+      "arguments": [
+        "-game",
+        "ja",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark",
+        "-fs_basegame",
+        "baseq3",
+        "-threads",
+        "1",
+        "-scale",
+        "1",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "warmup": false,
+      "stage": "q3mapx-2",
+      "seconds": 0.08742820000043139,
+      "arguments": [
+        "-game",
+        "ja",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark",
+        "-fs_basegame",
+        "baseq3",
+        "-threads",
+        "1",
+        "-scale",
+        "1",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "warmup": false,
+      "stage": "q3mapx-3",
+      "seconds": 0.1611696999752894,
+      "arguments": [
+        "-game",
+        "ja",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark",
+        "-fs_basegame",
+        "baseq3",
+        "-threads",
+        "1",
+        "-scale",
+        "1",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "warmup": false,
+      "stage": "baseline-3",
+      "seconds": 1.7566922000260092,
+      "arguments": [
+        "-game",
+        "ja",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark",
+        "-fs_basegame",
+        "baseq3",
+        "-threads",
+        "1",
+        "-scale",
+        "1",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "warmup": false,
+      "stage": "baseline-4",
+      "seconds": 2.017578799976036,
+      "arguments": [
+        "-game",
+        "ja",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark",
+        "-fs_basegame",
+        "baseq3",
+        "-threads",
+        "1",
+        "-scale",
+        "1",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "warmup": false,
+      "stage": "q3mapx-4",
+      "seconds": 0.12861139996675774,
+      "arguments": [
+        "-game",
+        "ja",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark",
+        "-fs_basegame",
+        "baseq3",
+        "-threads",
+        "1",
+        "-scale",
+        "1",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "warmup": false,
+      "stage": "q3mapx-5",
+      "seconds": 0.1588206000160426,
+      "arguments": [
+        "-game",
+        "ja",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark",
+        "-fs_basegame",
+        "baseq3",
+        "-threads",
+        "1",
+        "-scale",
+        "1",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "warmup": false,
+      "stage": "baseline-5",
+      "seconds": 1.8345946000190452,
+      "arguments": [
+        "-game",
+        "ja",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark",
+        "-fs_basegame",
+        "baseq3",
+        "-threads",
+        "1",
+        "-scale",
+        "1",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-benchmark\\input.bsp"
+      ]
+    }
+  ]
+}

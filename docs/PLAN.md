@@ -134,7 +134,7 @@ See [game coverage](GAME-COVERAGE.md) for the source revision, format distinctio
 and validation requirements. Continue committing each completed task separately.
 
 - [x] Audit the existing profiles against the reference and record the next work.
-- [ ] Optimize Raven lightgrid packing while preserving first-match output; repair
+- [x] Optimize Raven lightgrid packing while preserving first-match output; repair
   dictionary exhaustion and validate boundary, malformed and real-command cases.
 - [ ] Publish a machine-readable game/capability catalog, accept useful fnTech3
   aliases, and use the catalog in the workbench rather than a partial static list.

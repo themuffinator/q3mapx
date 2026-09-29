@@ -163,6 +163,14 @@ if(BUILD_TESTING)
     target_link_libraries(job_pool_test PRIVATE q3mapx_jobs)
     add_test(NAME job_pool COMMAND job_pool_test)
     set_tests_properties(job_pool PROPERTIES TIMEOUT 60)
+    add_executable(lightgrid_test tests/lightgrid.cpp)
+    target_include_directories(lightgrid_test PRIVATE libs)
+    add_test(NAME lightgrid COMMAND lightgrid_test)
+    set_tests_properties(lightgrid PROPERTIES TIMEOUT 60)
+    add_test(NAME lightgrid_cli COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/lightgrid_cli.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/lightgrid)
+    set_tests_properties(lightgrid_cli PROPERTIES TIMEOUT 60)
     add_test(NAME cli_options COMMAND ${Python3_EXECUTABLE}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_options.py
         --compiler $<TARGET_FILE:q3mapx>

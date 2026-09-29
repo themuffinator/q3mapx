@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "kind": "whole_process_raven_grid_rewrite",
+  "fixture_kind": "local_native_map",
+  "timestamp_utc": "2026-09-29T18:02:59.532998+00:00",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+  "logical_cpus": 20,
+  "input_sha256": "d24e57f38b0f3912da89ad95e241c427a5bf3a98718cff477b95a6089677c8c4",
+  "dictionary_points": 28749,
+  "grid_references": 496800,
+  "warmup_runs": 1,
+  "measured_runs": 3,
+  "output_lump_sha256": [
+    "9df9293a9622b763f003ceb4694834bfbd4d5d5d824a62ce2290de39dac222c0",
+    "1d77f5586a0202eaad042c7ae542dec275e475c7dc48c21251b49a5d216f6229",
+    "23b9c27e52ad330e0adfae723745ec07438801b235a8607cda121c40e3af0609",
+    "0c88f971a5a6ab9cc255f2bc5909e3724bb8d1c0568ad212eee9579b98ee7b66",
+    "e2c58e24afff97fcd167dee661eb6afacf80958af52ec3e0ec57769a281eabca",
+    "fb92eddf1915cfef98665db827a6f185295f907468a5560d7fb45cf620aa4650",
+    "7cb35dd9561c55df1be606ae4c73f743eb34c470dc7d42e5c5cfd795dc4d6886",
+    "8aaede7e8170315cb9969a00c8bb07a3de2b222c8829cc7786304a87588800f5",
+    "27430be8bdfb21dea1a3fe397d411eada2980203d708b45b27792f24a4f50bca",
+    "b0ebe16e4bd9691a14be3aaaadd81a6ed45cc67055db0bd3a8b509468767665a",
+    "88078578bd7f00d34eaf398928309ec95a74d340b32fc4ec5472df7655d33d70",
+    "a05341d55a629dc57036601d727d744ad30f68813b0676dab029adab91bdb84c",
+    "0adcbc4cb79a753b24120b04fc77289df2dec4a02c76fef4a7586f97ce5e9b7d",
+    "eb25fa79a37c32c75e37fcab6afbb3ff7258891bf4008f48a955fe1d1adadfc2",
+    "a8a45669cb023798574fe7d6fdd30ad15d2dec5d2ca36e20e79f98ede36d6944",
+    "25945423a4c2d4c87faf3e723559f4750c3e182726ec47d5dd649fd4cf0c71a4",
+    "3cffb770569d68457b9663b026096495052bbf3e90773e2842638fbba85da276",
+    "375ec97a3ec7d4284926019de24cd54188920240cb84b029e3a4946164194b36"
+  ],
+  "summaries": [
+    {
+      "implementation": "baseline",
+      "executable_sha256": "22088aa9dabd2d60905ede99e03085646514e83aee845d0d127762ec9d3bd58b",
+      "seconds": [
+        8.61427190003451,
+        8.095923299959395,
+        8.54143360001035
+      ],
+      "median_seconds": 8.54143360001035
+    },
+    {
+      "implementation": "q3mapx",
+      "executable_sha256": "2e40c2627e77908965ba89a2696fc4fb189fb183777cfb978a65c59dc27e0ddb",
+      "seconds": [
+        0.2558660000213422,
+        0.28819740004837513,
+        0.27052740001818165
+      ],
+      "median_seconds": 0.27052740001818165
+    }
+  ],
+  "records": [
+    {
+      "implementation": "baseline",
+      "warmup": true,
+      "stage": "baseline-0",
+      "seconds": 7.879299800028093,
+      "arguments": [
+        "-game",
+        "ja",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-native-finite-benchmark",
+        "-fs_basegame",
+        "baseq3",
+        "-threads",
+        "1",
+        "-scale",
+        "1",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-native-finite-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "warmup": true,
+      "stage": "q3mapx-0",
+      "seconds": 0.2675310000195168,
+      "arguments": [
+        "-game",
+        "ja",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-native-finite-benchmark",
+        "-fs_basegame",
+        "baseq3",
+        "-threads",
+        "1",
+        "-scale",
+        "1",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-native-finite-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "warmup": false,
+      "stage": "q3mapx-1",
+      "seconds": 0.2558660000213422,
+      "arguments": [
+        "-game",
+        "ja",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-native-finite-benchmark",
+        "-fs_basegame",
+        "baseq3",
+        "-threads",
+        "1",
+        "-scale",
+        "1",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-native-finite-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "warmup": false,
+      "stage": "baseline-1",
+      "seconds": 8.61427190003451,
+      "arguments": [
+        "-game",
+        "ja",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-native-finite-benchmark",
+        "-fs_basegame",
+        "baseq3",
+        "-threads",
+        "1",
+        "-scale",
+        "1",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-native-finite-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "warmup": false,
+      "stage": "baseline-2",
+      "seconds": 8.095923299959395,
+      "arguments": [
+        "-game",
+        "ja",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-native-finite-benchmark",
+        "-fs_basegame",
+        "baseq3",
+        "-threads",
+        "1",
+        "-scale",
+        "1",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-native-finite-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "warmup": false,
+      "stage": "q3mapx-2",
+      "seconds": 0.28819740004837513,
+      "arguments": [
+        "-game",
+        "ja",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-native-finite-benchmark",
+        "-fs_basegame",
+        "baseq3",
+        "-threads",
+        "1",
+        "-scale",
+        "1",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-native-finite-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "warmup": false,
+      "stage": "q3mapx-3",
+      "seconds": 0.27052740001818165,
+      "arguments": [
+        "-game",
+        "ja",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-native-finite-benchmark",
+        "-fs_basegame",
+        "baseq3",
+        "-threads",
+        "1",
+        "-scale",
+        "1",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-native-finite-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "warmup": false,
+      "stage": "baseline-3",
+      "seconds": 8.54143360001035,
+      "arguments": [
+        "-game",
+        "ja",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-native-finite-benchmark",
+        "-fs_basegame",
+        "baseq3",
+        "-threads",
+        "1",
+        "-scale",
+        "1",
+        "E:\\Repositories\\q3mapx\\build\\lightgrid-native-finite-benchmark\\input.bsp"
+      ]
+    }
+  ]
+}

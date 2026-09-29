@@ -535,3 +535,36 @@ non-trivial-object `memset` and possible `StringBuffer` deallocation warnings re
 documented, along with MSVC/macOS, wider decoder/real-map and manual accessibility
 validation limits. The current material/sanitizer suites did not reproduce the
 possible `StringBuffer` issue.
+
+## 2026-09-29 — Indexed Raven lightgrid packing
+
+Started the requested continuation on `codex/game-coverage`, with fnTech3 pinned
+as an observation reference in `GAME-COVERAGE.md`. Replaced the quadratic Raven
+lightgrid dictionary scan with a bounded index selected from independent lighting
+components. It retains NRC's first acceptable entry, all style/color comparisons,
+and the original 255-period direction seam. Grids above the format's reference
+limit or the 65,535-entry dictionary fail before opening the temporary BSP.
+
+Windows release checks passed for the compiler pipeline, malformed BSPs, grid
+oracle and actual CLI serialization (4/4). Linux ASan/UBSan grid and CLI tests
+passed (2/2), using the documented preset's disabled process-lifetime leak check.
+An initial direct CTest invocation omitted that setting and reported 7,112 bytes
+of inherited compiler allocations during fixture construction; the standalone
+new packing test passes with leak detection enabled. No sanitizer suppressions
+were added. Useful logs are `.agents/tmp/game-coverage/*lightgrid*.log`.
+
+Whole-command `-scale 1` measurements retain all eighteen BSP lump payloads.
+Jedi Academy's retail `maps/mp/duel9.bsp` (28,749 grid entries, 496,800 references)
+measured 8.5414 -> 0.2705 s median in three alternating runs after warmup, 31.6x
+faster. The high-variation generated fixture measured 1.7567 -> 0.1286 s over
+five runs. These are serialization/rewrite measurements, not whole lighting-bake
+claims. Reports with input/output/executable hashes are in
+`benchmarks/lightgrid-{native,synthetic}-win-x64.json`. Proprietary input remains
+only in ignored local test areas; it is not included in the repository or reports.
+
+Related compatibility issue discovered: several retail Jedi maps contain NaNs in
+unused extra lightmap-coordinate slots. The current validator rejects them even
+though the referencing surface marks those slots unused. The successful native
+benchmark uses an unmodified map with finite records; the other maps were not
+silently sanitized for comparison. Fixing inactive-slot validation is the next
+task. Existing inherited warnings and cleanup restrictions remain documented.

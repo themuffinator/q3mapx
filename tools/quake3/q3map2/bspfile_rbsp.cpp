@@ -31,6 +31,7 @@
 /* dependencies */
 #include "q3map2.h"
 #include "bspfile_abstract.h"
+#include "q3mapx/lightgrid.h"
 #include <ctime>
 
 
@@ -76,12 +77,6 @@ struct rbspHeader_t
 
 
 
-/* light grid */
-#define MAX_MAP_GRID        0xffff
-#define MAX_MAP_GRIDARRAY   0x100000
-#define LG_EPSILON          4
-
-
 static void CopyLightGridLumps( const bspHeader_t& header, const MemBuffer& file ){
 	std::vector<bspGridPoint_t> gridPoints;
 	std::vector<unsigned short> gridArray;
@@ -99,80 +94,14 @@ static void CopyLightGridLumps( const bspHeader_t& header, const MemBuffer& file
 }
 
 
-static void AddLightGridLumps( FILE *file, rbspHeader_t& header ){
-	/* allocate temporary buffers */
-	const size_t maxGridPoints = std::min( bspGridPoints.size(), size_t( MAX_MAP_GRID ) );
-	std::vector<bspGridPoint_t> gridPoints;
-	std::vector<unsigned short> gridArray( bspGridPoints.size() );
-
-	/* for each bsp grid point, find an approximate twin */
-	Sys_Printf( "Storing lightgrid: %zu points\n", bspGridPoints.size() );
-	for ( size_t i = 0; i < gridArray.size(); ++i )
-	{
-		/* get points */
-		const bspGridPoint_t& in = bspGridPoints[ i ];
-
-		/* walk existing list */
-		size_t j;
-		for ( j = 0; j < gridPoints.size(); ++j )
-		{
-			/* get point */
-			const bspGridPoint_t& out = gridPoints[ j ];
-
-			/* compare styles */
-			if ( in.styles != out.styles ) {
-				continue;
-			}
-
-			/* compare direction */
-			if ( const int d = abs( in.latLong[ 0 ] - out.latLong[ 0 ] );
-				d < ( 255 - LG_EPSILON ) && d > LG_EPSILON ) {
-				continue;
-			}
-			if ( const int d = abs( in.latLong[ 1 ] - out.latLong[ 1 ] );
-				d < 255 - LG_EPSILON && d > LG_EPSILON ) {
-				continue;
-			}
-
-			/* compare light */
-			bool bad = false;
-			for ( int k = 0; ( k < MAX_LIGHTMAPS && !bad ); ++k )
-			{
-				for ( int c = 0; c < 3; ++c )
-				{
-					if ( abs( (int) in.ambient [ k ][ c ] - (int) out.ambient [ k ][ c ] ) > LG_EPSILON ||
-					     abs( (int) in.directed[ k ][ c ] - (int) out.directed[ k ][ c ] ) > LG_EPSILON ) {
-						bad = true;
-						break;
-					}
-				}
-			}
-
-			/* failure */
-			if ( bad ) {
-				continue;
-			}
-
-			/* this sample is ok */
-			break;
-		}
-
-		/* set sample index */
-		gridArray[ i ] = (unsigned short) j;
-
-		/* if no sample found, add a new one */
-		if ( j >= gridPoints.size() && gridPoints.size() < maxGridPoints ) {
-			gridPoints.push_back( in );
-		}
-	}
-
+static void AddLightGridLumps( FILE *file, rbspHeader_t& header, q3mapx::PackedLightGrid<bspGridPoint_t>& grid ){
 	/* swap array */
-	for ( auto&& a : gridArray )
+	for ( auto&& a : grid.indices )
 		a = LittleShort( a );
 
 	/* write lumps */
-	AddLump( file, header.lumps[LUMP_LIGHTGRID], gridPoints );
-	AddLump( file, header.lumps[LUMP_LIGHTARRAY], gridArray );
+	AddLump( file, header.lumps[LUMP_LIGHTGRID], grid.points );
+	AddLump( file, header.lumps[LUMP_LIGHTARRAY], grid.indices );
 }
 
 
@@ -225,6 +154,10 @@ void LoadRBSPFile( const char *filename ){
 
 void WriteRBSPFile( const char *filename ){
 	rbspHeader_t header{};
+	// Validate/pack before opening even the temporary output file. Grid records
+	// contain bytes only, so SwapBSPFile does not change the comparison semantics.
+	Sys_Printf( "Storing lightgrid: %zu points\n", bspGridPoints.size() );
+	auto grid = q3mapx::packLightGrid<bspGridPoint_t>( bspGridPoints );
 
 	//%	Swapfile();
 
@@ -258,7 +191,7 @@ void WriteRBSPFile( const char *filename ){
 	AddLump( file, header.lumps[LUMP_SURFACES], bspDrawSurfaces );
 	AddLump( file, header.lumps[LUMP_VISIBILITY], bspVisBytes );
 	AddLump( file, header.lumps[LUMP_LIGHTMAPS], bspLightBytes );
-	AddLightGridLumps( file, header );
+	AddLightGridLumps( file, header, grid );
 	AddLump( file, header.lumps[LUMP_ENTITIES], bspEntData );
 	AddLump( file, header.lumps[LUMP_FOGS], bspFogs );
 	AddLump( file, header.lumps[LUMP_DRAWINDEXES], bspDrawIndexes );

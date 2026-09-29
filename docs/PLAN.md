@@ -116,7 +116,7 @@ actual Linux execution to close gaps that minimap benchmarks cannot establish.
 - [x] Build and run the Linux release/GUI and sanitizer suites using available WSL.
 - [x] Repair issues found by those checks and record exact platform evidence.
 - [x] Add material-aware lighting parity fixtures and end-to-end benchmarks.
-- [ ] Reduce measured lighting costs while preserving shader/shadow semantics.
+- [x] Reduce measured lighting costs while preserving shader/shadow semantics.
 - [ ] Implement and measure batched GPU lighting work where profiling justifies it.
 - [ ] Refresh release artifacts and documentation after the additional task commits.
 

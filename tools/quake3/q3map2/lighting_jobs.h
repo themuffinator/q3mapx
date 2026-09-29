@@ -3,6 +3,8 @@
 #include <atomic>
 #include <cstdint>
 
+inline bool lightTileCulling = true;
+
 // Each lighting job owns its random stream. Worker count and other jobs' early
 // exits cannot change its sample positions. Keep entity-light startup RNG separate.
 inline thread_local std::uint32_t lightingRandomState;

@@ -39,9 +39,10 @@ def main():
     records = []
     for name, options in MODES.items():
         expected = None
-        for label, compiler, threads in (("reference", reference, 1), ("single", exe, 1), ("parallel", exe, 4)):
+        for label, compiler, threads in (("reference", reference, 1), ("single", exe, 1), ("parallel", exe, 4), ("unculled", exe, 4)):
             bsp_path.write_bytes(original)
-            timing = run(compiler, [*base, "-threads", threads, "-light", *options, source],
+            culling = ["-no-light-culling"] if label == "unculled" else []
+            timing = run(compiler, [*base, "-threads", threads, "-light", *options, *culling, source],
                          root, f"{name}-{label}", timeout=180)
             result = Bsp(bsp_path)
             assert result.lump(14) and max(result.lump(14)) > 0, "Empty/black lightmaps"

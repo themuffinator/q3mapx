@@ -29,6 +29,8 @@ See [decompilation options and limits](docs/DECOMPILATION.md). The traditional
 
 - Persistent workers, adaptive dispatch, named JSON pass profiles, optimized VIS
   bitsets/scratch storage, and `-vis -reproducible` for repeatable parallel results.
+- Repeatable lighting jobs and bounce publication, conservative light-sample
+  culling, safe polygon-light scratch storage and repaired floodlight sampling.
 - Spatially indexed CPU minimaps and actual OpenCL GPU sampling, device inventory,
   explicit backend selection, deterministic random samples and automatic fallback.
 - BSP/PRT range, reference and geometry checks; strict numeric options; atomic BSP
@@ -43,8 +45,9 @@ See [decompilation options and limits](docs/DECOMPILATION.md). The traditional
 Measured whole-command results on the documented Windows fixture: indexed CPU
 minimaps were **29.8x faster** than the imported sampler; a sufficiently large GPU
 minimap was **1.93x faster** than the optimized CPU; single-worker VIS used **12.1%
-less elapsed time** on the alternating grid=9 test. These are workload-specific
-results, not general BSP/LIGHT speedup claims. Lighting remains CPU based. See
+less elapsed time** on the alternating grid=9 test. CPU lighting culling reduced
+elapsed time by **22.3%** at 20 workers on the dense material fixture, with identical
+lighting data. These are workload-specific results. Lighting remains CPU based. See
 [measurements, hardware and reproduction details](docs/PERFORMANCE.md).
 
 ## Documentation

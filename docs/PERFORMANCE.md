@@ -78,6 +78,22 @@ with the old random sequence). [Raw results](benchmarks/light-jobs-win-x64.json)
 Reproduce with `benchmarks/lighting.py`; omit `--no-grid-lighting` when comparing
 builds that use the same grid sampling. Each run restores the same unlit BSP.
 
+Lightmaps now bound mapped sample positions in 8x8 tiles and skip initial samples
+outside each light's reach. The bounds include nudged/curved sample positions and
+a conservative floating-point margin. Adaptive refinement, material tracing,
+filtering and accumulation retain their traversal and order. Small workloads
+avoid index construction; `-light -no-light-culling` selects the comparison path.
+Polygon lighting also uses compact scratch storage for common polygons, with
+safe dynamic storage for large windings and their closing vertex.
+
+On the dense grid=21 material fixture, `-light -fast -samples 4 -bounce 1` took
+**2.5814 → 2.2606 s** with one worker (**12.4% less time**) and
+**1.1659 → 0.9062 s** with 20 workers (**22.3% less time**). These are whole-process
+medians from five alternating runs after warmup, compared with the preceding
+deterministic-lighting build `dda68d7`, including lightgrid computation. All four
+lighting lumps were byte-identical on every run. This is a synthetic material
+fixture result, not a claim for every map. [Raw measurements](benchmarks/light-culling-win-x64.json).
+
 ## OpenCL GPU minimaps
 
 `q3mapx -devices` prints JSON with GPU names, memory, compute units and stable

@@ -137,6 +137,9 @@ if(BUILD_TESTING)
     add_executable(decompile_math_test tests/decompile_math.cpp)
     target_include_directories(decompile_math_test PRIVATE libs)
     add_test(NAME decompile_math COMMAND decompile_math_test)
+    add_executable(lighting_math_test tests/lighting_math.cpp tools/quake3/q3map2/lighting_math.cpp)
+    target_include_directories(lighting_math_test PRIVATE libs tools/quake3/common tools/quake3/q3map2)
+    add_test(NAME lighting_math COMMAND lighting_math_test)
     add_test(NAME decompile_recovery COMMAND ${Python3_EXECUTABLE}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/decompile.py
         --compiler $<TARGET_FILE:q3mapx>

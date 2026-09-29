@@ -433,3 +433,31 @@ Unrelated issue observed: GCC also reports a possible nonzero-offset deallocatio
 in inherited `StringBuffer` code; it has not triggered these sanitizer tests and
 needs a separate focused audit. Existing `offsetof` warnings and cleanup policy
 limitations remain. No claim of comprehensive thread-sanitizer coverage is made.
+
+## 2026-09-29 — Conservative lighting culling and polygon scratch repair
+
+Mapped lightmap samples now have conservative 8x8 tile bounds. Initial samples
+outside a light's envelope avoid its per-sample work. Bounds use actual nudged
+positions, account for float rounding and retain uncertain/non-finite tiles.
+Adaptive refinement still traverses the entire map: in-place refinement can
+propagate outside the initially lit region. Added `-no-light-culling` for direct
+output/performance comparisons. Common polygon lights use a small local buffer;
+large polygons use dynamic storage with room for the closing vertex, fixing the
+inherited out-of-bounds write at 512 points without changing the math.
+
+Validation: Windows release 18/18 groups; Linux ASan/UBSan compiler pipeline,
+material lighting and math 3/3 groups. The math regression covers degenerate and
+reversed polygons and sizes through 1,024 vertices. Randomized spatial checks
+include large coordinates and envelope boundaries. Each material mode compares
+culling enabled/disabled along with varied worker counts.
+
+The complete grid=21 lighting benchmark with grid, four adaptive samples and one
+bounce retains exact vertex/surface/lightmap/lightgrid bytes across every run.
+Five alternating runs after warmup measured 2.5814 → 2.2606 s at one worker (12.4%
+less time) and 1.1659 → 0.9062 s at 20 workers (22.3% less time), against `dda68d7`.
+Executable hashes and all observations are in `benchmarks/light-culling-win-x64.json`.
+Useful local artifacts remain in `build/lighting-culling-final`; sanitizer logs
+are `.agents/tmp/linux-deps/{build,test}-lighting-culling.log`.
+
+No new unrelated issue was found. Previously recorded inherited compiler
+warnings, broader fuzz/manual-validation gaps and the cleanup policy block remain.

@@ -241,6 +241,7 @@ static void HelpLight()
 		{ "-nosRGBtex", "Treat textures as linear colorspace" },
 		{ "-nostyle, -nostyles", "Disable support for light styles" },
 		{ "-nosurf", "Disable tracing against surfaces (only uses BSP nodes then)" },
+		{ "-no-light-culling", "Disable spatial light-sample culling for output/performance comparison" },
 		{ "-notrace", "Disable shadow occlusion" },
 		{ "-novertex", "Disable vertex lighting; optional (0..1) value sets constant vertex light globally" },
 		{ "-onesky", "Fallback to old behavior: any sky emits total of all suns/skylights in the map" },

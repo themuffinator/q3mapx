@@ -31,6 +31,7 @@
 /* dependencies */
 #include "q3map2.h"
 #include "lighting_jobs.h"
+#include "lighting_math.h"
 #include "bspfile_rbsp.h"
 #include <set>
 
@@ -727,45 +728,7 @@ static void SetEntityOrigins(){
  */
 
 float PointToPolygonFormFactor( const Vector3& point, const Vector3& normal, const winding_t& w ){
-	Vector3 dirs[ MAX_POINTS_ON_WINDING ];
-	double total = 0;
-
-
-	/* this is expensive */
-	for ( size_t i = 0; i < w.size(); ++i )
-	{
-		dirs[ i ] = w[ i ] - point;
-		VectorFastNormalize( dirs[ i ] );
-	}
-
-	/* duplicate first vertex to avoid mod operation */
-	dirs[ w.size() ] = dirs[ 0 ];
-
-	/* calculcate relative area */
-	for ( size_t i = 0; i < w.size(); ++i )
-	{
-		/* get a triangle */
-		Vector3 triNormal = vector3_cross( dirs[ i ], dirs[ i + 1 ] );
-		if ( VectorFastNormalize( triNormal ) < 0.0001f ) {
-			continue;
-		}
-
-		/* get the angle */
-		/* roundoff can cause slight creep, which gives an IND from acos, thus clamp */
-		const double angle = acos( std::clamp( vector3_dot( dirs[ i ], dirs[ i + 1 ] ), -1.0, 1.0 ) );
-
-		const double facing = vector3_dot( normal, triNormal );
-		total += facing * angle;
-
-		/* ydnar: this was throwing too many errors with radiosity + crappy maps. ignoring it. */
-		if ( total > 6.3 || total < -6.3 ) {
-			return 0;
-		}
-	}
-
-	/* now in the range of 0 to 1 over the entire incoming hemisphere */
-	//%	total /= ( 2.0f * 3.141592657f );
-	return total * c_inv_2pi;
+	return q3mapx::polygonFormFactor( point, normal, w );
 }
 
 
@@ -2451,6 +2414,10 @@ int LightMain( Args& args ){
 		while ( args.takeArg( "-randomsamples" ) ) {
 			lightRandomSamples = true;
 			Sys_Printf( "Random sampling enabled\n", lightRandomSamples );
+		}
+		while ( args.takeArg( "-no-light-culling" ) ) {
+			lightTileCulling = false;
+			Sys_Printf( "Spatial light-sample culling disabled\n" );
 		}
 
 		while ( args.takeArg( "-samples" ) ) {

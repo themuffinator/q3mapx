@@ -31,6 +31,7 @@
 /* dependencies */
 #include "q3map2.h"
 #include "lighting_jobs.h"
+#include "light_sample_culling.h"
 #include "timer.h"
 
 
@@ -2283,10 +2284,18 @@ void IlluminateRawLightmap( int rawLightmapNum ){
 		//%		Sys_Printf( "Lightmap %9d: 0 lights, axis: %.2f, %.2f, %.2f\n", rawLightmapNum, lm->axis[ 0 ], lm->axis[ 1 ], lm->axis[ 2 ] );
 
 		/* walk light list */
+		q3mapx::LightSampleTiles lightTiles;
+		const bool useLightTiles = lightTileCulling && lm->sw * lm->sh >= 256 && trace.numLights >= 8;
+		if ( useLightTiles ) {
+			const size_t count = size_t( lm->sw ) * lm->sh;
+			lightTiles.build( lm->sw, lm->sh, { lm->superOrigins, count }, { lm->superClusters, count } );
+		}
 		for ( int i = 0; i < trace.numLights; ++i )
 		{
 			/* setup trace */
 			trace.light = trace.lights[ i ];
+			const bool cullSamples = useLightTiles && trace.light->type != ELightType::Sun;
+			if ( cullSamples ) lightTiles.select( trace.light->origin, trace.light->envelope );
 
 			/* style check */
 			for ( lightmapNum = 0; lightmapNum < MAX_LIGHTMAPS; ++lightmapNum )
@@ -2354,6 +2363,7 @@ void IlluminateRawLightmap( int rawLightmapNum ){
 					{
 						/* set contribution count */
 						lightLuxel.count = 1;
+						if ( cullSamples && !lightTiles.active( x, y ) ) continue;
 
 						/* setup trace */
 						trace.cluster = cluster;
@@ -2391,9 +2401,11 @@ void IlluminateRawLightmap( int rawLightmapNum ){
 			/* 2003-09-27: changed it so filtering disamples supersampling, as it would waste time */
 			if ( lightSamples > 1 || lightRandomSamples ) {
 				/* walk luxels */
-				for ( y = 0; y < ( lm->sh - 1 ); ++y )
+				// Refinement updates neighboring samples in place; it can propagate
+				// outside the initially lit tiles, so preserve the full traversal.
+				for ( y = 0; y < lm->sh - 1; ++y )
 				{
-					for ( x = 0; x < ( lm->sw - 1 ); ++x )
+					for ( x = 0; x < lm->sw - 1; ++x )
 					{
 						/* setup */
 						mapped = 0;

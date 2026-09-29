@@ -311,6 +311,9 @@ static void HelpConvert()
 {
 	const std::vector<HelpOption> options = {
 		{ "-convert [options] <filename.bsp>", "Switch that enters this mode" },
+		{ "-decompile [options] <file.bsp>", "Recover an editable map; defaults to Valve 220 and writes a JSON recovery report" },
+		{ "-o <output.map>", "Choose output path for map decompilation" },
+		{ "-report <output.json>", "Write a recovery report with counts, texture fallbacks and format limitations" },
 		{ "-deluxemapsastexcoord", "Save deluxemap names and texcoords instead of textures (only when writing ase and obj)" },
 		{ "-de <F>", "Distance epsilon for the conversion (only when reading map)" },
 		{ "-fast", "fast bsp to map conversion mode (without texture alignments)" },
@@ -492,6 +495,7 @@ void HelpMain( const char* arg )
 		{ "-scale", "Scaling" },
 		{ "-shift", "Shift" },
 		{ "-convert", "Converting & Decompiling" },
+		{ "-decompile", "Recover an editable map and a JSON recovery report" },
 		{ "-export", "Exporting lightmaps" },
 		{ "-import", "Importing lightmaps" },
 		{ "-exportents", "Exporting entities" },
@@ -510,6 +514,7 @@ void HelpMain( const char* arg )
 		HelpAnalyze,
 		HelpScale,
 		HelpShift,
+		HelpConvert,
 		HelpConvert,
 		HelpExport,
 		HelpImport,

@@ -211,6 +211,9 @@ int main( int argc, char **argv ){
 	}
 
 	/* ydnar: bsp conversion */
+	else if ( args.takeFront( "-decompile" ) ) {
+		r = ConvertBSPMain( args, true );
+	}
 	else if ( args.takeFront( "-convert" ) ) {
 		r = ConvertBSPMain( args );
 	}

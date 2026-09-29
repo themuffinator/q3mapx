@@ -29,6 +29,42 @@ or unavailable. Do not fabricate source metadata.
 6. Measure conversion performance on generated dense geometry before introducing
    spatial-index or parallel reconstruction changes.
 
+## Usage
+
+```sh
+q3mapx -decompile -game quake3 -fs_basepath /path/to/game -o recovered.map maps/example.bsp
+q3mapx -decompile -format map_bp -report recovery.json maps/example.bsp
+q3mapx -convert -format map_220 maps/example.bsp
+```
+
+`-decompile` defaults to Valve 220 output and writes `<output.map>.recovery.json`.
+Without `-o`, the map is `<input>_converted.map`. `-report` selects a different JSON
+path. The legacy `-convert` syntax remains available and writes a report only when
+explicitly requested. `-o` requires a `.map` extension and `-report` requires `.json`.
+Unknown conversion formats/options now produce a diagnostic instead of silently
+choosing ASE or ignoring the option.
+
+Use the correct game profile and resource paths: shader dimensions affect texture
+recovery. Valve 220 and brush primitives preserve affine texture mappings. Classic
+Quake texture definitions cannot represent arbitrary shear; the report counts
+such approximations. `-fast` skips texture reconstruction and reports fallback axes.
+
+## Recovery details
+
+A per-material bounds hierarchy searches all overlapping triangles, including
+triangles larger than the source brush face. The previous maximum-bound cutoff
+could miss these. Degenerate triangles are excluded. The affine solve works on
+edge differences in double precision, rejects ill-conditioned geometry and
+constant/non-finite UV axes, and supplies finite fallback transforms. Brush-detail
+membership is collected once from leaf references.
+
+The version 1 JSON report records entities, exported/skipped brushes, patches,
+matched/fallback faces, degenerate triangles/transforms, approximate Quake UVs,
+triangle-soup surface count, paths, output format, and recovery limitations.
+Fallback faces include invisible brush sides that have no rendered triangle;
+their count alone does not imply a visible defect. Model instances and editor
+grouping cannot be reconstructed from data the BSP no longer contains.
+
 ## Acceptance fixtures
 
 - Sealed room with rotated/scaled textures.

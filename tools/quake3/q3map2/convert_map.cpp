@@ -32,7 +32,19 @@
 #include "q3map2.h"
 #include "bspfile_rbsp.h"
 #include "qspatial.h"
+#include "decompile.h"
+#include "q3mapx/affine.h"
+#include "rapidjson/prettywriter.h"
+#include "rapidjson/stringbuffer.h"
 #include <map>
+
+struct DecompileStats {
+	size_t brushes = 0, skippedBrushes = 0, faces = 0, matchedFaces = 0;
+	size_t fallbackFaces = 0, degenerateUVs = 0, degenerateTriangles = 0;
+	size_t patches = 0, approximateQuakeFaces = 0;
+};
+static DecompileStats recovery;
+static std::vector<bool> detailBrushes;
 
 
 
@@ -40,15 +52,6 @@
    ConvertBrush()
    exports a map brush
  */
-
-inline double Det3x3( double a00, double a01, double a02,
-                      double a10, double a11, double a12,
-                      double a20, double a21, double a22 ){
-	return
-	        a00 * ( a11 * a22 - a12 * a21 )
-	    -   a01 * ( a10 * a22 - a12 * a20 )
-	    +   a02 * ( a10 * a21 - a11 * a20 );
-}
 
 struct BspTriangleRef
 {
@@ -65,32 +68,91 @@ struct BspTriangleRef
 		minmax.extend( Vector3( spatial_distance( v2.xyz ), v2.xyz.y(), v2.xyz.z() ) );
 	}
 	bool operator<( const BspTriangleRef& other ) const noexcept {
-		return minmax.maxs.x() < other.minmax.maxs.x();
+		return minmax.mins.x() < other.minmax.mins.x();
 	}
 };
 
 class ModelTriangles
 {
-	std::map<CopiedString, std::vector<BspTriangleRef>> m_modelTriangles;
+	struct ShaderTriangles {
+		struct Node {
+			MinMax bounds;
+			size_t first = 0, count = 0, left = 0, right = 0;
+		};
+		std::vector<BspTriangleRef> triangles;
+		std::vector<Node> nodes;
+		size_t buildNode( size_t first, size_t count ){
+			const size_t index = nodes.size();
+			nodes.emplace_back();
+			MinMax bounds;
+			for ( size_t i = first; i < first + count; ++i ) bounds.extend( triangles[i].minmax );
+			nodes[index].bounds = bounds;
+			if ( count <= 8 ) {
+				nodes[index].first = first;
+				nodes[index].count = count;
+			}
+			else {
+				const Vector3 size = bounds.maxs - bounds.mins;
+				const int axis = size.x() > size.y() ? ( size.x() > size.z() ? 0 : 2 ) : ( size.y() > size.z() ? 1 : 2 );
+				const size_t half = count / 2;
+				std::nth_element( triangles.begin() + first, triangles.begin() + first + half, triangles.begin() + first + count,
+				    [axis]( const auto& a, const auto& b ){
+				        return ( double( a.minmax.mins[axis] ) + a.minmax.maxs[axis] )
+				             < ( double( b.minmax.mins[axis] ) + b.minmax.maxs[axis] );
+				    } );
+				nodes[index].left = buildNode( first, half );
+				nodes[index].right = buildNode( first + half, count - half );
+			}
+			return index;
+		}
+		void build(){
+			if ( triangles.empty() ) return;
+			nodes.reserve( triangles.size() );
+			buildNode( 0, triangles.size() );
+		}
+		template<typename Visitor>
+		void queryNode( size_t index, const MinMax& bounds, const Visitor& visitor ) const {
+			const Node& node = nodes[index];
+			if ( !bounds.test( node.bounds ) ) return;
+			if ( node.count ) {
+				for ( size_t i = node.first; i < node.first + node.count; ++i ) visitor( triangles[i] );
+			}
+			else {
+				queryNode( node.left, bounds, visitor );
+				queryNode( node.right, bounds, visitor );
+			}
+		}
+		template<typename Visitor>
+		void query( const MinMax& bounds, const Visitor& visitor ) const {
+			if ( !nodes.empty() ) queryNode( 0, bounds, visitor );
+		}
+	};
+	std::map<CopiedString, ShaderTriangles> m_modelTriangles;
 public:
 	ModelTriangles( const bspModel_t& model ){
-		for ( const bspDrawSurface_t& s : Span( &bspDrawSurfaces[ model.firstBSPSurface ], model.numBSPSurfaces ) )
+		for ( int surface = 0; surface < model.numBSPSurfaces; ++surface )
 		{
+			const auto& s = bspDrawSurfaces[model.firstBSPSurface + surface];
 			if ( s.surfaceType == MST_PLANAR || s.surfaceType == MST_TRIANGLE_SOUP ) {
-				auto& vec = m_modelTriangles[bspShaders[s.shaderNum].shader];
+				auto& vec = m_modelTriangles[bspShaders[s.shaderNum].shader].triangles;
 				for ( int t = 0; t + 3 <= s.numIndexes; t += 3 )
 				{
-					vec.push_back( BspTriangleRef( s.surfaceType,
+					BspTriangleRef triangle( s.surfaceType,
 						bspDrawVerts[s.firstVert + bspDrawIndexes[s.firstIndex + t + 0]],
 						bspDrawVerts[s.firstVert + bspDrawIndexes[s.firstIndex + t + 1]],
 						bspDrawVerts[s.firstVert + bspDrawIndexes[s.firstIndex + t + 2]]
-					) );
+					);
+					Plane3f plane;
+					if ( !PlaneFromPoints( plane, triangle.tri[0]->xyz, triangle.tri[1]->xyz, triangle.tri[2]->xyz ) ) {
+						++recovery.degenerateTriangles;
+						continue;
+					}
+					vec.push_back( triangle );
 				}
 			}
 		}
 
-		for( auto& [ k, v ] : m_modelTriangles )
-			std::sort( v.begin(), v.end() );
+		for( auto& [ k, values ] : m_modelTriangles ) values.build();
 	}
 	TriRef GetBestSurfaceTriangleMatchForBrushside( const side_t& buildSide ) const {
 		const float nepsilon = normalEpsilon * 100; // default target 0.005 - gives worthy results practically
@@ -104,7 +166,7 @@ public:
 		// first, start out with NULLs
 		TriRef bestVert{ nullptr };
 
-		// brute force through all bmodel surfaces
+		// Query triangles belonging to the face material.
 		if( const auto triangles = m_modelTriangles.find( buildSide.shaderInfo->shader.c_str() ); triangles != m_modelTriangles.end() ){
 			MinMax minmax;
 			for( const Vector3& v : buildSide.winding )
@@ -112,15 +174,10 @@ public:
 			minmax.mins -= Vector3( 32, depsilon, depsilon ); // 32 helps to spot more triangles, when brush is noticeably smaller
 			minmax.maxs += Vector3( 32, depsilon, depsilon ); // e.g. produced by original model autoclip
 
-			auto tri = std::lower_bound( triangles->second.begin(), triangles->second.end(), minmax.mins.x(),
-			[]( const BspTriangleRef& tri, const float spatialMin ){
-				return tri.minmax.maxs.x() < spatialMin;
-			} );
-
-			for( const auto end = triangles->second.end(); tri != end && minmax.maxs.x() > tri->minmax.maxs.x(); ++tri )
-			{
+			triangles->second.query( minmax, [&]( const BspTriangleRef& triangle ) {
+				const auto* tri = &triangle;
 				if ( !minmax.test( tri->minmax ) ) {
-					continue;
+					return;
 				}
 				const TriRef& vert = tri->tri;
 				if ( tri->surfaceType == MST_PLANAR
@@ -129,7 +186,7 @@ public:
 					if ( !vector3_equal_epsilon( vert[0]->normal, buildPlane.normal(), float( nepsilon ) )
 					  || !vector3_equal_epsilon( vert[1]->normal, buildPlane.normal(), float( nepsilon ) )
 					  || !vector3_equal_epsilon( vert[2]->normal, buildPlane.normal(), float( nepsilon ) ) ) {
-						continue;
+						return;
 					}
 				}
 				else
@@ -139,14 +196,14 @@ public:
 					Plane3f plane;
 					PlaneFromPoints( plane, vert[0]->xyz, vert[1]->xyz, vert[2]->xyz );
 					if ( !vector3_equal_epsilon( plane.normal(), buildPlane.normal(), float( nepsilon ) ) ) {
-						continue;
+						return;
 					}
 				}
 
 				if ( std::fabs( plane3_distance_to_point( buildPlane.plane, vert[0]->xyz ) ) > depsilon
 				  || std::fabs( plane3_distance_to_point( buildPlane.plane, vert[1]->xyz ) ) > depsilon
 				  || std::fabs( plane3_distance_to_point( buildPlane.plane, vert[2]->xyz ) ) > depsilon ) {
-					continue;
+					return;
 				}
 				// Okay. Correct surface type, correct shader, correct plane. Let's start with the business...
 				// we now need to generate the plane spanned by normal and (v2 - v1).
@@ -177,7 +234,7 @@ public:
 				}
 		exwinding:
 				;
-			}
+			} );
 		}
 		//if( !striEqualPrefix( buildSide.shaderInfo->shader, "textures/common/" ) )
 		//	fprintf( stderr, "brushside with %s: %d matches (%f area)\n", buildSide.shaderInfo->shader, matches, bestarea );
@@ -270,8 +327,9 @@ static void bspBrush_to_buildBrush( const bspBrush_t& brush ){
 	if ( g_decompile_modelClip ){
 		int notNoShader = 0;
 		modelclip = true;
-		for ( const bspBrushSide_t& side : Span( &bspBrushSides[ brush.firstSide ], brush.numSides ) )
+		for ( int sideIndex = 0; sideIndex < brush.numSides; ++sideIndex )
 		{
+			const auto& side = bspBrushSides[brush.firstSide + sideIndex];
 			/* get shader */
 			if ( side.shaderNum < 0 || side.shaderNum >= int( bspShaders.size() ) ) {
 				continue;
@@ -289,8 +347,9 @@ static void bspBrush_to_buildBrush( const bspBrush_t& brush ){
 	}
 
 	/* iterate through bsp brush sides */
-	for ( const bspBrushSide_t& side : Span( &bspBrushSides[ brush.firstSide ], brush.numSides ) )
+	for ( int sideIndex = 0; sideIndex < brush.numSides; ++sideIndex )
 	{
+		const auto& side = bspBrushSides[brush.firstSide + sideIndex];
 		/* get shader */
 		if ( side.shaderNum < 0 || side.shaderNum >= int( bspShaders.size() ) ) {
 			continue;
@@ -314,10 +373,11 @@ static void ConvertBrushFast( FILE *f, int bspBrushNum, const Vector3& origin, E
 	bspBrush_to_buildBrush( bspBrushes[bspBrushNum] );
 
 	if ( !CreateBrushWindings( buildBrush ) ) {
-		//Sys_Printf( "CreateBrushWindings failed\n" );
+		++recovery.skippedBrushes;
 		return;
 	}
 
+	++recovery.brushes;
 	/* start brush */
 	fprintf( f, "\t// brush %d\n", bspBrushNum );
 	fprintf( f, "\t{\n" );
@@ -336,6 +396,8 @@ static void ConvertBrushFast( FILE *f, int bspBrushNum, const Vector3& origin, E
 		if ( buildSide.shaderInfo == nullptr || buildSide.winding.empty() ) {
 			continue;
 		}
+		++recovery.faces;
+		++recovery.fallbackFaces;
 
 		/* get texture name */
 		const char *texture = striEqualPrefix( buildSide.shaderInfo->shader, "textures/" )
@@ -395,10 +457,11 @@ static void ConvertBrush( FILE *f, int bspBrushNum, const Vector3& origin, EBrus
 
 	/* make brush windings */
 	if ( !CreateBrushWindings( buildBrush ) ) {
-		//Sys_Printf( "CreateBrushWindings failed\n" );
+		++recovery.skippedBrushes;
 		return;
 	}
 
+	++recovery.brushes;
 	/* start brush */
 	fprintf( f, "\t// brush %d\n", bspBrushNum );
 	fprintf( f, "\t{\n" );
@@ -407,21 +470,10 @@ static void ConvertBrush( FILE *f, int bspBrushNum, const Vector3& origin, EBrus
 		fprintf( f, "\t{\n" );
 	}
 
-	/* find out if brush is detail */
-	int contentFlag = 0;
-	if( !( bspShaders[bspBrushes[bspBrushNum].shaderNum].contentFlags & GetRequiredSurfaceParm<"structural">().contentFlags ) ){ // sort out structural transparent brushes, e.g. hints
-		for( const auto& leaf : bspLeafs ){
-			if( leaf.cluster > CLUSTER_OPAQUE )
-				for( const int id : Span( &bspLeafBrushes[ leaf.firstBSPLeafBrush ], leaf.numBSPLeafBrushes ) ){
-					if( id == bspBrushNum ){
-						contentFlag = C_DETAIL;
-						break;
-					}
-				}
-			if( contentFlag == C_DETAIL)
-				break;
-		}
-	}
+	// Build this membership table once, instead of scanning every leaf for each brush.
+	const int contentFlag = detailBrushes[bspBrushNum]
+	    && !( bspShaders[bspBrushes[bspBrushNum].shaderNum].contentFlags
+	          & GetRequiredSurfaceParm<"structural">().contentFlags ) ? C_DETAIL : 0;
 
 	/* iterate through build brush sides */
 	for ( side_t& buildSide : buildBrush.sides )
@@ -433,13 +485,14 @@ static void ConvertBrush( FILE *f, int bspBrushNum, const Vector3& origin, EBrus
 		if ( buildSide.shaderInfo == nullptr || buildSide.winding.empty() ) {
 			continue;
 		}
+		++recovery.faces;
 
 		// st-texcoords -> texMat block
 		// start out with dummy
 		buildSide.texMat[0] = { 1 / 32.0, 0, 0 };
 		buildSide.texMat[1] = { 0, 1 / 32.0, 0 };
 
-		// find surface for this side (by brute force)
+		// Find the rendered triangle with the largest overlap on this brush side.
 		// surface format:
 		//   - meshverts point in pairs of three into verts
 		//   - (triangles)
@@ -501,67 +554,27 @@ static void ConvertBrush( FILE *f, int bspBrushNum, const Vector3& origin, EBrus
 		       );
 
 		if ( vert[0] != nullptr && vert[1] != nullptr && vert[2] != nullptr ) {
-			const Vector3 verts[3] = { vert[0]->xyz + origin,
-			                           vert[1]->xyz + origin,
-			                           vert[2]->xyz + origin };
+			const DoubleVector3 verts[3] = { DoubleVector3( vert[0]->xyz ) + DoubleVector3( origin ),
+			                                 DoubleVector3( vert[1]->xyz ) + DoubleVector3( origin ),
+			                                 DoubleVector3( vert[2]->xyz ) + DoubleVector3( origin ) };
 			const Vector2 sts[3] = { vert[0]->st, vert[1]->st, vert[2]->st };
 
 			if ( brushType == EBrushType::Bp || brushType == EBrushType::Valve220 ) {
-				BasicVector2<double> xyI, xyJ, xyK;
-				BasicVector2<double> stI, stJ, stK;
-				double D, D0, D1, D2;
 				DoubleVector3 texX, texY;
 				ComputeAxisBase( buildPlane.normal(), texX, texY );
-
-				xyI[0] = vector3_dot( verts[0], texX );
-				xyI[1] = vector3_dot( verts[0], texY );
-				xyJ[0] = vector3_dot( verts[1], texX );
-				xyJ[1] = vector3_dot( verts[1], texY );
-				xyK[0] = vector3_dot( verts[2], texX );
-				xyK[1] = vector3_dot( verts[2], texY );
-				stI = sts[0];
-				stJ = sts[1];
-				stK = sts[2];
-
-				//   - solve linear equations:
-				//     - (x, y) := xyz . (texX, texY)
-				//     - st[i] = texMat[i][0]*x + texMat[i][1]*y + texMat[i][2]
-				//       (for three vertices)
-				D = Det3x3(
-				        xyI[0], xyI[1], 1,
-				        xyJ[0], xyJ[1], 1,
-				        xyK[0], xyK[1], 1
-				    );
-				if ( D != 0 ) {
-					for ( int i = 0; i < 2; ++i )
-					{
-						D0 = Det3x3(
-						         stI[i], xyI[1], 1,
-						         stJ[i], xyJ[1], 1,
-						         stK[i], xyK[1], 1
-						     );
-						D1 = Det3x3(
-						         xyI[0], stI[i], 1,
-						         xyJ[0], stJ[i], 1,
-						         xyK[0], stK[i], 1
-						     );
-						D2 = Det3x3(
-						         xyI[0], xyI[1], stI[i],
-						         xyJ[0], xyJ[1], stJ[i],
-						         xyK[0], xyK[1], stK[i]
-						     );
-						buildSide.texMat[i] = Vector3( D0 / D, D1 / D, D2 / D );
-					}
+				std::array<q3mapx::Point2, 3> xy, uv;
+				for ( int i = 0; i < 3; ++i ) {
+					xy[i] = { vector3_dot( verts[i], texX ), vector3_dot( verts[i], texY ) };
+					uv[i] = { sts[i][0], sts[i][1] };
 				}
-				else{
-					fprintf( stderr, "degenerate triangle found when solving texMat equations for\n(%f %f %f) (%f %f %f) (%f %f %f)\n( %f %f %f )\n( %f %f %f ) -> ( %f %f )\n( %f %f %f ) -> ( %f %f )\n( %f %f %f ) -> ( %f %f )\n",
-					         buildPlane.normal()[0], buildPlane.normal()[1], buildPlane.normal()[2],
-					         vert[0]->normal[0], vert[0]->normal[1], vert[0]->normal[2],
-					         texX[0], texX[1], texX[2], texY[0], texY[1], texY[2],
-					         vert[0]->xyz[0], vert[0]->xyz[1], vert[0]->xyz[2], xyI[0], xyI[1],
-					         vert[1]->xyz[0], vert[1]->xyz[1], vert[1]->xyz[2], xyJ[0], xyJ[1],
-					         vert[2]->xyz[0], vert[2]->xyz[1], vert[2]->xyz[2], xyK[0], xyK[1]
-					       );
+				q3mapx::Affine2 matrix;
+				if ( q3mapx::solveAffine( xy, uv, matrix ) ) {
+					for ( int i = 0; i < 2; ++i ) buildSide.texMat[i] = Vector3( matrix[i][0], matrix[i][1], matrix[i][2] );
+					++recovery.matchedFaces;
+				}
+				else {
+					++recovery.degenerateUVs;
+					++recovery.fallbackFaces;
 				}
 
 				/* print brush side */
@@ -596,58 +609,34 @@ static void ConvertBrush( FILE *f, int bspBrushNum, const Vector3& origin, EBrus
 			}
 			else if ( brushType == EBrushType::Quake ) {
 				// invert QuakeTextureVecs
-				int sv, tv;
-				BasicVector2<double> stI, stJ, stK;
-				double D, D0, D1, D2;
 				DoubleVector3 texMat[2];
 				float shift[2], scale[2];
 				float rotate;
-
 				const auto vecs = TextureAxisFromPlane( buildPlane );
-				sv = vecs[0][0]? 0
-				   : vecs[0][1]? 1: 2;
-				tv = vecs[1][0]? 0
-				   : vecs[1][1]? 1: 2;
-
-				stI[0] = sts[0][0] * buildSide.shaderInfo->shaderWidth;
-				stI[1] = sts[0][1] * buildSide.shaderInfo->shaderHeight;
-				stJ[0] = sts[1][0] * buildSide.shaderInfo->shaderWidth;
-				stJ[1] = sts[1][1] * buildSide.shaderInfo->shaderHeight;
-				stK[0] = sts[2][0] * buildSide.shaderInfo->shaderWidth;
-				stK[1] = sts[2][1] * buildSide.shaderInfo->shaderHeight;
-
-				D = Det3x3(
-				        verts[0][sv], verts[0][tv], 1,
-				        verts[1][sv], verts[1][tv], 1,
-				        verts[2][sv], verts[2][tv], 1
-				    );
-				if ( D != 0 ) {
-					for ( int i = 0; i < 2; ++i )
-					{
-						D0 = Det3x3(
-						         stI[i], verts[0][tv], 1,
-						         stJ[i], verts[1][tv], 1,
-						         stK[i], verts[2][tv], 1
-						     );
-						D1 = Det3x3(
-						         verts[0][sv], stI[i], 1,
-						         verts[1][sv], stJ[i], 1,
-						         verts[2][sv], stK[i], 1
-						     );
-						D2 = Det3x3(
-						         verts[0][sv], verts[0][tv], stI[i],
-						         verts[1][sv], verts[1][tv], stJ[i],
-						         verts[2][sv], verts[2][tv], stK[i]
-						     );
-						texMat[i] = { D0 / D, D1 / D, D2 / D };
-						//Sys_Printf( "%.3f %.3f %.3f \n", texMat[i][0], texMat[i][1], texMat[i][2] );
+				const int sv = vecs[0][0] ? 0 : vecs[0][1] ? 1 : 2;
+				const int tv = vecs[1][0] ? 0 : vecs[1][1] ? 1 : 2;
+				std::array<q3mapx::Point2, 3> xy, uv;
+				for ( int i = 0; i < 3; ++i ) {
+					xy[i] = { verts[i][sv], verts[i][tv] };
+					uv[i] = { double( sts[i][0] ) * buildSide.shaderInfo->shaderWidth,
+					          double( sts[i][1] ) * buildSide.shaderInfo->shaderHeight };
+				}
+				q3mapx::Affine2 matrix;
+				if ( q3mapx::solveAffine( xy, uv, matrix ) ) {
+					for ( int i = 0; i < 2; ++i ) texMat[i] = DoubleVector3( matrix[i][0], matrix[i][1], matrix[i][2] );
+					++recovery.matchedFaces;
+					const double crossAxis = std::fabs( matrix[0][0] * matrix[1][0] + matrix[0][1] * matrix[1][1] );
+					if ( crossAxis > 1e-5 * std::hypot( matrix[0][0], matrix[0][1] ) * std::hypot( matrix[1][0], matrix[1][1] ) ) {
+						++recovery.approximateQuakeFaces;
 					}
 				}
-				else{
-					fprintf( stderr, "degenerate triangle found when solving texDef equations\n" ); // FIXME add stuff here
+				else {
 					texMat[0] = { 2.0, 0.0, 0.0 };
 					texMat[1] = { 0.0, -2.0, 0.0 };
+					++recovery.degenerateUVs;
+					++recovery.fallbackFaces;
 				}
+
 				// now we must solve:
 				//	// now we must invert:
 				//	ang = degrees_to_radians( rotate );
@@ -703,6 +692,7 @@ static void ConvertBrush( FILE *f, int bspBrushNum, const Vector3& origin, EBrus
 		}
 		else
 		{
+			++recovery.fallbackFaces;
 			if ( g_decompile_wtf
 			  && !striEqualPrefix( buildSide.shaderInfo->shader, "textures/common/" )
 			  && !striEqualPrefix( buildSide.shaderInfo->shader, "textures/system/" )
@@ -841,6 +831,7 @@ static void ConvertPatch( FILE *f, int num, const bspDrawSurface_t& ds, const Ve
 		texture = shader.shader;
 	}
 
+	++recovery.patches;
 	/* start patch */
 	fprintf( f, "\t// patch %d\n", num );
 	fprintf( f, "\t{\n" );
@@ -954,6 +945,14 @@ static void ConvertEPairs( FILE *f, const entity_t& e, bool skip_origin ){
  */
 
 static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ){
+	recovery = {};
+	detailBrushes.assign( bspBrushes.size(), false );
+	for ( const auto& leaf : bspLeafs ) {
+		if ( leaf.cluster <= CLUSTER_OPAQUE ) continue;
+		for ( int i = 0; i < leaf.numBSPLeafBrushes; ++i ) {
+			detailBrushes[bspLeafBrushes[leaf.firstBSPLeafBrush + i]] = true;
+		}
+	}
 	/* setup brush conversion prerequisites */
 	{
 		/* convert bsp planes to map planes */
@@ -979,14 +978,15 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ){
 	Sys_Printf( "--- Convert BSP to MAP ---\n" );
 
 	/* create map filename from the bsp name */
-	const auto name = StringStream( PathExtensionless( bspName ), "_converted.map" );
+	const auto name = decompileOptions.output ? StringStream( decompileOptions.output )
+	    : StringStream( PathExtensionless( bspName ), "_converted.map" );
 	Sys_Printf( "writing %s\n", name.c_str() );
 
 	/* open it */
 	FILE *f = SafeOpenWrite( name );
 
 	/* print header */
-	fprintf( f, "// Generated by Q3Map2 (ydnar) -convert -format map\n" );
+	fprintf( f, "// Recovered by q3mapx " Q3MAPX_VERSION "; original source metadata may be unavailable.\n" );
 
 	/* walk entity list */
 	for ( std::size_t i = 0; i < entities.size(); ++i )
@@ -1029,7 +1029,47 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ){
 	}
 
 	/* close the file and return */
-	fclose( f );
+	const bool failed = ferror( f ) != 0;
+	if ( fclose( f ) != 0 || failed ) Error( "Failed to finish writing %s", name.c_str() );
+	Sys_Printf( "Recovered %zu brushes, %zu patches; %zu/%zu faces matched texture coordinates, %zu used fallback\n",
+	    recovery.brushes, recovery.patches, recovery.matchedFaces, recovery.faces, recovery.fallbackFaces );
+	if ( recovery.skippedBrushes || recovery.degenerateUVs || recovery.approximateQuakeFaces ) {
+		Sys_Warning( "Recovery: %zu invalid brushes skipped, %zu degenerate UV transforms, %zu approximate Quake texture transforms\n",
+		    recovery.skippedBrushes, recovery.degenerateUVs, recovery.approximateQuakeFaces );
+	}
+	if ( decompileOptions.report || decompileOptions.automaticReport ) {
+		const auto report = decompileOptions.report ? StringStream( decompileOptions.report ) : StringStream( name, ".recovery.json" );
+		rapidjson::StringBuffer buffer;
+		rapidjson::PrettyWriter<rapidjson::StringBuffer> writer( buffer );
+		writer.StartObject();
+		writer.Key( "schema_version" ); writer.Int( 1 );
+		writer.Key( "input" ); writer.String( bspName );
+		writer.Key( "output" ); writer.String( name.c_str() );
+		writer.Key( "format" ); writer.String( brushType == EBrushType::Valve220 ? "map_220" : brushType == EBrushType::Bp ? "map_bp" : "map" );
+		writer.Key( "fast" ); writer.Bool( fast );
+		const auto count = [&]( const char* key, size_t value ){ writer.Key( key ); writer.Uint64( value ); };
+		count( "entities", entities.size() );
+		count( "brushes", recovery.brushes );
+		count( "skipped_brushes", recovery.skippedBrushes );
+		count( "patches", recovery.patches );
+		count( "faces", recovery.faces );
+		count( "matched_uv_faces", recovery.matchedFaces );
+		count( "fallback_uv_faces", recovery.fallbackFaces );
+		count( "degenerate_uv_transforms", recovery.degenerateUVs );
+		count( "degenerate_triangles", recovery.degenerateTriangles );
+		count( "approximate_quake_uv_faces", recovery.approximateQuakeFaces );
+		count( "triangle_soup_surfaces", std::count_if( bspDrawSurfaces.begin(), bspDrawSurfaces.end(),
+		    []( const auto& surface ){ return surface.surfaceType == MST_TRIANGLE_SOUP; } ) );
+		writer.Key( "limitations" );
+		writer.StartArray();
+		writer.String( "Original editor groups, removed entities and source model instances are not stored in the BSP." );
+		writer.String( "Triangle soup geometry is not exported separately; collision brushes may approximate it." );
+		writer.String( "Fallback texture axes are used on faces without a usable rendered triangle, including hidden faces." );
+		writer.EndArray();
+		writer.EndObject();
+		SaveFile( report, buffer.GetString(), int( buffer.GetSize() ) );
+		Sys_Printf( "Recovery report: %s\n", report.c_str() );
+	}
 
 	/* return to sender */
 	return 0;

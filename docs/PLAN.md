@@ -41,10 +41,10 @@ Microbenchmarks and end-to-end timings are clearly distinguished.
 
 - [x] Validate BSP lump lengths, ranges, references, strings, and geometry before use.
 - [ ] Reject malformed arguments and oversized/invalid counts without memory corruption.
-- [ ] Repair lost texture-match candidates and ill-conditioned UV reconstruction.
-- [ ] Preserve brush entities, origins, patches, and recoverable texture transforms.
-- [ ] Add a convenient decompilation workflow and a machine-readable recovery report.
-- [ ] Test corrupt files, degenerate geometry, overlapping surfaces, and round trips.
+- [x] Repair lost texture-match candidates and ill-conditioned UV reconstruction.
+- [x] Preserve brush entities, origins, patches, and recoverable texture transforms.
+- [x] Add a convenient decompilation workflow and a machine-readable recovery report.
+- [x] Test corrupt files, degenerate geometry, overlapping surfaces, and round trips.
 
 Acceptance: invalid files fail with diagnostics and nonzero status; valid fixtures
 round-trip with expected geometry/entities and finite UVs. Unsupported or

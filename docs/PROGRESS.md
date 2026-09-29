@@ -110,3 +110,25 @@ Full compiler/decompiler pipeline remains passing.
 Remaining robustness work includes checked large-file I/O, transactional output
 replacement, additional numeric option validation, and broader sanitizer/fuzz
 coverage. Existing legacy asset decoders are not covered by these BSP checks.
+
+## 2026-09-29 — Texture recovery and decompilation workflow
+
+Fixed missed large overlapping triangles with a per-material bounds hierarchy,
+replaced cancellation-prone texture equations with a checked affine solve, and
+precomputed detail-brush membership. Added `-decompile`, selectable `.map` output,
+automatic/explicit JSON recovery reports, finite fallback UVs, and diagnostics for
+lossy recovery. Existing Quake, brush-primitive, and Valve 220 conversions remain.
+Unknown conversion options/formats now fail explicitly.
+
+Validation: release build and 6/6 CTest tests pass. Tests compare recovered visible
+UVs, compile all output formats, preserve entities/origins/patches, exercise a large
+triangle over a small brush, and verify finite output for constant UVs. The large
+triangle regression was run against the preserved NRC executable and reproduced
+the wrong texture coordinates there; it passes with q3mapx. Math checks cover large
+translations, collinearity, nearly singular geometry, and non-finite inputs.
+
+An alternating seven-run comparison on a 968-brush fixture measured 0.3274 s median
+for NRC and 0.3259 s for q3mapx. This is **no meaningful end-to-end speedup**; the
+benefit of this task is correct, diagnosable recovery with similar runtime. Raw
+evidence: `docs/benchmarks/decompile-win-x64.json`. The new bounds hierarchy avoids
+incorrect candidate pruning; broader performance claims need other workloads.

@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "platform": "Windows-10-10.0.26200-SP0",
+  "fixture": "dense-room-31x31",
+  "bsp_sha256": "47369a25eb77ba4d5fb8bad81172441062e2fff434d529203e65409efe812cf9",
+  "counts": {
+    "shaders": 1,
+    "planes": 328,
+    "nodes": 3691,
+    "leaves": 3694,
+    "models": 2,
+    "brushes": 968,
+    "sides": 5808,
+    "vertices": 19277,
+    "indices": 12,
+    "surfaces": 4818
+  },
+  "warmup_per_compiler": 2,
+  "results": {
+    "baseline": {
+      "compiler": "E:\\Repositories\\q3mapx\\build\\baseline\\bin\\q3mapx.exe",
+      "sha256": "5bee5356d9b4d0c94a80b6e206c940340db11f807fe44b416eeb366ad210336e",
+      "seconds": [
+        0.3062915999908,
+        0.32873740000650287,
+        0.3273643999709748,
+        0.3405431000282988,
+        0.32486180000705644,
+        0.290665699983947,
+        0.43416820000857115
+      ],
+      "median_seconds": 0.3273643999709748
+    },
+    "candidate": {
+      "compiler": "E:\\Repositories\\q3mapx\\build\\release\\bin\\q3mapx.exe",
+      "sha256": "fd644ba56f91ce0cab93d4c2bcbeb4f3f6f92495894c0cb586b27f444e7ecf65",
+      "seconds": [
+        0.3010789999971166,
+        0.32953400001861155,
+        0.3002517999848351,
+        0.3258973999763839,
+        0.3476453000330366,
+        0.292412799957674,
+        0.3477366999723017
+      ],
+      "median_seconds": 0.3258973999763839
+    }
+  }
+}

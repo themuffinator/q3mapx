@@ -1540,7 +1540,7 @@ int                         BSPInfo( Args& args );
 int                         ScaleBSPMain( Args& args );
 int                         ShiftBSPMain( Args& args );
 int                         MergeBSPMain( Args& args );
-int                         ConvertBSPMain( Args& args );
+int                         ConvertBSPMain( Args& args, bool decompile = false );
 
 /* convert_map.c */
 int                         ConvertBSPToMap( char *bspName );

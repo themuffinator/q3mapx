@@ -20,7 +20,7 @@ def box(lo, hi, texture="q3mapx/stone", transform="13 -7 23 0.5 0.75"):
     ) + "\n}\n"
 
 
-def create_fixture(root: Path, *, dense=False, patch=True) -> Path:
+def create_fixture(root: Path, *, dense=False, patch=True, grid=11) -> Path:
     """Create only generated test content beneath the explicitly supplied directory."""
     root = root.resolve()
     game = root / "baseq3"
@@ -47,7 +47,7 @@ textures/common/origin
             pixels.extend((80, 140, 220) if (x // 8 + y // 8) % 2 else (180, 80, 40))
     header = struct.pack("<BBBHHBHHHHBB", 0, 0, 2, 0, 0, 0, 0, 0, 64, 64, 24, 0x20)
     (game / "textures/q3mapx/checker.tga").write_bytes(header + pixels)
-    extent = 768 if dense else 256
+    extent = (grid // 2 + 1) * 128 if dense else 256
     walls = [
         ((-extent-16, -extent-16, -16), (extent+16, extent+16, 0)),
         ((-extent-16, -extent-16, 256), (extent+16, extent+16, 272)),
@@ -58,8 +58,9 @@ textures/common/origin
     ]
     geometry = "".join(box(lo, hi) for lo, hi in walls)
     if dense:
-        for y in range(-640, 641, 128):
-            for x in range(-640, 641, 128):
+        limit = grid // 2 * 128
+        for y in range(-limit, limit + 1, 128):
+            for x in range(-limit, limit + 1, 128):
                 geometry += box((x-20, y-20, 0), (x+20, y+20, 80 + (x+y) % 112))
     else:
         geometry += box((-48, -48, 0), (48, 48, 96))

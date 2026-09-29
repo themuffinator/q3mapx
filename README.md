@@ -11,6 +11,15 @@ See the [task log](docs/PROGRESS.md) for implemented and validated work.
 The standalone CLI builds with CMake/Ninja; see [build instructions](docs/DEVELOPMENT.md).
 Release output is `build/release/bin/q3mapx` (`.exe` on Windows).
 
+Recover an editable map with a texture-recovery report:
+
+```sh
+q3mapx -decompile -game quake3 -fs_basepath /path/to/game -o recovered.map example.bsp
+```
+
+See [decompilation options and limits](docs/DECOMPILATION.md). The traditional
+`-convert -format map`, `map_bp`, and `map_220` options remain supported.
+
 ## Objectives
 
 - Faster BSP, visibility, lighting, conversion, and minimap workflows, backed by measurements.

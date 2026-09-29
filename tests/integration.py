@@ -47,6 +47,23 @@ def run(exe, args, directory, label, timeout=90):
     return {"stage": label, "seconds": elapsed, "arguments": list(map(str, args))}
 
 
+def vertex_uvs(bsp):
+    data = bsp.lump(10)
+    # Position and normal distinguish intersecting planar faces. Texture shifts are periodic.
+    return {tuple(round(v, 2) for v in struct.unpack_from("<3f", data, offset))
+            + tuple(round(v, 2) for v in struct.unpack_from("<3f", data, offset + 28)):
+            struct.unpack_from("<2f", data, offset + 12) for offset in range(0, len(data), 44)}
+
+
+def check_uvs(original, recovered):
+    a, b = vertex_uvs(original), vertex_uvs(recovered)
+    common = a.keys() & b.keys()
+    assert len(common) >= len(a) * 0.9, "Recovered mesh lost too many fixture vertices"
+    for key in common:
+        error = max(abs((a[key][axis] - b[key][axis] + 0.5) % 1 - 0.5) for axis in range(2))
+        assert error < 0.001, f"Texture alignment changed at {key}: {a[key]} vs {b[key]}"
+
+
 def pipeline(exe, root, threads):
     directory = root / f"pipeline-{threads}"
     source = create_fixture(directory)
@@ -75,6 +92,7 @@ def pipeline(exe, root, threads):
         assert rebuilt.summary()["models"] == counts["models"]
         assert rebuilt.summary()["brushes"] == counts["brushes"]
         assert b'"targetname" "test_door"' in rebuilt.lump(0)
+        check_uvs(compiled, rebuilt)
         # Save each recovered text for diagnosis; subsequent formats use the same legacy output name.
         (directory / f"recovered-{mapformat}.map").write_text(text, encoding="utf-8")
     minimap = directory / "minimap.tga"

@@ -30,6 +30,7 @@
 
 /* dependencies */
 #include "q3map2.h"
+#include "decompile.h"
 
 
 
@@ -1016,17 +1017,19 @@ static void PseudoCompileBSP( bool need_tree ){
    main argument processing function for bsp conversion
  */
 
-int ConvertBSPMain( Args& args ){
+int ConvertBSPMain( Args& args, bool decompile ){
 	int ( *convertFunc )( char * );
 	const game_t  *convertGame;
 	bool map_allowed, force_bsp, force_map;
 
 
 	/* set default */
-	convertFunc = ConvertBSPToASE;
+	convertFunc = decompile ? ConvertBSPToMap_220 : ConvertBSPToASE;
+	decompileOptions = {};
+	decompileOptions.automaticReport = decompile;
 	convertGame = nullptr;
-	map_allowed = false;
-	force_bsp = false;
+	map_allowed = decompile;
+	force_bsp = decompile;
 	force_map = false;
 
 	/* arg checking */
@@ -1066,7 +1069,7 @@ int ConvertBSPMain( Args& args ){
 				convertGame = GetGame( fmt );
 				map_allowed = false;
 				if ( convertGame == nullptr ) {
-					Sys_Printf( "Unknown conversion format \"%s\". Defaulting to ASE.\n", fmt );
+					Error( "Unknown conversion format '%s'", fmt );
 				}
 			}
 		}
@@ -1110,6 +1113,18 @@ int ConvertBSPMain( Args& args ){
 		while ( args.takeArg( "-wtf" ) ) {
 			g_decompile_wtf = true;
 		}
+		while ( args.takeArg( "-o" ) ) {
+			decompileOptions.output = args.takeNext();
+			if ( !path_extension_is( decompileOptions.output, "map" ) ) Error( "Decompile output must have a .map extension" );
+		}
+		while ( args.takeArg( "-report" ) ) {
+			decompileOptions.report = args.takeNext();
+			if ( !path_extension_is( decompileOptions.report, "json" ) ) Error( "Recovery report must have a .json extension" );
+		}
+	}
+	if ( !args.empty() ) Error( "Unknown conversion option '%s'", args.takeFront() );
+	if ( !map_allowed && ( decompileOptions.output || decompileOptions.report || decompile ) ) {
+		Error( "Decompilation output/report options require map, map_bp or map_220 format" );
 	}
 
 	LoadShaderInfo();

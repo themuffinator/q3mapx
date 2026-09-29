@@ -22,6 +22,7 @@
 
 
 #pragma once
+#include <atomic>
 
 /* vis structures */
 
@@ -63,7 +64,11 @@ struct vportal_t
 	float radius;
 
 	fixedWinding_t      *winding;
-	EVStatus status;
+	// Publish completed visibility bytes before other jobs use them for pruning.
+	// atomic_ref preserves the trivial storage required by portal allocation/copying.
+	alignas(std::atomic_ref<EVStatus>::required_alignment) EVStatus status;
+	EVStatus getStatus() const { return std::atomic_ref<EVStatus>( const_cast<EVStatus&>( status ) ).load( std::memory_order_acquire ); }
+	void setStatus( EVStatus value ) { std::atomic_ref<EVStatus>( status ).store( value, std::memory_order_release ); }
 	byte                *portalfront;   /* [portals], preliminary */
 	byte                *portalflood;   /* [portals], intermediate */
 	byte                *portalvis;     /* [portals], final */

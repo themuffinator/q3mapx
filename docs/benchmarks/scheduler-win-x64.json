@@ -1,0 +1,1 @@
+{"kind":"scheduler_microbenchmark","workers":20,"items_per_pass":262144,"passes_per_run":8,"records":[{"reference_seconds":0.112793,"pool_seconds":0.0020606},{"reference_seconds":0.111255,"pool_seconds":0.0024362},{"reference_seconds":0.11437,"pool_seconds":0.0022907},{"reference_seconds":0.114989,"pool_seconds":0.0023702},{"reference_seconds":0.114084,"pool_seconds":0.0022981}]}

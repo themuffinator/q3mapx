@@ -32,6 +32,7 @@
 #include "q3map2.h"
 #include "autopk3.h"
 #include "timer.h"
+#include "arguments.h"
 
 
 
@@ -59,6 +60,7 @@ static void ExitQ3Map(){
 
 int main( int argc, char **argv ){
 	int r;
+	const char* profilePath = nullptr;
 
 #ifdef WIN32
 	_setmaxstdio( 2048 );
@@ -106,17 +108,23 @@ int main( int argc, char **argv ){
 
 		/* patch subdivisions */
 		while ( args.takeArg( "-subdivisions" ) ) {
-			patchSubdivisions = std::max( atoi( args.takeNext() ), 1 );
+			patchSubdivisions = ParseIntegerOption( "-subdivisions", args.takeNext(), 1, 1024 );
 		}
 
 		/* threads */
 		while ( args.takeArg( "-threads" ) ) {
-			numthreads = atoi( args.takeNext() );
+			const char* value = args.takeNext();
+			numthreads = striEqual( value, "auto" ) ? -1 : ParseIntegerOption( "-threads", value, 1, 1024 );
+		}
+		while ( args.takeArg( "-profile" ) ) {
+			profilePath = args.takeNext();
+			if ( !path_extension_is( profilePath, "json" ) ) Error( "Profile output must have a .json extension" );
 		}
 
 		/* max_map_draw_surfs */
 		while ( args.takeArg( "-maxmapdrawsurfs" ) ) {
-			max_map_draw_surfs = abs( atoi( args.takeNext() ) );
+			max_map_draw_surfs = ParseIntegerOption( "-maxmapdrawsurfs", args.takeNext(), 1,
+			    int( std::numeric_limits<int>::max() / sizeof( mapDrawSurface_t ) ) );
 			Sys_Printf( "max_map_draw_surfs = %d, mapDrawSurfs size = %.2f MBytes \n",
 			            max_map_draw_surfs, sizeof( mapDrawSurface_t ) * max_map_draw_surfs / ( 1024.f * 1024.f ) );
 		}
@@ -239,6 +247,8 @@ int main( int argc, char **argv ){
 	}
 
 	/* emit time */
+	ThreadShutdown();
+	ThreadWriteProfile( profilePath, timer.elapsed_sec(), r );
 	Sys_Printf( "%9.0f seconds elapsed\n", timer.elapsed_sec() );
 
 	/* return any error code */

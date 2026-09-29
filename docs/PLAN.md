@@ -52,11 +52,11 @@ irrecoverable data is reported explicitly. See [decompilation design](DECOMPILAT
 
 ## M3 — CPU scheduling and profiling
 
-- [ ] Replace per-pass thread creation and per-item global locking with persistent workers.
-- [ ] Use adaptive range dispatch for small jobs while balancing expensive uneven work.
-- [ ] Remove fixed worker-array limits and validate requested thread counts.
-- [ ] Keep compiler data locks separate from scheduling/progress locks.
-- [ ] Add structured per-pass timings and useful build reports.
+- [x] Replace per-pass thread creation and per-item global locking with persistent workers.
+- [x] Use adaptive range dispatch for small jobs while balancing expensive uneven work.
+- [x] Remove fixed worker-array limits and validate requested thread counts.
+- [x] Keep compiler data locks separate from scheduling/progress locks.
+- [x] Add structured per-pass timings and useful build reports.
 - [ ] Profile expensive compiler stages and optimize measured bottlenecks.
 
 Acceptance: exactly-once execution at varied worker counts, zero/small job handling,

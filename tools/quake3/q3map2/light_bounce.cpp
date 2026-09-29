@@ -809,7 +809,7 @@ void RadCreateDiffuseLights(){
 	static int iterations = 0;
 
 	/* hit every surface (threaded) */
-	RunThreadsOnIndividual( bspDrawSurfaces.size(), true, RadLight );
+	RunThreadsOnIndividual( bspDrawSurfaces.size(), true, RadLight, "RadLight" );
 
 	/* dump the lights generated to a file */
 	if ( dump && !lights.empty() ) {

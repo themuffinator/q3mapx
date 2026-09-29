@@ -143,7 +143,7 @@ static void ClusterMerge( int leafnum ){
 			continue;
 		}
 
-		if ( p->status != EVStatus::Done ) {
+		if ( p->getStatus() != EVStatus::Done ) {
 			Error( "portal not done" );
 		}
 		for ( int j = 0; j < portallongs; ++j )
@@ -179,9 +179,9 @@ static void CalcPortalVis(){
 #ifdef MREDEBUG
 	Sys_Printf( "%6d portals out of %d", 0, numportals * 2 );
 	//get rid of the counter
-	RunThreadsOnIndividual( numportals * 2, false, PortalFlow );
+	RunThreadsOnIndividual( numportals * 2, false, PortalFlow, "PortalFlow" );
 #else
-	RunThreadsOnIndividual( numportals * 2, true, PortalFlow );
+	RunThreadsOnIndividual( numportals * 2, true, PortalFlow, "PortalFlow" );
 #endif
 }
 
@@ -195,17 +195,17 @@ static void CalcPassageVis(){
 
 #ifdef MREDEBUG
 	_printf( "%6d portals out of %d", 0, numportals * 2 );
-	RunThreadsOnIndividual( numportals * 2, false, CreatePassages );
+	RunThreadsOnIndividual( numportals * 2, false, CreatePassages, "CreatePassages" );
 	_printf( "\n" );
 	_printf( "%6d portals out of %d", 0, numportals * 2 );
-	RunThreadsOnIndividual( numportals * 2, false, PassageFlow );
+	RunThreadsOnIndividual( numportals * 2, false, PassageFlow, "PassageFlow" );
 	_printf( "\n" );
 #else
 	Sys_Printf( "\n--- CreatePassages (%d) ---\n", numportals * 2 );
-	RunThreadsOnIndividual( numportals * 2, true, CreatePassages );
+	RunThreadsOnIndividual( numportals * 2, true, CreatePassages, "CreatePassages" );
 
 	Sys_Printf( "\n--- PassageFlow (%d) ---\n", numportals * 2 );
-	RunThreadsOnIndividual( numportals * 2, true, PassageFlow );
+	RunThreadsOnIndividual( numportals * 2, true, PassageFlow, "PassageFlow" );
 #endif
 }
 
@@ -219,17 +219,17 @@ static void CalcPassagePortalVis(){
 
 #ifdef MREDEBUG
 	Sys_Printf( "%6d portals out of %d", 0, numportals * 2 );
-	RunThreadsOnIndividual( numportals * 2, false, CreatePassages );
+	RunThreadsOnIndividual( numportals * 2, false, CreatePassages, "CreatePassages" );
 	Sys_Printf( "\n" );
 	Sys_Printf( "%6d portals out of %d", 0, numportals * 2 );
-	RunThreadsOnIndividual( numportals * 2, false, PassagePortalFlow );
+	RunThreadsOnIndividual( numportals * 2, false, PassagePortalFlow, "PassagePortalFlow" );
 	Sys_Printf( "\n" );
 #else
 	Sys_Printf( "\n--- CreatePassages (%d) ---\n", numportals * 2 );
-	RunThreadsOnIndividual( numportals * 2, true, CreatePassages );
+	RunThreadsOnIndividual( numportals * 2, true, CreatePassages, "CreatePassages" );
 
 	Sys_Printf( "\n--- PassagePortalFlow (%d) ---\n", numportals * 2 );
-	RunThreadsOnIndividual( numportals * 2, true, PassagePortalFlow );
+	RunThreadsOnIndividual( numportals * 2, true, PassagePortalFlow, "PassagePortalFlow" );
 #endif
 }
 
@@ -243,7 +243,7 @@ static void CalcFastVis(){
 	for ( vportal_t& p : Span( portals, numportals * 2 ) )
 	{
 		p.portalvis = p.portalflood;
-		p.status = EVStatus::Done;
+		p.setStatus( EVStatus::Done );
 	}
 }
 
@@ -276,9 +276,9 @@ static void CalcVis(){
 	}
 
 	Sys_Printf( "\n--- BasePortalVis (%d) ---\n", numportals * 2 );
-	RunThreadsOnIndividual( numportals * 2, true, BasePortalVis );
+	RunThreadsOnIndividual( numportals * 2, true, BasePortalVis, "BasePortalVis" );
 
-//	RunThreadsOnIndividual( numportals * 2, true, BetterPortalVis );
+//	RunThreadsOnIndividual( numportals * 2, true, BetterPortalVis, "BetterPortalVis" );
 
 	SortPortals();
 

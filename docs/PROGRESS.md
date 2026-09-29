@@ -132,3 +132,27 @@ for NRC and 0.3259 s for q3mapx. This is **no meaningful end-to-end speedup**; t
 benefit of this task is correct, diagnosable recovery with similar runtime. Raw
 evidence: `docs/benchmarks/decompile-win-x64.json`. The new bounds hierarchy avoids
 incorrect candidate pruning; broader performance claims need other workloads.
+
+## 2026-09-29 — Persistent CPU jobs and profiles
+
+Replaced fixed per-pass thread arrays and mutex-per-item dispatch with persistent
+workers, caller participation, atomic range claims, adaptive batches, independent
+compiler locks, nested-job handling, and worker-exception propagation. Added
+strict worker/subdivision/surface-limit parsing, `-threads auto`, named pass
+profiles via `-profile`, and acquire/release publication of VIS portal results.
+
+Validation: release build and 8/8 CTest groups pass. The job suite covers exactly
+once execution, empty/small/large ranges, four grain sizes, 1/2/4/16/70 workers,
+nested calls, concurrent submitters, failure propagation and pool reuse. Actual
+VIS data matches byte-for-byte at 1, 4 and 70 workers. Invalid numeric arguments
+fail cleanly; profile schemas and values are checked through the CLI.
+
+On the same i7-13700H, a 20-worker microbenchmark of eight 262,144-item trivial
+passes measured medians of 0.114084 s for the old scheduling algorithm and
+0.0022981 s for the pool (about 49.6x less dispatch time). This is a synthetic
+scheduler measurement, **not total compilation speedup**. Raw observations are in
+`docs/benchmarks/scheduler-win-x64.json`; full-stage measurements are in progress.
+
+Additional inherited issues found: unchecked large-file offsets, nontransactional
+BSP replacement, unbounded diagnostic formatting, and potential uninitialized
+`ClipWinding::bestNormal` moves. These remain separate follow-up tasks.

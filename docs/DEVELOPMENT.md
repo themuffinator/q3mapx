@@ -71,7 +71,7 @@ initialization from steady-state work where useful. Compare against the imported
 baseline using the same toolchain and options. Keep deterministic fixture creation
 scripts in `tests/` or `benchmarks/`; put generated large data in ignored outputs.
 
-## Commit policy
+## Benchmark commands
 
 Run the repeatable benchmark from the repository root:
 
@@ -85,6 +85,31 @@ on PATH. The harness generates its own dense room, preserves VIS portal input wi
 `benchmark.json`. [Initial results](benchmarks/baseline-win-x64.json) are a baseline,
 not an optimization claim. CI definitions cover Windows/MinGW and Linux; a workflow
 definition does not imply a remote run has passed.
+
+Enable `Q3MAPX_BUILD_BENCHMARKS` to build `scheduler_benchmark`. This compares the
+old scheduler's mutex-per-item/fresh-thread algorithm with the new job pool using
+tiny synthetic jobs; its speedup is not a compiler speedup.
+
+## CPU jobs and profiles
+
+`-threads auto` uses detected hardware concurrency. An explicit count must be in
+`1..1024`; the old fixed 64-entry worker storage is gone. Workers persist between
+passes, the caller participates, and job dispatch uses atomic range claims.
+Uneven expensive passes use individual jobs; cheap grid/postprocessing passes use
+bounded batches. Compiler data, scheduling, and progress have separate locks.
+Nested jobs on the same pool run inline; exceptions return to the submitting
+thread after all workers stop the failed pass. Fatal legacy errors terminate the
+process; normal completion explicitly joins workers.
+
+Add `-profile output.json` before any stage to save schema-versioned pass names,
+item counts, actual worker counts, batch sizes, execution time, setup-inclusive
+time, process time, and exit status. Profiles are currently written on normal
+stage return, including nonzero returns; legacy fatal `Error()` exits do not write
+one. The GUI must use the child process exit code as the authoritative result.
+
+```sh
+q3mapx -threads auto -profile light-profile.json -light -fast map.bsp
+```
 
 ## Task commits
 

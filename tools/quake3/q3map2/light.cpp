@@ -1989,7 +1989,7 @@ static void LightWorld( bool fastAllocate, bool bounceStore ){
 
 		Sys_Printf( "--- TraceGrid ---\n" );
 		inGrid = true;
-		RunThreadsOnIndividual( rawGridPoints.size(), true, TraceGrid );
+		RunThreadsOnIndividual( rawGridPoints.size(), true, TraceGrid, "TraceGrid", 0 );
 		inGrid = false;
 		Sys_Printf( "%d x %d x %d = %zu grid\n",
 		            gridBounds[ 0 ], gridBounds[ 1 ], gridBounds[ 2 ], bspGridPoints.size() );
@@ -2004,7 +2004,7 @@ static void LightWorld( bool fastAllocate, bool bounceStore ){
 
 	/* map the world luxels */
 	Sys_Printf( "--- MapRawLightmap ---\n" );
-	RunThreadsOnIndividual( numRawLightmaps, true, MapRawLightmap );
+	RunThreadsOnIndividual( numRawLightmaps, true, MapRawLightmap, "MapRawLightmap" );
 	Sys_Printf( "%9d luxels\n", numLuxels );
 	Sys_Printf( "%9d luxels mapped\n", numLuxelsMapped );
 	Sys_Printf( "%9d luxels occluded\n", numLuxelsOccluded );
@@ -2012,7 +2012,7 @@ static void LightWorld( bool fastAllocate, bool bounceStore ){
 	/* dirty them up */
 	if ( dirty ) {
 		Sys_Printf( "--- DirtyRawLightmap ---\n" );
-		RunThreadsOnIndividual( numRawLightmaps, true, DirtyRawLightmap );
+		RunThreadsOnIndividual( numRawLightmaps, true, DirtyRawLightmap, "DirtyRawLightmap" );
 	}
 
 	/* floodlight pass */
@@ -2028,13 +2028,13 @@ static void LightWorld( bool fastAllocate, bool bounceStore ){
 	lightsClusterCulled = 0;
 
 	Sys_Printf( "--- IlluminateRawLightmap ---\n" );
-	RunThreadsOnIndividual( numRawLightmaps, true, IlluminateRawLightmap );
+	RunThreadsOnIndividual( numRawLightmaps, true, IlluminateRawLightmap, "IlluminateRawLightmap" );
 	Sys_Printf( "%9d luxels illuminated\n", numLuxelsIlluminated );
 
 	StitchSurfaceLightmaps();
 
 	Sys_Printf( "--- IlluminateVertexes ---\n" );
-	RunThreadsOnIndividual( bspDrawSurfaces.size(), true, IlluminateVertexes );
+	RunThreadsOnIndividual( bspDrawSurfaces.size(), true, IlluminateVertexes, "IlluminateVertexes" );
 	Sys_Printf( "%9d vertexes illuminated\n", numVertsIlluminated );
 
 	/* ydnar: emit statistics on light culling */
@@ -2089,7 +2089,7 @@ static void LightWorld( bool fastAllocate, bool bounceStore ){
 
 			Sys_Printf( "--- BounceGrid ---\n" );
 			inGrid = true;
-			RunThreadsOnIndividual( rawGridPoints.size(), true, TraceGrid );
+			RunThreadsOnIndividual( rawGridPoints.size(), true, TraceGrid, "TraceGrid", 0 );
 			inGrid = false;
 			Sys_FPrintf( SYS_VRB, "%9d grid points envelope culled\n", gridEnvelopeCulled );
 			Sys_FPrintf( SYS_VRB, "%9d grid points bounds culled\n", gridBoundsCulled );
@@ -2102,14 +2102,14 @@ static void LightWorld( bool fastAllocate, bool bounceStore ){
 		lightsClusterCulled = 0;
 
 		Sys_Printf( "--- IlluminateRawLightmap ---\n" );
-		RunThreadsOnIndividual( numRawLightmaps, true, IlluminateRawLightmap );
+		RunThreadsOnIndividual( numRawLightmaps, true, IlluminateRawLightmap, "IlluminateRawLightmap" );
 		Sys_Printf( "%9d luxels illuminated\n", numLuxelsIlluminated );
 		Sys_Printf( "%9d vertexes illuminated\n", numVertsIlluminated );
 
 		StitchSurfaceLightmaps();
 
 		Sys_Printf( "--- IlluminateVertexes ---\n" );
-		RunThreadsOnIndividual( bspDrawSurfaces.size(), true, IlluminateVertexes );
+		RunThreadsOnIndividual( bspDrawSurfaces.size(), true, IlluminateVertexes, "IlluminateVertexes" );
 		Sys_Printf( "%9d vertexes illuminated\n", numVertsIlluminated );
 
 		/* ydnar: emit statistics on light culling */

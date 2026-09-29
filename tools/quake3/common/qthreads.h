@@ -20,10 +20,13 @@
  */
 
 #pragma once
+#include <cstddef>
 
 extern int numthreads;
 
 void ThreadSetDefault();
-void RunThreadsOnIndividual( int workcnt, bool showpacifier, void ( *func )( int ) );
+void RunThreadsOnIndividual( int workcnt, bool showpacifier, void ( *func )( int ), const char* name = "parallel", size_t grain = 1 );
 void ThreadLock();
 void ThreadUnlock();
+void ThreadShutdown();
+void ThreadWriteProfile( const char* filename, double totalSeconds, int exitCode );

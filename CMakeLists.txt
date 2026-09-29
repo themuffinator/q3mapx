@@ -10,6 +10,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
 option(Q3MAPX_ENABLE_LTO "Enable interprocedural optimization in release builds" OFF)
 option(Q3MAPX_ENABLE_SANITIZERS "Enable address and undefined behavior sanitizers" OFF)
+option(Q3MAPX_BUILD_BENCHMARKS "Build standalone performance measurement tools" OFF)
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GLIB REQUIRED IMPORTED_TARGET glib-2.0)
@@ -19,6 +20,10 @@ find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(Threads REQUIRED)
+
+add_library(q3mapx_jobs STATIC libs/q3mapx/job_pool.cpp)
+target_include_directories(q3mapx_jobs PUBLIC libs)
+target_link_libraries(q3mapx_jobs PUBLIC Threads::Threads)
 
 # Preserve NRC's source layout so changes remain easy to compare with upstream.
 file(GLOB Q3MAPX_COMPILER_SOURCES CONFIGURE_DEPENDS tools/quake3/q3map2/*.cpp)
@@ -38,6 +43,7 @@ target_include_directories(q3mapx PRIVATE tools/quake3/common libs include)
 target_link_libraries(q3mapx PRIVATE
     PkgConfig::GLIB PkgConfig::XML assimp::assimp
     PNG::PNG JPEG::JPEG ZLIB::ZLIB Threads::Threads
+    q3mapx_jobs
 )
 target_compile_definitions(q3mapx PRIVATE
     Q3MAP_VERSION="2.5.17n-q3mapx-${PROJECT_VERSION}"
@@ -83,6 +89,10 @@ if(Q3MAPX_ENABLE_LTO)
 endif()
 
 include(CTest)
+if(Q3MAPX_BUILD_BENCHMARKS)
+    add_executable(scheduler_benchmark benchmarks/scheduler.cpp)
+    target_link_libraries(scheduler_benchmark PRIVATE q3mapx_jobs)
+endif()
 if(BUILD_TESTING)
     find_package(Python3 3.9 REQUIRED COMPONENTS Interpreter)
     add_test(NAME cli_help COMMAND q3mapx -help)
@@ -107,6 +117,15 @@ if(BUILD_TESTING)
         --compiler $<TARGET_FILE:q3mapx>
         --work-dir ${CMAKE_BINARY_DIR}/tests/decompile)
     set_tests_properties(decompile_recovery PROPERTIES TIMEOUT 90)
+    add_executable(job_pool_test tests/job_pool.cpp)
+    target_link_libraries(job_pool_test PRIVATE q3mapx_jobs)
+    add_test(NAME job_pool COMMAND job_pool_test)
+    set_tests_properties(job_pool PROPERTIES TIMEOUT 60)
+    add_test(NAME cli_options COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_options.py
+        --compiler $<TARGET_FILE:q3mapx>
+        --work-dir ${CMAKE_BINARY_DIR}/tests/cli-options)
+    set_tests_properties(cli_options PROPERTIES TIMEOUT 90)
 endif()
 
 include(GNUInstallDirs)

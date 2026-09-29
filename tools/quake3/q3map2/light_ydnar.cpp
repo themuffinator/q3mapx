@@ -3866,7 +3866,7 @@ static void FloodLightRawLightmap( int rawLightmapNum ){
 void FloodlightRawLightmaps(){
 	Sys_Printf( "--- FloodlightRawLightmap ---\n" );
 	numSurfacesFloodlighten = 0;
-	RunThreadsOnIndividual( numRawLightmaps, true, FloodLightRawLightmap );
+	RunThreadsOnIndividual( numRawLightmaps, true, FloodLightRawLightmap, "FloodLightRawLightmap" );
 	Sys_Printf( "%9d custom lightmaps floodlighted\n", numSurfacesFloodlighten );
 }
 

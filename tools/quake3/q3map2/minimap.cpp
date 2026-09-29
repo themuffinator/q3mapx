@@ -593,24 +593,24 @@ int MiniMapBSPMain( Args& args ){
 
 	if ( minimap.samples <= 1 ) {
 		Sys_Printf( "\n--- MiniMapNoSupersampling (%d) ---\n", minimap.height );
-		RunThreadsOnIndividual( minimap.height, true, MiniMapNoSupersampling );
+		RunThreadsOnIndividual( minimap.height, true, MiniMapNoSupersampling, "MiniMapNoSupersampling" );
 	}
 	else
 	{
 		if ( minimap.sample_offsets ) {
 			Sys_Printf( "\n--- MiniMapSupersampled (%d) ---\n", minimap.height );
-			RunThreadsOnIndividual( minimap.height, true, MiniMapSupersampled );
+			RunThreadsOnIndividual( minimap.height, true, MiniMapSupersampled, "MiniMapSupersampled" );
 		}
 		else
 		{
 			Sys_Printf( "\n--- MiniMapRandomlySupersampled (%d) ---\n", minimap.height );
-			RunThreadsOnIndividual( minimap.height, true, MiniMapRandomlySupersampled );
+			RunThreadsOnIndividual( minimap.height, true, MiniMapRandomlySupersampled, "MiniMapRandomlySupersampled" );
 		}
 	}
 
 	if ( minimap.boost != 1 ) {
 		Sys_Printf( "\n--- MiniMapContrastBoost (%d) ---\n", minimap.height );
-		RunThreadsOnIndividual( minimap.height, true, MiniMapContrastBoost );
+		RunThreadsOnIndividual( minimap.height, true, MiniMapContrastBoost, "MiniMapContrastBoost", 0 );
 	}
 
 	if ( autolevel ) {
@@ -650,12 +650,12 @@ int MiniMapBSPMain( Args& args ){
 
 	if ( minimap.brightness != 0 || minimap.contrast != 1 ) {
 		Sys_Printf( "\n--- MiniMapBrightnessContrast (%d) ---\n", minimap.height );
-		RunThreadsOnIndividual( minimap.height, true, MiniMapBrightnessContrast );
+		RunThreadsOnIndividual( minimap.height, true, MiniMapBrightnessContrast, "MiniMapBrightnessContrast", 0 );
 	}
 
 	if ( minimap.sharpendata1f ) {
 		Sys_Printf( "\n--- MiniMapSharpen (%d) ---\n", minimap.height );
-		RunThreadsOnIndividual( minimap.height, true, MiniMapSharpen );
+		RunThreadsOnIndividual( minimap.height, true, MiniMapSharpen, "MiniMapSharpen", 0 );
 		q = minimap.sharpendata1f;
 	}
 	else

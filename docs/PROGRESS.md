@@ -822,3 +822,21 @@ Fatal paths still omit CPU profiles and may leave incomplete non-transactional
 outputs; the architecture guide states that limit. The compiler still warns
 about truncating exceptionally long diagnostics into its fixed message buffer.
 No separate new unrelated defect was discovered.
+
+## 2026-09-29 — Prepare the 0.3.0 portable release
+
+Bumped both applications to 0.3.0 and refreshed the usage, coverage, performance
+and packaging documentation. The package name now follows the CMake version,
+and packaging rejects a stale CLI or workbench version before creating its
+output directory. Both current-version acceptance and stale-version rejection
+were exercised against the real binaries. All thirteen Markdown guides have
+valid local links.
+
+Expanded portable verification to the nineteen native writers, all new recovery
+families, curved meshes, inspection, Raven compatibility/packing and parallel
+failure handling. It verifies the embedded source archive, reports each completed
+workflow and records the compiler version. All 23 cached dependency source
+archives match their previously validated hashes (452,131,078 bytes total).
+Release and targeted sanitizer results are recorded above; full instrumented and
+portable delivery results belong to the following artifact audit. No new
+unrelated issue was discovered during release preparation.

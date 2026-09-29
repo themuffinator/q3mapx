@@ -20,22 +20,28 @@ manifest=json.loads((package/'runtime-manifest.json').read_text(encoding='utf-8'
 for entry in manifest['files']:
     path=package/entry['path']
     assert hashlib.sha256(path.read_bytes()).hexdigest()==entry['sha256'],f'Hash mismatch: {path}'
+assert hashlib.sha256((package/'q3mapx-source.zip').read_bytes()).hexdigest()==manifest['source_archive_sha256'],'Source archive hash mismatch'
 env=os.environ.copy()
 system=Path(os.environ['SystemRoot'])
 env['PATH']=os.pathsep.join(map(str,[package/'bin',system/'System32',system]))
 for key in list(env):
     if key.startswith(('QT_','QML')): env.pop(key)
 compiler=package/'bin/q3mapx.exe'
+checks=[]
 
 def run(command,label,timeout=180,extra=None):
     result=subprocess.run(list(map(str,command)),cwd=root,env=env | (extra or {}),capture_output=True,timeout=timeout)
     (root/(label+'.log')).write_bytes(result.stdout+result.stderr)
     assert result.returncode==0,(label,result.returncode,(result.stdout+result.stderr)[-8000:])
+    checks.append(label)
     print(label+' passed',flush=True)
     return result
 
-run([compiler,'--version'],'version')
-for name in ('integration','decompile','minimap','gpu','lighting','lighting_gpu'):
+version=run([compiler,'--version'],'version').stdout.decode('utf-8').strip()
+if 'version' in manifest:
+    assert version.startswith('q3mapx '+manifest['version']+' '),version
+for name in ('integration','decompile','minimap','gpu','lighting','lighting_gpu',
+             'game_profiles','native_fakk','native_mohaa','native_early','mesh_export','bsp_inspect','raven_compat','lightgrid_cli','portal_validation'):
     run([sys.executable,ROOT/'tests'/f'{name}.py','--compiler',compiler,'--work-dir',root/name],name)
 gui=package/'bin/q3mapx-workbench.exe'
 if gui.is_file():
@@ -58,5 +64,6 @@ if gui.is_file():
             assert not any(prefix in line.lower() for prefix in ('/mingw64/','/ucrt64/','\\mingw64\\','\\ucrt64\\')),line
     assert any('qoffscreen' in line for line in loaded),'Qt did not report loading the packaged platform plugin'
 (root/'validation.json').write_text(json.dumps({'schema_version':1,'package':str(package),'revision':manifest['revision'],
-    'restricted_path':env['PATH'],'runtime_hashes_verified':len(manifest['files']),'result':'passed'},indent=2)+'\n')
+    'compiler_version':version,'restricted_path':env['PATH'],'runtime_hashes_verified':len(manifest['files']),
+    'source_archive_hash_verified':True,'checks':checks,'result':'passed'},indent=2)+'\n')
 print('Portable release passed without development DLL directories on PATH')

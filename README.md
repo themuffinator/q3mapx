@@ -4,7 +4,7 @@ An independent, performance-focused continuation of the q3map2 compiler from
 [NetRadiant-custom (NRC)](https://github.com/Garux/netradiant-custom), with a native
 desktop workbench and the existing command-line workflow.
 
-q3mapx 0.2.0 is a development release with persistent CPU jobs, optional OpenCL
+q3mapx 0.3.0 is a development release with persistent CPU jobs, optional OpenCL
 minimap acceleration, stronger input validation, improved BSP recovery, and a
 native Qt workbench. It starts from NRC revision `8216133` (latest at retrieval on
 2026-09-29). See the [implementation plan](docs/PLAN.md) and [task log](docs/PROGRESS.md)
@@ -35,6 +35,8 @@ See [decompilation options and limits](docs/DECOMPILATION.md). The traditional
   explicit backend selection, deterministic random samples and automatic fallback.
 - BSP/PRT range, reference and geometry checks; strict numeric options; atomic BSP
   replacement and safer diagnostics.
+- Indexed Raven lightgrid packing, bounded BSP inspection and a shared CLI/GUI
+  catalog of 25 profiles: 19 native writers and six recovery-only readers.
 - Decompilation with improved texture matching and UV reconstruction, preserved
   brush entities/origins/patches, Valve 220 output and a JSON recovery report.
 - Native Alice, F.A.K.K.2, Allied Assault and early Quake III recovery; terrain
@@ -55,6 +57,12 @@ lighting data. These are workload-specific results. Lighting defaults to the CPU
 [experimental GPU area factors](docs/GPU-LIGHTING.md) are available for comparison
 but have not improved measured complete-bake times. See
 [measurements, hardware and reproduction details](docs/PERFORMANCE.md).
+
+Indexed Raven packing reduced the complete identity-scale rewrite of Jedi
+Academy's `duel9` from 8.54 to 0.27 seconds (**31.6x**), with identical lump
+payloads. That measures loading, validation and serialization; it does not measure
+the original lighting bake. The [coverage ledger](docs/GAME-COVERAGE.md) records
+native validation of 242 installed-map entries without distributing game assets.
 
 ## Documentation
 

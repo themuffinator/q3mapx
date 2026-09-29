@@ -2,7 +2,7 @@
 
 ## Portable Windows build
 
-Extract the complete `q3mapx-0.2.0-windows-x64.zip` folder, then run
+Extract the complete `q3mapx-0.3.0-windows-x64.zip` folder, then run
 `bin/q3mapx-workbench.exe` or `bin/q3mapx.exe -help`. Keep the DLLs, Qt plugins,
 `qt.conf`, documentation and license notices with the executables. The package
 does not require MSYS2 on PATH and does not install services or change the system.
@@ -16,18 +16,21 @@ appropriate game assets, a MAP/BSP source and an output directory. See the
 
 The current release is a development release. Windows x64/MinGW and Linux x64
 (Ubuntu 24.04 under WSL, GCC 13 and Qt 6.4) are locally validated, including Linux
-ASan/UBSan checks. MSVC, macOS, manual accessibility testing and a broad corpus of
-real game maps are not certified by this release. Version 0.2.0 adds deterministic
-lighting, conservative sample culling, Linux/material fixes and optional GPU
-area-factor experiments. It supersedes the original 0.1.0 development archive.
+ASan/UBSan checks. MSVC, macOS, manual accessibility testing and compatibility
+inside the games themselves remain unverified. Version 0.3.0
+adds indexed Raven lightgrid serialization, a compiler-driven 25-profile GUI
+catalog, bounded native inspection, Alice/F.A.K.K.2/MOHAA/early-Quake-III recovery,
+FTX textures, terrain/placement metadata, and parallel curved OBJ/ASE exports.
+Nineteen profiles retain native writers; the six new profiles are recovery-only.
+The [coverage ledger](GAME-COVERAGE.md) separates generated pipelines, native-map
+parsing, recovery limits and gameplay claims.
 
-The locally validated archive was built from clean revision
-`2be749b9cc2b3375caf366d1940cf1c6f9e100cd`. It contains 168 entries and is
-39,817,147 bytes. Its SHA-256 is
-`f2246e0eec4c9504d3ddfd830695ae6ce6d59f59395441e87a0d9972723cfe98`.
-The [release audit record](releases/0.2.0-windows-x64.json) records successful
-portable tests and verification of all 23 corresponding dependency source archives.
-The archive is under `build/package/`; it has not been published remotely.
+The package's `runtime-manifest.json` identifies its exact clean source revision,
+runtime files and dependency sources. Its adjacent SHA-256 file identifies the
+ZIP. Final integration and portable validation are recorded in the
+[task log](PROGRESS.md); the previous [0.2.0 audit](releases/0.2.0-windows-x64.json)
+remains available as historical evidence. Archives stay under `build/package/`
+and have not been published remotely.
 
 ## Recreate the Windows package
 
@@ -35,7 +38,7 @@ Build and test the release preset, commit its source, then run from the project:
 
 ```powershell
 python tools/package_windows.py --msys-root C:/msys64 --fetch-dependency-sources
-python tests/package_smoke.py --package-dir build/package/q3mapx-0.2.0-windows-x64 --work-dir build/package-validation-0.2.0 --workbench-test build/release/bin/workbench_test.exe
+python tests/package_smoke.py --package-dir build/package/q3mapx-0.3.0-windows-x64 --work-dir build/package-validation-0.3.0 --workbench-test build/release/bin/workbench_test.exe
 ```
 
 The packager requires Python 3.9+, the configured MinGW toolchain, CMake,
@@ -45,7 +48,8 @@ is not part of the initial locally tested matrix. Output always stays under
 `build/package/`. Existing package directories are rejected rather than overwritten.
 Use `--name` for another artifact name. `--allow-dirty` explicitly labels a local
 development snapshot and includes its current source; release packages should use
-a clean committed source tree.
+a clean committed source tree. Before creating the output directory, the script
+checks that the CLI and workbench report the source tree's release version.
 
 Packaging retrieves the MSYS2 source archive index to select the exact installed
 version and compression format. For offline use, pass `--source-index` with a
@@ -81,6 +85,8 @@ The smoke harness verifies recorded file hashes and runs full compile/recovery,
 CPU/GPU minimap and lighting checks, the Qt queue integration and direct offscreen widget
 rendering with development dependency directories removed from PATH. It retains
 logs, a GUI preview and `validation.json` in the selected project-local work folder.
+It also covers all native writers, the new recovery families, curved mesh exports,
+Raven compatibility/packing and bounded native inspection using generated inputs.
 
 ## Known limits
 

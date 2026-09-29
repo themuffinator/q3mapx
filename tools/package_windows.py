@@ -33,6 +33,12 @@ def digest(path):
     return checksum.hexdigest()
 
 
+def check_version(executable, product, expected, env):
+    output=run([executable,'--version'],env=env).strip()
+    if not re.fullmatch(re.escape(product+' '+expected)+r'(?: \(NRC [^\r\n]+\))?',output):
+        raise RuntimeError(f'Rebuild {executable}: expected {product} {expected}, received {output!r}')
+
+
 def write_json(path,value):
     path.write_text(json.dumps(value,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
 
@@ -74,7 +80,8 @@ def main():
     parser.add_argument('--build-dir',type=Path,default=ROOT/'build/release')
     parser.add_argument('--msys-root',type=Path,default=Path('C:/msys64'))
     parser.add_argument('--prefix',default='mingw64',choices=['mingw64','ucrt64'])
-    parser.add_argument('--name',default='q3mapx-0.2.0-windows-x64')
+    version=re.search(r'project\(q3mapx VERSION ([0-9.]+)',(ROOT/'CMakeLists.txt').read_text())[1]
+    parser.add_argument('--name',default=f'q3mapx-{version}-windows-x64')
     parser.add_argument('--cli-only',action='store_true')
     parser.add_argument('--allow-dirty',action='store_true',help='Include current uncommitted source in a local development snapshot')
     parser.add_argument('--fetch-dependency-sources',action='store_true',help='Download exact MSYS2 source packages beside the portable archive')
@@ -94,6 +101,8 @@ def main():
     for key in ('QT_PLUGIN_PATH','QT_QPA_PLATFORM_PLUGIN_PATH','QML2_IMPORT_PATH'): env.pop(key,None)
     compiler=build/'bin/q3mapx.exe'; gui=build/'bin/q3mapx-workbench.exe'
     if not compiler.is_file() or (not args.cli_only and not gui.is_file()): parser.error('Build the required release executables first')
+    check_version(compiler,'q3mapx',version,env)
+    if not args.cli_only: check_version(gui,'q3mapx-workbench',version,env)
     output.mkdir(parents=True)
     run([prefix/'bin/cmake.exe','--install',build,'--prefix',output],env=env)
     binary=output/'bin'
@@ -182,7 +191,7 @@ def main():
     make_zip(output/'q3mapx-source.zip',sources,epoch)
     for exe in binary.glob('*.exe'):
         files.append({'path':exe.relative_to(output).as_posix(),'sha256':digest(exe),'package':'q3mapx'})
-    manifest={'schema_version':1,'project':'q3mapx','revision':revision,'dirty_source_snapshot':bool(status),
+    manifest={'schema_version':1,'project':'q3mapx','version':version,'revision':revision,'dirty_source_snapshot':bool(status),
               'source_archive_sha256':digest(output/'q3mapx-source.zip'),
               'source_date_epoch':epoch,'toolchain_prefix':args.prefix,'files':files,'imports':imports,
               'packages':list(packages.values()),'dependency_sources_downloaded':False}

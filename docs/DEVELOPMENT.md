@@ -186,6 +186,13 @@ not proprietary assets. A BSP-validation pass is not a gameplay compatibility
 claim. Source archives and compiler identity are checked for changes during each
 probe.
 
+Use repeatable `--bsp /path/to/loose.bsp` for loose IHV or other native maps.
+`--obj` additionally exports and hashes the mesh, recording vertex/triangle
+counts. Loose source paths and archive entries always become the same independent
+private input name. Native regression groups are `native_fakk`, `native_mohaa`
+and `native_early`; `mesh_export` verifies curved geometry, normals, entity
+placement, worker parity, lightmap lookup and allocation/output boundaries.
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

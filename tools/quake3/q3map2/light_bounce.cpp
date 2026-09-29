@@ -31,6 +31,27 @@
 /* dependencies */
 #include "q3map2.h"
 
+namespace {
+struct alignas(64) RadResult {
+	std::list<light_t> lights;
+	int surfaces = 0, diffuse = 0, brush = 0, triangle = 0, patch = 0;
+};
+RadResult* radResults = nullptr;
+thread_local RadResult* currentRadResult = nullptr;
+struct RadResultScope {
+	RadResult* previous = currentRadResult;
+	explicit RadResultScope( RadResult& result ){ currentRadResult = &result; }
+	~RadResultScope(){ currentRadResult = previous; }
+};
+void CountDiffuseLight( int& global, int RadResult::*member ){
+	if ( currentRadResult ) ++( currentRadResult->*member );
+	else ++global; // Initial surface emitters are created on the submitting thread.
+}
+light_t& NewDiffuseLight(){
+	return ( currentRadResult ? currentRadResult->lights : lights ).emplace_front();
+}
+}
+
 
 /* must be identical to bspDrawVert_t except for float color! */
 struct radVert_t
@@ -454,19 +475,19 @@ static void RadSubdivideDiffuseLight( int lightmapNum, const bspDrawSurface_t& d
 	//%	Sys_Printf( "Grad: %f %f %f\n", gradient[ 0 ], gradient[ 1 ], gradient[ 2 ] );
 
 	/* increment counts */
-	numDiffuseLights++;
+	CountDiffuseLight( numDiffuseLights, &RadResult::diffuse );
 	switch ( ds.surfaceType )
 	{
 	case MST_PLANAR:
-		numBrushDiffuseLights++;
+		CountDiffuseLight( numBrushDiffuseLights, &RadResult::brush );
 		break;
 
 	case MST_TRIANGLE_SOUP:
-		numTriangleDiffuseLights++;
+		CountDiffuseLight( numTriangleDiffuseLights, &RadResult::triangle );
 		break;
 
 	case MST_PATCH:
-		numPatchDiffuseLights++;
+		CountDiffuseLight( numPatchDiffuseLights, &RadResult::patch );
 		break;
 
 	default:
@@ -475,9 +496,7 @@ static void RadSubdivideDiffuseLight( int lightmapNum, const bspDrawSurface_t& d
 
 
 	/* create a light */
-	ThreadLock();
-	light_t& light = lights.emplace_front();
-	ThreadUnlock();
+	light_t& light = NewDiffuseLight();
 
 	/* initialize the light */
 	light.flags = LightFlags::DefaultArea;
@@ -543,9 +562,7 @@ static void RadSubdivideDiffuseLight( int lightmapNum, const bspDrawSurface_t& d
 		//if ( original && si.backsplashFraction > 0 ) {
 		if ( si.backsplashFraction > 0 && !( si.compileFlags & C_SKY ) ) {
 			/* allocate a new area light */
-			ThreadLock();
-			light_t& splash = lights.emplace_front();
-			ThreadUnlock();
+			light_t& splash = NewDiffuseLight();
 
 			/* set it up */
 			splash.flags = LightFlags::DefaultArea;
@@ -741,6 +758,7 @@ void RadLightForPatch( int num, int lightmapNum, const rawLightmap_t *lm, const 
  */
 
 static void RadLight( int num ){
+	RadResultScope resultScope( radResults[ num ] );
 	/* get drawsurface, lightmap, and shader info */
 	const bspDrawSurface_t& ds = bspDrawSurfaces[ num ];
 	const surfaceInfo_t& info = surfaceInfos[ num ];
@@ -766,7 +784,7 @@ static void RadLight( int num ){
 	const float subdivide = si.lightSubdivide? si.lightSubdivide : diffuseSubdivide;
 
 	/* inc counts */
-	numDiffuseSurfaces++;
+	++currentRadResult->surfaces;
 
 	/* iterate through styles (this could be more efficient, yes) */
 	for ( int lightmapNum = 0; lightmapNum < MAX_LIGHTMAPS; ++lightmapNum )
@@ -809,7 +827,20 @@ void RadCreateDiffuseLights(){
 	static int iterations = 0;
 
 	/* hit every surface (threaded) */
+	std::vector<RadResult> results( bspDrawSurfaces.size() );
+	radResults = results.data();
 	RunThreadsOnIndividual( bspDrawSurfaces.size(), true, RadLight, "RadLight" );
+	radResults = nullptr;
+	// Publish in the same surface order as a serial pass. Lighting accumulation
+	// and random subsampling now see the same light order at every worker count.
+	for ( RadResult& result : results ) {
+		lights.splice( lights.begin(), result.lights );
+		numDiffuseSurfaces += result.surfaces;
+		numDiffuseLights += result.diffuse;
+		numBrushDiffuseLights += result.brush;
+		numTriangleDiffuseLights += result.triangle;
+		numPatchDiffuseLights += result.patch;
+	}
 
 	/* dump the lights generated to a file */
 	if ( dump && !lights.empty() ) {

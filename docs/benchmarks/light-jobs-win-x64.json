@@ -1,0 +1,2362 @@
+{
+  "schema_version": 1,
+  "kind": "whole_process_material_lighting",
+  "timestamp_utc": "2026-09-29T08:44:31.200148+00:00",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+  "logical_cpus": 20,
+  "fixture_grid": 21,
+  "fixture_sha256": "893a73bd18957e2492268647f1e52732c71cef8cde5d52fd0a31731d1b1837d6",
+  "options": [
+    "-light",
+    "-fast",
+    "-samples",
+    4,
+    "-bounce",
+    1,
+    "-nogrid"
+  ],
+  "visibility_mode": "fast",
+  "warmup_runs": 1,
+  "measured_runs": 5,
+  "summaries": [
+    {
+      "implementation": "baseline",
+      "compiler": "E:\\Repositories\\q3mapx\\build\\lighting-baseline\\bin\\q3mapx.exe",
+      "compiler_sha256": "9b1492dde6ea9e62b8d9272e21c91fa7850ae10e4abdcf22e16f868af46c2865",
+      "threads": 1,
+      "seconds": [
+        2.51061389996903,
+        2.487797799985856,
+        2.5256756999879144,
+        2.484274600050412,
+        2.4872199000092223
+      ],
+      "median_seconds": 2.487797799985856
+    },
+    {
+      "implementation": "q3mapx",
+      "compiler": "E:\\Repositories\\q3mapx\\build\\release\\bin\\q3mapx.exe",
+      "compiler_sha256": "853f60501efb754acb70b74d7de1a122fec04f33e57de0eb0b70b6f38f59fb2d",
+      "threads": 1,
+      "seconds": [
+        2.5419930999632925,
+        2.5451149999862537,
+        2.5445237000240013,
+        2.527466600004118,
+        2.559750599961262
+      ],
+      "median_seconds": 2.5445237000240013
+    },
+    {
+      "implementation": "baseline",
+      "compiler": "E:\\Repositories\\q3mapx\\build\\lighting-baseline\\bin\\q3mapx.exe",
+      "compiler_sha256": "9b1492dde6ea9e62b8d9272e21c91fa7850ae10e4abdcf22e16f868af46c2865",
+      "threads": 20,
+      "seconds": [
+        1.1262327999575064,
+        1.1222072000382468,
+        1.1451681000180542,
+        1.1802700000116602,
+        1.1451769000268541
+      ],
+      "median_seconds": 1.1451681000180542
+    },
+    {
+      "implementation": "q3mapx",
+      "compiler": "E:\\Repositories\\q3mapx\\build\\release\\bin\\q3mapx.exe",
+      "compiler_sha256": "853f60501efb754acb70b74d7de1a122fec04f33e57de0eb0b70b6f38f59fb2d",
+      "threads": 20,
+      "seconds": [
+        1.1871458999812603,
+        1.1812211000360548,
+        1.181010200001765,
+        1.492183699971065,
+        1.1881520000169985
+      ],
+      "median_seconds": 1.1871458999812603
+    }
+  ],
+  "records": [
+    {
+      "implementation": "baseline",
+      "threads": 1,
+      "warmup": true,
+      "stage": "baseline-1-0",
+      "seconds": 2.523743800004013,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "1",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseline-1-0.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 2.4954601,
+        "exit_code": 0,
+        "requested_workers": 1,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0222651,
+            "seconds_with_setup": 0.0222726
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 2.8e-05,
+            "seconds_with_setup": 2.9e-05
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.2449339,
+            "seconds_with_setup": 0.2449349
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.000666,
+            "seconds_with_setup": 0.0006668
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0184365,
+            "seconds_with_setup": 0.0184376
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 2.0850869,
+            "seconds_with_setup": 2.0850891
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.000894,
+            "seconds_with_setup": 0.0008951
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "implementation": "q3mapx",
+      "threads": 1,
+      "warmup": true,
+      "stage": "q3mapx-1-0",
+      "seconds": 2.555110999965109,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "1",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\q3mapx-1-0.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 2.5018599,
+        "exit_code": 0,
+        "requested_workers": 1,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0218744,
+            "seconds_with_setup": 0.0218809
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 4.43e-05,
+            "seconds_with_setup": 4.47e-05
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.2417417,
+            "seconds_with_setup": 0.2417429
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0007796,
+            "seconds_with_setup": 0.0007809
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0153262,
+            "seconds_with_setup": 0.0153269
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 2.0884727,
+            "seconds_with_setup": 2.0884745
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0009264,
+            "seconds_with_setup": 0.0009277
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "implementation": "q3mapx",
+      "threads": 1,
+      "warmup": false,
+      "stage": "q3mapx-1-1",
+      "seconds": 2.5419930999632925,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "1",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\q3mapx-1-1.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 2.5137915,
+        "exit_code": 0,
+        "requested_workers": 1,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0220842,
+            "seconds_with_setup": 0.0220894
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 3.61e-05,
+            "seconds_with_setup": 3.65e-05
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.238506,
+            "seconds_with_setup": 0.2385072
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0007402,
+            "seconds_with_setup": 0.0007409
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0157194,
+            "seconds_with_setup": 0.0157202
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 2.0901201,
+            "seconds_with_setup": 2.090122
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0010071,
+            "seconds_with_setup": 0.0010085
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "implementation": "baseline",
+      "threads": 1,
+      "warmup": false,
+      "stage": "baseline-1-1",
+      "seconds": 2.51061389996903,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "1",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseline-1-1.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 2.4685776,
+        "exit_code": 0,
+        "requested_workers": 1,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0217769,
+            "seconds_with_setup": 0.0217839
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 2.49e-05,
+            "seconds_with_setup": 2.55e-05
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.2414718,
+            "seconds_with_setup": 0.2414729
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0007083,
+            "seconds_with_setup": 0.0007098
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0154141,
+            "seconds_with_setup": 0.0154149
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 2.0605296,
+            "seconds_with_setup": 2.0605318
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0009768,
+            "seconds_with_setup": 0.0009778
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "implementation": "baseline",
+      "threads": 1,
+      "warmup": false,
+      "stage": "baseline-1-2",
+      "seconds": 2.487797799985856,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "1",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseline-1-2.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 2.4585276,
+        "exit_code": 0,
+        "requested_workers": 1,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0220142,
+            "seconds_with_setup": 0.0220209
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 2.68e-05,
+            "seconds_with_setup": 2.74e-05
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.2411252,
+            "seconds_with_setup": 0.2411264
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0006792,
+            "seconds_with_setup": 0.0006804
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0153384,
+            "seconds_with_setup": 0.0153395
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 2.0549978,
+            "seconds_with_setup": 2.0549999
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.000898,
+            "seconds_with_setup": 0.000899
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "implementation": "q3mapx",
+      "threads": 1,
+      "warmup": false,
+      "stage": "q3mapx-1-2",
+      "seconds": 2.5451149999862537,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "1",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\q3mapx-1-2.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 2.5014498,
+        "exit_code": 0,
+        "requested_workers": 1,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0220043,
+            "seconds_with_setup": 0.0220088
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 3.49e-05,
+            "seconds_with_setup": 3.52e-05
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.2406811,
+            "seconds_with_setup": 0.2406823
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0007109,
+            "seconds_with_setup": 0.0007119
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.015298,
+            "seconds_with_setup": 0.0152987
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 2.0881978,
+            "seconds_with_setup": 2.0882003
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0009828,
+            "seconds_with_setup": 0.0009841
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "implementation": "q3mapx",
+      "threads": 1,
+      "warmup": false,
+      "stage": "q3mapx-1-3",
+      "seconds": 2.5445237000240013,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "1",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\q3mapx-1-3.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 2.5084981,
+        "exit_code": 0,
+        "requested_workers": 1,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0224193,
+            "seconds_with_setup": 0.022424
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 5.47e-05,
+            "seconds_with_setup": 5.5e-05
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.2409055,
+            "seconds_with_setup": 0.2409067
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0006757,
+            "seconds_with_setup": 0.0006771
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0154914,
+            "seconds_with_setup": 0.015492
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 2.0926767,
+            "seconds_with_setup": 2.0926784
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0009602,
+            "seconds_with_setup": 0.0009612
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "implementation": "baseline",
+      "threads": 1,
+      "warmup": false,
+      "stage": "baseline-1-3",
+      "seconds": 2.5256756999879144,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "1",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseline-1-3.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 2.4845717,
+        "exit_code": 0,
+        "requested_workers": 1,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0217562,
+            "seconds_with_setup": 0.0217654
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 2.55e-05,
+            "seconds_with_setup": 2.61e-05
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.2413789,
+            "seconds_with_setup": 0.2413802
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0006696,
+            "seconds_with_setup": 0.0006707
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0155238,
+            "seconds_with_setup": 0.0155248
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 2.0735182,
+            "seconds_with_setup": 2.0735209
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0010408,
+            "seconds_with_setup": 0.001042
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "implementation": "baseline",
+      "threads": 1,
+      "warmup": false,
+      "stage": "baseline-1-4",
+      "seconds": 2.484274600050412,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "1",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseline-1-4.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 2.4629608,
+        "exit_code": 0,
+        "requested_workers": 1,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0218467,
+            "seconds_with_setup": 0.0218545
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 3.16e-05,
+            "seconds_with_setup": 3.23e-05
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.2415443,
+            "seconds_with_setup": 0.2415454
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0006995,
+            "seconds_with_setup": 0.000701
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0153554,
+            "seconds_with_setup": 0.0153564
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 2.0523005,
+            "seconds_with_setup": 2.0523026
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0008914,
+            "seconds_with_setup": 0.0008928
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "implementation": "q3mapx",
+      "threads": 1,
+      "warmup": false,
+      "stage": "q3mapx-1-4",
+      "seconds": 2.527466600004118,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "1",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\q3mapx-1-4.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 2.503756,
+        "exit_code": 0,
+        "requested_workers": 1,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0223605,
+            "seconds_with_setup": 0.0223652
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 4.03e-05,
+            "seconds_with_setup": 4.08e-05
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.2405605,
+            "seconds_with_setup": 0.2405616
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0007495,
+            "seconds_with_setup": 0.0007507
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0159491,
+            "seconds_with_setup": 0.01595
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 2.0956178,
+            "seconds_with_setup": 2.0956196
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.000986,
+            "seconds_with_setup": 0.0009872
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "implementation": "q3mapx",
+      "threads": 1,
+      "warmup": false,
+      "stage": "q3mapx-1-5",
+      "seconds": 2.559750599961262,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "1",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\q3mapx-1-5.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 2.5144873,
+        "exit_code": 0,
+        "requested_workers": 1,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0219495,
+            "seconds_with_setup": 0.021955
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 5.57e-05,
+            "seconds_with_setup": 5.6e-05
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.2396534,
+            "seconds_with_setup": 0.2396546
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0007661,
+            "seconds_with_setup": 0.000767
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0153113,
+            "seconds_with_setup": 0.015312
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 2.0912694,
+            "seconds_with_setup": 2.0912714
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0009596,
+            "seconds_with_setup": 0.000961
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "implementation": "baseline",
+      "threads": 1,
+      "warmup": false,
+      "stage": "baseline-1-5",
+      "seconds": 2.4872199000092223,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "1",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseline-1-5.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 2.4547673,
+        "exit_code": 0,
+        "requested_workers": 1,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0231298,
+            "seconds_with_setup": 0.0231372
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 2.64e-05,
+            "seconds_with_setup": 2.69e-05
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.2388741,
+            "seconds_with_setup": 0.2388754
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0007348,
+            "seconds_with_setup": 0.0007356
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0154258,
+            "seconds_with_setup": 0.0154264
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 2.0378399,
+            "seconds_with_setup": 2.0378412
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 1,
+            "grain": 1,
+            "seconds": 0.0008692,
+            "seconds_with_setup": 0.0008702
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "implementation": "baseline",
+      "threads": 20,
+      "warmup": true,
+      "stage": "baseline-20-0",
+      "seconds": 1.155268700036686,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "20",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseline-20-0.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 1.1126635,
+        "exit_code": 0,
+        "requested_workers": 20,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.007625,
+            "seconds_with_setup": 0.0080362
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0002691,
+            "seconds_with_setup": 0.0002703
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0987404,
+            "seconds_with_setup": 0.0987423
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0010689,
+            "seconds_with_setup": 0.0010705
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0078258,
+            "seconds_with_setup": 0.0078265
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.8554824,
+            "seconds_with_setup": 0.8554871
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0016052,
+            "seconds_with_setup": 0.0016065
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "implementation": "q3mapx",
+      "threads": 20,
+      "warmup": true,
+      "stage": "q3mapx-20-0",
+      "seconds": 1.1925771000096574,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "20",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\q3mapx-20-0.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 1.1661071,
+        "exit_code": 0,
+        "requested_workers": 20,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.005997,
+            "seconds_with_setup": 0.00634
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0003561,
+            "seconds_with_setup": 0.0003568
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.1016531,
+            "seconds_with_setup": 0.1016602
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0008809,
+            "seconds_with_setup": 0.0008826
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0039331,
+            "seconds_with_setup": 0.0039342
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.8995541,
+            "seconds_with_setup": 0.8995569
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0013218,
+            "seconds_with_setup": 0.0013321
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "implementation": "q3mapx",
+      "threads": 20,
+      "warmup": false,
+      "stage": "q3mapx-20-1",
+      "seconds": 1.1871458999812603,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "20",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\q3mapx-20-1.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 1.1536093,
+        "exit_code": 0,
+        "requested_workers": 20,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0063446,
+            "seconds_with_setup": 0.0066862
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0004863,
+            "seconds_with_setup": 0.0004872
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.1024882,
+            "seconds_with_setup": 0.1024926
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.00084,
+            "seconds_with_setup": 0.0008412
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0039501,
+            "seconds_with_setup": 0.003951
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.8802004,
+            "seconds_with_setup": 0.8802144
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0012306,
+            "seconds_with_setup": 0.0012325
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "implementation": "baseline",
+      "threads": 20,
+      "warmup": false,
+      "stage": "baseline-20-1",
+      "seconds": 1.1262327999575064,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "20",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseline-20-1.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 1.0966303,
+        "exit_code": 0,
+        "requested_workers": 20,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0059439,
+            "seconds_with_setup": 0.0064709
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0003097,
+            "seconds_with_setup": 0.0003107
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.1014499,
+            "seconds_with_setup": 0.1014526
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0009867,
+            "seconds_with_setup": 0.0009879
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0066299,
+            "seconds_with_setup": 0.0066306
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.8436459,
+            "seconds_with_setup": 0.8436486
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0014012,
+            "seconds_with_setup": 0.0014024
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "implementation": "baseline",
+      "threads": 20,
+      "warmup": false,
+      "stage": "baseline-20-2",
+      "seconds": 1.1222072000382468,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "20",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseline-20-2.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 1.0896012,
+        "exit_code": 0,
+        "requested_workers": 20,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0061295,
+            "seconds_with_setup": 0.0065258
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0002928,
+            "seconds_with_setup": 0.0002939
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.1011273,
+            "seconds_with_setup": 0.1011295
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.001128,
+            "seconds_with_setup": 0.0011292
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0052136,
+            "seconds_with_setup": 0.0052143
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.8409438,
+            "seconds_with_setup": 0.8409485
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0013557,
+            "seconds_with_setup": 0.0013568
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "implementation": "q3mapx",
+      "threads": 20,
+      "warmup": false,
+      "stage": "q3mapx-20-2",
+      "seconds": 1.1812211000360548,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "20",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\q3mapx-20-2.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 1.1318312,
+        "exit_code": 0,
+        "requested_workers": 20,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0060118,
+            "seconds_with_setup": 0.0063637
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0004067,
+            "seconds_with_setup": 0.0004079
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.1000302,
+            "seconds_with_setup": 0.1000322
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0013244,
+            "seconds_with_setup": 0.0013259
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0043486,
+            "seconds_with_setup": 0.0043494
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.8761426,
+            "seconds_with_setup": 0.8761451
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0012369,
+            "seconds_with_setup": 0.0012379
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "implementation": "q3mapx",
+      "threads": 20,
+      "warmup": false,
+      "stage": "q3mapx-20-3",
+      "seconds": 1.181010200001765,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "20",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\q3mapx-20-3.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 1.1357734,
+        "exit_code": 0,
+        "requested_workers": 20,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0076576,
+            "seconds_with_setup": 0.0079996
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0003312,
+            "seconds_with_setup": 0.0003317
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.1054363,
+            "seconds_with_setup": 0.1054391
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.000888,
+            "seconds_with_setup": 0.0008894
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0058608,
+            "seconds_with_setup": 0.0058617
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.8698014,
+            "seconds_with_setup": 0.8698038
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0014858,
+            "seconds_with_setup": 0.0014873
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "implementation": "baseline",
+      "threads": 20,
+      "warmup": false,
+      "stage": "baseline-20-3",
+      "seconds": 1.1451681000180542,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "20",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseline-20-3.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 1.091211,
+        "exit_code": 0,
+        "requested_workers": 20,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0064625,
+            "seconds_with_setup": 0.006867
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.000243,
+            "seconds_with_setup": 0.0002438
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0991076,
+            "seconds_with_setup": 0.0991095
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.001032,
+            "seconds_with_setup": 0.0010337
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0069057,
+            "seconds_with_setup": 0.0069064
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.8423904,
+            "seconds_with_setup": 0.842393
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0016876,
+            "seconds_with_setup": 0.00169
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "implementation": "baseline",
+      "threads": 20,
+      "warmup": false,
+      "stage": "baseline-20-4",
+      "seconds": 1.1802700000116602,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "20",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseline-20-4.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 1.1233469,
+        "exit_code": 0,
+        "requested_workers": 20,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0064108,
+            "seconds_with_setup": 0.0067617
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0003105,
+            "seconds_with_setup": 0.0003119
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.1026539,
+            "seconds_with_setup": 0.1026563
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0009275,
+            "seconds_with_setup": 0.0009296
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0096901,
+            "seconds_with_setup": 0.009691
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.8616382,
+            "seconds_with_setup": 0.8616432
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0013086,
+            "seconds_with_setup": 0.0013101
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "implementation": "q3mapx",
+      "threads": 20,
+      "warmup": false,
+      "stage": "q3mapx-20-4",
+      "seconds": 1.492183699971065,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "20",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\q3mapx-20-4.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 1.134476,
+        "exit_code": 0,
+        "requested_workers": 20,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0062629,
+            "seconds_with_setup": 0.0066404
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0004859,
+            "seconds_with_setup": 0.0004869
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.1027918,
+            "seconds_with_setup": 0.1027946
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0012228,
+            "seconds_with_setup": 0.0012245
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0049352,
+            "seconds_with_setup": 0.0049362
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.8807843,
+            "seconds_with_setup": 0.880792
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0013626,
+            "seconds_with_setup": 0.0013639
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "implementation": "q3mapx",
+      "threads": 20,
+      "warmup": false,
+      "stage": "q3mapx-20-5",
+      "seconds": 1.1881520000169985,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "20",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\q3mapx-20-5.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 1.1315696,
+        "exit_code": 0,
+        "requested_workers": 20,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0071879,
+            "seconds_with_setup": 0.0075107
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0003438,
+            "seconds_with_setup": 0.000345
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.1009569,
+            "seconds_with_setup": 0.1009592
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0009726,
+            "seconds_with_setup": 0.0009742
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0051756,
+            "seconds_with_setup": 0.0051765
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.8785955,
+            "seconds_with_setup": 0.8785979
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0013502,
+            "seconds_with_setup": 0.0013518
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "implementation": "baseline",
+      "threads": 20,
+      "warmup": false,
+      "stage": "baseline-20-5",
+      "seconds": 1.1451769000268541,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark",
+        "-threads",
+        "20",
+        "-profile",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseline-20-5.json",
+        "-light",
+        "-fast",
+        "-samples",
+        "4",
+        "-bounce",
+        "1",
+        "-nogrid",
+        "E:\\Repositories\\q3mapx\\build\\lighting-jobs-benchmark\\baseq3\\maps\\fixture.map"
+      ],
+      "profile": {
+        "schema_version": 1,
+        "total_seconds": 1.1004837,
+        "exit_code": 0,
+        "requested_workers": 20,
+        "passes": [
+          {
+            "name": "MapRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0062324,
+            "seconds_with_setup": 0.0066305
+          },
+          {
+            "name": "FloodLightRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0003104,
+            "seconds_with_setup": 0.0003116
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0983971,
+            "seconds_with_setup": 0.0983991
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.000963,
+            "seconds_with_setup": 0.0009641
+          },
+          {
+            "name": "RadLight",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0067973,
+            "seconds_with_setup": 0.0067981
+          },
+          {
+            "name": "IlluminateRawLightmap",
+            "items": 2234,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.8466231,
+            "seconds_with_setup": 0.8466256
+          },
+          {
+            "name": "IlluminateVertexes",
+            "items": 2236,
+            "workers": 20,
+            "grain": 1,
+            "seconds": 0.0011859,
+            "seconds_with_setup": 0.0011871
+          }
+        ]
+      },
+      "sha256": {
+        "vertices": "41935f5cfd0bab23d3fb107ce254fc70d791b98de304785b78d11f3703c8f7fb",
+        "surfaces": "43a22753a69e6b929553c0ad99548867fd8de0e7aa1a028ef47abe24abf6ab0d",
+        "lightmaps": "e94804b7f56a21ec40d3535d4b915dd7d0867779efe7dc4fd3b8c8066b13e77d",
+        "lightgrid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ]
+}

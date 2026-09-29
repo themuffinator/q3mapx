@@ -397,3 +397,39 @@ Unrelated inherited limits: `offsetof` and non-trivial-object `memset` warnings
 remain; ASan/UBSan does not certify thread-race freedom or third-party decoder
 fuzz coverage. Shared lighting statistics and bounce-light publication order are
 next audit targets. The previously reported cleanup policy block remains.
+
+## 2026-09-29 — Deterministic lighting jobs and working floodlight sampling
+
+The dense benchmark found schedule-dependent lightgrid bytes even when comparing
+the same executable. Grid escape nudges, randomized dirt and adaptive samples now
+use independent, repeatable streams seeded by pass and work item. Diffuse lights
+are built into per-surface lists and published in serial surface order after the
+job barrier, eliminating allocator locks and scheduling-dependent accumulation
+order. Worker culling counts are reduced in batches; other shared lighting
+statistics use relaxed atomic updates and 64-bit storage.
+
+Grid tracing now reuses bounded worker storage instead of probing a 1.25 MiB stack
+array for each point, and reserves both optional floodlight contributions. The
+inherited low-quality floodlight branch never traced a ray; it now uses eight
+stratified samples. Dirt/flood traces initialize their traversal mode rather than
+using an uninitialized value or the previous sunlight trace's state. These fixes
+intentionally change old randomized/low-quality/affected vertex-lighting output.
+
+Validation: Windows release passes 17/17 groups. Expanded material tests and the
+compiler pipeline/job pool pass Linux ASan/UBSan (3 targeted groups). Dense
+randomized bakes, including bounced grid light, compare exact lightmaps, vertex
+colors, grid bytes and diagnostic counters at 1, 4, 20 and 70 workers. Alpha/RGB
+filter and low-quality floodlight checks assert observable output changes.
+
+The alternating grid=21 surface-lighting benchmark (five runs after a warmup,
+grid lighting disabled to isolate the intentional RNG change) retained exact
+surface/vertex/lightmap output. Median time changed from 2.4878 to 2.5445 s at
+one worker and 1.1452 to 1.1871 s at 20 workers. This is a correctness improvement,
+not a speedup claim; the 2–4% cost is recorded in
+`benchmarks/light-jobs-win-x64.json`. The main bounced-light pass remains the
+performance target. The executable was hash-checked before and after measurement.
+
+Unrelated issue observed: GCC also reports a possible nonzero-offset deallocation
+in inherited `StringBuffer` code; it has not triggered these sanitizer tests and
+needs a separate focused audit. Existing `offsetof` warnings and cleanup policy
+limitations remain. No claim of comprehensive thread-sanitizer coverage is made.

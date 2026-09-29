@@ -2245,13 +2245,13 @@ inline float subdivideThreshold = DEFAULT_SUBDIVIDE_THRESHOLD;
 inline int maxOpaqueBrush;
 inline std::vector<std::uint8_t> opaqueBrushes;
 
-inline int gridBoundsCulled;
-inline int gridEnvelopeCulled;
+inline std::uint64_t gridBoundsCulled;
+inline std::uint64_t gridEnvelopeCulled;
 
-inline int lightsBoundsCulled;
-inline int lightsEnvelopeCulled;
-inline int lightsPlaneCulled;
-inline int lightsClusterCulled;
+inline std::uint64_t lightsBoundsCulled;
+inline std::uint64_t lightsEnvelopeCulled;
+inline std::uint64_t lightsPlaneCulled;
+inline std::uint64_t lightsClusterCulled;
 
 /* ydnar: list of surface information necessary for lightmap calculation */
 inline surfaceInfo_t      *surfaceInfos;
@@ -2288,10 +2288,10 @@ inline outLightmap_t      *outLightmaps;
 inline std::vector<rawGridPoint_t> rawGridPoints;
 
 inline int numLuxels;
-inline int numLuxelsMapped;
-inline int numLuxelsOccluded;
-inline int numLuxelsIlluminated;
-inline int numVertsIlluminated;
+inline std::uint64_t numLuxelsMapped;
+inline std::uint64_t numLuxelsOccluded;
+inline std::uint64_t numLuxelsIlluminated;
+inline std::uint64_t numVertsIlluminated;
 
 /* lightgrid */
 inline Vector3 gridMins;

@@ -69,6 +69,15 @@ Use `-profile report.json` to inspect named CPU passes. Profile timing includes
 separate execution and setup-inclusive values. See [development](DEVELOPMENT.md)
 for reproducing benchmarks and interpreting their limits.
 
+Lighting now gives each job its own repeatable random stream and publishes
+per-surface bounce lights in a fixed order. Shared statistics use atomic updates
+and batched culling reductions. This fixes output/counter races; it is not itself
+a general speedup. The dense material benchmark measured a 2–4% increase in
+surface-lighting time while retaining exact output (grid disabled for comparison
+with the old random sequence). [Raw results](benchmarks/light-jobs-win-x64.json).
+Reproduce with `benchmarks/lighting.py`; omit `--no-grid-lighting` when comparing
+builds that use the same grid sampling. Each run restores the same unlit BSP.
+
 ## OpenCL GPU minimaps
 
 `q3mapx -devices` prints JSON with GPU names, memory, compute units and stable

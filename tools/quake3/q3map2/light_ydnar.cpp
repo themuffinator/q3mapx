@@ -30,6 +30,7 @@
 
 /* dependencies */
 #include "q3map2.h"
+#include "lighting_jobs.h"
 #include "timer.h"
 
 
@@ -849,7 +850,7 @@ static int MapSingleLuxel( rawLightmap_t *lm, const surfaceInfo_t *info, const b
 		cluster = CLUSTER_OCCLUDED;
 		origin.set( 0 );
 		normal.set( 0 );
-		numLuxelsOccluded++;
+		AddLightStatistic( numLuxelsOccluded );
 		return cluster;
 	}
 
@@ -873,7 +874,7 @@ static int MapSingleLuxel( rawLightmap_t *lm, const surfaceInfo_t *info, const b
 	luxel.count = 1;
 
 	/* add to count */
-	numLuxelsMapped++;
+	AddLightStatistic( numLuxelsMapped );
 
 	/* return ok */
 	return cluster;
@@ -1463,6 +1464,9 @@ static float DirtForSample( trace_t *trace ){
 	if ( trace == nullptr || trace->cluster < CLUSTER_NORMAL ) {
 		return 0;
 	}
+	// A prior sunlight trace (or an uninitialized vertex trace) must not select
+	// sky traversal for ambient occlusion.
+	trace->testAll = false;
 
 	/* setup */
 	gatherDirt = 0;
@@ -1492,8 +1496,8 @@ static float DirtForSample( trace_t *trace ){
 		for ( i = 0; i < numDirtVectors; ++i )
 		{
 			/* get random vector */
-			angle = Random() * degrees_to_radians( 360.0f );
-			elevation = Random() * degrees_to_radians( DIRT_CONE_ANGLE );
+			angle = LightingRandom() * degrees_to_radians( 360.0f );
+			elevation = LightingRandom() * degrees_to_radians( DIRT_CONE_ANGLE );
 			const Vector3 temp( cos( angle ) * sin( elevation ),
 			                    sin( angle ) * sin( elevation ),
 			                    cos( elevation ) );
@@ -1569,6 +1573,7 @@ static float DirtForSample( trace_t *trace ){
  */
 
 void DirtyRawLightmap( int rawLightmapNum ){
+	SeedLightingRandom( 2, rawLightmapNum );
 	float               average, samples;
 	trace_t trace;
 	bool noDirty;
@@ -1899,10 +1904,10 @@ static void SubsampleRawLuxel_r( rawLightmap_t *lm, trace_t *trace, const Vector
 /* A mostly Gaussian-like bounded random distribution (sigma is expected standard deviation) */
 static void GaussLikeRandom( float sigma, float *x, float *y ){
 	float r;
-	r = Random() * 2 * c_pi;
+	r = LightingRandom() * 2 * c_pi;
 	*x = sigma * 2.73861278752581783822 * cos( r );
 	*y = sigma * 2.73861278752581783822 * sin( r );
-	r = Random();
+	r = LightingRandom();
 	r = 1 - sqrt( r );
 	r = 1 - sqrt( r );
 	*x *= r;
@@ -1958,6 +1963,7 @@ static void RandomSubsampleRawLuxel( rawLightmap_t *lm, trace_t *trace, const Ve
  */
 
 static void CreateTraceLightsForBounds( const MinMax& minmax, const Vector3 *normal, int numClusters, int *clusters, LightFlags flags, trace_t *trace ){
+	std::uint64_t envelopeCulled = 0, clusterCulled = 0, planeCulled = 0;
 	int i;
 	float length;
 
@@ -1989,7 +1995,7 @@ static void CreateTraceLightsForBounds( const MinMax& minmax, const Vector3 *nor
 	{
 		/* check zero sized envelope */
 		if ( light.envelope <= 0 ) {
-			lightsEnvelopeCulled++;
+			++envelopeCulled;
 			continue;
 		}
 
@@ -2016,14 +2022,14 @@ static void CreateTraceLightsForBounds( const MinMax& minmax, const Vector3 *nor
 
 				/* fixme! */
 				if ( i == numClusters ) {
-					lightsClusterCulled++;
+					++clusterCulled;
 					continue;
 				}
 			}
 
 			/* if the light's bounding sphere intersects with the bounding sphere then this light needs to be tested */
 			if ( vector3_length( light.origin - origin ) - light.envelope - radius > 0 ) {
-				lightsEnvelopeCulled++;
+				++envelopeCulled;
 				continue;
 			}
 
@@ -2040,13 +2046,13 @@ static void CreateTraceLightsForBounds( const MinMax& minmax, const Vector3 *nor
 		if ( length > 0 && !trace->twoSided ) {
 			/* lights coplanar with a surface won't light it */
 			if ( !( light.flags & LightFlags::Twosided ) && vector3_dot( light.normal, *normal ) > 0.999f ) {
-				lightsPlaneCulled++;
+				++planeCulled;
 				continue;
 			}
 
 			/* check to see if light is behind the plane */
 			if ( vector3_dot( light.origin, *normal ) - vector3_dot( origin, *normal ) < -1 ) {
-				lightsPlaneCulled++;
+				++planeCulled;
 				continue;
 			}
 		}
@@ -2057,6 +2063,9 @@ static void CreateTraceLightsForBounds( const MinMax& minmax, const Vector3 *nor
 
 	/* make last night null */
 	trace->lights[ trace->numLights ] = nullptr;
+	AddLightStatistic( lightsEnvelopeCulled, envelopeCulled );
+	AddLightStatistic( lightsClusterCulled, clusterCulled );
+	AddLightStatistic( lightsPlaneCulled, planeCulled );
 }
 
 
@@ -2104,6 +2113,7 @@ inline void FreeTraceLights( trace_t *trace ){
 static void FloodlightIlluminateLightmap( rawLightmap_t *lm );
 
 void IlluminateRawLightmap( int rawLightmapNum ){
+	SeedLightingRandom( 3, rawLightmapNum );
 	int t, x, y, sx, sy, size, luxelFilterRadius, lightmapNum;
 	int                 mapped, lighted, totalLighted;
 	rawLightmap_t       *lm;
@@ -2153,7 +2163,7 @@ void IlluminateRawLightmap( int rawLightmapNum ){
 	   ----------------------------------------------------------------- */
 
 	/* set counts */
-	numLuxelsIlluminated += ( lm->sw * lm->sh );
+	AddLightStatistic( numLuxelsIlluminated, std::uint64_t( lm->sw ) * lm->sh );
 
 	/* test debugging state */
 	if ( debugSurfaces || debugAxis || debugCluster || debugOrigin || dirtDebug || normalmap ) {
@@ -2833,6 +2843,7 @@ void IlluminateRawLightmap( int rawLightmapNum ){
 #define VERTEX_NUDGE    4.0f
 
 void IlluminateVertexes( int num ){
+	SeedLightingRandom( 4, num );
 	int i, x, y, z, x1, y1, z1, sx, sy;
 	float samples, dirt;
 	trace_t trace;
@@ -3029,7 +3040,7 @@ void IlluminateVertexes( int num ){
 			}
 
 			/* another happy customer */
-			numVertsIlluminated++;
+			AddLightStatistic( numVertsIlluminated );
 		}
 
 		/* set average color */
@@ -3177,7 +3188,7 @@ void IlluminateVertexes( int num ){
 
 			/* store into floating point storage */
 			vertLuxel += radVertLuxel;
-			numVertsIlluminated++;
+			AddLightStatistic( numVertsIlluminated );
 
 			/* store into bytes (for vertex approximation) */
 			if ( !info.si->noVertexLight ) {
@@ -3628,6 +3639,7 @@ float FloodLightForSample( trace_t *trace, float floodLightDistance, bool floodL
 	if ( trace == nullptr || trace->cluster < CLUSTER_NORMAL ) {
 		return 0;
 	}
+	trace->testAll = false;
 
 
 	/* setup */
@@ -3651,50 +3663,45 @@ float FloodLightForSample( trace_t *trace, float floodLightDistance, bool floodL
 		myUp = VectorNormalized( vector3_cross( myRt, normal ) );
 	}
 
-	/* vortex: optimise floodLightLowQuality a bit */
-	if ( floodLightLowQuality ) {
-		/* iterate through ordered vectors */
-		for ( i = 0; i < numFloodVectors; ++i )
-			if ( rand() % 10 != 0 ) {
-				continue;
-			}
-	}
-	else
+	/* One sample per eight-vector stratum keeps the low-quality path useful
+	   while bounding its work. The old branch skipped tracing every vector. */
+	int selected = 0;
+	for ( i = 0; i < numFloodVectors; ++i )
 	{
-		/* iterate through ordered vectors */
-		for ( i = 0; i < numFloodVectors; ++i )
-		{
-			vecs++;
-
-			/* transform vector into tangent space */
-			const Vector3 direction = myRt * floodVectors[ i ][ 0 ] + myUp * floodVectors[ i ][ 1 ] + normal * floodVectors[ i ][ 2 ];
-
-			/* set endpoint */
-			trace->end = trace->origin + direction * dd;
-
-			// trace->origin += direction;
-
-			SetupTrace( trace );
-			trace->color.set( 1 );
-			/* trace */
-			TraceLine( trace );
-			contribution = 1;
-
-			if ( trace->compileFlags & C_SKY || trace->compileFlags & C_TRANSLUCENT ) {
-				contribution = 1;
-			}
-			else if ( trace->opaque ) {
-				const float d = vector3_length( trace->hit - trace->origin );
-
-				// d = trace->distance;
-				//if ( d > 256 ) gatherDirt += 1;
-				contribution = std::min( 1.f, d / dd );
-
-				//gatherDirt += 1.0f - ooDepth * VectorLength( displacement );
-			}
-
-			gatherLight += contribution;
+		if ( floodLightLowQuality ) {
+			if ( i % 8 == 0 ) selected = i + int( LightingRandom() * std::min( 8, numFloodVectors - i ) );
+			if ( i != selected ) continue;
 		}
+		vecs++;
+
+		/* transform vector into tangent space */
+		const Vector3 direction = myRt * floodVectors[ i ][ 0 ] + myUp * floodVectors[ i ][ 1 ] + normal * floodVectors[ i ][ 2 ];
+
+		/* set endpoint */
+		trace->end = trace->origin + direction * dd;
+
+		// trace->origin += direction;
+
+		SetupTrace( trace );
+		trace->color.set( 1 );
+		/* trace */
+		TraceLine( trace );
+		contribution = 1;
+
+		if ( trace->compileFlags & C_SKY || trace->compileFlags & C_TRANSLUCENT ) {
+			contribution = 1;
+		}
+		else if ( trace->opaque ) {
+			const float d = vector3_length( trace->hit - trace->origin );
+
+			// d = trace->distance;
+			//if ( d > 256 ) gatherDirt += 1;
+			contribution = std::min( 1.f, d / dd );
+
+			//gatherDirt += 1.0f - ooDepth * VectorLength( displacement );
+		}
+
+		gatherLight += contribution;
 	}
 
 	/* early out */
@@ -3720,11 +3727,9 @@ float FloodLightForSample( trace_t *trace, float floodLightDistance, bool floodL
 
 // floodlight pass on a lightmap
 static void FloodLightRawLightmapPass( rawLightmap_t *lm, Vector3& lmFloodLightRGB, float lmFloodLightIntensity, float lmFloodLightDistance, bool lmFloodLightLowQuality, float floodlightDirectionScale ){
-	trace_t trace;
+	trace_t trace{};
 	// int sx, sy;
 	// float samples, average, *floodlight2;
-
-	memset( &trace, 0, sizeof( trace_t ) );
 
 	/* setup trace */
 	trace.testOcclusion = true;
@@ -3839,9 +3844,10 @@ static void FloodLightRawLightmapPass( rawLightmap_t *lm, Vector3& lmFloodLightR
 #endif
 }
 
-static int numSurfacesFloodlighten;
+static std::uint64_t numSurfacesFloodlighten;
 
 static void FloodLightRawLightmap( int rawLightmapNum ){
+	SeedLightingRandom( 5, rawLightmapNum );
 	rawLightmap_t       *lm;
 
 	/* bail if this number exceeds the number of raw lightmaps */
@@ -3859,7 +3865,7 @@ static void FloodLightRawLightmap( int rawLightmapNum ){
 	/* custom pass */
 	if ( lm->floodlightIntensity ) {
 		FloodLightRawLightmapPass( lm, lm->floodlightRGB, lm->floodlightIntensity, lm->floodlightDistance, false, lm->floodlightDirectionScale );
-		numSurfacesFloodlighten += 1;
+		AddLightStatistic( numSurfacesFloodlighten );
 	}
 }
 
@@ -3867,7 +3873,7 @@ void FloodlightRawLightmaps(){
 	Sys_Printf( "--- FloodlightRawLightmap ---\n" );
 	numSurfacesFloodlighten = 0;
 	RunThreadsOnIndividual( numRawLightmaps, true, FloodLightRawLightmap, "FloodLightRawLightmap" );
-	Sys_Printf( "%9d custom lightmaps floodlighted\n", numSurfacesFloodlighten );
+	Sys_Printf( "%9llu custom lightmaps floodlighted\n", static_cast<unsigned long long>( numSurfacesFloodlighten ) );
 }
 
 /*

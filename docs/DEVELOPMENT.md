@@ -80,6 +80,12 @@ bounced, deluxe and supersampled lighting at one and four workers. Mutating alph
 and RGB texels independently verifies the material paths actually affect the bake.
 It also detects unstable lightmap packing, which previously depended on shader
 allocation addresses. Surface ordering now uses shader names and stable indices.
+The fixture also exercises randomized supersampling, dirt, low-quality floodlight,
+and dense-grid escape sampling. Dense bakes compare all lighting lumps and culling
+statistics at 1, 4, 20 and 70 workers, including bounced grid light. Job-local random
+streams and ordered bounce-light publication make these checks independent of
+scheduling. This is repeatability within one build, not cross-platform floating-point
+identity. Randomized output differs from the old shared C-library RNG sequence.
 
 Use explicit subprocess timeouts and capture stdout/stderr in test failure reports.
 Do not introduce brittle tests that only mirror internal implementation details.

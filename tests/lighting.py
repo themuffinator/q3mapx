@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import re
 
 from fixtures import create_lighting_fixture
 from integration import Bsp, run
@@ -14,6 +15,9 @@ MODES = {
     "bounce": ["-fast", "-samples", 2, "-bounce", 1],
     "deluxe": ["-fast", "-samples", 2, "-deluxe", "-bounce", 1],
     "supersampled": ["-fast", "-super", 2, "-samples", 2],
+    "random": ["-fast", "-samples", "+4", "-randomsamples", "-bounce", 1],
+    "dirt": ["-fast", "-dirty", "-dirtmode", 1],
+    "flood": ["-fast", "-samples", 2, "-floodlight", "-lowquality"],
 }
 
 
@@ -57,6 +61,8 @@ def main():
     run(exe, [*base, "-threads", 1, "-light", *MODES["adaptive"], "-notrace", source], root, "unshadowed")
     unshadowed = hashlib.sha256(Bsp(bsp_path).lump(14)).hexdigest()
     assert unshadowed != records[0]["sha256"]["lightmaps"], "Fixture did not exercise shadow tracing"
+    flood = next(r for r in records if r["mode"] == "flood")
+    assert flood["sha256"]["lightmaps"] != records[0]["sha256"]["lightmaps"], "Low-quality floodlight had no effect"
     # Independently change alpha and RGB texels while retaining the same geometry.
     # These checks catch fixtures whose material flags or image lookup are ineffective.
     for texture, channels in (("fence", (3,)), ("filter", (0, 1, 2))):
@@ -74,8 +80,32 @@ def main():
             assert digest != records[0]["sha256"]["lightmaps"], f"Fixture did not exercise {texture} texture filtering"
         finally:
             image.write_bytes(saved)
+    # Dense geometry puts grid points inside solid brushes and exercises randomized
+    # escape nudges, as well as many parallel bounce emitters and culling counters.
+    dense = create_lighting_fixture(root / "dense", dense=True, grid=5)
+    dense_root = root / "dense"
+    dense_base = ["-game", "quake3", "-fs_basepath", dense_root, "-v"]
+    run(exe, [*dense_base, "-threads", 1, "-meta", dense], dense_root, "bsp")
+    run(exe, [*dense_base, "-threads", 1, "-vis", "-fast", dense], dense_root, "vis")
+    dense_bsp = dense.with_suffix(".bsp")
+    unlit = dense_bsp.read_bytes()
+    expected = statistics = None
+    for threads in (1, 4, 20, 70):
+        dense_bsp.write_bytes(unlit)
+        label = f"dense-{threads}"
+        run(exe, [*dense_base, "-threads", threads, "-light", "-fast", "-samples", "+4",
+                  "-randomsamples", "-bounce", 1, "-bouncegrid", dense], dense_root, label, timeout=180)
+        result = Bsp(dense_bsp)
+        actual = {n: result.lump(n) for n in LIGHT_LUMPS}
+        log = (dense_root / f"{label}.log").read_text(encoding="utf-8")
+        counts = re.findall(r"^\s*(\d+) (?:grid points .*culled|lights .*culled|luxels (?:mapped|occluded|illuminated)|vertexes illuminated|diffuse surfaces|total diffuse lights)\s*$", log, re.M)
+        assert len(counts) >= 12, "Lighting statistics missing"
+        if expected is None:
+            expected, statistics = actual, counts
+        assert actual == expected, f"Dense lighting output differs at {threads} workers"
+        assert counts == statistics, f"Lighting counters differ at {threads} workers"
     (root / "lighting-report.json").write_text(json.dumps(records, indent=2) + "\n", encoding="utf-8")
-    print("Material shadows, sun/sky, emitters, bounce, deluxe, supersampling and worker parity passed")
+    print("Material shadows, sun/sky, bounce, deluxe, random/dirt/flood sampling, dense grid and 1/4/20/70-worker parity passed")
 
 
 if __name__ == "__main__":

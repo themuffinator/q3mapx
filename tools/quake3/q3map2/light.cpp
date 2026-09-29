@@ -30,6 +30,7 @@
 
 /* dependencies */
 #include "q3map2.h"
+#include "lighting_jobs.h"
 #include "bspfile_rbsp.h"
 #include <set>
 
@@ -1280,7 +1281,7 @@ static bool LightContributionToPoint( trace_t *trace ){
 
 	/* ydnar: check origin against light's pvs envelope */
 	if ( !light->minmax.test( trace->origin ) ) {
-		gridBoundsCulled++;
+		AddLightStatistic( gridBoundsCulled );
 		return false;
 	}
 
@@ -1297,7 +1298,7 @@ static bool LightContributionToPoint( trace_t *trace ){
 
 	/* test envelope */
 	if ( dist > light->envelope ) {
-		gridEnvelopeCulled++;
+		AddLightStatistic( gridEnvelopeCulled );
 		return false;
 	}
 
@@ -1457,9 +1458,13 @@ struct contribution_t
 };
 
 static void TraceGrid( int num ){
+	SeedLightingRandom( 1, num );
 	int i, j, x, y, z, mod, numCon, numStyles;
 	Vector3 cheapColor, thisdir;
-	contribution_t contributions[ MAX_CONTRIBUTIONS ];
+	// Reuse a bounded worker buffer instead of probing a 1.25 MiB stack array
+	// for every grid point. Reserve both floodlight contributions when enabled.
+	thread_local std::vector<contribution_t> contributions;
+	contributions.resize( std::min( lights.size() + ( floodlighty ? 2u : 0u ), size_t( MAX_CONTRIBUTIONS ) ) );
 	trace_t trace;
 
 	/* get grid points */
@@ -1488,9 +1493,9 @@ static void TraceGrid( int num ){
 		while ( ( step += 0.005 ) <= 1 )
 		{
 			trace.origin = baseOrigin;
-			trace.origin[ 0 ] += step * ( Random() - 0.5 ) * gridSize[0];
-			trace.origin[ 1 ] += step * ( Random() - 0.5 ) * gridSize[1];
-			trace.origin[ 2 ] += step * ( Random() - 0.5 ) * gridSize[2];
+			trace.origin[ 0 ] += step * ( LightingRandom() - 0.5 ) * gridSize[0];
+			trace.origin[ 1 ] += step * ( LightingRandom() - 0.5 ) * gridSize[1];
+			trace.origin[ 2 ] += step * ( LightingRandom() - 0.5 ) * gridSize[2];
 
 			/* ydnar: changed to find cluster num */
 			trace.cluster = ClusterForPointExt( trace.origin, VERTEX_EPSILON );
@@ -1548,7 +1553,7 @@ static void TraceGrid( int num ){
 		gp.dir += trace.direction * addSize;
 
 		/* stop after a while */
-		if ( numCon >= ( MAX_CONTRIBUTIONS - 1 ) ) {
+		if ( numCon >= MAX_CONTRIBUTIONS - ( floodlighty ? 2 : 0 ) ) {
 			break;
 		}
 
@@ -1995,8 +2000,8 @@ static void LightWorld( bool fastAllocate, bool bounceStore ){
 		            gridBounds[ 0 ], gridBounds[ 1 ], gridBounds[ 2 ], bspGridPoints.size() );
 
 		/* ydnar: emit statistics on light culling */
-		Sys_FPrintf( SYS_VRB, "%9d grid points envelope culled\n", gridEnvelopeCulled );
-		Sys_FPrintf( SYS_VRB, "%9d grid points bounds culled\n", gridBoundsCulled );
+		Sys_FPrintf( SYS_VRB, "%9llu grid points envelope culled\n", static_cast<unsigned long long>( gridEnvelopeCulled ) );
+		Sys_FPrintf( SYS_VRB, "%9llu grid points bounds culled\n", static_cast<unsigned long long>( gridBoundsCulled ) );
 	}
 
 	/* slight optimization to remove a sqrt */
@@ -2006,8 +2011,8 @@ static void LightWorld( bool fastAllocate, bool bounceStore ){
 	Sys_Printf( "--- MapRawLightmap ---\n" );
 	RunThreadsOnIndividual( numRawLightmaps, true, MapRawLightmap, "MapRawLightmap" );
 	Sys_Printf( "%9d luxels\n", numLuxels );
-	Sys_Printf( "%9d luxels mapped\n", numLuxelsMapped );
-	Sys_Printf( "%9d luxels occluded\n", numLuxelsOccluded );
+	Sys_Printf( "%9llu luxels mapped\n", static_cast<unsigned long long>( numLuxelsMapped ) );
+	Sys_Printf( "%9llu luxels occluded\n", static_cast<unsigned long long>( numLuxelsOccluded ) );
 
 	/* dirty them up */
 	if ( dirty ) {
@@ -2029,19 +2034,19 @@ static void LightWorld( bool fastAllocate, bool bounceStore ){
 
 	Sys_Printf( "--- IlluminateRawLightmap ---\n" );
 	RunThreadsOnIndividual( numRawLightmaps, true, IlluminateRawLightmap, "IlluminateRawLightmap" );
-	Sys_Printf( "%9d luxels illuminated\n", numLuxelsIlluminated );
+	Sys_Printf( "%9llu luxels illuminated\n", static_cast<unsigned long long>( numLuxelsIlluminated ) );
 
 	StitchSurfaceLightmaps();
 
 	Sys_Printf( "--- IlluminateVertexes ---\n" );
 	RunThreadsOnIndividual( bspDrawSurfaces.size(), true, IlluminateVertexes, "IlluminateVertexes" );
-	Sys_Printf( "%9d vertexes illuminated\n", numVertsIlluminated );
+	Sys_Printf( "%9llu vertexes illuminated\n", static_cast<unsigned long long>( numVertsIlluminated ) );
 
 	/* ydnar: emit statistics on light culling */
-	Sys_FPrintf( SYS_VRB, "%9d lights plane culled\n", lightsPlaneCulled );
-	Sys_FPrintf( SYS_VRB, "%9d lights envelope culled\n", lightsEnvelopeCulled );
-	Sys_FPrintf( SYS_VRB, "%9d lights bounds culled\n", lightsBoundsCulled );
-	Sys_FPrintf( SYS_VRB, "%9d lights cluster culled\n", lightsClusterCulled );
+	Sys_FPrintf( SYS_VRB, "%9llu lights plane culled\n", static_cast<unsigned long long>( lightsPlaneCulled ) );
+	Sys_FPrintf( SYS_VRB, "%9llu lights envelope culled\n", static_cast<unsigned long long>( lightsEnvelopeCulled ) );
+	Sys_FPrintf( SYS_VRB, "%9llu lights bounds culled\n", static_cast<unsigned long long>( lightsBoundsCulled ) );
+	Sys_FPrintf( SYS_VRB, "%9llu lights cluster culled\n", static_cast<unsigned long long>( lightsClusterCulled ) );
 
 	/* radiosity */
 	b = 1;
@@ -2091,8 +2096,8 @@ static void LightWorld( bool fastAllocate, bool bounceStore ){
 			inGrid = true;
 			RunThreadsOnIndividual( rawGridPoints.size(), true, TraceGrid, "TraceGrid", 0 );
 			inGrid = false;
-			Sys_FPrintf( SYS_VRB, "%9d grid points envelope culled\n", gridEnvelopeCulled );
-			Sys_FPrintf( SYS_VRB, "%9d grid points bounds culled\n", gridBoundsCulled );
+			Sys_FPrintf( SYS_VRB, "%9llu grid points envelope culled\n", static_cast<unsigned long long>( gridEnvelopeCulled ) );
+			Sys_FPrintf( SYS_VRB, "%9llu grid points bounds culled\n", static_cast<unsigned long long>( gridBoundsCulled ) );
 		}
 
 		/* light up my world */
@@ -2103,20 +2108,20 @@ static void LightWorld( bool fastAllocate, bool bounceStore ){
 
 		Sys_Printf( "--- IlluminateRawLightmap ---\n" );
 		RunThreadsOnIndividual( numRawLightmaps, true, IlluminateRawLightmap, "IlluminateRawLightmap" );
-		Sys_Printf( "%9d luxels illuminated\n", numLuxelsIlluminated );
-		Sys_Printf( "%9d vertexes illuminated\n", numVertsIlluminated );
+		Sys_Printf( "%9llu luxels illuminated\n", static_cast<unsigned long long>( numLuxelsIlluminated ) );
+		Sys_Printf( "%9llu vertexes illuminated\n", static_cast<unsigned long long>( numVertsIlluminated ) );
 
 		StitchSurfaceLightmaps();
 
 		Sys_Printf( "--- IlluminateVertexes ---\n" );
 		RunThreadsOnIndividual( bspDrawSurfaces.size(), true, IlluminateVertexes, "IlluminateVertexes" );
-		Sys_Printf( "%9d vertexes illuminated\n", numVertsIlluminated );
+		Sys_Printf( "%9llu vertexes illuminated\n", static_cast<unsigned long long>( numVertsIlluminated ) );
 
 		/* ydnar: emit statistics on light culling */
-		Sys_FPrintf( SYS_VRB, "%9d lights plane culled\n", lightsPlaneCulled );
-		Sys_FPrintf( SYS_VRB, "%9d lights envelope culled\n", lightsEnvelopeCulled );
-		Sys_FPrintf( SYS_VRB, "%9d lights bounds culled\n", lightsBoundsCulled );
-		Sys_FPrintf( SYS_VRB, "%9d lights cluster culled\n", lightsClusterCulled );
+		Sys_FPrintf( SYS_VRB, "%9llu lights plane culled\n", static_cast<unsigned long long>( lightsPlaneCulled ) );
+		Sys_FPrintf( SYS_VRB, "%9llu lights envelope culled\n", static_cast<unsigned long long>( lightsEnvelopeCulled ) );
+		Sys_FPrintf( SYS_VRB, "%9llu lights bounds culled\n", static_cast<unsigned long long>( lightsBoundsCulled ) );
+		Sys_FPrintf( SYS_VRB, "%9llu lights cluster culled\n", static_cast<unsigned long long>( lightsClusterCulled ) );
 
 		/* interate */
 		bounce--;

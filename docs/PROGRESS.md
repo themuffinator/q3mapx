@@ -156,3 +156,32 @@ scheduler measurement, **not total compilation speedup**. Raw observations are i
 Additional inherited issues found: unchecked large-file offsets, nontransactional
 BSP replacement, unbounded diagnostic formatting, and potential uninitialized
 `ClipWinding::bestNormal` moves. These remain separate follow-up tasks.
+
+Full-stage follow-up (`docs/benchmarks/jobs-win-x64.json`) shows no broad compiler
+speedup yet. At 20 workers, VIS was 0.9312 s, lighting 0.0606 s and minimap 0.0426 s;
+at one worker VIS increased to 34.3020 s versus the earlier 26.8239 s baseline.
+These sequential runs include system/run-order effects and the VIS race fix;
+an alternating comparison is needed before attributing the change. The M3
+algorithm-optimization item remains open. Lower scheduling overhead alone does
+not accelerate this geometry-heavy fixture.
+
+## 2026-09-29 — Safer file replacement and diagnostics
+
+BSP and `SaveFile` outputs now reserve unique sibling temporary files and replace
+the destination only after a successful write/close. Replacement errors are
+reported and preserve the original. Interrupted C++ operations clean temporary
+files; legacy fatal `Error()` exits can leave a recoverable `.q3mapx-*.tmp` sibling.
+This protects against ordinary write/replacement failure; it is not a promise of
+power-loss durability on every filesystem.
+
+Added checked 64-bit file-length queries with an explicit current 2 GiB format
+limit, checked BSP lump sizes/offsets and seeks, checked output closes, bounded
+absolute paths and diagnostic formatting, serialized console/XML initialization,
+safe literal diagnostic strings, public libxml buffer APIs, and initialized model
+clipping normals. These address the issues recorded in the previous task.
+
+Validation: release build and 9/9 CTest groups pass. Atomic-file tests cover
+successful replacement, interrupted writes, independent temporary names, and a
+failed replacement that preserves existing contents. Compiler round trips and
+corrupt-BSP checks continue to pass. Legacy paths outside BSP/`SaveFile`, including
+some direct text exporters and asset decoders, still need broader hardening.

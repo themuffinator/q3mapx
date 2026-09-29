@@ -91,13 +91,13 @@ void xml_SendNode( xmlNodePtr node ){
 		// l_net library defines an upper limit of MAX_NETMESSAGE
 		// there are some size check errors, so we use MAX_NETMESSAGE-10 to be safe
 		// if the size of the buffer exceeds MAX_NETMESSAGE-10 we'll send in several network messages
-		for ( int pos = 0; pos < (int)xml_buf->use; )
+		for ( int pos = 0; pos < xmlBufferLength( xml_buf ); )
 		{
 			// what size are we gonna send now?
-			const int size = std::min( (int)xml_buf->use - pos, MAX_NETMESSAGE - 10 );
+			const int size = std::min( xmlBufferLength( xml_buf ) - pos, MAX_NETMESSAGE - 10 );
 			netmessage_t msg;
 			NMSG_Clear( &msg );
-			NMSG_WriteString_n( &msg, reinterpret_cast<const char*>( xml_buf->content + pos ), size );
+			NMSG_WriteString_n( &msg, reinterpret_cast<const char*>( xmlBufferContent( xml_buf ) + pos ), size );
 			Net_Send( brdcst_socket, &msg );
 			// now that the thing is sent prepare to loop again
 			pos += size;
@@ -113,7 +113,7 @@ void xml_Select( const char *msg, int entitynum, int brushnum, bool bError ){
 	char level[2];
 
 	// now build a proper "select" XML node
-	sprintf( buf, "Entity %i, Brush %i: %s", entitynum, brushnum, msg );
+	snprintf( buf, sizeof(buf), "Entity %i, Brush %i: %s", entitynum, brushnum, msg );
 	node = xmlNewNode( nullptr, (const xmlChar*)"select" );
 	xmlNodeAddContent( node, (const xmlChar*)buf );
 	level[0] = (int)'0' + ( bError ? SYS_ERR : SYS_WRN );
@@ -126,9 +126,9 @@ void xml_Select( const char *msg, int entitynum, int brushnum, bool bError ){
 	xmlAddChild( node, select );
 	xml_SendNode( node );
 
-	sprintf( buf, "Entity %i, Brush %i: %s", entitynum, brushnum, msg );
+	snprintf( buf, sizeof(buf), "Entity %i, Brush %i: %s", entitynum, brushnum, msg );
 	if ( bError ) {
-		Error( buf );
+		Error( "%s", buf );
 	}
 	else{
 		Sys_FPrintf( SYS_NOXMLflag | SYS_WRN, "%s\n", buf );
@@ -152,8 +152,8 @@ void xml_Point( const char *msg, const Vector3& pt ){
 	xmlAddChild( node, point );
 	xml_SendNode( node );
 
-	sprintf( buf, "%s (%g %g %g)", msg, pt[0], pt[1], pt[2] );
-	Error( buf );
+	snprintf( buf, sizeof(buf), "%s (%g %g %g)", msg, pt[0], pt[1], pt[2] );
+	Error( "%s", buf );
 }
 
 #define WINDING_BUFSIZE 2048
@@ -186,11 +186,11 @@ void xml_Winding( const char *msg, const Vector3 p[], int numpoints, bool die ){
 	xml_SendNode( node );
 
 	if ( die ) {
-		Error( msg );
+		Error( "%s", msg );
 	}
 	else
 	{
-		Sys_Printf( msg );
+		Sys_Printf( "%s", msg );
 		Sys_Printf( "\n" );
 	}
 }
@@ -261,6 +261,7 @@ void Broadcast_Setup( const char *dest ){
 }
 
 void Broadcast_Shutdown(){
+	std::lock_guard lock( mesege_mutex );
 	if ( brdcst_socket ) {
 		Sys_Printf( "Disconnecting\n" );
 		xml_message_flush();
@@ -321,6 +322,7 @@ static void xml_message_push( int flag, const char* characters, size_t length ){
 
 // all output ends up through here
 static void FPrintf( int flag, char *buf ){
+	std::lock_guard lock( mesege_mutex );
 	static bool bGotXML = false;
 
 	set_console_colour_for_flag( flag & ~( SYS_NOXMLflag | SYS_VRBflag ) );
@@ -363,7 +365,7 @@ void Sys_FPrintf( int flag, const char *format, ... ){
 	}
 
 	va_start( argptr, format );
-	vsprintf( out_buffer, format, argptr );
+	vsnprintf( out_buffer, sizeof(out_buffer), format, argptr );
 	va_end( argptr );
 
 	FPrintf( flag, out_buffer );
@@ -374,7 +376,7 @@ void Sys_Printf( const char *format, ... ){
 	va_list argptr;
 
 	va_start( argptr, format );
-	vsprintf( out_buffer, format, argptr );
+	vsnprintf( out_buffer, sizeof(out_buffer), format, argptr );
 	va_end( argptr );
 
 	FPrintf( SYS_STD, out_buffer );
@@ -386,7 +388,7 @@ void Sys_Warning( const char *format, ... ){
 
 	va_start( argptr, format );
 	sprintf( out_buffer, "WARNING: " );
-	vsprintf( out_buffer + strlen( "WARNING: " ), format, argptr );
+	vsnprintf( out_buffer + strlen( "WARNING: " ), sizeof(out_buffer) - strlen( "WARNING: " ), format, argptr );
 	va_end( argptr );
 
 	FPrintf( SYS_WRN, out_buffer );

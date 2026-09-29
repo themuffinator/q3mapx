@@ -24,6 +24,8 @@ find_package(Threads REQUIRED)
 add_library(q3mapx_jobs STATIC libs/q3mapx/job_pool.cpp)
 target_include_directories(q3mapx_jobs PUBLIC libs)
 target_link_libraries(q3mapx_jobs PUBLIC Threads::Threads)
+add_library(q3mapx_io STATIC libs/q3mapx/atomic_file.cpp)
+target_include_directories(q3mapx_io PUBLIC libs)
 
 # Preserve NRC's source layout so changes remain easy to compare with upstream.
 file(GLOB Q3MAPX_COMPILER_SOURCES CONFIGURE_DEPENDS tools/quake3/q3map2/*.cpp)
@@ -43,7 +45,7 @@ target_include_directories(q3mapx PRIVATE tools/quake3/common libs include)
 target_link_libraries(q3mapx PRIVATE
     PkgConfig::GLIB PkgConfig::XML assimp::assimp
     PNG::PNG JPEG::JPEG ZLIB::ZLIB Threads::Threads
-    q3mapx_jobs
+    q3mapx_jobs q3mapx_io
 )
 target_compile_definitions(q3mapx PRIVATE
     Q3MAP_VERSION="2.5.17n-q3mapx-${PROJECT_VERSION}"
@@ -126,6 +128,9 @@ if(BUILD_TESTING)
         --compiler $<TARGET_FILE:q3mapx>
         --work-dir ${CMAKE_BINARY_DIR}/tests/cli-options)
     set_tests_properties(cli_options PROPERTIES TIMEOUT 90)
+    add_executable(atomic_file_test tests/atomic_file.cpp)
+    target_link_libraries(atomic_file_test PRIVATE q3mapx_io)
+    add_test(NAME atomic_file COMMAND atomic_file_test ${CMAKE_BINARY_DIR}/tests/atomic-file)
 endif()
 
 include(GNUInstallDirs)

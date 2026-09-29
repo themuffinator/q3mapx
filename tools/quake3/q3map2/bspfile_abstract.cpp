@@ -30,6 +30,7 @@
 
 /* dependencies */
 #include "q3map2.h"
+#include "q3mapx/atomic_file.h"
 #include "bspfile_ibsp.h"
 #include "bspfile_abstract.h"
 #include <ctime>
@@ -235,28 +236,16 @@ void LoadBSPFilePartially( const char *filename ){
  */
 
 void WriteBSPFile( const char *filename ){
-	char tempname[ 1024 ];
-	time_t tm;
-
 	Sys_Printf( "Writing %s\n", filename );
-
-	/* dummy check */
-	if ( g_game == nullptr || g_game->write == nullptr ) {
-		Error( "WriteBSPFile: unsupported BSP file format" );
+	if ( !g_game || !g_game->write ) Error( "WriteBSPFile: unsupported BSP file format" );
+	try {
+		q3mapx::AtomicFile output(filename);
+		SwapBSPFile();
+		g_game->write( output.temporary().string().c_str() );
+		SwapBSPFile();
+		output.commit();
 	}
-
-	/* make fake temp name so existing bsp file isn't damaged in case write process fails */
-	time( &tm );
-	sprintf( tempname, "%s.%08X", filename, (int) tm );
-
-	/* byteswap, write the bsp, then swap back so it can be manipulated further */
-	SwapBSPFile();
-	g_game->write( tempname );
-	SwapBSPFile();
-
-	/* replace existing bsp file */
-	remove( filename );
-	rename( tempname, filename );
+	catch ( const std::exception& error ) { Error( "%s", error.what() ); }
 }
 
 

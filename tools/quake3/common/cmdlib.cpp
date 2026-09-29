@@ -36,6 +36,8 @@
 #include "stream/textstream.h"
 #include <cerrno>
 #include <filesystem>
+#include <limits>
+#include "q3mapx/atomic_file.h"
 
 #ifdef WIN32
 #include <direct.h>
@@ -67,14 +69,11 @@ void_ptr safe_calloc( size_t size ){
 
 char *ExpandArg( const char *path ){
 	static char full[1024];
-
-	if ( path_is_absolute( path ) ) {
-		strcpy( full, path );
-	}
-	else{
-		Q_getwd( full );
-		strcat( full, path );
-	}
+	std::error_code error;
+	const auto absolute = std::filesystem::absolute( path, error ).string();
+	if ( error ) Error( "Cannot resolve path: %s", error.message().c_str() );
+	if ( absolute.size() >= sizeof(full) ) Error( "Path exceeds %zu bytes", sizeof(full) - 1 );
+	std::memcpy( full, absolute.c_str(), absolute.size() + 1 );
 	return full;
 }
 
@@ -119,12 +118,19 @@ void Q_mkdir( const char* path ){
    ================
  */
 int Q_filelength( FILE *f ){
-	const int pos = ftell( f );
-	fseek( f, 0, SEEK_END );
-	const int end = ftell( f );
-	fseek( f, pos, SEEK_SET );
-
-	return end;
+#ifdef WIN32
+	const auto pos = _ftelli64( f );
+	if ( pos < 0 || _fseeki64( f, 0, SEEK_END ) != 0 ) Error( "File seek failure" );
+	const auto end = _ftelli64( f );
+	if ( _fseeki64( f, pos, SEEK_SET ) != 0 ) Error( "File seek failure" );
+#else
+	const auto pos = ftello( f );
+	if ( pos < 0 || fseeko( f, 0, SEEK_END ) != 0 ) Error( "File seek failure" );
+	const auto end = ftello( f );
+	if ( fseeko( f, pos, SEEK_SET ) != 0 ) Error( "File seek failure" );
+#endif
+	if ( end < 0 || end >= std::numeric_limits<int>::max() ) Error( "File exceeds supported 2 GiB size limit" );
+	return int(end);
 }
 
 
@@ -157,9 +163,15 @@ void SafeRead( FILE *f, MemBuffer& buffer ){
 
 
 void SafeWrite( FILE *f, const void *buffer, int count ){
-	if ( buffer != nullptr && fwrite( buffer, 1, count, f ) != (size_t)count ) {
+	if ( count < 0 || ( count && !buffer ) ) Error( "Invalid file write length/buffer" );
+	if ( count && fwrite( buffer, 1, size_t(count), f ) != size_t(count) ) {
 		Error( "File write failure" );
 	}
+}
+
+void SafeClose( FILE *f ){
+	const bool failed = ferror(f) != 0;
+	if ( fclose(f) != 0 || failed ) Error( "File close/flush failure" );
 }
 
 
@@ -193,9 +205,14 @@ MemBuffer LoadFile( const char *filename ){
    ==============
  */
 void    SaveFile( const char *filename, const void *buffer, int count ){
-	FILE *f = SafeOpenWrite( filename );
-	SafeWrite( f, buffer, count );
-	fclose( f );
+	try {
+		q3mapx::AtomicFile output(filename);
+		FILE *f = SafeOpenWrite( output.temporary().string().c_str() );
+		SafeWrite( f, buffer, count );
+		SafeClose( f );
+		output.commit();
+	}
+	catch ( const std::exception& error ) { Error( "%s", error.what() ); }
 }
 
 

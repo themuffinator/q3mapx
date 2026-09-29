@@ -39,9 +39,12 @@ void ValidateBSPData( bool partial = false );
  */
 template<typename T>
 void AddLump( FILE *file, bspLump_t& lump, const std::vector<T>& data ){
-	const int length = sizeof( T ) * data.size();
+	if ( data.size() > size_t(INT_MAX - 3) / sizeof(T) ) Error( "BSP lump exceeds supported size" );
+	const int length = int(sizeof( T ) * data.size());
+	const long offset = ftell(file);
+	if ( offset < 0 || offset > INT_MAX - 3 - length ) Error( "BSP exceeds supported 2 GiB size limit" );
 	/* add lump to bsp file header */
-	lump.offset = LittleLong( ftell( file ) );
+	lump.offset = LittleLong( int(offset) );
 	lump.length = LittleLong( length );
 
 	/* write lump to file */

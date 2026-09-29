@@ -338,9 +338,9 @@ void WriteIBSPFile( const char *filename ){
 	Sys_Printf( "Wrote %.1f MB (%d bytes)\n", (float) size / ( 1024 * 1024 ), size );
 
 	/* write the completed header */
-	fseek( file, 0, SEEK_SET );
+	if ( fseek( file, 0, SEEK_SET ) != 0 ) Error( "BSP header seek failed" );
 	SafeWrite( file, &header, sizeof( header ) );
 
 	/* close the file */
-	fclose( file );
+	SafeClose( file );
 }

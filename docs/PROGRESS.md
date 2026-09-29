@@ -226,3 +226,25 @@ GPU 0.3808 s (1.93x); 2048²/four samples CPU 0.0924 s versus GPU 0.2496 s. Auto
 selection keeps the small case on CPU. Reports include the exact measured binary
 hash. Lighting was profiled and its material semantics evaluated; it remains on
 CPU, with the rationale and future parity requirements in `GPU-LIGHTING.md`.
+
+## 2026-09-29 — Native Qt workbench
+
+Added a separate Qt 6 desktop application with versioned project files, isolated
+run folders, three quality presets, exact argument previews, CPU/minimap backend
+settings, six workflows, asynchronous queues, dependent-stage skipping, graceful
+cancel with bounded kill fallback, persistent full logs, searchable live output,
+diagnostics, JSON report viewing/export, device discovery, history/project reload,
+light/dark themes, label mnemonics and keyboard shortcuts. The CLI remains separate;
+Qt is optional through `Q3MAPX_BUILD_GUI`.
+
+Validation: the preceding 12 compiler groups plus the new Qt queue integration
+test pass. The queue performs real BSP/VIS/LIGHT, decompilation and minimap runs;
+checks spaced paths, project round trips, invalid fields, untouched source files,
+failed starts, dependent skips and cancellation. A separate offscreen preview test
+also passes (14 registered groups total). The actual Qt-painted interface was
+inspected from `build/release/tests/workbench/workbench.png`; no OS capture or
+mouse/keyboard injection was used. Preview logs/settings stay in that test folder.
+
+Known limits: wider real-game and assistive-technology testing is outstanding;
+lighting remains CPU based. Build history is bounded to 100 runs and the live log
+view is bounded, while full logs remain in run folders. Runtime packaging follows.

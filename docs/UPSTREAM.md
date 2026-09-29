@@ -49,3 +49,8 @@ GPL-3.0-or-later project. Headers and the full license are in
 `libs/thirdparty/opencl/`. GPU kernels, the dynamic loader, and spatial sampling
 code are original q3mapx code. GPU drivers are supplied by the operating system or
 hardware vendor and are not redistributed by this repository.
+
+The original q3mapx workbench uses the [Qt 6 Core, Gui and Widgets framework](https://doc.qt.io/qt-6/),
+under its compatible open-source license terms; see [Qt licensing](https://doc.qt.io/qt-6/licensing.html).
+No Qt example code was copied. Runtime packages must retain Qt and its component
+notices and provide the applicable source/relinking information.

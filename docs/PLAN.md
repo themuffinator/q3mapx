@@ -80,13 +80,13 @@ accelerated minimaps.
 
 ## M5 — Native desktop workbench
 
-- [ ] Build a Qt 6 Widgets application alongside the standalone CLI.
-- [ ] Provide map/game paths, saved project settings, quality presets, and option inspection.
-- [ ] Run asynchronous build/decompile queues with progress, cancellation, and elapsed times.
-- [ ] Offer searchable logs, diagnostics, output locations, and report export.
-- [ ] Include decompilation controls, hardware/backend selection, and build history.
-- [ ] Add keyboard accessibility, DPI-aware layout, validation, and persistent preferences.
-- [ ] Test queue transitions, process errors, command construction, and project serialization.
+- [x] Build a Qt 6 Widgets application alongside the standalone CLI.
+- [x] Provide map/game paths, saved project settings, quality presets, and option inspection.
+- [x] Run asynchronous build/decompile queues with progress, cancellation, and elapsed times.
+- [x] Offer searchable logs, diagnostics, output locations, and report export.
+- [x] Include decompilation controls, hardware/backend selection, and build history.
+- [x] Add keyboard accessibility, DPI-aware layout, validation, and persistent preferences.
+- [x] Test queue transitions, process errors, command construction, and project serialization.
 
 Acceptance: users can configure, run, inspect, cancel, and repeat real CLI workflows
 without shell commands. UI stays responsive; arguments are passed as an argument

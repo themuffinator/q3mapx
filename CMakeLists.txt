@@ -12,6 +12,7 @@ option(Q3MAPX_ENABLE_LTO "Enable interprocedural optimization in release builds"
 option(Q3MAPX_ENABLE_SANITIZERS "Enable address and undefined behavior sanitizers" OFF)
 option(Q3MAPX_BUILD_BENCHMARKS "Build standalone performance measurement tools" OFF)
 option(Q3MAPX_ENABLE_OPENCL "Enable optional dynamically loaded OpenCL GPU compute" ON)
+option(Q3MAPX_BUILD_GUI "Build the Qt 6 desktop workbench" ON)
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GLIB REQUIRED IMPORTED_TARGET glib-2.0)
@@ -158,6 +159,31 @@ if(BUILD_TESTING)
 endif()
 
 include(GNUInstallDirs)
+if(Q3MAPX_BUILD_GUI)
+    find_package(Qt6 6.4 REQUIRED COMPONENTS Core Gui Widgets)
+    add_library(q3mapx_workbench_core STATIC apps/workbench/project.cpp apps/workbench/job_queue.cpp apps/workbench/job_queue.h)
+    set_target_properties(q3mapx_workbench_core PROPERTIES AUTOMOC ON)
+    target_include_directories(q3mapx_workbench_core PUBLIC apps/workbench)
+    target_link_libraries(q3mapx_workbench_core PUBLIC Qt6::Core)
+    qt_add_executable(q3mapx-workbench WIN32 apps/workbench/main.cpp apps/workbench/window.cpp apps/workbench/window.h)
+    set_target_properties(q3mapx-workbench PROPERTIES AUTOMOC ON)
+    target_link_libraries(q3mapx-workbench PRIVATE q3mapx_workbench_core Qt6::Widgets)
+    install(TARGETS q3mapx-workbench RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+    if(BUILD_TESTING)
+        add_executable(workbench_test tests/workbench.cpp)
+        target_link_libraries(workbench_test PRIVATE q3mapx_workbench_core)
+        add_test(NAME workbench COMMAND ${Python3_EXECUTABLE}
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/workbench.py
+            --test $<TARGET_FILE:workbench_test> --compiler $<TARGET_FILE:q3mapx>
+            --work-dir ${CMAKE_BINARY_DIR}/tests/workbench)
+        set_tests_properties(workbench PROPERTIES TIMEOUT 120 FIXTURES_SETUP workbench_run)
+        add_test(NAME workbench_preview COMMAND q3mapx-workbench -platform offscreen
+            --project ${CMAKE_BINARY_DIR}/tests/workbench/project.q3mapx.json
+            --state-dir ${CMAKE_BINARY_DIR}/tests/workbench/ui-state
+            --render-preview ${CMAKE_BINARY_DIR}/tests/workbench/workbench.png)
+        set_tests_properties(workbench_preview PROPERTIES TIMEOUT 30 FIXTURES_REQUIRED workbench_run)
+    endif()
+endif()
 install(TARGETS q3mapx RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(FILES COPYING GPL LGPL LICENSE CONTRIBUTORS DESTINATION ${CMAKE_INSTALL_DATADIR}/q3mapx)
 install(DIRECTORY licenses/ DESTINATION ${CMAKE_INSTALL_DATADIR}/q3mapx/licenses)

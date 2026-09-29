@@ -10,6 +10,7 @@ See the [task log](docs/PROGRESS.md) for implemented and validated work.
 
 The standalone CLI builds with CMake/Ninja; see [build instructions](docs/DEVELOPMENT.md).
 Release output is `build/release/bin/q3mapx` (`.exe` on Windows).
+The native GUI is `build/release/bin/q3mapx-workbench`; see the [workbench guide](docs/WORKBENCH.md).
 
 Recover an editable map with a texture-recovery report:
 

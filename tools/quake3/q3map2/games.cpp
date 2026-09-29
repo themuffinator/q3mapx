@@ -31,6 +31,8 @@
 #include "bspfile_rbsp.h"
 #include "qstringops.h"
 #include "inout.h"
+#include "rapidjson/prettywriter.h"
+#include "rapidjson/stringbuffer.h"
 
 struct game_default : game_t
 {
@@ -195,6 +197,8 @@ struct game_quake3 : game_default
 	static const int Q_SURF_NOOB                = 0x80000;     /* no overbounces on this surface in Q3A:Defrag mod */
 
 	game_quake3(){
+		title = "Quake III Arena";
+		aliases = { "q3", "q3a" };
 		surfaceParms.insert( surfaceParms.end(), {
 		{ "noob",           0,                          0,                          Q_SURF_NOOB,                0,                          0,                          0 },
 		{ "ob",             0,                          0,                          0,                          0,                          C_OB,                       0 },
@@ -214,6 +218,8 @@ struct game_quakelive : game_default
 	                                                //  probably be re-purposed some day.)
 	game_quakelive(){
 		arg = "quakelive";
+		title = "Quake Live";
+		aliases = { "ql" };
 		homeBasePath = ".quakelive";
 		bspVersion = 47;
 		surfaceParms.insert( surfaceParms.end(), {
@@ -229,6 +235,7 @@ struct game_nexuiz : game_default
 {
 	game_nexuiz(){
 		arg = "nexuiz";
+		title = "Nexuiz";
 		gamePath = "data";
 		homeBasePath = ".nexuiz";
 		magic = "nexuiz";
@@ -244,6 +251,7 @@ struct game_xonotic : game_default
 {
 	game_xonotic(){
 		arg = "xonotic";
+		title = "Xonotic";
 		gamePath = "data";
 		homeBasePath = ".xonotic";
 		magic = "xonotic";
@@ -275,6 +283,7 @@ struct game_tremulous : game_default
 
 	game_tremulous(){
 		arg = "tremulous";
+		title = "Tremulous";
 		gamePath = "base";
 		homeBasePath = ".tremulous";
 		magic = "tremulous";
@@ -294,6 +303,7 @@ struct game_unvanquished : game_tremulous
 {
 	game_unvanquished(){
 		arg = "unvanquished";
+		title = "Unvanquished";
 		gamePath = "pkg";
 		homeBasePath = ".local/share/unvanquished";
 		magic = "unvanquished";
@@ -310,6 +320,7 @@ struct game_tenebrae : game_default
 {
 	game_tenebrae(){
 		arg = "tenebrae";
+		title = "Tenebrae";
 		gamePath = "base";
 		homeBasePath = ".tenebrae";
 		magic = "tenebrae";
@@ -351,6 +362,8 @@ struct game_wolf : game_default
 
 	game_wolf(){
 		arg = "wolf";
+		title = "Return to Castle Wolfenstein";
+		aliases = { "rtcw", "rtcw-sp", "rtcw-mp" };
 		gamePath = "main";
 		homeBasePath = ".wolf";
 		magic = "wolf";
@@ -405,6 +418,8 @@ struct game_wolfet : game_wolf
 
 	game_wolfet(){
 		arg = "et";
+		title = "Wolfenstein: Enemy Territory";
+		aliases = { "wolfet" };
 		gamePath = "etmain";
 		homeBasePath = ".etwolf";
 		magic = "et";
@@ -458,6 +473,7 @@ struct game_etut : game_default
 
 	game_etut(){
 		arg = "etut";
+		title = "ET:UT";
 		gamePath = "etut";
 		homeBasePath = ".etwolf";
 		magic = "et";
@@ -516,6 +532,8 @@ struct game_ef : game_default
 
 	game_ef(){
 		arg = "ef";
+		title = "Star Trek Voyager: Elite Force";
+		aliases = { "stvef", "stvef-sp", "stvef-mp" };
 		gamePath = "baseef";
 		homeBasePath = ".ef";
 		magic = "elite";
@@ -534,6 +552,7 @@ struct game_qfusion : game_default
 {
 	game_qfusion(){
 		arg = "qfusion";
+		title = "Qfusion";
 		gamePath = "base";
 		homeBasePath = ".qfusion";
 		magic = "qfusion";
@@ -583,6 +602,7 @@ struct game_reaction : game_default
 
 	game_reaction(){
 		arg = "reaction";
+		title = "Reaction";
 		gamePath = "Boomstick";
 		homeBasePath = ".Reaction";
 		magic = "reaction";
@@ -612,6 +632,7 @@ struct game_darkplaces : game_default
 {
 	game_darkplaces(){
 		arg = "darkplaces";
+		title = "DarkPlaces";
 		gamePath = "id1";
 		homeBasePath = ".darkplaces";
 		magic = "darkplaces";
@@ -630,6 +651,7 @@ struct game_dq : game_default
 {
 	game_dq(){
 		arg = "dq";
+		title = "DQ";
 		gamePath = "basedq";
 		homeBasePath = ".dq";
 		magic = "dq";
@@ -651,6 +673,7 @@ struct game_prophecy : game_default
 {
 	game_prophecy(){
 		arg = "prophecy";
+		title = "Prophecy";
 		gamePath = "base";
 		homeBasePath = ".prophecy";
 		magic = "prophecy";
@@ -886,7 +909,9 @@ struct game_sof2 : game_t
 		{ "*mat_computer",  0,                          0,                          S_MAT_COMPUTER,             S_MAT_MASK,                 0,                          0 },
 	},
 
-	S_SURF_BEVELSMASK
+	S_SURF_BEVELSMASK,
+	"Soldier of Fortune II",
+	{}
 	}{}
 };
 
@@ -894,6 +919,8 @@ struct game_jk2 : game_sof2
 {
 	game_jk2(){
 		arg = "jk2";
+		title = "Star Wars Jedi Knight II: Jedi Outcast";
+		aliases = { "jk2-sp", "jk2-mp" };
 		homeBasePath = ".jk2";
 		magic = "GameData";
 		flareShader = "gfx/misc/flare";
@@ -907,6 +934,8 @@ struct game_ja : game_sof2
 
 	game_ja(){
 		arg = "ja";
+		title = "Star Wars Jedi Knight: Jedi Academy";
+		aliases = { "jka", "jka-sp", "jka-mp" };
 		homeBasePath = ".ja";
 		magic = "GameData";
 		flareShader = "gfx/misc/flare";
@@ -940,3 +969,46 @@ const std::vector<game_t> g_games = { game_quake3(),
                                       game_ja(),
                                     };
 const game_t *g_game = &g_games[0];
+
+const game_t* FindGame( const char* name ){
+	if ( strEmptyOrNull( name ) ) return nullptr;
+	for ( const auto& game : g_games ) {
+		if ( striEqual( name, game.arg ) ) return &game;
+		for ( const char* alias : game.aliases )
+			if ( striEqual( name, alias ) ) return &game;
+	}
+	return nullptr;
+}
+
+int PrintGameCatalog(){
+	rapidjson::StringBuffer buffer;
+	rapidjson::PrettyWriter<rapidjson::StringBuffer> writer( buffer );
+	writer.StartObject();
+	writer.Key( "schema_version" ); writer.Int( 1 );
+	writer.Key( "compiler_version" ); writer.String( Q3MAPX_VERSION );
+	writer.Key( "profiles" ); writer.StartArray();
+	for ( const auto& game : g_games ) {
+		writer.StartObject();
+		writer.Key( "id" ); writer.String( game.arg );
+		writer.Key( "title" ); writer.String( *game.title ? game.title : game.arg );
+		writer.Key( "aliases" ); writer.StartArray();
+		for ( const char* alias : game.aliases ) writer.String( alias );
+		writer.EndArray();
+		writer.Key( "base_directory" ); writer.String( game.gamePath );
+		writer.Key( "shader_directory" ); writer.String( game.shaderPath );
+		writer.Key( "bsp_ident" ); writer.String( game.bspIdent, 4 );
+		writer.Key( "bsp_version" ); writer.Int( game.bspVersion );
+		writer.Key( "lightmap_size" ); writer.Int( game.lightmapSize );
+		writer.Key( "native_write" ); writer.Bool( game.write != nullptr );
+		writer.Key( "workflows" ); writer.StartArray();
+		if ( game.write ) {
+			writer.String( "build" ); writer.String( "bsp" ); writer.String( "vis" ); writer.String( "light" );
+		}
+		if ( game.load ) { writer.String( "minimap" ); writer.String( "decompile" ); }
+		writer.EndArray();
+		writer.EndObject();
+	}
+	writer.EndArray(); writer.EndObject();
+	printf( "%s\n", buffer.GetString() );
+	return 0;
+}

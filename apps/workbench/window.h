@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "job_queue.h"
+#include "game_catalog.h"
 #include <QJsonArray>
 #include <QMainWindow>
 #include <QMap>
@@ -14,11 +15,14 @@ public:
     explicit Window(const QString& stateDirectory);
     void loadProject(const QString& path);
     bool renderPreview(const QString& path);
+    bool discoveringGames() const { return catalog_.loading(); }
 protected:
     void closeEvent(QCloseEvent* event) override;
 private:
     QString stateDirectory_, projectPath_, theme_="dark";
     JobQueue queue_;
+    GameCatalog catalog_;
+    QString catalogCompiler_;
     QJsonArray history_;
     QStringList recordedGroups_;
     QMap<int,QString> logs_;
@@ -29,7 +33,7 @@ private:
     QPlainTextEdit *bspOptions_, *visOptions_, *lightOptions_, *preview_, *logView_, *reportView_, *hardware_;
     QTableWidget *jobs_, *historyView_;
     QTreeWidget* diagnostics_;
-    QLabel *title_, *status_;
+    QLabel *title_, *status_, *gameHint_;
     QPushButton *run_, *cancel_;
     QProgressBar* progress_;
     QListWidget* navigation_;
@@ -51,6 +55,8 @@ private:
     void recordHistory();
     void refreshHistory();
     void discoverHardware();
+    void refreshGames();
+    void refreshGameHint();
     void applyTheme();
     void showError(const QString& message);
     bool confirmDiscard();

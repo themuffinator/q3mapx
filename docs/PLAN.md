@@ -136,7 +136,7 @@ and validation requirements. Continue committing each completed task separately.
 - [x] Audit the existing profiles against the reference and record the next work.
 - [x] Optimize Raven lightgrid packing while preserving first-match output; repair
   dictionary exhaustion and validate boundary, malformed and real-command cases.
-- [ ] Publish a machine-readable game/capability catalog, accept useful fnTech3
+- [x] Publish a machine-readable game/capability catalog, accept useful fnTech3
   aliases, and use the catalog in the workbench rather than a partial static list.
 - [ ] Add BSP inspection with format identification, bounded parsing, actionable
   compatibility diagnostics and explicit ambiguity for shared file signatures.
@@ -144,7 +144,7 @@ and validation requirements. Continue committing each completed task separately.
   with Alice/F.A.K.K.2, and cover Medal of Honor and early Quake III formats.
   Preserve recoverable geometry/entities/material data and report format-specific
   losses. Native writing must not be advertised until its own contracts are met.
-- [ ] Exercise the existing writable game families through full synthetic compiler
+- [x] Exercise the existing writable game families through full synthetic compiler
   pipelines, decompilation and malformed inputs; add legitimate read-only map
   checks where available without redistributing proprietary assets.
 - [ ] Measure further optimizations, run the relevant Windows/Linux/sanitizer

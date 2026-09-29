@@ -122,6 +122,10 @@ if(BUILD_TESTING)
     set_tests_properties(cli_help PROPERTIES PASS_REGULAR_EXPRESSION "Usage:" TIMEOUT 15)
     add_test(NAME cli_games COMMAND q3mapx -help -game)
     set_tests_properties(cli_games PROPERTIES PASS_REGULAR_EXPRESSION "Available games:" TIMEOUT 15)
+    add_test(NAME game_profiles COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/game_profiles.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/game-profiles)
+    set_tests_properties(game_profiles PROPERTIES TIMEOUT 360)
     add_test(NAME compiler_pipeline COMMAND ${Python3_EXECUTABLE}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/integration.py
         --compiler $<TARGET_FILE:q3mapx>
@@ -210,15 +214,21 @@ endif()
 include(GNUInstallDirs)
 if(Q3MAPX_BUILD_GUI)
     find_package(Qt6 6.4 REQUIRED COMPONENTS Core Gui Widgets)
-    add_library(q3mapx_workbench_core STATIC apps/workbench/project.cpp apps/workbench/job_queue.cpp apps/workbench/job_queue.h)
+    add_library(q3mapx_workbench_core STATIC apps/workbench/project.cpp apps/workbench/job_queue.cpp apps/workbench/job_queue.h
+        apps/workbench/game_catalog.cpp apps/workbench/game_catalog.h)
     set_target_properties(q3mapx_workbench_core PROPERTIES AUTOMOC ON)
     target_include_directories(q3mapx_workbench_core PUBLIC apps/workbench)
     target_link_libraries(q3mapx_workbench_core PUBLIC Qt6::Core)
     qt_add_executable(q3mapx-workbench WIN32 apps/workbench/main.cpp apps/workbench/window.cpp apps/workbench/window.h)
     set_target_properties(q3mapx-workbench PROPERTIES AUTOMOC ON)
     target_link_libraries(q3mapx-workbench PRIVATE q3mapx_workbench_core Qt6::Widgets)
+    target_compile_definitions(q3mapx-workbench PRIVATE Q3MAPX_VERSION="${PROJECT_VERSION}")
     install(TARGETS q3mapx-workbench RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
     if(BUILD_TESTING)
+        add_executable(game_catalog_test tests/game_catalog.cpp)
+        target_link_libraries(game_catalog_test PRIVATE q3mapx_workbench_core)
+        add_test(NAME game_catalog COMMAND game_catalog_test $<TARGET_FILE:q3mapx>)
+        set_tests_properties(game_catalog PROPERTIES TIMEOUT 45)
         add_executable(workbench_test tests/workbench.cpp)
         target_link_libraries(workbench_test PRIVATE q3mapx_workbench_core)
         add_test(NAME workbench COMMAND ${Python3_EXECUTABLE}
@@ -226,6 +236,14 @@ if(Q3MAPX_BUILD_GUI)
             --test $<TARGET_FILE:workbench_test> --compiler $<TARGET_FILE:q3mapx>
             --work-dir ${CMAKE_BINARY_DIR}/tests/workbench)
         set_tests_properties(workbench PROPERTIES TIMEOUT 120 FIXTURES_SETUP workbench_run)
+        add_executable(workbench_window_test tests/workbench_window.cpp apps/workbench/window.cpp apps/workbench/window.h)
+        set_target_properties(workbench_window_test PROPERTIES AUTOMOC ON)
+        target_compile_definitions(workbench_window_test PRIVATE Q3MAPX_VERSION="${PROJECT_VERSION}")
+        target_link_libraries(workbench_window_test PRIVATE q3mapx_workbench_core Qt6::Widgets)
+        add_test(NAME workbench_window COMMAND workbench_window_test -platform offscreen
+            ${CMAKE_BINARY_DIR}/tests/workbench/project.q3mapx.json
+            ${CMAKE_BINARY_DIR}/tests/workbench/window-state)
+        set_tests_properties(workbench_window PROPERTIES TIMEOUT 45 FIXTURES_REQUIRED workbench_run)
         add_test(NAME workbench_preview COMMAND q3mapx-workbench -platform offscreen
             --project ${CMAKE_BINARY_DIR}/tests/workbench/project.q3mapx.json
             --state-dir ${CMAKE_BINARY_DIR}/tests/workbench/ui-state

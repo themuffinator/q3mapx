@@ -23,6 +23,14 @@ Independent queued workflows can continue after a failure. Cancel stops the
 current process and pauses the queue. Start queue resumes remaining work.
 Visibility-only jobs require a matching `.prt` beside their source BSP.
 
+The game list comes from the selected compiler's `-games` catalog. It includes
+the compiler's complete set of profiles, accepts their aliases, and shows the
+native format and default asset folder. **Refresh** queries a replaced compiler
+again. Queries run in the background with bounded output and a timeout; starting
+a workflow waits for discovery and rejects unsupported profile/workflow pairs.
+An older compiler without a catalog still permits a manually entered profile,
+with its discovery failure shown beside the selection.
+
 ## Controls
 
 - Project: source/assets/output/compiler paths, game/mod, saved JSON projects.
@@ -54,7 +62,10 @@ configuration directory; `--state-dir PATH` selects an isolated location.
 
 Automated tests run the real compiler through the Qt queue, including complete
 builds, recovery, minimaps, paths with spaces, failed process starts, dependency
-skipping and cancellation. The GUI can render its own widget tree directly to PNG:
+skipping and cancellation. An offscreen window test also discovers the compiler's
+profiles and invokes its build action directly, without input injection. Catalog
+tests exercise malformed replies, output limits, timeouts and stale responses.
+The GUI can render its own widget tree directly to PNG:
 
 ```sh
 q3mapx-workbench -platform offscreen --project project.q3mapx.json --state-dir build/ui-state --render-preview build/workbench.png

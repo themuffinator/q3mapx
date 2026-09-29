@@ -474,6 +474,7 @@ static void HelpCommon()
 		{ "-fs_homepath <path>", "Sets the given path as the game home directory name (fs_home + fs_homebase)" },
 		{ "-fs_pakpath <path>", "Specify a package directory (can be used more than once to look in multiple paths)" },
 		{ "-game <gamename>", "Load settings for the given game (default: quake3), -help -game lists available games" },
+		{ "-games", "Print the JSON game catalog, aliases, BSP formats and supported workflows" },
 		{ "-maxmapdrawsurfs <N>", "Sets max amount of mapDrawSurfs, used during .map compilation (-bsp, -convert), default = 131072" },
 		{ "-subdivisions <F>", "multiplier for patch subdivisions quality" },
 		{ "-threads <N|auto>", "Persistent CPU worker count (1..1024), or auto for detected hardware" },
@@ -486,8 +487,15 @@ static void HelpCommon()
 
 void HelpGames(){
 	Sys_Printf( "Available games:\n" );
-	for( const game_t& game : g_games )
-		Sys_Printf( "  %s\n", game.arg );
+	for( const game_t& game : g_games ) {
+		Sys_Printf( "  %-14s %s", game.arg, game.title );
+		if ( !game.aliases.empty() ) {
+			Sys_Printf( " (aliases:" );
+			for ( const char* alias : game.aliases ) Sys_Printf( " %s", alias );
+			Sys_Printf( ")" );
+		}
+		Sys_Printf( "\n" );
+	}
 }
 
 void HelpMain( const char* arg )

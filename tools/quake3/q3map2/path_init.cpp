@@ -175,29 +175,8 @@ static void LokiInitPaths( const char *argv0, CopiedString& homePath, CopiedStri
  */
 
 const game_t *GetGame( const char *arg ){
-	/* dummy check */
-	if ( strEmptyOrNull( arg ) ) {
-		return nullptr;
-	}
-
-	/* joke */
-	if ( striEqual( arg, "quake1" ) ||
-	     striEqual( arg, "quake2" ) ||
-	     striEqual( arg, "unreal" ) ||
-	     striEqual( arg, "ut2k3" ) ||
-	     striEqual( arg, "dn3d" ) ||
-	     striEqual( arg, "dnf" ) ||
-	     striEqual( arg, "hl" ) ) {
-		Sys_Printf( "April fools, silly rabbit!\n" );
-		exit( 0 );
-	}
-
-	/* test it */
-	for( const game_t& game : g_games )
-	{
-		if ( striEqual( arg, game.arg ) )
-			return &game;
-	}
+	if ( const auto* game = FindGame( arg ) ) return game;
+	if ( strEmptyOrNull( arg ) ) return nullptr;
 
 	/* no matching game */
 	Sys_Warning( "Game \"%s\" is unknown.\n", arg );
@@ -313,9 +292,11 @@ void InitPaths( Args& args ){
 	{
 		/* -game */
 		while ( args.takeArg( "-game" ) ) {
-			if ( const game_t *game = GetGame( args.takeNext() ) ) {
+			const char* name = args.takeNext();
+			if ( const game_t *game = GetGame( name ) ) {
 				g_game = game;
 			}
+			else Error( "Unknown game profile '%s'; use -games to list supported profiles", name );
 		}
 
 		/* -fs_forbiddenpath */

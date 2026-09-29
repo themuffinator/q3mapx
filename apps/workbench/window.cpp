@@ -20,7 +20,7 @@ static QPlainTextEdit* codeView(QWidget* parent=nullptr){
 static QScrollArea* scrollable(QWidget* content){
     auto* scroll=new QScrollArea; scroll->setWidget(content); scroll->setWidgetResizable(true); scroll->setFrameShape(QFrame::NoFrame); return scroll;
 }
-Window::Window(const QString& stateDirectory):stateDirectory_(stateDirectory),queue_(this){
+Window::Window(const QString& stateDirectory):stateDirectory_(stateDirectory),queue_(this),catalog_(this){
     setWindowTitle("q3mapx Workbench"); resize(1380,920); setMinimumSize(1024,720);
     auto* central=new QWidget; auto* outer=new QVBoxLayout(central); outer->setContentsMargins(24,20,24,16); outer->setSpacing(18);
     auto* header=new QHBoxLayout;
@@ -53,7 +53,7 @@ Window::Window(const QString& stateDirectory):stateDirectory_(stateDirectory),qu
     build->addAction("&Cancel active job",QKeySequence("Shift+Escape"),&queue_,&JobQueue::cancel);
     auto* view=menuBar()->addMenu("&View");
     view->addAction("Toggle &light / dark theme",this,[this]{ theme_=theme_=="dark" ? "light" : "dark"; applyTheme(); });
-    menuBar()->addMenu("&Help")->addAction("About q3mapx",this,[this]{ QMessageBox::about(this,"q3mapx", "q3mapx Workbench 0.2\nStandalone map compilation and BSP recovery.\nBased on NetRadiant-custom q3map2.\nGPL-3.0-or-later · Qt 6\nGPU acceleration currently applies to minimaps."); });
+    menuBar()->addMenu("&Help")->addAction("About q3mapx",this,[this]{ QMessageBox::about(this,"q3mapx", "q3mapx Workbench " Q3MAPX_VERSION "\nStandalone map compilation and BSP recovery.\nBased on NetRadiant-custom q3map2.\nGPL-3.0-or-later · Qt 6\nGPU acceleration currently applies to minimaps."); });
     connect(navigation_,&QListWidget::currentRowChanged,pages_,&QStackedWidget::setCurrentIndex);
     connect(run_,&QPushButton::clicked,this,[this]{ enqueue(true); }); connect(cancel_,&QPushButton::clicked,&queue_,&JobQueue::cancel);
     connect(&queue_,&JobQueue::changed,this,&Window::refreshQueue);
@@ -69,6 +69,25 @@ Window::Window(const QString& stateDirectory):stateDirectory_(stateDirectory),qu
     for(auto* combo:{game_,quality_,backend_,format_,workflow_}) connect(combo,&QComboBox::currentTextChanged,this,&Window::updatePreview);
     for(auto* spin:{workers_,gpu_,size_,samples_}) connect(spin,&QSpinBox::valueChanged,this,&Window::updatePreview);
     for(auto* edit:{bspOptions_,visOptions_,lightOptions_}) connect(edit,&QPlainTextEdit::textChanged,this,&Window::updatePreview);
+    connect(&catalog_,&GameCatalog::changed,this,[this]{
+        if(!catalog_.loading() && !catalog_.profiles().isEmpty()) {
+            const QString selected=game_->currentText();
+            const QSignalBlocker blocker(game_);
+            game_->clear();
+            for(const auto& profile:catalog_.profiles()) {
+                game_->addItem(profile.id);
+                game_->setItemData(game_->count()-1,profile.title,Qt::ToolTipRole);
+            }
+            game_->setCurrentText(selected);
+        }
+        refreshGameHint();
+    });
+    connect(compiler_,&QLineEdit::textChanged,this,[this](const QString& path){
+        refreshGameHint();
+        QTimer::singleShot(250,this,[this,path]{
+            if(compiler_->text()==path && catalogCompiler_!=path) refreshGames();
+        });
+    });
     Project initial;
 #ifdef Q_OS_WIN
     initial.compiler=QCoreApplication::applicationDirPath()+"/q3mapx.exe";
@@ -113,8 +132,15 @@ QWidget* Window::configuration(){
     form->addRow("&Source MAP / BSP",pathField(source_,"Source map or BSP",0));
     form->addRow("Game &root",pathField(gameRoot_,"Game root containing baseq3 or the game asset folder",1));
     form->addRow("&Output folder",pathField(outputRoot_,"Each run gets a separate folder",1));
-    game_=new QComboBox; game_->setEditable(true); game_->addItems({"quake3","quakelive","xonotic","unvanquished","tremulous","wolf","et","jk2","ja","qfusion","nexuiz","ef","darkplaces","reaction"});
-    form->addRow("&Game profile",game_); mod_=new QLineEdit; mod_->setPlaceholderText("Optional mod directory, e.g. mymod"); form->addRow("&Mod",mod_);
+    game_=new QComboBox; game_->setObjectName("gameProfiles"); game_->setEditable(true);
+    auto* profileRow=new QWidget; auto* profileLayout=new QHBoxLayout(profileRow); profileLayout->setContentsMargins(0,0,0,0);
+    auto* refresh=new QPushButton("Refresh"); refresh->setAccessibleName("Refresh game profiles from compiler");
+    connect(refresh,&QPushButton::clicked,this,&Window::refreshGames);
+    profileLayout->addWidget(game_,1); profileLayout->addWidget(refresh);
+    auto* profileLabel=new QLabel("&Game profile"); profileLabel->setBuddy(game_); form->addRow(profileLabel,profileRow);
+    gameHint_=new QLabel; gameHint_->setTextFormat(Qt::PlainText); gameHint_->setWordWrap(true); gameHint_->setObjectName("muted");
+    form->addRow(gameHint_);
+    mod_=new QLineEdit; mod_->setPlaceholderText("Optional mod directory, e.g. mymod"); form->addRow("&Mod",mod_);
     form->addRow("&Compiler",pathField(compiler_,"q3mapx executable",2));
     auto* notice=new QLabel("Source files stay untouched. The workbench stages inputs and writes logs, BSPs and reports into a new run folder."); notice->setWordWrap(true); notice->setObjectName("notice"); form->addRow(notice);
     tabs->addTab(scrollable(general),"Source && paths");
@@ -203,7 +229,7 @@ void Window::setProject(const Project& p){
     reproducibleVis_->setChecked(p.reproducibleVis);
     bspOptions_->setPlainText(p.bspOptions.join('\n')); visOptions_->setPlainText(p.visOptions.join('\n')); lightOptions_->setPlainText(p.lightOptions.join('\n'));
     workflow_->setCurrentIndex(QFileInfo(p.source).suffix().compare("bsp",Qt::CaseInsensitive)==0 ? 5 : 0);
-    populating_=false; updatePreview(); dirty_=false; setWindowModified(false);
+    populating_=false; updatePreview(); dirty_=false; setWindowModified(false); refreshGames();
 }
 void Window::loadProject(const QString& path){ auto p=Project::load(path); projectPath_=QFileInfo(path).absoluteFilePath(); setProject(p); }
 void Window::updatePreview(){
@@ -213,6 +239,7 @@ void Window::updatePreview(){
     const auto commands=buildPlan(p,workflow_->currentData().toString(),QDir(p.outputRoot).filePath("<new-run>"));
     QStringList lines; for(const auto& job:commands) lines << job.label+"\n"+displayCommand(job);
     preview_->setPlainText(lines.join("\n\n"));
+    refreshGameHint();
 }
 void Window::saveProject(bool saveAs){
     QString path=projectPath_;
@@ -223,6 +250,12 @@ void Window::saveProject(bool saveAs){
 void Window::enqueue(bool start){
     try {
         const auto p=project(); const QString workflow=workflow_->currentData().toString();
+        if(catalog_.loading() || catalogCompiler_!=compiler_->text()) throw std::runtime_error("Wait for the compiler's game profiles to finish loading.");
+        if(!catalog_.profiles().isEmpty()) {
+            const auto* profile=catalog_.find(p.game);
+            if(!profile) throw std::runtime_error("Select a game profile supported by this compiler.");
+            if(!profile->workflows.contains(workflow)) throw std::runtime_error("This game profile does not support the selected workflow.");
+        }
         const auto directory=prepareRun(p,workflow); const int first=queue_.jobs().size();
         queue_.enqueue(buildPlan(p,workflow,directory)); navigation_->setCurrentRow(1); jobs_->selectRow(first);
         if(start) queue_.start(); else status_->setText("Workflow added to queue");
@@ -284,6 +317,28 @@ void Window::refreshHistory(){
     for(int i=0;i<history_.size();++i) {
         const auto o=history_[i].toObject(); const QStringList values{o.value("finished").toString(),o.value("state").toString(),QString::number(o.value("stages").toArray().size()),o.value("directory").toString()};
         for(int c=0;c<values.size();++c) historyView_->setItem(i,c,new QTableWidgetItem(values[c]));
+    }
+}
+void Window::refreshGames(){
+    catalogCompiler_=compiler_->text();
+    catalog_.refresh(catalogCompiler_);
+}
+void Window::refreshGameHint(){
+    if(catalog_.loading() || catalogCompiler_!=compiler_->text()) {
+        gameHint_->setText("Loading game profiles from the selected compiler…"); run_->setEnabled(false); return;
+    }
+    const auto* profile=catalog_.find(game_->currentText());
+    if(profile) {
+        gameHint_->setText(QString("%1 · %2 %3\nAssets: %4/%5 · Workflows: %6")
+            .arg(profile->title,profile->bspIdent).arg(profile->bspVersion)
+            .arg(profile->baseDirectory,profile->shaderDirectory,profile->workflows.join(", ")));
+        run_->setEnabled(profile->workflows.contains(workflow_->currentData().toString()));
+    }
+    else if(!catalog_.profiles().isEmpty()) {
+        gameHint_->setText("This compiler does not recognize the selected game profile."); run_->setEnabled(false);
+    }
+    else {
+        gameHint_->setText(catalog_.error()+". Enter a legacy profile manually or choose another compiler."); run_->setEnabled(true);
     }
 }
 void Window::discoverHardware(){

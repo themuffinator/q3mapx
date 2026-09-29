@@ -598,3 +598,27 @@ local outputs are in `build/native-{validation,recovery}` and logs in
 fnTech3/OpenJK references in `GAME-COVERAGE.md`; no external implementation text
 was copied. No new unrelated issue was found beyond the already documented
 inherited process-lifetime allocations, compiler warnings and cleanup restriction.
+
+## 2026-09-29 — Compiler profile catalog and complete workbench discovery
+
+Added the schema-versioned `-games` catalog, readable profile titles, fnTech3-style
+aliases and strict unknown-profile errors. The Qt workbench now discovers the
+selected compiler's complete profile list, keeps saved choices, displays native
+format/asset information and gates unsupported workflows before staging. Catalog
+queries are asynchronous, bounded and timed; stale results cannot replace a newer
+compiler's response. Older compilers retain manual selection with a diagnostic.
+
+All nineteen native writers pass generated BSP/VIS/LIGHT, recovery/recompilation
+and minimap pipelines on Windows release, Linux release and Linux ASan/UBSan
+(the documented process-lifetime leak setting). Windows/Linux catalog, queue and
+direct widget-render tests pass. A separate offscreen actual-window test starts
+and completes a three-stage build without input injection; both platforms pass.
+Windows evidence is `validation/game-profiles-win-x64.json`; detailed local logs
+are in `.agents/tmp/game-coverage`. The rendered window was inspected.
+
+The window test caught a Windows path-separator mismatch in the new discovery
+guard; that is fixed. An unrelated stale GUI version string was corrected to the
+build version. Version queries now terminate before GUI initialization, avoiding
+Qt's modal Windows version dialog when output is not redirected; both inherited
+and captured-output probes pass. Existing compiler warnings and cleanup limits
+remain documented. These fixture checks do not establish retail gameplay support.

@@ -20,14 +20,15 @@ def box(lo, hi, texture="q3mapx/stone", transform="13 -7 23 0.5 0.75"):
     ) + "\n}\n"
 
 
-def create_fixture(root: Path, *, dense=False, patch=True, grid=11) -> Path:
+def create_fixture(root: Path, *, dense=False, patch=True, grid=11,
+                   game_directory="baseq3", shader_directory="scripts") -> Path:
     """Create only generated test content beneath the explicitly supplied directory."""
     root = root.resolve()
-    game = root / "baseq3"
-    for directory in (game / "maps", game / "scripts", game / "textures/q3mapx"):
+    game = root / game_directory
+    for directory in (game / "maps", game / shader_directory, game / "textures/q3mapx"):
         directory.mkdir(parents=True, exist_ok=True)
-    (game / "scripts/shaderlist.txt").write_text("q3mapx_tests\n", encoding="utf-8")
-    (game / "scripts/q3mapx_tests.shader").write_text("""
+    (game / shader_directory / "shaderlist.txt").write_text("q3mapx_tests\n", encoding="utf-8")
+    (game / shader_directory / "q3mapx_tests.shader").write_text("""
 textures/q3mapx/stone
 {
     qer_editorimage textures/q3mapx/checker.tga

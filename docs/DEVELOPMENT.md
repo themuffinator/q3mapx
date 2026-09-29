@@ -163,6 +163,13 @@ q3mapx -threads auto -profile light-profile.json -light -fast map.bsp
 
 ## Optional installed-map coverage
 
+`ctest --test-dir build/release -R game_profiles --output-on-failure` exercises
+every catalogued native writer through BSP, VIS, LIGHT, recovery, recompilation
+and a minimap. It also checks aliases, native headers and unknown-profile output
+protection. `game_catalog` checks the Qt catalog client; `workbench_window`
+starts a complete build through the real window's action, offscreen without
+mouse or keyboard events. Both GUI tests use isolated project-local state.
+
 The generated CTest fixtures remain independent of game installations. Additional
 native-map evidence can be collected from user-owned PK3 archives:
 

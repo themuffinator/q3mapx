@@ -1,0 +1,201 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-09-29T18:38:14.263743+00:00",
+  "compiler_sha256": "89cb2ab9c25e36931c187b9a655e0fcfa59ddd667204f88e184640cb5ad1c8e0",
+  "compiler_version": "0.2.0",
+  "profiles": [
+    {
+      "profile": "quake3",
+      "format": "IBSP",
+      "version": 46,
+      "aliases": [
+        "q3",
+        "q3a"
+      ],
+      "brushes": 8,
+      "patches": 1,
+      "result": "passed"
+    },
+    {
+      "profile": "quakelive",
+      "format": "IBSP",
+      "version": 47,
+      "aliases": [
+        "ql"
+      ],
+      "brushes": 8,
+      "patches": 1,
+      "result": "passed"
+    },
+    {
+      "profile": "nexuiz",
+      "format": "IBSP",
+      "version": 46,
+      "aliases": [],
+      "brushes": 8,
+      "patches": 1,
+      "result": "passed"
+    },
+    {
+      "profile": "xonotic",
+      "format": "IBSP",
+      "version": 46,
+      "aliases": [],
+      "brushes": 8,
+      "patches": 1,
+      "result": "passed"
+    },
+    {
+      "profile": "tremulous",
+      "format": "IBSP",
+      "version": 46,
+      "aliases": [],
+      "brushes": 8,
+      "patches": 1,
+      "result": "passed"
+    },
+    {
+      "profile": "unvanquished",
+      "format": "IBSP",
+      "version": 46,
+      "aliases": [],
+      "brushes": 8,
+      "patches": 1,
+      "result": "passed"
+    },
+    {
+      "profile": "tenebrae",
+      "format": "IBSP",
+      "version": 46,
+      "aliases": [],
+      "brushes": 8,
+      "patches": 1,
+      "result": "passed"
+    },
+    {
+      "profile": "wolf",
+      "format": "IBSP",
+      "version": 47,
+      "aliases": [
+        "rtcw",
+        "rtcw-sp",
+        "rtcw-mp"
+      ],
+      "brushes": 8,
+      "patches": 1,
+      "result": "passed"
+    },
+    {
+      "profile": "et",
+      "format": "IBSP",
+      "version": 47,
+      "aliases": [
+        "wolfet"
+      ],
+      "brushes": 8,
+      "patches": 1,
+      "result": "passed"
+    },
+    {
+      "profile": "etut",
+      "format": "IBSP",
+      "version": 47,
+      "aliases": [],
+      "brushes": 8,
+      "patches": 1,
+      "result": "passed"
+    },
+    {
+      "profile": "ef",
+      "format": "IBSP",
+      "version": 46,
+      "aliases": [
+        "stvef",
+        "stvef-sp",
+        "stvef-mp"
+      ],
+      "brushes": 8,
+      "patches": 1,
+      "result": "passed"
+    },
+    {
+      "profile": "qfusion",
+      "format": "FBSP",
+      "version": 1,
+      "aliases": [],
+      "brushes": 8,
+      "patches": 1,
+      "result": "passed"
+    },
+    {
+      "profile": "reaction",
+      "format": "IBSP",
+      "version": 46,
+      "aliases": [],
+      "brushes": 8,
+      "patches": 1,
+      "result": "passed"
+    },
+    {
+      "profile": "darkplaces",
+      "format": "IBSP",
+      "version": 46,
+      "aliases": [],
+      "brushes": 8,
+      "patches": 1,
+      "result": "passed"
+    },
+    {
+      "profile": "dq",
+      "format": "IBSP",
+      "version": 46,
+      "aliases": [],
+      "brushes": 8,
+      "patches": 1,
+      "result": "passed"
+    },
+    {
+      "profile": "prophecy",
+      "format": "IBSP",
+      "version": 46,
+      "aliases": [],
+      "brushes": 8,
+      "patches": 1,
+      "result": "passed"
+    },
+    {
+      "profile": "sof2",
+      "format": "RBSP",
+      "version": 1,
+      "aliases": [],
+      "brushes": 8,
+      "patches": 1,
+      "result": "passed"
+    },
+    {
+      "profile": "jk2",
+      "format": "RBSP",
+      "version": 1,
+      "aliases": [
+        "jk2-sp",
+        "jk2-mp"
+      ],
+      "brushes": 8,
+      "patches": 1,
+      "result": "passed"
+    },
+    {
+      "profile": "ja",
+      "format": "RBSP",
+      "version": 1,
+      "aliases": [
+        "jka",
+        "jka-sp",
+        "jka-mp"
+      ],
+      "brushes": 8,
+      "patches": 1,
+      "result": "passed"
+    }
+  ]
+}

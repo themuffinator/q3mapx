@@ -7,9 +7,24 @@ reference material for this work. It is not a q3mapx dependency.
 
 ## Initial audit
 
-q3mapx currently has nineteen compiler profiles. The workbench offers only
-fourteen in its dropdown, although an arbitrary profile can be typed. `-help
--game` lists the compiler profiles; there is no structured capability catalog.
+At the start of this work q3mapx had nineteen compiler profiles, while the
+workbench offered only fourteen in its dropdown. The compiler now publishes
+all profiles and their supported workflows through `-games` (JSON schema 1).
+The workbench queries the selected compiler asynchronously, displays its actual
+profiles and format information, and checks the chosen workflow before staging
+input. `-help -game` remains available for a readable list.
+
+Profile names and aliases are case-insensitive. Useful aliases include `q3`,
+`ql`, `rtcw-sp`, `rtcw-mp`, `wolfet`, `stvef-sp`, `stvef-mp`, `jk2-sp`,
+`jk2-mp`, `jka-sp` and `jka-mp`. Unknown names fail instead of silently selecting
+Quake III. An alias selects the existing canonical profile; it does not promise
+additional format or gameplay support.
+
+All nineteen writable profiles pass generated BSP/VIS/LIGHT, MAP recovery,
+recompilation and CPU minimap pipelines on Windows release, Linux release and
+Linux ASan/UBSan. [Windows records](validation/game-profiles-win-x64.json) identify
+the compiler and each native signature. These are small distributable geometry
+fixtures, not retail-game runtime tests.
 
 | fnTech3 title or family | Map contract | Initial q3mapx profile/status |
 | --- | --- | --- |
@@ -31,7 +46,7 @@ Both Jedi titles use RBSP 1 in the inspected reference; no IBSP override is
 appropriate. Other inherited profiles include Qfusion's FBSP 1, whose lighting
 uses the Raven family of records, and several IBSP-based games.
 
-Raven lightgrid serialization currently searches every dictionary entry for an
+The inherited Raven lightgrid serialization searched every dictionary entry for an
 approximate match, in insertion order. It also writes index 65,535 when a full
 65,535-entry dictionary cannot represent another point. That index is out of
 range. The optimization must retain the earliest matching entry and the existing

@@ -60,5 +60,5 @@ revision, hardware, thread/backend settings, and repeated elapsed measurements.
 | CMake + Ninja, C++20 | Standalone cross-platform build consistent with upstream language requirements |
 | Qt 6 Widgets | Native file/process integration, accessibility, high DPI, and mature desktop controls |
 | Separate CLI and GUI processes | Preserve compatibility and isolate global state/fatal failures |
-| GPL-2.0-or-later project code | Match inherited q3map2 licensing; preserve component notices |
+| GPL-3.0-or-later combined project | Exercise q3map2's later-version permission to accommodate Apache-2.0 ETC code |
 | Evidence before acceleration claims | Avoid regressions or optimizations that only help synthetic microbenchmarks |

@@ -33,3 +33,14 @@ Excluded the Radiant editor and bundled Assimp implementation.
 Validation: verified every imported file against the source reference by SHA-256.
 Compiler and bundled component license notices were checked for compatibility.
 No compiler behavior was changed. Build validation is the next task.
+
+## 2026-09-29 — Component license audit correction
+
+The full file-level audit found Apache-2.0 ETC code and BSD-3-Clause WebP code;
+the initial documentation incorrectly described both as MIT. Corrected the labels,
+included missing license texts, and selected GPL-3.0-or-later for the combined
+project using q3map2's existing later-version permission. Original file notices
+remain unchanged. This is an inherited licensing detail, not a compiler change.
+
+Validation: checked actual file notices and Apache's published GPL compatibility
+guidance; retained the original import manifest unchanged.

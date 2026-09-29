@@ -13,7 +13,8 @@
 The initial q3mapx repository had no license and contained only `.gitattributes`.
 Before import, the upstream `LICENSE` and compiler file headers were inspected.
 The compiler is GPL-2.0-or-later; bundled libraries have individual notices.
-q3mapx adopts compatible licensing and retains those notices and license texts.
+q3mapx retains those notices and license texts and distributes the combined work
+under GPL-3.0-or-later, exercising the compiler's later-version permission.
 The import contains 209 files (3,550,398 bytes): `tools/quake3/common`,
 `tools/quake3/q3map2`, upstream q3map2 regression fixtures, the transitive local
 header dependencies and image/network support sources, and the upstream license
@@ -22,9 +23,16 @@ implementation are excluded; Assimp is a system build dependency.
 
 [The import manifest](upstream-manifest.json) records the SHA-256 of each original
 file before q3mapx changes. This makes source provenance independently verifiable.
-Imported RapidJSON (MIT), Crunch (zlib/public domain), tiny_webp (MIT), DDS support
-(BSD), and ETC support (MIT) retain their file-level notices. These permissive
-licenses are compatible with the compiler's GPL-2.0-or-later distribution.
+Imported RapidJSON (MIT), Crunch (zlib), tiny_webp (BSD-3-Clause), DDS support
+(BSD-3-Clause), and ETC support (Apache-2.0) retain their file-level notices.
+The file-level audit corrected the initial documentation's mistaken MIT labels
+for WebP and ETC. Apache-2.0 is compatible with GPLv3, but not GPLv2; see the
+[Apache Software Foundation's compatibility guidance](https://www.apache.org/licenses/GPL-compatibility).
+The compiler's GPL-2.0-or-later permission permits the combined GPLv3 distribution.
+`COPYING` contains GPLv3; `GPL`, `LGPL`, and `LICENSE` preserve the upstream texts.
+`licenses/` includes Apache-2.0 and RapidJSON notices. The latter was copied from
+the same NRC revision's `libs/assimp/contrib/rapidjson/license.txt`; its JSON_checker
+section describes an upstream component that q3mapx does not import.
 
 ## Credits
 

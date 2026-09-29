@@ -28,9 +28,10 @@ See the [task log](docs/PROGRESS.md) for implemented and validated work.
 
 ## License and credits
 
-q3mapx follows q3map2's GPL-2.0-or-later licensing. Imported components retain their
-individual copyright notices and compatible licenses. The source import will
-include the upstream license texts and contributor list.
+q3mapx is distributed under GPL-3.0-or-later; see [COPYING](COPYING). The imported
+compiler permits GPL-2.0-or-later, and its Apache-2.0 ETC component requires choosing
+GPLv3 for the combined work. Imported files retain their original copyright and
+license notices. See [licensing details](docs/UPSTREAM.md).
 
 The compiler builds on the work of id Software, GtkRadiant, NetRadiant,
 [Garux and the NRC contributors](https://github.com/Garux/netradiant-custom),

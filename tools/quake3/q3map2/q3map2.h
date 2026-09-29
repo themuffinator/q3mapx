@@ -1498,6 +1498,8 @@ public:
 	}
 };
 
+int InspectBSPMain(Args& args);
+
 
 template<int printf_flag = SYS_STD>
 class Pacifier

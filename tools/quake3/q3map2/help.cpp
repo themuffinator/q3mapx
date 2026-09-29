@@ -475,6 +475,7 @@ static void HelpCommon()
 		{ "-fs_pakpath <path>", "Specify a package directory (can be used more than once to look in multiple paths)" },
 		{ "-game <gamename>", "Load settings for the given game (default: quake3), -help -game lists available games" },
 		{ "-games", "Print the JSON game catalog, aliases, BSP formats and supported workflows" },
+		{ "-inspect [-json] [-game NAME] <file.bsp>", "Inspect native BSP signatures and lump directories without game assets; shared signatures remain ambiguous" },
 		{ "-maxmapdrawsurfs <N>", "Sets max amount of mapDrawSurfs, used during .map compilation (-bsp, -convert), default = 131072" },
 		{ "-subdivisions <F>", "multiplier for patch subdivisions quality" },
 		{ "-threads <N|auto>", "Persistent CPU worker count (1..1024), or auto for detected hardware" },

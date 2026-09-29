@@ -36,7 +36,7 @@ fixtures, not retail-game runtime tests.
 | Jedi Outcast and Jedi Academy | RBSP 1, 18 lumps | `jk2`, `ja` |
 | Heavy Metal: F.A.K.K.2 | FAKK 12, checksum and 20 lumps | Missing |
 | American McGee's Alice | FAKK 42, checksum and 20 lumps | Missing |
-| Medal of Honor: Allied Assault | FAKK 19, 28 lumps, terrain/static-model extensions | Missing |
+| Medal of Honor: Allied Assault | 2015 19, 28 lumps, terrain/static-model extensions | Missing |
 | Quake III IHV Test | IBSP 43 | Missing |
 | Public Q3Test releases | IBSP 44 and 45, different record layouts | Missing |
 
@@ -45,6 +45,12 @@ ident/version pairs do not establish a game's shader flags, paths or behavior.
 Both Jedi titles use RBSP 1 in the inspected reference; no IBSP override is
 appropriate. Other inherited profiles include Qfusion's FBSP 1, whose lighting
 uses the Raven family of records, and several IBSP-based games.
+
+The asset-independent [BSP inspector](BSP-INSPECTION.md) now recognizes all layouts
+in the table, including the missing-reader families. It reports bounded directory
+validation separately from geometry and native reader capability. An audit of
+the pinned MOHAA header corrected the initial table: its signature is `2015`,
+version 19, rather than `FAKK`.
 
 The inherited Raven lightgrid serialization searched every dictionary entry for an
 approximate match, in insertion order. It also writes index 65,535 when a full

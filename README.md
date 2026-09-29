@@ -58,6 +58,7 @@ but have not improved measured complete-bake times. See
 - [Architecture and decisions](docs/ARCHITECTURE.md)
 - [Development and validation](docs/DEVELOPMENT.md)
 - [Game profiles, format coverage and native-map evidence](docs/GAME-COVERAGE.md)
+- [Asset-independent BSP inspection](docs/BSP-INSPECTION.md)
 - [Measured performance and backend options](docs/PERFORMANCE.md)
 - [Installation, packaging and known limits](docs/RELEASE.md)
 - [BSP decompilation design](docs/DECOMPILATION.md)

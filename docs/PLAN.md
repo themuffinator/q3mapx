@@ -138,7 +138,7 @@ and validation requirements. Continue committing each completed task separately.
   dictionary exhaustion and validate boundary, malformed and real-command cases.
 - [x] Publish a machine-readable game/capability catalog, accept useful fnTech3
   aliases, and use the catalog in the workbench rather than a partial static list.
-- [ ] Add BSP inspection with format identification, bounded parsing, actionable
+- [x] Add BSP inspection with format identification, bounded parsing, actionable
   compatibility diagnostics and explicit ambiguity for shared file signatures.
 - [ ] Extend native BSP recovery to the missing fnTech3 format families, beginning
   with Alice/F.A.K.K.2, and cover Medal of Honor and early Quake III formats.

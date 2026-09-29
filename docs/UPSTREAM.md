@@ -36,6 +36,12 @@ section describes an upstream component that q3mapx does not import.
 
 ## Credits
 
+Additional format-layout observations are credited to the
+[fnTech3 headers](https://github.com/themuffinator/fnTech3/tree/a1251ede2c382190b18c154b45357f6979d8171c/code/qcommon),
+with the exact revision and evidence boundaries recorded in
+[game coverage](GAME-COVERAGE.md). The directory inspector uses independently
+written parsing and layout facts; no translator implementation was incorporated.
+
 Thanks to [id Software](https://github.com/id-Software/Quake-III-Arena), the
 GtkRadiant and NetRadiant teams, ydnar and the q3map2 contributors, and
 [Garux and NetRadiant-custom contributors](https://github.com/Garux/netradiant-custom/graphs/contributors).

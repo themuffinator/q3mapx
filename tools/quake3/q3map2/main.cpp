@@ -65,6 +65,7 @@ int main( int argc, char **argv ){
 	int r;
 	const char* profilePath = nullptr;
 	Args args( argc, argv );
+	if ( args.takeArg( "-inspect" ) ) return InspectBSPMain(args);
 	if ( args.takeArg( "-games", "--games" ) ) return PrintGameCatalog();
 	if ( args.takeArg("--version", "-version") ) {
 		printf("q3mapx " Q3MAPX_VERSION " (NRC " Q3MAPX_UPSTREAM_REVISION ")\n");

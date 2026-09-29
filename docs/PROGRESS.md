@@ -622,3 +622,30 @@ build version. Version queries now terminate before GUI initialization, avoiding
 Qt's modal Windows version dialog when output is not redirected; both inherited
 and captured-output probes pass. Existing compiler warnings and cleanup limits
 remain documented. These fixture checks do not establish retail gameplay support.
+
+## 2026-09-29 — Bounded native BSP directory inspection
+
+Added `-inspect` with human-readable and pure JSON output. It recognizes eleven
+directory layouts across IBSP 43-47, RBSP, FBSP, FAKK and MOHAA's `2015` format,
+checks ranges/record sizes/overlaps from at most 256 bytes, and explicitly reports
+shared game signatures and alternative IBSP 47 directories. Geometry validity,
+native reader availability and compilation support remain separate claims.
+
+Windows inspection/malformed-BSP checks pass (2/2), as do Linux release inspection,
+catalog, queue and actual-window checks (4/4). The initial sanitizer inspection
+run reached nine layout groups before its 90-second test timeout; instrumented
+CLI startup across the many subprocess cases needs a larger suite timeout. It
+was raised to 240 seconds without relaxing per-command timeouts or assertions.
+The complete ASan/UBSan rerun passed in 70.3 seconds after the concurrent build
+load ended; no sanitizer error was reported.
+
+Read-only directory probes pass for 36 Alice, 30 F.A.K.K.2 and 54 Allied Assault
+archive entries (120/120). Input and executable hashes plus results are in
+`validation/native-inspection-win-x64.json`; local logs are under
+`.agents/tmp/game-coverage`, with staged input in `build/native-inspection`.
+No proprietary bytes or external implementation text are committed. The audit
+corrected the initial MOHAA signature in GAME-COVERAGE.md from FAKK to `2015`.
+
+Related legacy issue discovered during the audit: the inherited `-analyze` path
+reads its guessed directory/payload before checking file ranges. The new inspector
+does not call it. Hardening that retained CLI path is the next robustness task.

@@ -95,10 +95,13 @@ input. Any visual verification must respect the project's capture restrictions.
 
 ## M6 — Integration, packaging, and documentation
 
-- [ ] Verify optimized and CPU-only builds, CLI compatibility, and GUI workflows.
-- [ ] Package runtime dependencies with their licenses and installation instructions.
-- [ ] Document new options, recovery limits, measured gains, and remaining bottlenecks.
+- [x] Verify optimized and CPU-only builds, CLI compatibility, and GUI workflows.
+- [x] Package runtime dependencies with their licenses and installation instructions.
+- [x] Document new options, recovery limits, measured gains, and remaining bottlenecks.
 - [ ] Remove verified disposable task files; retain useful evidence in the project.
+  Cleanup is blocked by automatic approval review, including a single explicitly
+  named staging log. Temporary copies remain under `build/package/q3mapx-package-test*`
+  and `.agents/tmp/`; source, delivery artifacts and benchmark evidence are retained.
 
 Acceptance: reproducible release artifacts and clear evidence for implemented
 features, with no unqualified claim of production readiness. Report unrelated

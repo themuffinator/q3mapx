@@ -342,3 +342,27 @@ address and undefined-behavior diagnostics remain fatal. Linux and sanitizer CI
 have not been executed from this Windows environment, and MSVC/macOS remain
 unvalidated. Broader real-map, decoder fuzzing and manual accessibility work are
 recorded as limitations rather than implied by the synthetic suite.
+
+## 2026-09-29 — Release documentation and cleanup status
+
+Updated the README and architecture to describe implemented functionality, linked
+the installation guide, and completed the integration/packaging entries in the
+plan. The portable delivery is generated from this clean committed source under
+`build/package/q3mapx-0.1.0-windows-x64`; package-validation logs and the Qt preview
+are kept in `build/package-validation`. Benchmark evidence stays in
+`docs/benchmarks` and its reproducible harnesses in `benchmarks`.
+
+Cleanup limitation: exact staging roots were verified to contain no reparse links.
+Automatic approval review nevertheless rejected recursive cleanup, a safer
+file-by-file cleanup, and deletion of the single explicitly named disposable
+`q3mapx-package-test/qt-deployment.log`. The only stated reason was "blocked by
+policy". No alternate deletion mechanism was used. Failed/successful staging copies
+remain under `build/package/q3mapx-package-test*`, and temporary import/download
+helpers and useful build logs remain in `.agents/tmp/`. That plan item stays open.
+
+Unrelated inherited issues/limits remain visible in `RELEASE.md`: non-standard-layout
+`offsetof` warnings, broader third-party decoder fuzz coverage, legacy fatal-exit
+profile/temp-file behavior, and missing Linux/sanitizer/manual-accessibility runs.
+GPU lighting is an explicitly documented future parity gate; minimap GPU work is
+implemented and tested on both available native GPUs. All changes are committed
+locally; no remote push or publication has been performed.

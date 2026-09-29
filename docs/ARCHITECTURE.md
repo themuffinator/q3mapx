@@ -7,7 +7,7 @@ in `libs/` and `include/`. Build it as the `q3mapx` executable. Preserve legacy
 command syntax while adding explicitly named q3mapx options. Avoid a wholesale
 directory rename so upstream changes remain reviewable.
 
-The Qt 6 workbench will be a separate executable. It launches the compiler using
+The Qt 6 workbench is a separate executable. It launches the compiler using
 QProcess with an argument list and observes its output/exit status. This boundary
 isolates the legacy compiler's global state and fatal-exit paths from the GUI,
 keeps CLI installations lightweight, and permits cancellation without freezing
@@ -15,12 +15,17 @@ the application. Persist projects as versioned JSON, not shell scripts.
 
 ## CPU execution
 
-Introduce a reusable C++ job implementation behind the existing
-`RunThreadsOnIndividual` interface. Preserve the join/barrier semantics expected
+The reusable C++ job implementation sits behind the existing
+`RunThreadsOnIndividual` interface. It preserves the join/barrier semantics expected
 by compiler passes. Keep scheduling atomics, progress reporting, and legacy
 geometry locks separate. Reuse worker threads across passes; allow a synchronous
 one-thread path. Do not parallelize writes to existing shared structures without
 first establishing ownership or synchronization.
+
+VIS uses 64-bit bitset intersections, heap-backed scratch frames reused per worker,
+and an iterative initial reachability flood. Optional reproducible mode sorts portal
+ties by input index and publishes only completed 64-job batches, so worker timing
+cannot change the set of portal masks available for pruning.
 
 Batch cheap homogeneous items to reduce dispatch overhead. For costly or uneven
 items use fine-grained or shrinking ranges. Publish stage measurements so choices

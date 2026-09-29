@@ -39,7 +39,7 @@ section describes an upstream component that q3mapx does not import.
 Thanks to [id Software](https://github.com/id-Software/Quake-III-Arena), the
 GtkRadiant and NetRadiant teams, ydnar and the q3map2 contributors, and
 [Garux and NetRadiant-custom contributors](https://github.com/Garux/netradiant-custom/graphs/contributors).
-The upstream `CONTRIBUTORS` file will accompany the import. Third-party component
+The upstream `CONTRIBUTORS` file accompanies the import. Third-party component
 licenses remain authoritative for their respective files.
 
 The optional GPU backend uses three unmodified Apache-2.0 headers from

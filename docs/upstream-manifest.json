@@ -1,0 +1,842 @@
+{
+  "repository": "https://github.com/Garux/netradiant-custom",
+  "revision": "8216133984031afaa9a857b56ea66dd9c3d54b26",
+  "files": [
+    {
+      "path": "CONTRIBUTORS",
+      "sha256": "9e4424cd90e8324f7d495a12df54a53bbd0064d68c14c086474b06b2ae2318ce"
+    },
+    {
+      "path": "GPL",
+      "sha256": "40a607e086bc23f10e2953bcccdccdf857d26ad40b8cbdc974df96c678f51afa"
+    },
+    {
+      "path": "include/itextstream.h",
+      "sha256": "13b8b283a64c67456c503b650b44defcf4c83d5d0d85ad68581dfb5e2860b8d8"
+    },
+    {
+      "path": "include/stream_version.h",
+      "sha256": "db79086484cfbaad1c10ea004f7fd89a93edede3c9dae2a2d268ee70a5c3a87b"
+    },
+    {
+      "path": "include/version.h",
+      "sha256": "5cb8386a11e98bb68018ddd29a5004d93bbf4e0a893df49b8f67cc2abd526dd3"
+    },
+    {
+      "path": "LGPL",
+      "sha256": "90629b9cbfd2b66ce27a78bbc8c9a302e66f57c0067e1205a4943ae9c2ab0311"
+    },
+    {
+      "path": "libs/bytebool.h",
+      "sha256": "a18a4d634ca5fcd18f8be80af89c9e65fd814be7a13647c820a2f728c86749b5"
+    },
+    {
+      "path": "libs/crnlib/crnlib.cpp",
+      "sha256": "c8a45763b28d48be92bd2b4616c671e3f332760606b82fb38fa9de7bc3f648c2"
+    },
+    {
+      "path": "libs/crnlib/crnlib.h",
+      "sha256": "94147f89861eea849d3fb03a5ccb23596e49aaca15b20454b89c853339ae6b52"
+    },
+    {
+      "path": "libs/crnlib/crunch/inc/crn_decomp.h",
+      "sha256": "3026a88291ef9c421e425eb6893408d9da053a67ea3818e6ddee3d73f777dab8"
+    },
+    {
+      "path": "libs/crnlib/crunch/inc/crn_defs.h",
+      "sha256": "115208e61d09728b70d37da622e100ad1df7982dbbf87ed443c6923c4f2d7ab3"
+    },
+    {
+      "path": "libs/crnlib/crunch/inc/crnlib.h",
+      "sha256": "56da574020a0b31b77998a8c66957380fa0817d64c8c574d6a3c582e4837b16d"
+    },
+    {
+      "path": "libs/ddslib/ddslib.c",
+      "sha256": "cedc6bdbd002d7eebaa8ad9bae5ab4bd227135039d341d3e623df91fbc2b7396"
+    },
+    {
+      "path": "libs/ddslib.h",
+      "sha256": "d17cf1c127cbf2aed88cff48d1261b05f2de3aecefcac415057f868c933ab379"
+    },
+    {
+      "path": "libs/etclib.c",
+      "sha256": "3112da8a43af52a42c4c809a877697abf27817f135c31ffceaac72ee57fba2dd"
+    },
+    {
+      "path": "libs/etclib.h",
+      "sha256": "f9a58e6b2cf7f8aece2991547d2d23777304915883919815901fe06ed466b3e0"
+    },
+    {
+      "path": "libs/filematch.c",
+      "sha256": "fe6210fe52c1d4bcb28654669726709ce35594b152032a81c6ccaa3b8a28fe83"
+    },
+    {
+      "path": "libs/filematch.h",
+      "sha256": "bdb6427eafd05dafe32cc1899465cb9867dddc4a29c040dfd04af484ce877ec8"
+    },
+    {
+      "path": "libs/generic/arrayrange.h",
+      "sha256": "faa110295f98b33d0a3fb867fb4264a839e5a7becc14599a75da748b463b08a7"
+    },
+    {
+      "path": "libs/generic/object.h",
+      "sha256": "d77323aa2ef4565a92105dccf97a2bf63c4e09682566471983ce417086833912"
+    },
+    {
+      "path": "libs/generic/static.h",
+      "sha256": "df6e1d08f41501ca84664186706fc2098dfdad4dcbaf64fc96c693007f755956"
+    },
+    {
+      "path": "libs/generic/vector.h",
+      "sha256": "8c4233ae51b45b72413191fd4a1edfd00deab3ca7306542a36cc3cd0c39765d6"
+    },
+    {
+      "path": "libs/l_net/l_net.c",
+      "sha256": "ea281fcbdf0cbd724f380da85b8bfebd90bfc9272123f6bd0e66eff8d28e0cc2"
+    },
+    {
+      "path": "libs/l_net/l_net.h",
+      "sha256": "c745a6cd26a688bcba95844056241e8660eb1219a1ef57346c668cf218c35b01"
+    },
+    {
+      "path": "libs/l_net/l_net_wins.c",
+      "sha256": "5dd3c56a623a60ea865006f57890dfff8484e8999b452858d3e86726a32d1f65"
+    },
+    {
+      "path": "libs/l_net/l_net_wins.h",
+      "sha256": "c2efc9c43631bc8fb30fc845d2d5552dc0f3f03dca08778fe64626a3c7c5075f"
+    },
+    {
+      "path": "libs/math/matrix.h",
+      "sha256": "927fe687691c0576b1927d38d3dfd1c0181a033c155f28d3173151516272c0cb"
+    },
+    {
+      "path": "libs/math/pi.h",
+      "sha256": "ba1f9535a3c82160a6609fd11ba70cb80c79c53ef29030ffadbd9414576ae897"
+    },
+    {
+      "path": "libs/math/plane.h",
+      "sha256": "dbad7f9b384af723d275a805e81a8a9c9a79a4635b4024c1b12d321c6905f2ce"
+    },
+    {
+      "path": "libs/math/vector.h",
+      "sha256": "09cc2bd9a765d9aca02ecef614bafe2611baed34b751b6b0f732db4603ae55d4"
+    },
+    {
+      "path": "libs/math/vectorfwd.h",
+      "sha256": "465a074ff789e50763b058f5799670b66e28cad050ca56c96f3bcf11f4bccbb1"
+    },
+    {
+      "path": "libs/memory/allocator.h",
+      "sha256": "0a4ebbf231ec8f923c56b836f8fdc5b4f3e04c24f2edbdefbaa449d391fc3ee0"
+    },
+    {
+      "path": "libs/os/path.h",
+      "sha256": "e280530ead50165efb7875c844802d3b4bb82c06707030dcd8e3eab947b0f25d"
+    },
+    {
+      "path": "libs/rapidjson/allocators.h",
+      "sha256": "71ff05f809b0c6af1fb5eb250694935faf3bb30b50e72a1ae63198b85443148d"
+    },
+    {
+      "path": "libs/rapidjson/document.h",
+      "sha256": "368362abe28a5413abb74ab20e5850a5c5f7f78aaeaa4d86e209771e35c5c2b3"
+    },
+    {
+      "path": "libs/rapidjson/encodedstream.h",
+      "sha256": "c33d79f769976185b733f57f58d945d06a37bd7d8d3a9d23aabe273a16577f25"
+    },
+    {
+      "path": "libs/rapidjson/encodings.h",
+      "sha256": "0dba50ea8fb43a10febd574c7c37c3c1d5e9cceb5cf99b095b3f54fe13a5cf6a"
+    },
+    {
+      "path": "libs/rapidjson/error/error.h",
+      "sha256": "e331bf77ce1b1196483b985748b0198d54ec163c1d0ff67a4c70b5fda3092841"
+    },
+    {
+      "path": "libs/rapidjson/internal/biginteger.h",
+      "sha256": "f86a4ff27c2fc561bda6240e2ec76aa60b8c4e94057e05debf09ac95945e6a06"
+    },
+    {
+      "path": "libs/rapidjson/internal/clzll.h",
+      "sha256": "b4efc12286bb63284cf24a06ee55d4f200cbb086a023395b408d00d05b829424"
+    },
+    {
+      "path": "libs/rapidjson/internal/diyfp.h",
+      "sha256": "5f521f5634fbda321fa247f727f17f8c6e7feed7f2af0fae10f1fb99de1cc0fb"
+    },
+    {
+      "path": "libs/rapidjson/internal/dtoa.h",
+      "sha256": "0679ff7536e06c038971c3777774e5c3f4f91c3def92b52681027ba95261f019"
+    },
+    {
+      "path": "libs/rapidjson/internal/ieee754.h",
+      "sha256": "6ee660862dd2a6780fa8aa168a68a613d1ff4dadbc28583eb00d81743e46204c"
+    },
+    {
+      "path": "libs/rapidjson/internal/itoa.h",
+      "sha256": "8ef53210a23ec576a1a0f8227aeb576af29992b0dcb12f641c7747eb4818c9e1"
+    },
+    {
+      "path": "libs/rapidjson/internal/meta.h",
+      "sha256": "9062c3af5ed551b77c411db54126fda83c2b2f6ad03cf9c67a5698edba8f824f"
+    },
+    {
+      "path": "libs/rapidjson/internal/pow10.h",
+      "sha256": "6e69c1c9329e26b5b7aeb3085734c1650a77cf8bfe19bb006e38049439dfd887"
+    },
+    {
+      "path": "libs/rapidjson/internal/stack.h",
+      "sha256": "7b59d94588843ff1e45d823d80a002bcb6a6c136ca41ffac4e03b26d38449f7c"
+    },
+    {
+      "path": "libs/rapidjson/internal/strfunc.h",
+      "sha256": "350e073886827bb5092560d0c3a27767b6ed9175fe766ec6205a60bfa50c606c"
+    },
+    {
+      "path": "libs/rapidjson/internal/strtod.h",
+      "sha256": "a85f937bac37de184ff0055fea223f7c1bba34a2f243e5ea1b4b6952e505a3a7"
+    },
+    {
+      "path": "libs/rapidjson/internal/swap.h",
+      "sha256": "4b73639aeb82c64599533996341f38a1d24081e268cb93c0cc14f3d37856251e"
+    },
+    {
+      "path": "libs/rapidjson/memorystream.h",
+      "sha256": "7807379a5cff9cd88646046e1f8e808daeb410071abc34c9e553eff7c8ad6553"
+    },
+    {
+      "path": "libs/rapidjson/msinttypes/inttypes.h",
+      "sha256": "f478d3d2c8827aa29d826c89570819720c413cd14d298e8cefcabe6e218cba7c"
+    },
+    {
+      "path": "libs/rapidjson/msinttypes/stdint.h",
+      "sha256": "fcb37b41a2b1ebfa3fc54cf1529b31999b00535f57f0bb8ed9eb148f991cd6bf"
+    },
+    {
+      "path": "libs/rapidjson/prettywriter.h",
+      "sha256": "db8c1651277b0d2e2627267b271f54e0076e9bacc9bd34c89b1e1ef12824a758"
+    },
+    {
+      "path": "libs/rapidjson/rapidjson.h",
+      "sha256": "9214287ebfb1d589a19891f2f41271710ed5e15aa9b5a9f39b223658b531d886"
+    },
+    {
+      "path": "libs/rapidjson/reader.h",
+      "sha256": "242e12ce3603c93cf38b1313e17d9976fe20bf5ac645e5e4c6d2308cb5b39fb9"
+    },
+    {
+      "path": "libs/rapidjson/stream.h",
+      "sha256": "45d6bed601d70940fca2ebe4bb5bdc49b142d00d4c5b175d824e122e78946643"
+    },
+    {
+      "path": "libs/rapidjson/stringbuffer.h",
+      "sha256": "6f30fd0e867f59dfbafee2857ca4c0c3ee6b067240817bf434646a375cea3dc4"
+    },
+    {
+      "path": "libs/rapidjson/writer.h",
+      "sha256": "0590c78b9f77889a1fd57d9c598f7f3af60236bfa2e2dfb1bf32c8c2c1e8bcb5"
+    },
+    {
+      "path": "libs/stream/stringstream.h",
+      "sha256": "a5ca2ec52e2ec1d0aed7674159d4e93a69fdc18c8c59876b8ac3df8463d4cfbc"
+    },
+    {
+      "path": "libs/stream/textstream.h",
+      "sha256": "91adf748272da13402042c4a476e75cedb9082fc40a4ffab30235e8e749b25bd"
+    },
+    {
+      "path": "libs/string/string.h",
+      "sha256": "ff4dc5025309a3032735fbc5191d13e46b838b0649d046fb291e8f30f8ac07ea"
+    },
+    {
+      "path": "libs/timer.h",
+      "sha256": "046e2ca6e5efcf42a26f0b904e3663f8a27a7d36dbd338eec8dd1561b04b2eba"
+    },
+    {
+      "path": "libs/webplib/tiny_webp.h",
+      "sha256": "1037db0c934d2ebfdbd99e1cc469bda55de26ba80798a58d8fc3093ca8cd790c"
+    },
+    {
+      "path": "libs/webplib/webplib.cpp",
+      "sha256": "5865d93f9d9e4f085efb24071076f204ad608cadf393a61f9d0abb6d627bb77e"
+    },
+    {
+      "path": "libs/webplib/webplib.h",
+      "sha256": "63a96bfe4612c1b96d5a6e89e6426b638181ae8375c2e910f7ee6da4b6886446"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "ca7c96ce0851c80973095d5ae8b3a918a543bbf659c8be43fc13cbc5c691e96b"
+    },
+    {
+      "path": "regression_tests/q3map2/base_winding/base_winding_logging.patch",
+      "sha256": "f02a237a61f4b8d63a84274819699c586357abc505f270e350f3ed13b5a8381b"
+    },
+    {
+      "path": "regression_tests/q3map2/base_winding/maps/base_winding.map",
+      "sha256": "bba775327ed89795a8dffa16c7744a1990bd801538bc8697b9ebfae731b0c38a"
+    },
+    {
+      "path": "regression_tests/q3map2/base_winding/README.txt",
+      "sha256": "8041841b609cc180d299907720457c6c36ea9f698f7d5a1b46c35bed82bbc14d"
+    },
+    {
+      "path": "regression_tests/q3map2/coarse_snap_normal/maps/coarse_snap_normal.map",
+      "sha256": "8127a8cac40f1aaeff9b9c2800d6252e409cfeacfae17a98f8c91c84e8f8509c"
+    },
+    {
+      "path": "regression_tests/q3map2/coarse_snap_normal/README.txt",
+      "sha256": "49cb49e9277a1021ef18de3070fe55771a13fc4a57f1fa2226f2168c0bed3eec"
+    },
+    {
+      "path": "regression_tests/q3map2/decal_misalignment/maps/decal_misalignment.map",
+      "sha256": "cb1cec370d7ea75ccd5039448e72a5e660ae48adabcd2824d421780eb4375fe7"
+    },
+    {
+      "path": "regression_tests/q3map2/decal_misalignment/README.txt",
+      "sha256": "beaa85abe17b5809948bece2387d7d216960b794bf41d6fc2083d595fd7c9cbf"
+    },
+    {
+      "path": "regression_tests/q3map2/decal_misalignment/scripts/radiant_regression_tests.shader",
+      "sha256": "0961c378994558271ef8fb036d952b61aa3a63c7c1ba2e748fe74d0cea3f6cbb"
+    },
+    {
+      "path": "regression_tests/q3map2/degenerate_winding/maps/degenerate_winding.map",
+      "sha256": "46d6b1ea4ddf3f3e42e03d80d1bf9e907b08be076c5f71609af19564737f1f53"
+    },
+    {
+      "path": "regression_tests/q3map2/degenerate_winding/README.txt",
+      "sha256": "93fb4cc1b2d6ca7fd5022969f8a5af63e231dc2d6e9d75f90677ef9bcec2ab4c"
+    },
+    {
+      "path": "regression_tests/q3map2/degenerate_winding2/maps/degenerate_winding2.map",
+      "sha256": "d6513d7124758d0b3bffc26f1c38e55879b3003d674dc7fe98a4b1d026ea3402"
+    },
+    {
+      "path": "regression_tests/q3map2/degenerate_winding2/README.txt",
+      "sha256": "c163008abdbe872191ea4959fb761436a7cb797fbddc6f36540556bfc2d4ef50"
+    },
+    {
+      "path": "regression_tests/q3map2/degenerate_winding3/maps/degenerate_winding3.map",
+      "sha256": "f003ca85037235a6b85750afe57a16b8b91a7a18e4d6c8bd5041df85daf7a8f8"
+    },
+    {
+      "path": "regression_tests/q3map2/degenerate_winding3/README.txt",
+      "sha256": "03799a119a71045a683a2625cf41bcf4ddb3138795f44c56e27846e73e8fdd0f"
+    },
+    {
+      "path": "regression_tests/q3map2/disappearing_sliver/maps/disappearing_sliver.map",
+      "sha256": "5ad1c49d0993597ea97aa835942ebd871b564b58357d0c8b3e6a14a49c86d835"
+    },
+    {
+      "path": "regression_tests/q3map2/disappearing_sliver/README.txt",
+      "sha256": "03720fe8d9cf66a86494157149e38fdf1127ce459e21308c962158d5c2f35d45"
+    },
+    {
+      "path": "regression_tests/q3map2/disappearing_sliver/winding_logging.patch",
+      "sha256": "f4574840e154e7ee41536da6d97f3415d95cbfd745a036ecc3bbdc416b0eab16"
+    },
+    {
+      "path": "regression_tests/q3map2/disappearing_sliver2/maps/disappearing_sliver2.map",
+      "sha256": "e0c00784749b783e88c566a5da1c550fd59464b6ee4105a87d21954198eb065a"
+    },
+    {
+      "path": "regression_tests/q3map2/disappearing_sliver2/README.txt",
+      "sha256": "eb23bc2d0c4ba0cff87a5ec10daf57582e9bd6e6836da44e727b190765edb13e"
+    },
+    {
+      "path": "regression_tests/q3map2/disappearing_sliver3/maps/disappearing_sliver3.map",
+      "sha256": "1e8e30dcdb4c87125fba3c01b68c64ef8117d6f49c2ab8564c20ef449dd7afdd"
+    },
+    {
+      "path": "regression_tests/q3map2/disappearing_sliver3/NOTES.txt",
+      "sha256": "775afc2623230e0cfa834b0e0d8783e9071f8f27f5e20ee96aa14c2106721968"
+    },
+    {
+      "path": "regression_tests/q3map2/disappearing_sliver3/README.txt",
+      "sha256": "c4f48d4ac5e802012a0c0d21b93f8dae6af92eb7e298e495e59ca9609689de59"
+    },
+    {
+      "path": "regression_tests/q3map2/duplicate_plane/maps/duplicate_plane.map",
+      "sha256": "164c4695ee1a25fd9d42052b8194c32075d4c6a0ddfadaabb14605de8b53bede"
+    },
+    {
+      "path": "regression_tests/q3map2/duplicate_plane/README.txt",
+      "sha256": "27597ae4d79d4df8d6d06a4c6373a810a438af3452eb7abda92b945e8d096428"
+    },
+    {
+      "path": "regression_tests/q3map2/model_clipping_45_degrees/maps/model_clipping_45_degrees.map",
+      "sha256": "caef188128aca061d8aabaf31e856d80773a6d42d4b2331d03741a25151abf87"
+    },
+    {
+      "path": "regression_tests/q3map2/model_clipping_45_degrees/models/mapobjects/wedges/wedge_45.ase",
+      "sha256": "87eae9425434c466653fafdcde794f50fb715c2d45aa33750b643b6ef1954aed"
+    },
+    {
+      "path": "regression_tests/q3map2/model_clipping_45_degrees/models/mapobjects/wedges/wedge_shallow.ase",
+      "sha256": "15d4a378c6a31ebc288651b4dd51730b2d7094964a2514b9f4b26ffb43d680fa"
+    },
+    {
+      "path": "regression_tests/q3map2/model_clipping_45_degrees/models/mapobjects/wedges/wedge_steep.ase",
+      "sha256": "0df0764313fd86349c942ce15da3460f779879f079726d715df7a13ac59ddf4d"
+    },
+    {
+      "path": "regression_tests/q3map2/model_clipping_45_degrees/README.txt",
+      "sha256": "ddb6ae824a0e3fad1ea2b0ea62acab1bb4c17c236799fa7c15f2f2bfeba79837"
+    },
+    {
+      "path": "regression_tests/q3map2/model_clipping_45_degrees/scripts/radiant_regression_tests.shader",
+      "sha256": "aa63f93a5e6de1b0610b3a9dd20fb58d348727a3691bcfa6d331a185a7aab777"
+    },
+    {
+      "path": "regression_tests/q3map2/patch_seam/maps/patch_seam.map",
+      "sha256": "5f7089ada7b56dae5063a86ec1dca8882bcb56bafb5fbb833e59625a20aa612f"
+    },
+    {
+      "path": "regression_tests/q3map2/patch_seam/README.txt",
+      "sha256": "211eb796fb6ff6623c0cc4fd1b907a673b3d4f9e5cafebb134cd948ac6851be9"
+    },
+    {
+      "path": "regression_tests/q3map2/patch_seam/textures/radiant_regression_tests/green.tga",
+      "sha256": "821c4f7c2afa3d66aca42c6dd3f1b6ce2232131f102eb3ae4e6d68fbffaaee62"
+    },
+    {
+      "path": "regression_tests/q3map2/patch_seam/textures/radiant_regression_tests/tile.tga",
+      "sha256": "ae703c40a23f7618e2f7c3c3fe85a676cdcfe8178799413e7acbeffd2bf4666c"
+    },
+    {
+      "path": "regression_tests/q3map2/piercing_triangle/maps/piercing_triangle.map",
+      "sha256": "463bd35d8c90145abc72d884823283cea84878690b1ec378ae34c5e627a6e775"
+    },
+    {
+      "path": "regression_tests/q3map2/piercing_triangle/README.txt",
+      "sha256": "79dd183ea062509c54d6d507fad6613297c0ef862c97f303d3a9f1baed6bb3c8"
+    },
+    {
+      "path": "regression_tests/q3map2/plane_aliasing/maps/plane_aliasing.map",
+      "sha256": "ebceff4c1f713b2b68cf2ad55ce113a3cb94cee29565368b7fca8d54f4cda9a4"
+    },
+    {
+      "path": "regression_tests/q3map2/plane_aliasing/README.txt",
+      "sha256": "b001be265ada0c81a4786342d587c38d61900d3dac223b1dc983d702b3482060"
+    },
+    {
+      "path": "regression_tests/q3map2/segmentation_fault/maps/segmentation_fault.map",
+      "sha256": "a89b45559b9b2dfac91671ae3490f72b6f795d6089572a002a01f3b400e1e929"
+    },
+    {
+      "path": "regression_tests/q3map2/segmentation_fault/README.txt",
+      "sha256": "89c76691fe5561b6e87ac4f6596a0989153d209914f087c1a60fdd3c3e01ec41"
+    },
+    {
+      "path": "regression_tests/q3map2/snap_plane/maps/snap_plane.map",
+      "sha256": "fb8efe2894c424a5b4ac11c58e92f9f1931d1a542928f521ef8532189cdce3d1"
+    },
+    {
+      "path": "regression_tests/q3map2/snap_plane/README.txt",
+      "sha256": "47c47233b71f93f8a27e97a121c04bfa120f5f43ae49c7d9b76a6119ebda84ef"
+    },
+    {
+      "path": "regression_tests/q3map2/sparkly_seam/maps/sparkly_seam.map",
+      "sha256": "08c7af8a22a1b83c2b977bd8fc85f6b1d6b860af01550e66eeb13ea6f9964368"
+    },
+    {
+      "path": "regression_tests/q3map2/sparkly_seam/README.txt",
+      "sha256": "4467995d5ab1eb59879a6026652d73e7461e17e03899edeacfd6a0d2cc200cad"
+    },
+    {
+      "path": "regression_tests/q3map2/tiny_structural_brush/maps/tiny_structural_brush.map",
+      "sha256": "04896a7308ca35ad0a662e4276f08ffc728f9af0898377e5f000cb93e2094cb3"
+    },
+    {
+      "path": "regression_tests/q3map2/tiny_structural_brush/README.txt",
+      "sha256": "c27ce07f3631ca661bc9f415165da58b995f0148760c998e7bd3ea6247df90c5"
+    },
+    {
+      "path": "tools/quake3/common/bitflags.h",
+      "sha256": "93fe8a0a76723f3b217b2ea0fadd014eb0757cb0d958a5fe2210691dcb047256"
+    },
+    {
+      "path": "tools/quake3/common/cmdlib.cpp",
+      "sha256": "d32da666712c92f10f2da293aacc9c949b1f7b8a81a9d6ad41bc2dd9bb3b19ec"
+    },
+    {
+      "path": "tools/quake3/common/cmdlib.h",
+      "sha256": "a48b578358c82b49453dc34082f9681296e90279361e25b328b81e4ed715443c"
+    },
+    {
+      "path": "tools/quake3/common/inout.cpp",
+      "sha256": "ddd63b8c6270c397de3b1ccee38f96fbf242f80f8e5b192fe062dc0037534ffd"
+    },
+    {
+      "path": "tools/quake3/common/inout.h",
+      "sha256": "9429f47cdbfc5f6f9c96927d1e4b47a57eb06191dc882f9c2500edbc0525d1ed"
+    },
+    {
+      "path": "tools/quake3/common/inout_xml.h",
+      "sha256": "1aab3637c7b82fc854284d84cccbd32abfe181b06d5cdd1d495b67d10b6cef31"
+    },
+    {
+      "path": "tools/quake3/common/jpeg.cpp",
+      "sha256": "da56dc5bae14695a2729240e96d9bd3faacffb8a7f531e173e8b93d8b2f8ec46"
+    },
+    {
+      "path": "tools/quake3/common/maxworld.h",
+      "sha256": "986729c8d630d7caf8c479461bb9a0afcf6ffe2ae1a22da586263d087496b5a2"
+    },
+    {
+      "path": "tools/quake3/common/md4.cpp",
+      "sha256": "e212a19e950073fe481f834de9944f9a624b557156f1760b58d27abe5d570921"
+    },
+    {
+      "path": "tools/quake3/common/md4.h",
+      "sha256": "41fba388cb2398ebb3b1046052478025553986eb831144957dbf1c48fe021686"
+    },
+    {
+      "path": "tools/quake3/common/miniz.cpp",
+      "sha256": "87d1fd4a012038f28f2402c795a8f09e9f57e917c4d11cab4039617252480fe9"
+    },
+    {
+      "path": "tools/quake3/common/miniz.h",
+      "sha256": "415841adce9e4c68a7fbd425fa1a486d83250bb0cffc1679653d00716229b6eb"
+    },
+    {
+      "path": "tools/quake3/common/mutex.cpp",
+      "sha256": "72d82cea9abc381182d7c372376430d0b304d0f66d2f6e2f1715b13c154cda02"
+    },
+    {
+      "path": "tools/quake3/common/mutex.h",
+      "sha256": "8b811a9e134d28d8e8221e1d15f7feff6460b9384e1df44c376e538a10bd75b9"
+    },
+    {
+      "path": "tools/quake3/common/polylib.cpp",
+      "sha256": "daa17c974b15ae818698305cf6d7f90c7c52c87feae49a3a6b0e18a92b9982e5"
+    },
+    {
+      "path": "tools/quake3/common/polylib.h",
+      "sha256": "ed7cd7faf07bf5b365ed3858d9332092226e66010b59d668e109df1527dd1c63"
+    },
+    {
+      "path": "tools/quake3/common/qimagelib.cpp",
+      "sha256": "8ccc25118dab948d118a4f5695fd5f94bbc301441c5b50eb7feaf23cac835dbb"
+    },
+    {
+      "path": "tools/quake3/common/qimagelib.h",
+      "sha256": "cdc40c1493d3245c331956e9f50ac1320a1c2d03bd02980636d1ff5f890e4960"
+    },
+    {
+      "path": "tools/quake3/common/qmath.h",
+      "sha256": "0612448ea5a12b4f8fb4fa8f0691ba536cd64494748577bf0571a5d046c6b7d0"
+    },
+    {
+      "path": "tools/quake3/common/qpathops.h",
+      "sha256": "1970b5e54c8a3fcc213c3dbdd29776f5fe8500e123cfc6b1a607ea0111909ca3"
+    },
+    {
+      "path": "tools/quake3/common/qspatial.h",
+      "sha256": "0e961dfb6214fc9d43f9ea26de0f0d32c7bca19f1784da4e0cf0532d3d7b156b"
+    },
+    {
+      "path": "tools/quake3/common/qstringops.h",
+      "sha256": "309cb97f9cf31a1e7a3656f1a3fa5607415a03e24668b8eb76e3362b4ac0de50"
+    },
+    {
+      "path": "tools/quake3/common/qthreads.h",
+      "sha256": "ff456dff73e59b71c410898370117b8e553be2dedb7180a28fda70bb03562cba"
+    },
+    {
+      "path": "tools/quake3/common/scriplib.cpp",
+      "sha256": "9a27556d87e978e420821a3621d2bd7786c63315a458c318c744bb2608501d9e"
+    },
+    {
+      "path": "tools/quake3/common/scriplib.h",
+      "sha256": "5d7f70ed18d6b6022803b55bcde6213887d5d229a558c5084d9794af993e145d"
+    },
+    {
+      "path": "tools/quake3/common/stringfixedsize.h",
+      "sha256": "48189d2088caa929ddbe103c414f6f02d246c51f42d3f8442364b4db0eff6604"
+    },
+    {
+      "path": "tools/quake3/common/threads.cpp",
+      "sha256": "e839a7c4b8be5cae2847b1e6a0321f0ad179719936886d14efd706bcfc184b20"
+    },
+    {
+      "path": "tools/quake3/common/unsortedset.h",
+      "sha256": "5662adb01cf576cd6c3a35f06f188703f5ee2bbfa45a70b535c0785f325eb8dd"
+    },
+    {
+      "path": "tools/quake3/common/unzip.cpp",
+      "sha256": "7a66ce4aaa0b7463f3c43bf3edddd85e63414be47c8587581ef6e14ba24f7cdb"
+    },
+    {
+      "path": "tools/quake3/common/unzip.h",
+      "sha256": "5213850c214eea40388b619f9f3ee0eb3f7378b6b33b35b036068c1fe54bab8d"
+    },
+    {
+      "path": "tools/quake3/common/vfs.cpp",
+      "sha256": "2f22d363e2e934e1568adc60802eba56f602a12d83971e47e893215220f588c2"
+    },
+    {
+      "path": "tools/quake3/common/vfs.h",
+      "sha256": "a958d0a921ee78741fee691187bb7e4fd695eb8871e1e318661e923a51d73ab1"
+    },
+    {
+      "path": "tools/quake3/q3map2/.patchsets",
+      "sha256": "2ca3d755b7004e59f7124773fb637af7e6f5ebb88ad8c59b85b83f843f79f9d8"
+    },
+    {
+      "path": "tools/quake3/q3map2/autopk3.cpp",
+      "sha256": "cf18deabfde8ae19ccf36282f7f1e0981a0a238bda18f4b8ad1ad6605a91aa4f"
+    },
+    {
+      "path": "tools/quake3/q3map2/autopk3.h",
+      "sha256": "2c023baa69deb8b5c93f41914496925f46d102b1f7ff54c3137f579c1fab19d0"
+    },
+    {
+      "path": "tools/quake3/q3map2/brush.cpp",
+      "sha256": "451fc6a0917a3c5a74b34724cff6fd32733128357266fcbafd98b7a0630ee813"
+    },
+    {
+      "path": "tools/quake3/q3map2/bsp.cpp",
+      "sha256": "e8a5fc03738a67ad9620e4bca529dc0d840cc8838a80af696b4f67df2e6e112a"
+    },
+    {
+      "path": "tools/quake3/q3map2/bspfile_abstract.cpp",
+      "sha256": "4019433a03e937ac758c672f713cd6f0569ff6dd622f995f988d820fd6f62ff3"
+    },
+    {
+      "path": "tools/quake3/q3map2/bspfile_abstract.h",
+      "sha256": "68bcd2453a9fb30cc78e56f4889ba33c50591a23a4985369b03c3253d0cfc7c5"
+    },
+    {
+      "path": "tools/quake3/q3map2/bspfile_ibsp.cpp",
+      "sha256": "8f3682ba142e55f9a6f142a6de3f5d42692faf48fa2afe13d93519dfdf92d9d2"
+    },
+    {
+      "path": "tools/quake3/q3map2/bspfile_ibsp.h",
+      "sha256": "3337b1c450180d61fa657409e683364ac8a1dc91d6bf1dea4b803b50bb0645b2"
+    },
+    {
+      "path": "tools/quake3/q3map2/bspfile_rbsp.cpp",
+      "sha256": "c3d2c51fc4f0b3f73ba153db75b10eebfdfc978bb2e7ac7915511a865608a65a"
+    },
+    {
+      "path": "tools/quake3/q3map2/bspfile_rbsp.h",
+      "sha256": "fc8658c49b28d03e856b6c4ae53923d8b5bf99c66f9e628916b82ff618e72459"
+    },
+    {
+      "path": "tools/quake3/q3map2/changelog.q3map1",
+      "sha256": "acbf8624d63adf0e18da68f4b52aa8fac20dc31069da5724ed213232214f472e"
+    },
+    {
+      "path": "tools/quake3/q3map2/changelog.q3map2.txt",
+      "sha256": "6b774e43eb4032809775a47647e932613b43a114b1b47ea01dcca89ef94a4b6d"
+    },
+    {
+      "path": "tools/quake3/q3map2/convert_ase.cpp",
+      "sha256": "386682a6a7e6a9e21cca3e8b799a65f01851e52e2ad1fcbb14798159cb428a4a"
+    },
+    {
+      "path": "tools/quake3/q3map2/convert_bsp.cpp",
+      "sha256": "f88b2c98525c4a17fa8b16db8bf14f6b7431a17704bca307490e8ad2fc2d0e2d"
+    },
+    {
+      "path": "tools/quake3/q3map2/convert_json.cpp",
+      "sha256": "76d60821b4a589d9b0481d374b83de7f56349672088d32ddcfca8e044ab1c1f5"
+    },
+    {
+      "path": "tools/quake3/q3map2/convert_map.cpp",
+      "sha256": "138968e1a036b533b5f887e822e10bf204b4996723e731729fb7c99b3b93d95e"
+    },
+    {
+      "path": "tools/quake3/q3map2/convert_obj.cpp",
+      "sha256": "457c9fea3665589679b1df8aaa54398ab113266316b0d5520fa253aee2067221"
+    },
+    {
+      "path": "tools/quake3/q3map2/convert_obj.h",
+      "sha256": "e1f1ba1ac0f133d4dc34fdabaf857cc0ea2fbfbd1bf507891c9acd245d18aeb8"
+    },
+    {
+      "path": "tools/quake3/q3map2/decals.cpp",
+      "sha256": "39b55dc7b032593d2da9d6886f49c9d371886157a2ae7a6e1bc6901b0ea22416"
+    },
+    {
+      "path": "tools/quake3/q3map2/exportents.cpp",
+      "sha256": "06a3afd6641d91d811b0233e4ada79a31c9183ca18c3436721bae90fa461e94b"
+    },
+    {
+      "path": "tools/quake3/q3map2/facebsp.cpp",
+      "sha256": "0727426be98266ea1ea6e90e74f8fcf3361a682613aa7219559aa187f5a16af3"
+    },
+    {
+      "path": "tools/quake3/q3map2/fog.cpp",
+      "sha256": "1cab7a1f85a40d06cd1869abf2cfd6d0a42264783bfecd8a5b0ad31bc1db49ef"
+    },
+    {
+      "path": "tools/quake3/q3map2/games.cpp",
+      "sha256": "e8317a249afb885c93f03c413cd157205d220d3ba96ed44e8d8598d2f44d803c"
+    },
+    {
+      "path": "tools/quake3/q3map2/games.h",
+      "sha256": "1824474522bfac6fbbae69b1fefe40e3211af219f034789c36537ee74dd711fd"
+    },
+    {
+      "path": "tools/quake3/q3map2/help.cpp",
+      "sha256": "a606c2d8bd288e3da924b2cfc621c36627f7eed2beede025d119f83a0a0cdd5b"
+    },
+    {
+      "path": "tools/quake3/q3map2/image.cpp",
+      "sha256": "7c27f45ffe18afe51a577268040cd70986c8816246e379f69e99a3ca87ebf1e6"
+    },
+    {
+      "path": "tools/quake3/q3map2/leakfile.cpp",
+      "sha256": "c90f07a73033a78eb4e5054fb6dc21f1433db66d6a494081d5e52adf7f99def4"
+    },
+    {
+      "path": "tools/quake3/q3map2/light.cpp",
+      "sha256": "f1c41b8449e466eaef4d30729b476597d258a4756a30b2fd701aecfc2bac8dbc"
+    },
+    {
+      "path": "tools/quake3/q3map2/light_bounce.cpp",
+      "sha256": "712a34631a1cefb026c91d7da2d5ab44a13fc69c3edc6443b43e0bfeba115b40"
+    },
+    {
+      "path": "tools/quake3/q3map2/light_trace.cpp",
+      "sha256": "43c160a03918ec7b9175a3633faf6af079a0e7be1792e15a86949fa2c1a2c36e"
+    },
+    {
+      "path": "tools/quake3/q3map2/light_ydnar.cpp",
+      "sha256": "b888932ee436c167eb7562294e9c3b6937a95572cdcdc37565660308bb2cec0b"
+    },
+    {
+      "path": "tools/quake3/q3map2/lightmaps_ydnar.cpp",
+      "sha256": "5c6ded373aecb29dc022e41762df1cef9eabad2161fc97935b3e08dbc6060a48"
+    },
+    {
+      "path": "tools/quake3/q3map2/listen.pl",
+      "sha256": "aa550397e498b2abea93c90b178e4160f8c9e9b71e05e4d69abe6d6be65d0ce7"
+    },
+    {
+      "path": "tools/quake3/q3map2/main.cpp",
+      "sha256": "40708fc36f738e809bf2a4f908ef1a72280357fb2a9a85aca7b48f846288177d"
+    },
+    {
+      "path": "tools/quake3/q3map2/map.cpp",
+      "sha256": "dcfdf1d8db723c5324b6540e38bc84d840ac9ff189b11da82676d255931eddef"
+    },
+    {
+      "path": "tools/quake3/q3map2/mesh.cpp",
+      "sha256": "7aaf9edd1e1173b13a29913d67beab31acd6e0ee80a0cdfb98dd5400b645a41c"
+    },
+    {
+      "path": "tools/quake3/q3map2/minimap.cpp",
+      "sha256": "2a10ae92dbef148ee7d936197851082ccbf8df292b3ffbaa4080da4eb0099494"
+    },
+    {
+      "path": "tools/quake3/q3map2/model.cpp",
+      "sha256": "f954ee97b777aa49826ccbfdadd49ae7346aecdc61c01d4e24bce8b0e7f17aa2"
+    },
+    {
+      "path": "tools/quake3/q3map2/model.h",
+      "sha256": "35705db8ae18ccc50afeb4d704be04b9c95282c7d46c1ba06c7c4eb8523bd6d4"
+    },
+    {
+      "path": "tools/quake3/q3map2/patch.cpp",
+      "sha256": "944c2ed972db92f6943719c64aed9bd217baaa16c91f37c4de9d788f410f9527"
+    },
+    {
+      "path": "tools/quake3/q3map2/path_init.cpp",
+      "sha256": "b54453353a621d2fe60d45212078c4c2c9ab6c42b6e63abbffe3969485349baf"
+    },
+    {
+      "path": "tools/quake3/q3map2/portals.cpp",
+      "sha256": "d3181f917a1e6367f9b1ecafe10faa5aef82ea715d1574307d3f2d4366ff31a8"
+    },
+    {
+      "path": "tools/quake3/q3map2/prtfile.cpp",
+      "sha256": "7710257f3c7d2e27b66939498e279dfd27277c4052e0e4eac658b20434094275"
+    },
+    {
+      "path": "tools/quake3/q3map2/q3map2.h",
+      "sha256": "74d4ad423487f61bf44e13e50b5a0af49cbfc7dc748b536b304d2e17a96f0008"
+    },
+    {
+      "path": "tools/quake3/q3map2/q3map2.ico",
+      "sha256": "6a7b2ee77e1ee4e4f9226f3e479065da4e13f7e4f10cc2d1d065362e5e51004f"
+    },
+    {
+      "path": "tools/quake3/q3map2/q3map2.rc",
+      "sha256": "9e8936f49e56990c80b1ec36d6b0537b4580ee729a62d9da2af66a07b67114bd"
+    },
+    {
+      "path": "tools/quake3/q3map2/q3map2_fsr_newfiles/q3map2_fsr_svn158.patch",
+      "sha256": "7363b23b3e45817c1e7f0d84e105f85a530b468a6f96e36424dfe37fce2f5655"
+    },
+    {
+      "path": "tools/quake3/q3map2/shaders.cpp",
+      "sha256": "8028dc09b86da8defe697f255dc7da485e6a51e70f4c6d7a8d77a25024329e84"
+    },
+    {
+      "path": "tools/quake3/q3map2/shaders.h",
+      "sha256": "3a9946791aebaacd413f2d56b1125fc3c7df4d49c090eb0659bc550b97631075"
+    },
+    {
+      "path": "tools/quake3/q3map2/surface.cpp",
+      "sha256": "642d3bef93b0dee72c4ba1069121ac8bce40b51141b13d333f148972f4e02243"
+    },
+    {
+      "path": "tools/quake3/q3map2/surface_extra.cpp",
+      "sha256": "69c57ea5c1a9a8a14d49db40170282badbc29ba366aa6ad2daff3debe628e57c"
+    },
+    {
+      "path": "tools/quake3/q3map2/surface_extra.h",
+      "sha256": "b6ba678562deed1cb65f9dfd25c93d48c4be2d72a509b7331821e46696dbda3c"
+    },
+    {
+      "path": "tools/quake3/q3map2/surface_foliage.cpp",
+      "sha256": "d8c698457db5c0c4c0c61d28372262de5c571779921d55354e7630eaa0fe254e"
+    },
+    {
+      "path": "tools/quake3/q3map2/surface_fur.cpp",
+      "sha256": "4d30701ec51c789c7105c0e57a1672238bca54d21be41b09ecd91d49cdafc1f4"
+    },
+    {
+      "path": "tools/quake3/q3map2/surface_meta.cpp",
+      "sha256": "d4ec1aecd2d9c6e8f23568cb77ac78d9e171d7a3e11038310729fbeaab08bfdb"
+    },
+    {
+      "path": "tools/quake3/q3map2/tjunction.cpp",
+      "sha256": "45d6d5193b5514df4e0c938346e510d1ddee6cb4cbe5f73b256813ee9483507b"
+    },
+    {
+      "path": "tools/quake3/q3map2/tjunction.h",
+      "sha256": "db68f55d95b6aeded9ed61894bdf3db7b57a408b4fbbc75029b0abfb0fce3f77"
+    },
+    {
+      "path": "tools/quake3/q3map2/tree.cpp",
+      "sha256": "eade8fe26637dc1a00eead1cb3d3538ff2feac90bdf37e19b6daa41fb488bf3b"
+    },
+    {
+      "path": "tools/quake3/q3map2/vis.cpp",
+      "sha256": "bab8689c182f97e08d100f4e671860080e5a45038fd5d59160c6fe6c609bbd02"
+    },
+    {
+      "path": "tools/quake3/q3map2/vis.h",
+      "sha256": "31c8cf3c7d7ec77be91f6a705f2215f85fcaba410a717244273093eb4f498b4b"
+    },
+    {
+      "path": "tools/quake3/q3map2/visflow.cpp",
+      "sha256": "a1459f2f1223936ca30a20df2023c08d8c9cd7d137aa9f47e4e0d8725f14fc93"
+    },
+    {
+      "path": "tools/quake3/q3map2/visflow.h",
+      "sha256": "65948a993a0c45c4836e6750a5fa78430e62bff36653366a62c4b4eff404341f"
+    },
+    {
+      "path": "tools/quake3/q3map2/writebsp.cpp",
+      "sha256": "9b188c3641f008b0ddb4ef3d24b0419efcffced9e91d288fcb1bdb8d36b18ec1"
+    }
+  ]
+}

@@ -18,7 +18,7 @@ are required for the initial test suite.
 - [x] Identify current NRC upstream and exact revision.
 - [x] Inspect licenses before incorporating code.
 - [x] Record architecture, implementation order, and acceptance criteria.
-- [ ] Import the compiler, required libraries, and upstream regression fixtures.
+- [x] Import the compiler, required libraries, and upstream regression fixtures.
 - [ ] Add standalone CMake/Ninja presets and a documented build.
 
 Acceptance: a clean configure and release build, working help/game listing, exact

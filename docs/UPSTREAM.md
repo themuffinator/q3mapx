@@ -14,7 +14,17 @@ The initial q3mapx repository had no license and contained only `.gitattributes`
 Before import, the upstream `LICENSE` and compiler file headers were inspected.
 The compiler is GPL-2.0-or-later; bundled libraries have individual notices.
 q3mapx adopts compatible licensing and retains those notices and license texts.
-The exact imported subset will be recorded with the source-import task.
+The import contains 209 files (3,550,398 bytes): `tools/quake3/common`,
+`tools/quake3/q3map2`, upstream q3map2 regression fixtures, the transitive local
+header dependencies and image/network support sources, and the upstream license
+texts and contributor list. The Radiant editor, game packs, and bundled Assimp
+implementation are excluded; Assimp is a system build dependency.
+
+[The import manifest](upstream-manifest.json) records the SHA-256 of each original
+file before q3mapx changes. This makes source provenance independently verifiable.
+Imported RapidJSON (MIT), Crunch (zlib/public domain), tiny_webp (MIT), DDS support
+(BSD), and ETC support (MIT) retain their file-level notices. These permissive
+licenses are compatible with the compiler's GPL-2.0-or-later distribution.
 
 ## Credits
 

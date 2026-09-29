@@ -22,3 +22,14 @@ Findings to address:
 
 No performance gains or finished GUI/GPU features are claimed at this stage.
 Next task: import the required source subset and produce the baseline executable.
+
+## 2026-09-29 — Standalone compiler source import
+
+Imported 209 files from the pinned NRC revision, including compiler sources,
+transitive local dependencies, image/network support, upstream regression fixtures,
+and license/contributor texts. Added an original-file SHA-256 provenance manifest.
+Excluded the Radiant editor and bundled Assimp implementation.
+
+Validation: verified every imported file against the source reference by SHA-256.
+Compiler and bundled component license notices were checked for compatibility.
+No compiler behavior was changed. Build validation is the next task.

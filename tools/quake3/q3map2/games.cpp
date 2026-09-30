@@ -1092,6 +1092,9 @@ int PrintGameCatalog(){
 		}
 		writer.EndArray();
 		writer.Key( "workflows" ); writer.StartArray();
+		if ( strEqual( game.arg, "quake3" ) ) {
+			writer.String( "geometry-analyze" ); writer.String( "geometry-optimize" );
+		}
 		if ( game.write ) {
 			writer.String( "build" ); writer.String( "bsp" ); writer.String( "vis" ); writer.String( "light" );
 		}

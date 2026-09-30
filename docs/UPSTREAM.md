@@ -36,6 +36,15 @@ section describes an upstream component that q3mapx does not import.
 
 ## Credits
 
+The optional geometry renderer harness uses
+[Quake3e](https://github.com/ec-/Quake3e) and its id Software ancestry as an external
+reference. Its GPL-2.0-or-later header notices and GPL license were checked before
+compiling the original `tests/renderer/geometry_cgame.c` fixture against that ABI;
+the later-version permission is compatible with this GPL-3.0-or-later project.
+No engine implementation or game assets are incorporated or redistributed.
+The validation record identifies the local source files and executable by hashes,
+since the available reference is a source snapshot without Git metadata.
+
 Additional format-layout observations are credited to the
 [fnTech3 headers](https://github.com/themuffinator/fnTech3/tree/a1251ede2c382190b18c154b45357f6979d8171c/code/qcommon),
 with the exact revision and evidence boundaries recorded in

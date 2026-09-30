@@ -95,7 +95,7 @@ QStringList Project::validate(const QString& workflow) const {
     const auto extension=QFileInfo(source).suffix().toLower();
     if ((workflow=="build" || workflow=="bsp") && extension!="map") errors << "BSP construction needs a .map source.";
     if (workflow!="build" && workflow!="bsp" && extension!="bsp") errors << "This workflow needs a .bsp source.";
-    if (!QStringList{"build","bsp","vis","light","minimap","decompile","obj","ase"}.contains(workflow)) errors << "Unknown workflow.";
+    if (!QStringList{"build","bsp","vis","light","minimap","decompile","obj","ase","geometry-analyze","geometry-optimize"}.contains(workflow)) errors << "Unknown workflow.";
     if (meshPatchSteps<1 || meshPatchSteps>32) errors << "Mesh curve detail must be between 1 and 32.";
     if (!QStringList{"bsp","rebuild"}.contains(brushOrder)) errors << "Unknown recovery brush order.";
     if (!QStringList{"legacy","cells"}.contains(detailPolicy)) errors << "Unknown recovery detail policy.";
@@ -147,6 +147,13 @@ QVector<Job> buildPlan(const Project& p,const QString& workflow,const QString& d
     if (workflow=="obj" || workflow=="ase")
         add(workflow.toUpper(),{"-convert","-format",workflow,"-patchsteps",QString::number(p.meshPatchSteps)},staged,
             output.filePath(QFileInfo(p.source).completeBaseName()+"."+workflow));
+    if (workflow=="geometry-analyze" || workflow=="geometry-optimize") {
+        const auto report=output.filePath("geometry.json");
+        const auto optimized=output.filePath(QFileInfo(p.source).completeBaseName()+".optimized.bsp");
+        QStringList options{"-optimize-geometry","-renderer","quake3e-gl","-report",report};
+        if (workflow=="geometry-optimize") options << "-o" << optimized;
+        add("GEOMETRY",options,staged,workflow=="geometry-optimize"?optimized:report);
+    }
     if (workflow=="minimap") {
         QStringList options{"-minimap","-backend",p.backend,"-size",QString::number(p.minimapSize),"-samples",QString::number(p.minimapSamples),
                             "-compute-report",output.filePath("compute.json"),"-o",output.filePath("minimap.tga")};

@@ -1,0 +1,2596 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-30T16:35:23.166470+00:00",
+  "base_revision": "ca36891af82991212bfb07f1329863306ca12a66",
+  "scope": "Conservative post-LIGHT IBSP46 triangle reduction, explicit Quake3e OpenGL renderer profile, CLI/workbench and native/render-target validation",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "eb7d8ae34b8ae00795781104dd5103e2e08aa59fc203829f9a8d505070657f33",
+    "apps/workbench/project.cpp": "24c9560f64e0506682afae9068363b895caa3dac6e5d2bdd2c513abff3b0dc80",
+    "apps/workbench/window.cpp": "1280bff5a37ea40f0419f3cbdb278078d862f9a654e42c11015ddf02bc0b520b",
+    "libs/q3mapx/exact_predicates.cpp": "fbe9485daacfdd35688035a28309375a404ac0527bb56bdb9301da60e4a14415",
+    "libs/q3mapx/exact_predicates.h": "b3057de729d25cbd8293d8879bb4e859491d8494710e3ccf73ce70c8dab514d3",
+    "libs/q3mapx/planar_reduction.cpp": "21be57b29f8fab5429d8b739f20254ff297b07486fbfe73ebbf74eeef8f1e17f",
+    "libs/q3mapx/planar_reduction.h": "b61be2d34e8500b5d1c9e7cb7bbb484db40e78667d9eabbeff177889dda3dda1",
+    "libs/q3mapx/quake3_materials.cpp": "f20d3a69ad5bc37d4ac9194144e99d9ad33a8c0043268e98c998828b29a00892",
+    "libs/q3mapx/quake3_materials.h": "6c07e070dcf50caa120e19c44ab1f6ac2e5ecc4c2fac5111587c426d23b6d68d",
+    "tests/game_catalog.cpp": "c89519851b63ec2c8c664c4e3d68faf48044a184e7f14326a02c9e04a6cf46ed",
+    "tests/geometry_optimize.py": "7bfddb35c4249f8866e6217a9d17641727ffb23df97f8f13eb5f689637b9abed",
+    "tests/planar_reduction_native.py": "99cf138ab3a4775deed1a9a5eef19b7891fd83608b961cb121a97c25d38ede03",
+    "tests/quake3_materials.cpp": "e0572fab45513ba96c69730decef25ef631398d66ee1530cedc3189a2496d264",
+    "tests/renderer/geometry_cgame.c": "b9fc193a120a196f5b4b6c8e0b271291a805a277b9cc20f1d7ffb54a62a8fcd8",
+    "tests/renderer/geometry_render.py": "0bd25648fc844c19de7cffb571b0909d9bcf61a73cc25a75bea63c2768dc1483",
+    "tests/workbench.cpp": "fa0fea2a31f247bb95c3200c25d870eae0f5289cd63b9ccb0c5722e4f0095150",
+    "tests/workbench_window.cpp": "618b361b58655fa875d9f0220b33f436e7a899a66964acadc9bb5d59dc9c95c5",
+    "tools/quake3/common/vfs.cpp": "2942248be3bd8ea61b23961f8dc610d6292cdc9a4e924b44ad22d79b8596f859",
+    "tools/quake3/common/vfs.h": "31d23990e9d3db296b3eb35b7f96c05f991b97316368d7d72d0c11437e7a2298",
+    "tools/quake3/q3map2/games.cpp": "9ad06d65f23e12a218fc109f67fd35a59d56b63d3fdf3a11edc8b432f68da521",
+    "tools/quake3/q3map2/geometry_optimize.cpp": "c9c9b8d4785beee4b4056694f88ec15551b7cb63adb856d7c50edc6a5e84b355",
+    "tools/quake3/q3map2/help.cpp": "10b4a4ae2e4e73a34b7a075d5978270ad58a81010701d76d00b548ef0f744da1",
+    "tools/quake3/q3map2/main.cpp": "5fa4f041bd6c5423bd81d69a291c5da4745ea3f8acb337846df9eff2d5957169",
+    "tools/quake3/q3map2/q3map2.h": "45b5a0c10ca433d9644fcf9025b65b2e6c83f1f828a3ad517b4d4105d9e9d6a6"
+  },
+  "platforms": {
+    "win": {
+      "compiler": {
+        "path": "build/release/bin/q3mapx.exe",
+        "sha256": "128ae2a6946f8a7ea235ecc6791d6231f6b83c61cb1cb54ec76c298c328b11f1"
+      },
+      "materials_unit": {
+        "path": "build/release/bin/quake3_materials_test.exe",
+        "sha256": "2a9fc54ace463b64b6c65c9a0073052c458df37b86729d8ef5e3df602f62fc72"
+      },
+      "native_validation": {
+        "compiler_sha256": "128ae2a6946f8a7ea235ecc6791d6231f6b83c61cb1cb54ec76c298c328b11f1",
+        "records": [
+          {
+            "lighting": "ambient",
+            "input_sha256": "42bfdcdd96899c7ebde3a624ee7457e94a944a5f2727c90eb8ac5a0d395e4c90",
+            "output_sha256": "1e899a59968cf17159de2b04ce657c29b9242ba66340e395eec021dde08671a6",
+            "grid_before": 512,
+            "grid_after": 144,
+            "changed_surfaces": 6,
+            "protected_controls": [
+              "deform",
+              "transparent",
+              "offset",
+              "marks",
+              "dynamic-light",
+              "duplicate",
+              "exclude-material",
+              "exclude-surface",
+              "height",
+              "color",
+              "native-dynamic-light",
+              "native-marks",
+              "uv-seam",
+              "shared-owner",
+              "shared-indices"
+            ],
+            "preserved_failures": [
+              "work-limit",
+              "unspecified-renderer",
+              "unsupported-renderer",
+              "no-index-storage",
+              "bad-work",
+              "bad-exclusion",
+              "unknown-extension",
+              "truncated",
+              "report-directory",
+              "oversized-loose-script",
+              "oversized-packed-script",
+              "source-alias"
+            ]
+          },
+          {
+            "lighting": "point",
+            "input_sha256": "942d71dd8f911f4be474846a4d964e625e033d5adcad85d3bff2cfcd243a3326",
+            "output_sha256": "942d71dd8f911f4be474846a4d964e625e033d5adcad85d3bff2cfcd243a3326",
+            "grid_before": 512,
+            "grid_after": 512,
+            "changed_surfaces": 0
+          }
+        ]
+      },
+      "regressions_after_dispatch_fix": {
+        "path": ".agents/tmp/continuation/geometry-tests-final2-win.log",
+        "sha256": "7e53bba0658f4c6113fce83fa8774545dfe6ad74d1daacaed0bc67215f0fda78",
+        "tests": [
+          {
+            "name": "compiler_pipeline",
+            "status": "passed",
+            "seconds": 1.34
+          },
+          {
+            "name": "binary_outputs",
+            "status": "passed",
+            "seconds": 0.83
+          },
+          {
+            "name": "quake3_materials",
+            "status": "passed",
+            "seconds": 0.01
+          },
+          {
+            "name": "geometry_optimize",
+            "status": "passed",
+            "seconds": 1.84
+          },
+          {
+            "name": "game_catalog",
+            "status": "passed",
+            "seconds": 0.48
+          },
+          {
+            "name": "workbench",
+            "status": "passed",
+            "seconds": 1.83
+          },
+          {
+            "name": "workbench_window",
+            "status": "passed",
+            "seconds": 4.36
+          },
+          {
+            "name": "workbench_preview",
+            "status": "passed",
+            "seconds": 0.22
+          }
+        ],
+        "total_seconds": 10.92
+      },
+      "final_material_and_native_tests": {
+        "path": ".agents/tmp/continuation/geometry-tests-parser-final-win.log",
+        "sha256": "07eaa99aab0e7ee4b543cdf71a32b92af56ae74265398acc4854b6ab59cd1fd7",
+        "tests": [
+          {
+            "name": "quake3_materials",
+            "status": "passed",
+            "seconds": 0.08
+          },
+          {
+            "name": "geometry_optimize",
+            "status": "passed",
+            "seconds": 2.13
+          }
+        ],
+        "total_seconds": 2.22
+      },
+      "final_build_log": {
+        "path": ".agents/tmp/continuation/geometry-build-parser-final-win.log",
+        "sha256": "fed4b45b87f218d81394be583de11f3ea18c4b7c7ecc9414f560c5b1cb2f3dee"
+      },
+      "broad_suite_before_dispatch_fix": {
+        "path": ".agents/tmp/continuation/geometry-tests-qualified-win.log",
+        "sha256": "a6164587c588712cad43473d370afdda46f681550720c1cc70f03ff70bad8ca0",
+        "tests": [
+          {
+            "name": "cli_help",
+            "status": "passed",
+            "seconds": 0.3
+          },
+          {
+            "name": "cli_games",
+            "status": "passed",
+            "seconds": 0.01
+          },
+          {
+            "name": "game_profiles",
+            "status": "passed",
+            "seconds": 3.33
+          },
+          {
+            "name": "compiler_pipeline",
+            "status": "passed",
+            "seconds": 0.67
+          },
+          {
+            "name": "lighting_materials",
+            "status": "passed",
+            "seconds": 3.74
+          },
+          {
+            "name": "bsp_validation",
+            "status": "passed",
+            "seconds": 1.63
+          },
+          {
+            "name": "index_validation",
+            "status": "passed",
+            "seconds": 0.13
+          },
+          {
+            "name": "index_validation_cli",
+            "status": "passed",
+            "seconds": 0.92
+          },
+          {
+            "name": "bsp_inspect",
+            "status": "passed",
+            "seconds": 3.67
+          },
+          {
+            "name": "bsp_analyze",
+            "status": "passed",
+            "seconds": 0.81
+          },
+          {
+            "name": "bsp_evidence",
+            "status": "passed",
+            "seconds": 1.64
+          },
+          {
+            "name": "ftx",
+            "status": "passed",
+            "seconds": 0.09
+          },
+          {
+            "name": "terrain",
+            "status": "passed",
+            "seconds": 0.1
+          },
+          {
+            "name": "native_fakk",
+            "status": "passed",
+            "seconds": 1.25
+          },
+          {
+            "name": "native_mohaa",
+            "status": "passed",
+            "seconds": 0.77
+          },
+          {
+            "name": "native_early",
+            "status": "passed",
+            "seconds": 1.77
+          },
+          {
+            "name": "mesh_export",
+            "status": "passed",
+            "seconds": 0.72
+          },
+          {
+            "name": "export_outputs",
+            "status": "passed",
+            "seconds": 0.44
+          },
+          {
+            "name": "recovery_outputs",
+            "status": "passed",
+            "seconds": 0.73
+          },
+          {
+            "name": "decompile_math",
+            "status": "passed",
+            "seconds": 0.1
+          },
+          {
+            "name": "lighting_math",
+            "status": "passed",
+            "seconds": 0.09
+          },
+          {
+            "name": "area_factors",
+            "status": "passed",
+            "seconds": 2.41
+          },
+          {
+            "name": "area_factors_disabled",
+            "status": "passed",
+            "seconds": 0.03
+          },
+          {
+            "name": "lighting_gpu",
+            "status": "passed",
+            "seconds": 9.36
+          },
+          {
+            "name": "decompile_recovery",
+            "status": "passed",
+            "seconds": 0.29
+          },
+          {
+            "name": "recovery_classification",
+            "status": "passed",
+            "seconds": 6.43
+          },
+          {
+            "name": "recovery_order",
+            "status": "passed",
+            "seconds": 13.02
+          },
+          {
+            "name": "brush_cells",
+            "status": "passed",
+            "seconds": 10.59
+          },
+          {
+            "name": "recovery_group_order",
+            "status": "passed",
+            "seconds": 0.1
+          },
+          {
+            "name": "recovery_groups",
+            "status": "passed",
+            "seconds": 12.6
+          },
+          {
+            "name": "job_pool",
+            "status": "passed",
+            "seconds": 0.06
+          },
+          {
+            "name": "lightgrid",
+            "status": "passed",
+            "seconds": 0.23
+          },
+          {
+            "name": "lightgrid_cli",
+            "status": "passed",
+            "seconds": 0.44
+          },
+          {
+            "name": "raven_compat",
+            "status": "passed",
+            "seconds": 0.54
+          },
+          {
+            "name": "cli_options",
+            "status": "passed",
+            "seconds": 0.98
+          },
+          {
+            "name": "atomic_file",
+            "status": "passed",
+            "seconds": 0.16
+          },
+          {
+            "name": "binary_outputs",
+            "status": "passed",
+            "seconds": 0.7
+          },
+          {
+            "name": "columns",
+            "status": "passed",
+            "seconds": 0.15
+          },
+          {
+            "name": "minimap",
+            "status": "passed",
+            "seconds": 0.62
+          },
+          {
+            "name": "gpu_columns",
+            "status": "passed",
+            "seconds": 8.12
+          },
+          {
+            "name": "portal_validation",
+            "status": "passed",
+            "seconds": 2.93
+          },
+          {
+            "name": "portal_graph",
+            "status": "passed",
+            "seconds": 0.14
+          },
+          {
+            "name": "cell_graph",
+            "status": "passed",
+            "seconds": 0.13
+          },
+          {
+            "name": "planar_reduction",
+            "status": "passed",
+            "seconds": 0.13
+          },
+          {
+            "name": "planar_reduction_oracle",
+            "status": "passed",
+            "seconds": 1.69
+          },
+          {
+            "name": "planar_reduction_native",
+            "status": "passed",
+            "seconds": 1.64
+          },
+          {
+            "name": "quake3_materials",
+            "status": "passed",
+            "seconds": 0.01
+          },
+          {
+            "name": "geometry_optimize",
+            "status": "failed",
+            "seconds": 0.24
+          },
+          {
+            "name": "cell_adjacency",
+            "status": "passed",
+            "seconds": 4.13
+          },
+          {
+            "name": "vis_mask",
+            "status": "passed",
+            "seconds": 0.04
+          },
+          {
+            "name": "vis_clip",
+            "status": "passed",
+            "seconds": 0.15
+          },
+          {
+            "name": "vis_passage_clipping",
+            "status": "passed",
+            "seconds": 16.12
+          },
+          {
+            "name": "vis_passage_storage",
+            "status": "passed",
+            "seconds": 1.34
+          },
+          {
+            "name": "portal_evidence",
+            "status": "passed",
+            "seconds": 2.08
+          },
+          {
+            "name": "vis_merge",
+            "status": "passed",
+            "seconds": 15.45
+          },
+          {
+            "name": "vis_reproducible",
+            "status": "passed",
+            "seconds": 22.74
+          },
+          {
+            "name": "game_catalog",
+            "status": "passed",
+            "seconds": 0.63
+          },
+          {
+            "name": "workbench_inspector",
+            "status": "passed",
+            "seconds": 0.73
+          },
+          {
+            "name": "workbench_devices",
+            "status": "passed",
+            "seconds": 2.86
+          },
+          {
+            "name": "workbench",
+            "status": "passed",
+            "seconds": 2.24
+          },
+          {
+            "name": "workbench_window",
+            "status": "passed",
+            "seconds": 2.39
+          },
+          {
+            "name": "workbench_preview",
+            "status": "passed",
+            "seconds": 0.43
+          }
+        ],
+        "total_seconds": 168.42
+      },
+      "workbench": {
+        "path": "build/release/bin/q3mapx-workbench.exe",
+        "sha256": "00b5dcb9191cd7cd61f38b2daa26dbd1f14c162104d9043b2740c114552e41bc"
+      },
+      "compact_ui": {
+        "path": "build/release/tests/workbench/window-state/geometry-compact.png",
+        "sha256": "71e3ccf7effcb6a9015ff01fa8d31ce421d52bb822cad09b8d7d8feae9e096a3"
+      },
+      "final_ui_tests": {
+        "path": ".agents/tmp/continuation/geometry-tests-final-ui-win.log",
+        "sha256": "79649852f197a9053797c388abbb898daa4b2be7800f3f066cf34def6c4c2fb2",
+        "tests": [
+          {
+            "name": "workbench",
+            "status": "passed",
+            "seconds": 1.89
+          },
+          {
+            "name": "workbench_window",
+            "status": "passed",
+            "seconds": 4.38
+          },
+          {
+            "name": "workbench_preview",
+            "status": "passed",
+            "seconds": 0.39
+          }
+        ],
+        "total_seconds": 6.66
+      }
+    },
+    "linux": {
+      "compiler": {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "777ddd8436e99f3a0152fc9ee18d63a88e9afc60a91f735f56cc0a46b03c627e"
+      },
+      "materials_unit": {
+        "path": "build/linux-release/bin/quake3_materials_test",
+        "sha256": "7e5206d37c7ed8cf9a77fe2b8ad483f798113462dbb7cf50b0f1df9bd24a965c"
+      },
+      "native_validation": {
+        "compiler_sha256": "777ddd8436e99f3a0152fc9ee18d63a88e9afc60a91f735f56cc0a46b03c627e",
+        "records": [
+          {
+            "lighting": "ambient",
+            "input_sha256": "9ecb6145a97b6d525c9d0ccad0dc07152d9e24d46d58b08ade2b99ee97a917c7",
+            "output_sha256": "d489a35975f4a3ed68b5d41d33e4e95146101fabc55d907b8d2f5f9f9fa01509",
+            "grid_before": 512,
+            "grid_after": 144,
+            "changed_surfaces": 6,
+            "protected_controls": [
+              "deform",
+              "transparent",
+              "offset",
+              "marks",
+              "dynamic-light",
+              "duplicate",
+              "exclude-material",
+              "exclude-surface",
+              "height",
+              "color",
+              "native-dynamic-light",
+              "native-marks",
+              "uv-seam",
+              "shared-owner",
+              "shared-indices"
+            ],
+            "preserved_failures": [
+              "work-limit",
+              "unspecified-renderer",
+              "unsupported-renderer",
+              "no-index-storage",
+              "bad-work",
+              "bad-exclusion",
+              "unknown-extension",
+              "truncated",
+              "report-directory",
+              "oversized-loose-script",
+              "oversized-packed-script",
+              "source-alias"
+            ]
+          },
+          {
+            "lighting": "point",
+            "input_sha256": "7e649359c10c747baa662e5c0420e9a61886ccd512da192feab22f74a5722080",
+            "output_sha256": "7e649359c10c747baa662e5c0420e9a61886ccd512da192feab22f74a5722080",
+            "grid_before": 512,
+            "grid_after": 512,
+            "changed_surfaces": 0
+          }
+        ]
+      },
+      "regressions_after_dispatch_fix": {
+        "path": ".agents/tmp/continuation/geometry-tests-final2-linux.log",
+        "sha256": "ad1033ef269f997f2ab9297137e7d2f0a9a4472fab513f23c892dabae5596143",
+        "tests": [
+          {
+            "name": "compiler_pipeline",
+            "status": "passed",
+            "seconds": 3.53
+          },
+          {
+            "name": "binary_outputs",
+            "status": "passed",
+            "seconds": 5.51
+          },
+          {
+            "name": "quake3_materials",
+            "status": "passed",
+            "seconds": 0.01
+          },
+          {
+            "name": "geometry_optimize",
+            "status": "passed",
+            "seconds": 6.59
+          },
+          {
+            "name": "game_catalog",
+            "status": "passed",
+            "seconds": 1.2
+          },
+          {
+            "name": "workbench",
+            "status": "passed",
+            "seconds": 2.15
+          },
+          {
+            "name": "workbench_window",
+            "status": "passed",
+            "seconds": 3.17
+          },
+          {
+            "name": "workbench_preview",
+            "status": "passed",
+            "seconds": 0.27
+          }
+        ],
+        "total_seconds": 22.57
+      },
+      "final_material_and_native_tests": {
+        "path": ".agents/tmp/continuation/geometry-tests-parser-final-linux.log",
+        "sha256": "b0569181ea0483c5c509e3376163ae20987341017b18750174d334e63a3789d7",
+        "tests": [
+          {
+            "name": "quake3_materials",
+            "status": "passed",
+            "seconds": 0.04
+          },
+          {
+            "name": "geometry_optimize",
+            "status": "passed",
+            "seconds": 7.02
+          }
+        ],
+        "total_seconds": 7.12
+      },
+      "final_build_log": {
+        "path": ".agents/tmp/continuation/geometry-build-parser-final-linux.log",
+        "sha256": "d42ece67ec1d350191fa421b8a5af2ec0c9e8a48f1be946fa35fcc24e8344e62"
+      },
+      "broad_suite_before_dispatch_fix": {
+        "path": ".agents/tmp/continuation/geometry-tests-qualified-linux.log",
+        "sha256": "75576d91c14932173fe84cf954e19dfb01fd5a4981d550a71fd5078a1613b767",
+        "tests": [
+          {
+            "name": "cli_help",
+            "status": "passed",
+            "seconds": 0.18
+          },
+          {
+            "name": "cli_games",
+            "status": "passed",
+            "seconds": 0.13
+          },
+          {
+            "name": "game_profiles",
+            "status": "passed",
+            "seconds": 21.62
+          },
+          {
+            "name": "compiler_pipeline",
+            "status": "passed",
+            "seconds": 3.85
+          },
+          {
+            "name": "lighting_materials",
+            "status": "passed",
+            "seconds": 12.39
+          },
+          {
+            "name": "bsp_validation",
+            "status": "passed",
+            "seconds": 7.7
+          },
+          {
+            "name": "index_validation",
+            "status": "passed",
+            "seconds": 0.06
+          },
+          {
+            "name": "index_validation_cli",
+            "status": "passed",
+            "seconds": 3.16
+          },
+          {
+            "name": "bsp_inspect",
+            "status": "passed",
+            "seconds": 11.45
+          },
+          {
+            "name": "bsp_analyze",
+            "status": "passed",
+            "seconds": 3.02
+          },
+          {
+            "name": "bsp_evidence",
+            "status": "passed",
+            "seconds": 8.34
+          },
+          {
+            "name": "ftx",
+            "status": "passed",
+            "seconds": 0.03
+          },
+          {
+            "name": "terrain",
+            "status": "passed",
+            "seconds": 0.03
+          },
+          {
+            "name": "native_fakk",
+            "status": "passed",
+            "seconds": 8.83
+          },
+          {
+            "name": "native_mohaa",
+            "status": "passed",
+            "seconds": 3.6
+          },
+          {
+            "name": "native_early",
+            "status": "passed",
+            "seconds": 5.99
+          },
+          {
+            "name": "mesh_export",
+            "status": "passed",
+            "seconds": 3.73
+          },
+          {
+            "name": "export_outputs",
+            "status": "passed",
+            "seconds": 2.45
+          },
+          {
+            "name": "recovery_outputs",
+            "status": "passed",
+            "seconds": 2.96
+          },
+          {
+            "name": "decompile_math",
+            "status": "passed",
+            "seconds": 0.08
+          },
+          {
+            "name": "lighting_math",
+            "status": "passed",
+            "seconds": 0.06
+          },
+          {
+            "name": "area_factors",
+            "status": "skipped",
+            "seconds": 0.08
+          },
+          {
+            "name": "area_factors_disabled",
+            "status": "passed",
+            "seconds": 0.01
+          },
+          {
+            "name": "lighting_gpu",
+            "status": "passed",
+            "seconds": 1.47
+          },
+          {
+            "name": "decompile_recovery",
+            "status": "passed",
+            "seconds": 2.2
+          },
+          {
+            "name": "recovery_classification",
+            "status": "passed",
+            "seconds": 24.21
+          },
+          {
+            "name": "recovery_order",
+            "status": "passed",
+            "seconds": 41.21
+          },
+          {
+            "name": "brush_cells",
+            "status": "passed",
+            "seconds": 48.4
+          },
+          {
+            "name": "recovery_group_order",
+            "status": "passed",
+            "seconds": 0.07
+          },
+          {
+            "name": "recovery_groups",
+            "status": "passed",
+            "seconds": 39.82
+          },
+          {
+            "name": "job_pool",
+            "status": "passed",
+            "seconds": 0.07
+          },
+          {
+            "name": "lightgrid",
+            "status": "passed",
+            "seconds": 0.21
+          },
+          {
+            "name": "lightgrid_cli",
+            "status": "passed",
+            "seconds": 1.29
+          },
+          {
+            "name": "raven_compat",
+            "status": "passed",
+            "seconds": 3.22
+          },
+          {
+            "name": "cli_options",
+            "status": "passed",
+            "seconds": 3.85
+          },
+          {
+            "name": "atomic_file",
+            "status": "passed",
+            "seconds": 0.5
+          },
+          {
+            "name": "binary_outputs",
+            "status": "passed",
+            "seconds": 5.41
+          },
+          {
+            "name": "columns",
+            "status": "passed",
+            "seconds": 0.08
+          },
+          {
+            "name": "minimap",
+            "status": "passed",
+            "seconds": 1.95
+          },
+          {
+            "name": "gpu_columns",
+            "status": "passed",
+            "seconds": 3.36
+          },
+          {
+            "name": "portal_validation",
+            "status": "passed",
+            "seconds": 9.07
+          },
+          {
+            "name": "portal_graph",
+            "status": "passed",
+            "seconds": 0.13
+          },
+          {
+            "name": "cell_graph",
+            "status": "passed",
+            "seconds": 0.03
+          },
+          {
+            "name": "planar_reduction",
+            "status": "passed",
+            "seconds": 0.15
+          },
+          {
+            "name": "planar_reduction_oracle",
+            "status": "passed",
+            "seconds": 1.37
+          },
+          {
+            "name": "planar_reduction_native",
+            "status": "passed",
+            "seconds": 2.88
+          },
+          {
+            "name": "quake3_materials",
+            "status": "passed",
+            "seconds": 0.02
+          },
+          {
+            "name": "geometry_optimize",
+            "status": "failed",
+            "seconds": 2.05
+          },
+          {
+            "name": "cell_adjacency",
+            "status": "passed",
+            "seconds": 16.7
+          },
+          {
+            "name": "vis_mask",
+            "status": "passed",
+            "seconds": 0.07
+          },
+          {
+            "name": "vis_clip",
+            "status": "passed",
+            "seconds": 0.14
+          },
+          {
+            "name": "vis_passage_clipping",
+            "status": "passed",
+            "seconds": 60.4
+          },
+          {
+            "name": "vis_passage_storage",
+            "status": "passed",
+            "seconds": 2.15
+          },
+          {
+            "name": "portal_evidence",
+            "status": "passed",
+            "seconds": 15.24
+          },
+          {
+            "name": "vis_merge",
+            "status": "passed",
+            "seconds": 27.09
+          },
+          {
+            "name": "vis_reproducible",
+            "status": "passed",
+            "seconds": 15.4
+          },
+          {
+            "name": "game_catalog",
+            "status": "passed",
+            "seconds": 0.49
+          },
+          {
+            "name": "workbench_inspector",
+            "status": "passed",
+            "seconds": 1.02
+          },
+          {
+            "name": "workbench_devices",
+            "status": "passed",
+            "seconds": 0.54
+          },
+          {
+            "name": "workbench",
+            "status": "passed",
+            "seconds": 2.83
+          },
+          {
+            "name": "workbench_window",
+            "status": "passed",
+            "seconds": 3.59
+          },
+          {
+            "name": "workbench_preview",
+            "status": "passed",
+            "seconds": 0.26
+          }
+        ],
+        "total_seconds": 439.56
+      },
+      "workbench": {
+        "path": "build/linux-release/bin/q3mapx-workbench",
+        "sha256": "e961ac4143310aae3b24a03a083d126de3f0a402b035d4e9bec03b582af5b2da"
+      },
+      "compact_ui": {
+        "path": "build/linux-release/tests/workbench/window-state/geometry-compact.png",
+        "sha256": "06cc55e39ffbe2eb27c86b8ead500183b7311e71f9211a0a05c834bcae79517c"
+      }
+    },
+    "sanitized": {
+      "compiler": {
+        "path": "build/linux-sanitized/bin/q3mapx",
+        "sha256": "c463619a9468b8d87a872dd5d840b77644bee7957eb4cf892bb29ba98ac01b28"
+      },
+      "materials_unit": {
+        "path": "build/linux-sanitized/bin/quake3_materials_test",
+        "sha256": "fb27da807056c3437898bbcca60f908c630d6b6881d90190fe56c99f6918e95c"
+      },
+      "native_validation": {
+        "compiler_sha256": "c463619a9468b8d87a872dd5d840b77644bee7957eb4cf892bb29ba98ac01b28",
+        "records": [
+          {
+            "lighting": "ambient",
+            "input_sha256": "8265f5d56608f29be6196a0c1ca41155621b24a99dd75b1379d23e448bad382c",
+            "output_sha256": "f56bdab522f6ac231644bd9a801a26ebc003514b235178bc68e338e7ae3e205b",
+            "grid_before": 512,
+            "grid_after": 144,
+            "changed_surfaces": 6,
+            "protected_controls": [
+              "deform",
+              "transparent",
+              "offset",
+              "marks",
+              "dynamic-light",
+              "duplicate",
+              "exclude-material",
+              "exclude-surface",
+              "height",
+              "color",
+              "native-dynamic-light",
+              "native-marks",
+              "uv-seam",
+              "shared-owner",
+              "shared-indices"
+            ],
+            "preserved_failures": [
+              "work-limit",
+              "unspecified-renderer",
+              "unsupported-renderer",
+              "no-index-storage",
+              "bad-work",
+              "bad-exclusion",
+              "unknown-extension",
+              "truncated",
+              "report-directory",
+              "oversized-loose-script",
+              "oversized-packed-script",
+              "source-alias"
+            ]
+          },
+          {
+            "lighting": "point",
+            "input_sha256": "4129ddaa3868a0a911ca99508d715d07a2240d6045756927a6bb0137a671cda4",
+            "output_sha256": "4129ddaa3868a0a911ca99508d715d07a2240d6045756927a6bb0137a671cda4",
+            "grid_before": 512,
+            "grid_after": 512,
+            "changed_surfaces": 0
+          }
+        ]
+      },
+      "regressions_after_dispatch_fix": {
+        "path": ".agents/tmp/continuation/geometry-tests-final2-sanitized.log",
+        "sha256": "41e8626a7ff204189fa49d846052b84d2fdacd1df7c5fddf61696dc156599c9d",
+        "tests": [
+          {
+            "name": "compiler_pipeline",
+            "status": "passed",
+            "seconds": 18.03
+          },
+          {
+            "name": "binary_outputs",
+            "status": "passed",
+            "seconds": 29.02
+          },
+          {
+            "name": "quake3_materials",
+            "status": "passed",
+            "seconds": 0.08
+          },
+          {
+            "name": "geometry_optimize",
+            "status": "passed",
+            "seconds": 40.89
+          }
+        ],
+        "total_seconds": 88.12
+      },
+      "final_material_and_native_tests": {
+        "path": ".agents/tmp/continuation/geometry-tests-parser-final-sanitized.log",
+        "sha256": "0c4ad20e62100d37e90449d3523602cd9502de60c71d085feaf06ad9689c2986",
+        "tests": [
+          {
+            "name": "quake3_materials",
+            "status": "passed",
+            "seconds": 0.03
+          },
+          {
+            "name": "geometry_optimize",
+            "status": "passed",
+            "seconds": 52.19
+          }
+        ],
+        "total_seconds": 52.26
+      },
+      "final_build_log": {
+        "path": ".agents/tmp/continuation/geometry-build-parser-final-sanitized.log",
+        "sha256": "d42ece67ec1d350191fa421b8a5af2ec0c9e8a48f1be946fa35fcc24e8344e62"
+      },
+      "core_regression_run": {
+        "path": ".agents/tmp/continuation/geometry-tests-qualified-sanitized.log",
+        "sha256": "c986e759b73eb7fa000f529e1cc12fed1af53f5624a9df21ca44a445aa22020e",
+        "tests": [
+          {
+            "name": "compiler_pipeline",
+            "status": "passed",
+            "seconds": 24.56
+          },
+          {
+            "name": "binary_outputs",
+            "status": "passed",
+            "seconds": 33.59
+          },
+          {
+            "name": "planar_reduction",
+            "status": "passed",
+            "seconds": 0.76
+          },
+          {
+            "name": "planar_reduction_oracle",
+            "status": "passed",
+            "seconds": 1.57
+          },
+          {
+            "name": "planar_reduction_native",
+            "status": "passed",
+            "seconds": 10.05
+          },
+          {
+            "name": "quake3_materials",
+            "status": "passed",
+            "seconds": 0.05
+          },
+          {
+            "name": "geometry_optimize",
+            "status": "failed",
+            "seconds": 6.07
+          }
+        ],
+        "total_seconds": 76.77
+      },
+      "environment": {
+        "ASAN_OPTIONS": "detect_leaks=0:abort_on_error=1",
+        "UBSAN_OPTIONS": "print_stacktrace=1"
+      }
+    }
+  },
+  "renderer": {
+    "engine_sha256": "e016d78acf0780b5760a329e8402234648debfac082761be6d358056f1fad75f",
+    "cgame_sha256": "d95d8b3991c278f94492831cf9b715d9ea61c2b68dd960be7115f18fe83025fe",
+    "input_sha256": "42bfdcdd96899c7ebde3a624ee7457e94a944a5f2727c90eb8ac5a0d395e4c90",
+    "optimized_sha256": "1e899a59968cf17159de2b04ce657c29b9242ba66340e395eec021dde08671a6",
+    "capture": "Engine screenshot command, SDL offscreen, windowed 640x480, llvmpipe; no desktop or input",
+    "tolerance": {
+      "max_channel_error": 1,
+      "max_changed_fraction": 0.001
+    },
+    "negative_control": {
+      "different_pixels": 71308,
+      "max_channel_error": 180,
+      "mean_channel_error": 17.178460286458332,
+      "pixels": 307200
+    },
+    "results": [
+      {
+        "profile": "classic",
+        "case": "near-baked",
+        "original_sha256": "0b07cd8ec533802728879f75093a36f3c176703c57a8a82cca926fe4c9ed715c",
+        "optimized_sha256": "8b4b337d981ceef8acb997dacb21afbbbdbd47fbe83bc8a61e9dc1eb234cfe49",
+        "original_draw": {
+          "vertices": 372,
+          "triangles": 528,
+          "pass_triangles": 1040
+        },
+        "optimized_draw": {
+          "vertices": 372,
+          "triangles": 160,
+          "pass_triangles": 304
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.5190972222222222e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "classic",
+        "case": "near-center",
+        "original_sha256": "cbbaace7b923ae22af0b4a15254ca1ac5fd00acf87a80249c8f91a7ac710aaca",
+        "optimized_sha256": "80fc3ac1b9b83290e82207740f71e44f7f6b4f9107407287c71524b6521324b8",
+        "original_draw": {
+          "vertices": 372,
+          "triangles": 528,
+          "pass_triangles": 1048
+        },
+        "optimized_draw": {
+          "vertices": 372,
+          "triangles": 160,
+          "pass_triangles": 312
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.5190972222222222e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "classic",
+        "case": "near-edge",
+        "original_sha256": "0b07cd8ec533802728879f75093a36f3c176703c57a8a82cca926fe4c9ed715c",
+        "optimized_sha256": "8b4b337d981ceef8acb997dacb21afbbbdbd47fbe83bc8a61e9dc1eb234cfe49",
+        "original_draw": {
+          "vertices": 372,
+          "triangles": 528,
+          "pass_triangles": 1040
+        },
+        "optimized_draw": {
+          "vertices": 372,
+          "triangles": 160,
+          "pass_triangles": 304
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.5190972222222222e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "classic",
+        "case": "near-below",
+        "original_sha256": "c8d18d0dfeabaf544800a7e9cfed1eed50d40e6bb1bc3e271396a7a1d3819b94",
+        "optimized_sha256": "2ae8b6656fa59dddfc1316b0d62a9d9d63a131014e901045d45db3c98b2dc058",
+        "original_draw": {
+          "vertices": 372,
+          "triangles": 528,
+          "pass_triangles": 1046
+        },
+        "optimized_draw": {
+          "vertices": 372,
+          "triangles": 160,
+          "pass_triangles": 310
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.5190972222222222e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "classic",
+        "case": "oblique-baked",
+        "original_sha256": "eba3bf6de599730fcb389b903821ac9ec93b2fe53bbddcced71bf5d98c9f282d",
+        "optimized_sha256": "ce9c82ad4845b28e9f12869b5c7907ea9b0103143096022119a94571d89b7971",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 1042
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 306
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.736111111111111e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "classic",
+        "case": "oblique-center",
+        "original_sha256": "41c90080f1aee8e36fa0bc0a3460a3b73214b5a7cab9837944fd9dc5b4a4d86b",
+        "optimized_sha256": "e1b64c335fdf50296061e95fa5fa8b18813526756ac62a635128c953586f484a",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 1052
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 316
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.736111111111111e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "classic",
+        "case": "oblique-edge",
+        "original_sha256": "eba3bf6de599730fcb389b903821ac9ec93b2fe53bbddcced71bf5d98c9f282d",
+        "optimized_sha256": "ce9c82ad4845b28e9f12869b5c7907ea9b0103143096022119a94571d89b7971",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 1042
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 306
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.736111111111111e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "classic",
+        "case": "oblique-below",
+        "original_sha256": "65e55dfa7e7718f9f524e32c4551bb057df0911f3b9d6b5c9fe3755470ea7298",
+        "optimized_sha256": "ce2e388d5bbc0b1c9391b80d5c6541edfbaaf409aed4509222d1bb69766222a1",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 1050
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 314
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.736111111111111e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "classic",
+        "case": "top-baked",
+        "original_sha256": "6c17027adb6ec3a195ba395c4526e6b8c972de38fc97b1a69facf83b328a9b35",
+        "optimized_sha256": "32350f4a5436b27b1b5e195931a1320a0870264017f3df656fa82f891d5e2fec",
+        "original_draw": {
+          "vertices": 368,
+          "triangles": 526,
+          "pass_triangles": 1038
+        },
+        "optimized_draw": {
+          "vertices": 368,
+          "triangles": 158,
+          "pass_triangles": 302
+        },
+        "different_pixels": 61,
+        "max_channel_error": 1,
+        "mean_channel_error": 8.7890625e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "classic",
+        "case": "top-center",
+        "original_sha256": "6c17027adb6ec3a195ba395c4526e6b8c972de38fc97b1a69facf83b328a9b35",
+        "optimized_sha256": "32350f4a5436b27b1b5e195931a1320a0870264017f3df656fa82f891d5e2fec",
+        "original_draw": {
+          "vertices": 368,
+          "triangles": 526,
+          "pass_triangles": 1044
+        },
+        "optimized_draw": {
+          "vertices": 368,
+          "triangles": 158,
+          "pass_triangles": 308
+        },
+        "different_pixels": 61,
+        "max_channel_error": 1,
+        "mean_channel_error": 8.7890625e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "classic",
+        "case": "top-edge",
+        "original_sha256": "6c17027adb6ec3a195ba395c4526e6b8c972de38fc97b1a69facf83b328a9b35",
+        "optimized_sha256": "32350f4a5436b27b1b5e195931a1320a0870264017f3df656fa82f891d5e2fec",
+        "original_draw": {
+          "vertices": 368,
+          "triangles": 526,
+          "pass_triangles": 1038
+        },
+        "optimized_draw": {
+          "vertices": 368,
+          "triangles": 158,
+          "pass_triangles": 302
+        },
+        "different_pixels": 61,
+        "max_channel_error": 1,
+        "mean_channel_error": 8.7890625e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "classic",
+        "case": "top-below",
+        "original_sha256": "6c17027adb6ec3a195ba395c4526e6b8c972de38fc97b1a69facf83b328a9b35",
+        "optimized_sha256": "32350f4a5436b27b1b5e195931a1320a0870264017f3df656fa82f891d5e2fec",
+        "original_draw": {
+          "vertices": 368,
+          "triangles": 526,
+          "pass_triangles": 1042
+        },
+        "optimized_draw": {
+          "vertices": 368,
+          "triangles": 158,
+          "pass_triangles": 306
+        },
+        "different_pixels": 61,
+        "max_channel_error": 1,
+        "mean_channel_error": 8.7890625e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "classic",
+        "case": "grazing-baked",
+        "original_sha256": "4ba9553fbf2bbbb563b9daa42c77d202fce6c6ad1e3bb2c271c5f6187020f20c",
+        "optimized_sha256": "4157146873a2d9707f323915670e516e4b94a07abdb686b65902a65d6cf208ad",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 1042
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 306
+        },
+        "different_pixels": 12,
+        "max_channel_error": 1,
+        "mean_channel_error": 2.2786458333333334e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "classic",
+        "case": "grazing-center",
+        "original_sha256": "3fec5898b1d90c022da9747869fcca141f34306f70f52b918bf9428d1351d950",
+        "optimized_sha256": "5b6fba858bcbbaf245a1833aab9e6766d1ab24cfadb2652cc6eea3af582a27f9",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 1052
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 316
+        },
+        "different_pixels": 12,
+        "max_channel_error": 1,
+        "mean_channel_error": 2.2786458333333334e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "classic",
+        "case": "grazing-edge",
+        "original_sha256": "4ba9553fbf2bbbb563b9daa42c77d202fce6c6ad1e3bb2c271c5f6187020f20c",
+        "optimized_sha256": "4157146873a2d9707f323915670e516e4b94a07abdb686b65902a65d6cf208ad",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 1042
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 306
+        },
+        "different_pixels": 12,
+        "max_channel_error": 1,
+        "mean_channel_error": 2.2786458333333334e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "classic",
+        "case": "grazing-below",
+        "original_sha256": "4f14e2c0121667b08ccd881cf435b1f8fb8131fcf1b92ea0618f39b97251197a",
+        "optimized_sha256": "0dc614eafafaca0c7034deb327ea02e0fbd3cf4364be04e0e5208c8395738ddd",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 1050
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 314
+        },
+        "different_pixels": 12,
+        "max_channel_error": 1,
+        "mean_channel_error": 2.2786458333333334e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "classic",
+        "case": "far-baked",
+        "original_sha256": "32fb96839be61a710f69a622d2825e840a26700f41d6587405b9dcabaa3e1d89",
+        "optimized_sha256": "80b052e26844b7c078ec5a0f97e15b6166ab3b8b858109d029f9c9cf87658eb9",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 1042
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 306
+        },
+        "different_pixels": 28,
+        "max_channel_error": 1,
+        "mean_channel_error": 4.557291666666667e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "classic",
+        "case": "far-center",
+        "original_sha256": "d5e27753acf66344f8d2344fa23aeafe56ed91721fd6cb93abc01140dd70edb0",
+        "optimized_sha256": "545519c14dea0a59001904f7ca82c2c91b01ea7cced8c681350986ebd3ba1ea3",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 1052
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 316
+        },
+        "different_pixels": 28,
+        "max_channel_error": 1,
+        "mean_channel_error": 4.557291666666667e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "classic",
+        "case": "far-edge",
+        "original_sha256": "32fb96839be61a710f69a622d2825e840a26700f41d6587405b9dcabaa3e1d89",
+        "optimized_sha256": "80b052e26844b7c078ec5a0f97e15b6166ab3b8b858109d029f9c9cf87658eb9",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 1042
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 306
+        },
+        "different_pixels": 28,
+        "max_channel_error": 1,
+        "mean_channel_error": 4.557291666666667e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "classic",
+        "case": "far-below",
+        "original_sha256": "3152c7710f523f21aab74d7c947d8fb0e4d7b4081b92d5bd70b1637e7016e9a7",
+        "optimized_sha256": "792b714254b339fc14bf82ad96aa04bf364a865431c22f0ffad76b688074b641",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 1050
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 314
+        },
+        "different_pixels": 28,
+        "max_channel_error": 1,
+        "mean_channel_error": 4.557291666666667e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vbo-perpixel",
+        "case": "near-baked",
+        "original_sha256": "0b07cd8ec533802728879f75093a36f3c176703c57a8a82cca926fe4c9ed715c",
+        "optimized_sha256": "8b4b337d981ceef8acb997dacb21afbbbdbd47fbe83bc8a61e9dc1eb234cfe49",
+        "original_draw": {
+          "vertices": 372,
+          "triangles": 528,
+          "pass_triangles": 529
+        },
+        "optimized_draw": {
+          "vertices": 372,
+          "triangles": 160,
+          "pass_triangles": 161
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.5190972222222222e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vbo-perpixel",
+        "case": "near-center",
+        "original_sha256": "0b07cd8ec533802728879f75093a36f3c176703c57a8a82cca926fe4c9ed715c",
+        "optimized_sha256": "8b4b337d981ceef8acb997dacb21afbbbdbd47fbe83bc8a61e9dc1eb234cfe49",
+        "original_draw": {
+          "vertices": 372,
+          "triangles": 528,
+          "pass_triangles": 535
+        },
+        "optimized_draw": {
+          "vertices": 372,
+          "triangles": 160,
+          "pass_triangles": 167
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.5190972222222222e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vbo-perpixel",
+        "case": "near-edge",
+        "original_sha256": "0b07cd8ec533802728879f75093a36f3c176703c57a8a82cca926fe4c9ed715c",
+        "optimized_sha256": "8b4b337d981ceef8acb997dacb21afbbbdbd47fbe83bc8a61e9dc1eb234cfe49",
+        "original_draw": {
+          "vertices": 372,
+          "triangles": 528,
+          "pass_triangles": 531
+        },
+        "optimized_draw": {
+          "vertices": 372,
+          "triangles": 160,
+          "pass_triangles": 163
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.5190972222222222e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vbo-perpixel",
+        "case": "near-below",
+        "original_sha256": "fb7ea5f234a1c78332e34121889aaa24ae13042a6bd152e88494f7b10558f147",
+        "optimized_sha256": "2151d29845d06b42eed300f81c702b230260483c83e5ca946afc5afc220549e2",
+        "original_draw": {
+          "vertices": 372,
+          "triangles": 528,
+          "pass_triangles": 535
+        },
+        "optimized_draw": {
+          "vertices": 372,
+          "triangles": 160,
+          "pass_triangles": 167
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.5190972222222222e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vbo-perpixel",
+        "case": "oblique-baked",
+        "original_sha256": "eba3bf6de599730fcb389b903821ac9ec93b2fe53bbddcced71bf5d98c9f282d",
+        "optimized_sha256": "ce9c82ad4845b28e9f12869b5c7907ea9b0103143096022119a94571d89b7971",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 531
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 163
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.736111111111111e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vbo-perpixel",
+        "case": "oblique-center",
+        "original_sha256": "3d593b8c98dcb74b87ca26b29e6edb527d06ab99a99d8573a9ec69da0f4696a7",
+        "optimized_sha256": "a05cfb5b3015a6e9b6e280743e872db72f7f10c655b9a104bb67e127a03f34d0",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 539
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 171
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.736111111111111e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vbo-perpixel",
+        "case": "oblique-edge",
+        "original_sha256": "eba3bf6de599730fcb389b903821ac9ec93b2fe53bbddcced71bf5d98c9f282d",
+        "optimized_sha256": "ce9c82ad4845b28e9f12869b5c7907ea9b0103143096022119a94571d89b7971",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 533
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 165
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.736111111111111e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vbo-perpixel",
+        "case": "oblique-below",
+        "original_sha256": "ec1087b4d235ebf698ac7ac95016efde46ab569adee2aadc776d9dfe148bfec6",
+        "optimized_sha256": "71bf39cebcd32914dada14100271aa99aad313a10cb90c967302836eabfff6aa",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 539
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 171
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.736111111111111e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vbo-perpixel",
+        "case": "top-baked",
+        "original_sha256": "6c17027adb6ec3a195ba395c4526e6b8c972de38fc97b1a69facf83b328a9b35",
+        "optimized_sha256": "32350f4a5436b27b1b5e195931a1320a0870264017f3df656fa82f891d5e2fec",
+        "original_draw": {
+          "vertices": 368,
+          "triangles": 526,
+          "pass_triangles": 527
+        },
+        "optimized_draw": {
+          "vertices": 368,
+          "triangles": 158,
+          "pass_triangles": 159
+        },
+        "different_pixels": 61,
+        "max_channel_error": 1,
+        "mean_channel_error": 8.7890625e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vbo-perpixel",
+        "case": "top-center",
+        "original_sha256": "6c17027adb6ec3a195ba395c4526e6b8c972de38fc97b1a69facf83b328a9b35",
+        "optimized_sha256": "32350f4a5436b27b1b5e195931a1320a0870264017f3df656fa82f891d5e2fec",
+        "original_draw": {
+          "vertices": 368,
+          "triangles": 526,
+          "pass_triangles": 531
+        },
+        "optimized_draw": {
+          "vertices": 368,
+          "triangles": 158,
+          "pass_triangles": 163
+        },
+        "different_pixels": 61,
+        "max_channel_error": 1,
+        "mean_channel_error": 8.7890625e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vbo-perpixel",
+        "case": "top-edge",
+        "original_sha256": "6c17027adb6ec3a195ba395c4526e6b8c972de38fc97b1a69facf83b328a9b35",
+        "optimized_sha256": "32350f4a5436b27b1b5e195931a1320a0870264017f3df656fa82f891d5e2fec",
+        "original_draw": {
+          "vertices": 368,
+          "triangles": 526,
+          "pass_triangles": 529
+        },
+        "optimized_draw": {
+          "vertices": 368,
+          "triangles": 158,
+          "pass_triangles": 161
+        },
+        "different_pixels": 61,
+        "max_channel_error": 1,
+        "mean_channel_error": 8.7890625e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vbo-perpixel",
+        "case": "top-below",
+        "original_sha256": "6c17027adb6ec3a195ba395c4526e6b8c972de38fc97b1a69facf83b328a9b35",
+        "optimized_sha256": "32350f4a5436b27b1b5e195931a1320a0870264017f3df656fa82f891d5e2fec",
+        "original_draw": {
+          "vertices": 368,
+          "triangles": 526,
+          "pass_triangles": 531
+        },
+        "optimized_draw": {
+          "vertices": 368,
+          "triangles": 158,
+          "pass_triangles": 163
+        },
+        "different_pixels": 61,
+        "max_channel_error": 1,
+        "mean_channel_error": 8.7890625e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vbo-perpixel",
+        "case": "grazing-baked",
+        "original_sha256": "4ba9553fbf2bbbb563b9daa42c77d202fce6c6ad1e3bb2c271c5f6187020f20c",
+        "optimized_sha256": "4157146873a2d9707f323915670e516e4b94a07abdb686b65902a65d6cf208ad",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 531
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 163
+        },
+        "different_pixels": 12,
+        "max_channel_error": 1,
+        "mean_channel_error": 2.2786458333333334e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vbo-perpixel",
+        "case": "grazing-center",
+        "original_sha256": "a139178e1e046bb148c211350186b1a3a120e54240b9c5310d22b44c92996722",
+        "optimized_sha256": "ef1c35a24c46e299699eadfb768c4e398c7ee388a3acee980c3e642eabb1b707",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 539
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 171
+        },
+        "different_pixels": 12,
+        "max_channel_error": 1,
+        "mean_channel_error": 2.2786458333333334e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vbo-perpixel",
+        "case": "grazing-edge",
+        "original_sha256": "4ba9553fbf2bbbb563b9daa42c77d202fce6c6ad1e3bb2c271c5f6187020f20c",
+        "optimized_sha256": "4157146873a2d9707f323915670e516e4b94a07abdb686b65902a65d6cf208ad",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 533
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 165
+        },
+        "different_pixels": 12,
+        "max_channel_error": 1,
+        "mean_channel_error": 2.2786458333333334e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vbo-perpixel",
+        "case": "grazing-below",
+        "original_sha256": "11e15bf101566420d048b92f9050fcdb1a41d15241b7f62f3fb8a447147eadbe",
+        "optimized_sha256": "0dc1cafe6bed7d88937f172db0081c09d28e79c9f0835c54ff1e1c896ee96f11",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 539
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 171
+        },
+        "different_pixels": 12,
+        "max_channel_error": 1,
+        "mean_channel_error": 2.2786458333333334e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vbo-perpixel",
+        "case": "far-baked",
+        "original_sha256": "32fb96839be61a710f69a622d2825e840a26700f41d6587405b9dcabaa3e1d89",
+        "optimized_sha256": "80b052e26844b7c078ec5a0f97e15b6166ab3b8b858109d029f9c9cf87658eb9",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 531
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 163
+        },
+        "different_pixels": 28,
+        "max_channel_error": 1,
+        "mean_channel_error": 4.557291666666667e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vbo-perpixel",
+        "case": "far-center",
+        "original_sha256": "3a1018117ee46aa30bdd324eb459e562b2f130f089a79dddabf9cac73870fc86",
+        "optimized_sha256": "a528e19485e914898abec2fd54fadd79ef7ddffe630617d54793219f75c05025",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 539
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 171
+        },
+        "different_pixels": 28,
+        "max_channel_error": 1,
+        "mean_channel_error": 4.557291666666667e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vbo-perpixel",
+        "case": "far-edge",
+        "original_sha256": "32fb96839be61a710f69a622d2825e840a26700f41d6587405b9dcabaa3e1d89",
+        "optimized_sha256": "80b052e26844b7c078ec5a0f97e15b6166ab3b8b858109d029f9c9cf87658eb9",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 533
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 165
+        },
+        "different_pixels": 28,
+        "max_channel_error": 1,
+        "mean_channel_error": 4.557291666666667e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vbo-perpixel",
+        "case": "far-below",
+        "original_sha256": "615b9062a3e9c8570876a19cb0ae2d6bd8026c3a06c4b0d52957f5d4d2b939a7",
+        "optimized_sha256": "53352b23a299cc713af2247004d334c4fc7d4d3236223a21bd04478bf13d1074",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 539
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 171
+        },
+        "different_pixels": 28,
+        "max_channel_error": 1,
+        "mean_channel_error": 4.557291666666667e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vertex-light",
+        "case": "near-baked",
+        "original_sha256": "0b07cd8ec533802728879f75093a36f3c176703c57a8a82cca926fe4c9ed715c",
+        "optimized_sha256": "8b4b337d981ceef8acb997dacb21afbbbdbd47fbe83bc8a61e9dc1eb234cfe49",
+        "original_draw": {
+          "vertices": 372,
+          "triangles": 528,
+          "pass_triangles": 528
+        },
+        "optimized_draw": {
+          "vertices": 372,
+          "triangles": 160,
+          "pass_triangles": 160
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.5190972222222222e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vertex-light",
+        "case": "near-center",
+        "original_sha256": "cbbaace7b923ae22af0b4a15254ca1ac5fd00acf87a80249c8f91a7ac710aaca",
+        "optimized_sha256": "80fc3ac1b9b83290e82207740f71e44f7f6b4f9107407287c71524b6521324b8",
+        "original_draw": {
+          "vertices": 372,
+          "triangles": 528,
+          "pass_triangles": 536
+        },
+        "optimized_draw": {
+          "vertices": 372,
+          "triangles": 160,
+          "pass_triangles": 168
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.5190972222222222e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vertex-light",
+        "case": "near-edge",
+        "original_sha256": "0b07cd8ec533802728879f75093a36f3c176703c57a8a82cca926fe4c9ed715c",
+        "optimized_sha256": "8b4b337d981ceef8acb997dacb21afbbbdbd47fbe83bc8a61e9dc1eb234cfe49",
+        "original_draw": {
+          "vertices": 372,
+          "triangles": 528,
+          "pass_triangles": 528
+        },
+        "optimized_draw": {
+          "vertices": 372,
+          "triangles": 160,
+          "pass_triangles": 160
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.5190972222222222e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vertex-light",
+        "case": "near-below",
+        "original_sha256": "c8d18d0dfeabaf544800a7e9cfed1eed50d40e6bb1bc3e271396a7a1d3819b94",
+        "optimized_sha256": "2ae8b6656fa59dddfc1316b0d62a9d9d63a131014e901045d45db3c98b2dc058",
+        "original_draw": {
+          "vertices": 372,
+          "triangles": 528,
+          "pass_triangles": 534
+        },
+        "optimized_draw": {
+          "vertices": 372,
+          "triangles": 160,
+          "pass_triangles": 166
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.5190972222222222e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vertex-light",
+        "case": "oblique-baked",
+        "original_sha256": "eba3bf6de599730fcb389b903821ac9ec93b2fe53bbddcced71bf5d98c9f282d",
+        "optimized_sha256": "ce9c82ad4845b28e9f12869b5c7907ea9b0103143096022119a94571d89b7971",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 530
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 162
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.736111111111111e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vertex-light",
+        "case": "oblique-center",
+        "original_sha256": "41c90080f1aee8e36fa0bc0a3460a3b73214b5a7cab9837944fd9dc5b4a4d86b",
+        "optimized_sha256": "e1b64c335fdf50296061e95fa5fa8b18813526756ac62a635128c953586f484a",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 540
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 172
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.736111111111111e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vertex-light",
+        "case": "oblique-edge",
+        "original_sha256": "eba3bf6de599730fcb389b903821ac9ec93b2fe53bbddcced71bf5d98c9f282d",
+        "optimized_sha256": "ce9c82ad4845b28e9f12869b5c7907ea9b0103143096022119a94571d89b7971",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 530
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 162
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.736111111111111e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vertex-light",
+        "case": "oblique-below",
+        "original_sha256": "65e55dfa7e7718f9f524e32c4551bb057df0911f3b9d6b5c9fe3755470ea7298",
+        "optimized_sha256": "ce2e388d5bbc0b1c9391b80d5c6541edfbaaf409aed4509222d1bb69766222a1",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 538
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 170
+        },
+        "different_pixels": 13,
+        "max_channel_error": 1,
+        "mean_channel_error": 1.736111111111111e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vertex-light",
+        "case": "top-baked",
+        "original_sha256": "6c17027adb6ec3a195ba395c4526e6b8c972de38fc97b1a69facf83b328a9b35",
+        "optimized_sha256": "32350f4a5436b27b1b5e195931a1320a0870264017f3df656fa82f891d5e2fec",
+        "original_draw": {
+          "vertices": 368,
+          "triangles": 526,
+          "pass_triangles": 526
+        },
+        "optimized_draw": {
+          "vertices": 368,
+          "triangles": 158,
+          "pass_triangles": 158
+        },
+        "different_pixels": 61,
+        "max_channel_error": 1,
+        "mean_channel_error": 8.7890625e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vertex-light",
+        "case": "top-center",
+        "original_sha256": "6c17027adb6ec3a195ba395c4526e6b8c972de38fc97b1a69facf83b328a9b35",
+        "optimized_sha256": "32350f4a5436b27b1b5e195931a1320a0870264017f3df656fa82f891d5e2fec",
+        "original_draw": {
+          "vertices": 368,
+          "triangles": 526,
+          "pass_triangles": 532
+        },
+        "optimized_draw": {
+          "vertices": 368,
+          "triangles": 158,
+          "pass_triangles": 164
+        },
+        "different_pixels": 61,
+        "max_channel_error": 1,
+        "mean_channel_error": 8.7890625e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vertex-light",
+        "case": "top-edge",
+        "original_sha256": "6c17027adb6ec3a195ba395c4526e6b8c972de38fc97b1a69facf83b328a9b35",
+        "optimized_sha256": "32350f4a5436b27b1b5e195931a1320a0870264017f3df656fa82f891d5e2fec",
+        "original_draw": {
+          "vertices": 368,
+          "triangles": 526,
+          "pass_triangles": 526
+        },
+        "optimized_draw": {
+          "vertices": 368,
+          "triangles": 158,
+          "pass_triangles": 158
+        },
+        "different_pixels": 61,
+        "max_channel_error": 1,
+        "mean_channel_error": 8.7890625e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vertex-light",
+        "case": "top-below",
+        "original_sha256": "6c17027adb6ec3a195ba395c4526e6b8c972de38fc97b1a69facf83b328a9b35",
+        "optimized_sha256": "32350f4a5436b27b1b5e195931a1320a0870264017f3df656fa82f891d5e2fec",
+        "original_draw": {
+          "vertices": 368,
+          "triangles": 526,
+          "pass_triangles": 530
+        },
+        "optimized_draw": {
+          "vertices": 368,
+          "triangles": 158,
+          "pass_triangles": 162
+        },
+        "different_pixels": 61,
+        "max_channel_error": 1,
+        "mean_channel_error": 8.7890625e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vertex-light",
+        "case": "grazing-baked",
+        "original_sha256": "4ba9553fbf2bbbb563b9daa42c77d202fce6c6ad1e3bb2c271c5f6187020f20c",
+        "optimized_sha256": "4157146873a2d9707f323915670e516e4b94a07abdb686b65902a65d6cf208ad",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 530
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 162
+        },
+        "different_pixels": 12,
+        "max_channel_error": 1,
+        "mean_channel_error": 2.2786458333333334e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vertex-light",
+        "case": "grazing-center",
+        "original_sha256": "3fec5898b1d90c022da9747869fcca141f34306f70f52b918bf9428d1351d950",
+        "optimized_sha256": "5b6fba858bcbbaf245a1833aab9e6766d1ab24cfadb2652cc6eea3af582a27f9",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 540
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 172
+        },
+        "different_pixels": 12,
+        "max_channel_error": 1,
+        "mean_channel_error": 2.2786458333333334e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vertex-light",
+        "case": "grazing-edge",
+        "original_sha256": "4ba9553fbf2bbbb563b9daa42c77d202fce6c6ad1e3bb2c271c5f6187020f20c",
+        "optimized_sha256": "4157146873a2d9707f323915670e516e4b94a07abdb686b65902a65d6cf208ad",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 530
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 162
+        },
+        "different_pixels": 12,
+        "max_channel_error": 1,
+        "mean_channel_error": 2.2786458333333334e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vertex-light",
+        "case": "grazing-below",
+        "original_sha256": "4f14e2c0121667b08ccd881cf435b1f8fb8131fcf1b92ea0618f39b97251197a",
+        "optimized_sha256": "0dc614eafafaca0c7034deb327ea02e0fbd3cf4364be04e0e5208c8395738ddd",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 538
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 170
+        },
+        "different_pixels": 12,
+        "max_channel_error": 1,
+        "mean_channel_error": 2.2786458333333334e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vertex-light",
+        "case": "far-baked",
+        "original_sha256": "32fb96839be61a710f69a622d2825e840a26700f41d6587405b9dcabaa3e1d89",
+        "optimized_sha256": "80b052e26844b7c078ec5a0f97e15b6166ab3b8b858109d029f9c9cf87658eb9",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 530
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 162
+        },
+        "different_pixels": 28,
+        "max_channel_error": 1,
+        "mean_channel_error": 4.557291666666667e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vertex-light",
+        "case": "far-center",
+        "original_sha256": "d5e27753acf66344f8d2344fa23aeafe56ed91721fd6cb93abc01140dd70edb0",
+        "optimized_sha256": "545519c14dea0a59001904f7ca82c2c91b01ea7cced8c681350986ebd3ba1ea3",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 540
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 172
+        },
+        "different_pixels": 28,
+        "max_channel_error": 1,
+        "mean_channel_error": 4.557291666666667e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vertex-light",
+        "case": "far-edge",
+        "original_sha256": "32fb96839be61a710f69a622d2825e840a26700f41d6587405b9dcabaa3e1d89",
+        "optimized_sha256": "80b052e26844b7c078ec5a0f97e15b6166ab3b8b858109d029f9c9cf87658eb9",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 530
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 162
+        },
+        "different_pixels": 28,
+        "max_channel_error": 1,
+        "mean_channel_error": 4.557291666666667e-05,
+        "pixels": 307200
+      },
+      {
+        "profile": "vertex-light",
+        "case": "far-below",
+        "original_sha256": "3152c7710f523f21aab74d7c947d8fb0e4d7b4081b92d5bd70b1637e7016e9a7",
+        "optimized_sha256": "792b714254b339fc14bf82ad96aa04bf364a865431c22f0ffad76b688074b641",
+        "original_draw": {
+          "vertices": 376,
+          "triangles": 530,
+          "pass_triangles": 538
+        },
+        "optimized_draw": {
+          "vertices": 376,
+          "triangles": 162,
+          "pass_triangles": 170
+        },
+        "different_pixels": 28,
+        "max_channel_error": 1,
+        "mean_channel_error": 4.557291666666667e-05,
+        "pixels": 307200
+      }
+    ],
+    "failures": [],
+    "report": {
+      "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/validation.json",
+      "sha256": "fb30c0550614793d34170c5b22e5c0a80ab06f5b1d117a56efcf8ea1d6e62c60"
+    },
+    "run_log": {
+      "path": ".agents/tmp/continuation/geometry-render/final-current-matrix.log",
+      "sha256": "967864111cfef77c269d2858f9c63d83c95784d4b859119b8752e090df002318"
+    },
+    "engine": {
+      "path": ".agents/tmp/continuation/geometry-render/build/release-linux-x86_64/quake3e.x64",
+      "sha256": "e016d78acf0780b5760a329e8402234648debfac082761be6d358056f1fad75f"
+    },
+    "cgame": {
+      "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/cgamex86_64.so",
+      "sha256": "d95d8b3991c278f94492831cf9b715d9ea61c2b68dd960be7115f18fe83025fe"
+    },
+    "exact_repeat_controls": 20,
+    "driver": [
+      "GL_VENDOR: Mesa",
+      "GL_RENDERER: llvmpipe (LLVM 20.1.2, 256 bits)",
+      "GL_VERSION: 4.5 (Compatibility Profile) Mesa 25.2.8-0ubuntu0.24.04.2"
+    ],
+    "input_and_capture": {
+      "SDL_VIDEODRIVER": "offscreen",
+      "SDL_AUDIODRIVER": "dummy",
+      "LIBGL_ALWAYS_SOFTWARE": "1",
+      "r_fullscreen": 0,
+      "in_mouse": 0,
+      "in_joystick": 0,
+      "capture_command": "screenshot",
+      "os_capture_or_input_injection": false
+    },
+    "rendered_vs_final_native_lump_parity": {
+      "original": true,
+      "optimized": true
+    },
+    "runs": [
+      {
+        "name": "classic-negative",
+        "command": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/classic-negative/command.json",
+          "sha256": "bf59f0ef49d1681bd4f814db65765672d40a7bf2edd6cbd19259b03909e4f9f6"
+        },
+        "log": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/classic-negative/engine.log",
+          "sha256": "1aa8acc2a7f3a9ef71934213bd370bc4685b98926364fa844aa0486d637cbdd0"
+        },
+        "bsp": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/classic-negative/baseq3/maps/fixture.bsp",
+          "sha256": "ea1f4e90de94d7a3cf9c38bf23bb69047f70f0b0b9efe0227e117d86060fac92"
+        }
+      },
+      {
+        "name": "classic-optimized",
+        "command": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/classic-optimized/command.json",
+          "sha256": "37083a27a9d5e2e7a9248c96d1e2cb42ecafda9be23e945c81f59cb7600d598e"
+        },
+        "log": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/classic-optimized/engine.log",
+          "sha256": "7590e63f39961f14c1616e7d27abfb525fc9619a1227edb0e7b80710d08fa0ce"
+        },
+        "bsp": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/classic-optimized/baseq3/maps/fixture.bsp",
+          "sha256": "1e899a59968cf17159de2b04ce657c29b9242ba66340e395eec021dde08671a6"
+        }
+      },
+      {
+        "name": "classic-original",
+        "command": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/classic-original/command.json",
+          "sha256": "0e7718e7e973b2910a0c545967e5e9095cbcf1ffa41d604ab702d972a2495f54"
+        },
+        "log": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/classic-original/engine.log",
+          "sha256": "8746fac6982f7a73344fe5398ecc3c193309cbbfaf9da311060806ea3b87c283"
+        },
+        "bsp": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/classic-original/baseq3/maps/fixture.bsp",
+          "sha256": "42bfdcdd96899c7ebde3a624ee7457e94a944a5f2727c90eb8ac5a0d395e4c90"
+        }
+      },
+      {
+        "name": "classic-repeat",
+        "command": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/classic-repeat/command.json",
+          "sha256": "d613c340fd503380e7c900adf938630d8174e4adb192651a41d6606ed7f642c2"
+        },
+        "log": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/classic-repeat/engine.log",
+          "sha256": "61a284dc0e911206647415b4b9adf8cf8d3a5de360f3bafbe59431df3733ecb0"
+        },
+        "bsp": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/classic-repeat/baseq3/maps/fixture.bsp",
+          "sha256": "42bfdcdd96899c7ebde3a624ee7457e94a944a5f2727c90eb8ac5a0d395e4c90"
+        }
+      },
+      {
+        "name": "vbo-perpixel-optimized",
+        "command": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/vbo-perpixel-optimized/command.json",
+          "sha256": "e89c39388ae7b533eb68eb80eacd8fb7f6fb681a025438e9812ea86ebe30c53a"
+        },
+        "log": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/vbo-perpixel-optimized/engine.log",
+          "sha256": "81308fed4d2f6969ef39c1b642e7eac8d4b35f44f0d12211006bde5cf705faf2"
+        },
+        "bsp": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/vbo-perpixel-optimized/baseq3/maps/fixture.bsp",
+          "sha256": "1e899a59968cf17159de2b04ce657c29b9242ba66340e395eec021dde08671a6"
+        }
+      },
+      {
+        "name": "vbo-perpixel-original",
+        "command": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/vbo-perpixel-original/command.json",
+          "sha256": "48992baa2cb98a04ce0ce5cb5457e8b2a3903548da10a5a6b8261ef0a62ec617"
+        },
+        "log": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/vbo-perpixel-original/engine.log",
+          "sha256": "b74ad35ec84b490f3f0c9af390e14cd0c6a2ffc491f395f39477476c9d273231"
+        },
+        "bsp": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/vbo-perpixel-original/baseq3/maps/fixture.bsp",
+          "sha256": "42bfdcdd96899c7ebde3a624ee7457e94a944a5f2727c90eb8ac5a0d395e4c90"
+        }
+      },
+      {
+        "name": "vertex-light-optimized",
+        "command": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/vertex-light-optimized/command.json",
+          "sha256": "144cae398023e42c8b9c5fedfaf5d031e254562f53fb163482145d5f06e7afbd"
+        },
+        "log": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/vertex-light-optimized/engine.log",
+          "sha256": "30b6211d736519c2793eb46f5ea7c1e856a4119b3dfb940ccc0b1273c350ba22"
+        },
+        "bsp": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/vertex-light-optimized/baseq3/maps/fixture.bsp",
+          "sha256": "1e899a59968cf17159de2b04ce657c29b9242ba66340e395eec021dde08671a6"
+        }
+      },
+      {
+        "name": "vertex-light-original",
+        "command": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/vertex-light-original/command.json",
+          "sha256": "357d79e097b554b0caff6753b3e54aa12d682cebd838bb90097502e26157ddc8"
+        },
+        "log": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/vertex-light-original/engine.log",
+          "sha256": "7c2aa21ae56a378dc7e5d3942ffa44c21999fd199d21b79a8fe317926746ced8"
+        },
+        "bsp": {
+          "path": ".agents/tmp/continuation/geometry-render/final-current-matrix/vertex-light-original/baseq3/maps/fixture.bsp",
+          "sha256": "42bfdcdd96899c7ebde3a624ee7457e94a944a5f2727c90eb8ac5a0d395e4c90"
+        }
+      }
+    ],
+    "reference_source": {
+      "upstream": "https://github.com/ec-/Quake3e",
+      "revision": "Local source snapshot; no Git metadata, identified by file hashes",
+      "license": "GPL-2.0-or-later source/header notices; compatible with GPL-3.0-or-later fixture",
+      "files": [
+        {
+          "path": "E:/_SOURCE/_CODE/Quake3e-master/COPYING.txt",
+          "sha256": "fac9da110d1433f4df0cb9f5dda9449e9aff6ee236ed240fa29e3e92926c363a"
+        },
+        {
+          "path": "E:/_SOURCE/_CODE/Quake3e-master/Makefile",
+          "sha256": "cce117192d8b43a76bcab8b609675ac7134d4409037afaeeb46b2dffe7ca4cab"
+        },
+        {
+          "path": "E:/_SOURCE/_CODE/Quake3e-master/code/qcommon/q_shared.h",
+          "sha256": "3a8e82198683217b3f29eaaa23f7f537f4582f7aeec46f886182a3a7f4ace060"
+        },
+        {
+          "path": "E:/_SOURCE/_CODE/Quake3e-master/code/qcommon/qcommon.h",
+          "sha256": "f905f1c094b1ac1089b5e2893d4952aa58c965f01859f95eb015dbd144f81cfc"
+        },
+        {
+          "path": "E:/_SOURCE/_CODE/Quake3e-master/code/qcommon/q_shared.c",
+          "sha256": "5b6250eae8a972f62df23d778c6879e547da79deac60499ea12915c09f3ffca5"
+        },
+        {
+          "path": "E:/_SOURCE/_CODE/Quake3e-master/code/cgame/cg_public.h",
+          "sha256": "b24433aae2fae7b306ff996e790bf84ec235b7ea215b3c98fa018c59a666a420"
+        },
+        {
+          "path": "E:/_SOURCE/_CODE/Quake3e-master/code/renderercommon/tr_types.h",
+          "sha256": "e37a662c7088721848196035f1cc1a9793a2e6f58c1506e1a6219d9f5fd834f4"
+        },
+        {
+          "path": "E:/_SOURCE/_CODE/Quake3e-master/code/renderer/tr_shade.c",
+          "sha256": "6dc2c504d0dabd6eb344a1ff7e2012042eaf0bae16df30c1323f7ce736a4877a"
+        },
+        {
+          "path": "E:/_SOURCE/_CODE/Quake3e-master/code/renderer/tr_shader.c",
+          "sha256": "97924755e966930f652fabe6c126c3e9cc98244e7c9d6096119be4daed901556"
+        },
+        {
+          "path": "E:/_SOURCE/_CODE/Quake3e-master/code/renderer/tr_world.c",
+          "sha256": "2e928bb6ed606543d2c2572e6fb74fa90d4b032a18b37444e0fa529cf44ee02b"
+        },
+        {
+          "path": "E:/_SOURCE/_CODE/Quake3e-master/code/renderer/tr_bsp.c",
+          "sha256": "d6117e4ad80bc807d5c31e5ac51bd99ef55c6b05b8a695b28886ffceb3c2d980"
+        }
+      ]
+    },
+    "build_command": "make -C /mnt/e/_SOURCE/_CODE/Quake3e-master -j8 BUILD_DIR=/mnt/e/Repositories/q3mapx/.agents/tmp/continuation/geometry-render/build BUILD_SERVER=0 USE_RENDERER_DLOPEN=0 DEFAULT_RENDERER=opengl USE_VULKAN=0 USE_VULKAN_API=0 USE_SDL=1 USE_CURL=0",
+    "build_note": "OpenGL was the default renderer; DEFAULT_RENDERER was redundant (the make variable is RENDERER_DEFAULT).",
+    "build_log": {
+      "path": ".agents/tmp/continuation/geometry-render/build.log",
+      "sha256": "029601c9f8a336c985fd7d667570c648f7f56d4fba2caad4322fe5e04dad2f74"
+    },
+    "preceding_dynamic_light_failure": {
+      "report": {
+        "path": ".agents/tmp/continuation/geometry-render/matrix/validation.json",
+        "sha256": "fd0ed085c9c09a32321300101332b4e4c65d5169aa200d84ee8511d30bfc8313"
+      },
+      "comparisons": 60,
+      "failures": 19,
+      "max_channel_error": 2,
+      "max_changed_pixels": 2338,
+      "tolerance_unchanged": true,
+      "resolution": "Protect surfaces unless material and BSP both already disable dynamic lights; require explicit Quake3e OpenGL renderer for publication"
+    }
+  },
+  "findings": [
+    "The original imported-grid winding disagreed with normals; corrected before visible-face qualification. Earlier core-only 146/496 counts remain historical.",
+    "Native compiler surfaces can share index subsequences; unmodified owners retain their slots and reduced surfaces allocate from unreferenced contiguous storage.",
+    "A renderer option before the geometry mode exposed inherited front-only dispatch falling through to BSP compilation. The geometry mode now resolves anywhere in remaining arguments; native tests exercise that order.",
+    "Shader grammar rejects NUL inside comments, renderer-truncated tokens, non-ASCII tokens with signed-char-dependent parsing and image names exceeding runtime capacity.",
+    "Original Quake III specialized iterators may ignore nodlight. Their renderer contract remains unsupported.",
+    "Linux area_factors skipped because the queried GPU backend was unavailable; renderer tests used software Mesa llvmpipe, not GPU performance measurement.",
+    "Successive Windows fixture builds also changed native surface/index ordering. The renderer matrix was repeated against exact final artifacts; no full BSP compiler determinism is claimed."
+  ],
+  "limits": [
+    "Only horizontal constant-normal/color world surfaces with exact globally affine UVs, supported opaque materials and authored nomarks/nodlight.",
+    "Only Quake3e OpenGL/IBSP46; no arbitrary shader remapping, other native formats, hardware/renderer universality or bit-identical raster guarantee.",
+    "Synthetic qualification does not measure frame time, compiler speed or memory improvement; vertex storage and file size are retained.",
+    "Source/job order can differ across compiler platforms; worker-count parity is checked within each build, not full cross-platform BSP byte identity.",
+    "Existing complete-winding VIS merge baseline omissions, raw sidecar writers, intermittent Windows process delays, conservative recursive clipping and inherited compiler warnings remain outside this task.",
+    "The broad suites exposed the dispatch regression; the subsequent targeted runs pass after repair. The record does not relabel the earlier failed suites as passing."
+  ],
+  "cleanup": {
+    "status": "Automatic approval review blocked removal with reason: blocked by policy. No deletion retry or alternate mechanism was used.",
+    "retained_disposable_targets": [
+      ".agents/tmp/continuation/geometry-render/probe",
+      ".agents/tmp/continuation/geometry-render/nodlight-matrix",
+      ".agents/tmp/continuation/geometry-render/probe.py",
+      ".agents/tmp/continuation/geometry-render/probe.log"
+    ],
+    "useful_evidence": "Failed and final matrices, reference engine build, logs and recording helper remain under .agents/tmp/continuation/geometry-render and .agents/tmp/continuation/geometry-*."
+  }
+}

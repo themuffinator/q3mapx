@@ -147,6 +147,16 @@ the same physical GPU more than once; the page preserves these separate indices.
 
 ## Validation and limits
 
+Development builds also provide **Analyze geometry · Quake3e GL** and **Optimize
+geometry · Quake3e GL** workflows for final baked Quake III BSPs. Matching shader
+assets and the advertised compiler/profile capability are required. The command
+preview explains the initial material constraints and selects `quake3e-gl` explicitly.
+Analysis writes `geometry.json`; optimization adds `<basename>.optimized.bsp` in
+the new run folder. The staged source is retained separately. View surface
+decisions under **Reports & profiles**. Other renderer contracts, interactive
+region review and GUI exclusions remain planned; the CLI already accepts exact
+surface/shader exclusions and an analysis budget. See [the optimizer guide](GEOMETRY-OPTIMIZATION.md).
+
 Automated tests run the real compiler through the Qt queue, including complete
 builds, recovery, OBJ/ASE exports, minimaps, paths with spaces, failed process starts, dependency
 skipping and cancellation. An offscreen window test also discovers the compiler's

@@ -251,6 +251,10 @@ int main(int argc, char** argv) {
         groups->setCurrentIndex(groups->findData("surfaces"));
         require(!button->isEnabled() && orderHint->text().contains("Surface group inference"),"Older compiler advertised unimplemented grouping");
         rejectRecovery("Surface group inference");
+        workflow->setCurrentIndex(workflow->findData("geometry-optimize"));
+        require(!button->isEnabled() && !policyAvailable(workflow,"geometry-optimize"),"Older compiler enabled geometry rewriting");
+        rejectRecovery("Geometry analysis and optimization require advertised support");
+        workflow->setCurrentIndex(workflow->findData("decompile"));
         flags->setCurrentIndex(flags->findData("cells")); switchCompiler(QDir::toNativeSeparators(project.compiler));
         require(button->isEnabled() && policyAvailable(flags,"cells") && policyAvailable(groups,"surfaces"),"Current compiler did not restore inference");
         require(projectTabs->tabText(2)=="Recovery","Recovery tab missing"); projectTabs->setCurrentIndex(2);
@@ -316,6 +320,17 @@ int main(int argc, char** argv) {
         options->setCurrentIndex(0); workflow->setCurrentIndex(workflow->findData("build"));
         profiles->setCurrentText(project.game);
         require(button->isEnabled(), "Returning to a writable profile did not enable build");
+        for(const auto* mode:{"geometry-analyze","geometry-optimize"}) {
+            workflow->setCurrentIndex(workflow->findData(mode));
+            require(button->isEnabled() && policyAvailable(workflow,mode),"Current compiler did not enable geometry workflows");
+            require(preview->toPlainText().contains("-renderer quake3e-gl")
+                && preview->toPlainText().contains("-optimize-geometry")
+                && !preview->toPlainText().contains("-detail-policy"),"Geometry preview omitted renderer or included recovery options");
+        }
+        window.resize(1024,720);
+        require(renderPreview(QDir(argv[2]).filePath("geometry-compact.png")),"Geometry workflow did not render");
+        require(workflow->width()>=workflow->sizeHint().width(),"Geometry workflow text is clipped");
+        window.resize(originalSize); workflow->setCurrentIndex(workflow->findData("build"));
         QAction* run = nullptr;
         for (auto* action : window.findChildren<QAction*>())
             if (action->shortcut() == QKeySequence(Qt::Key_F5)) run = action;

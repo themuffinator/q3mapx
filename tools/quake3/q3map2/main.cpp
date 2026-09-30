@@ -215,6 +215,10 @@ int main( int argc, char **argv ){
 		r = AnalyzeBSP( args );
 	}
 
+	else if ( args.takeArg( "-optimize-geometry" ) ) {
+		r = GeometryOptimizeMain( args );
+	}
+
 	/* info */
 	else if ( args.takeFront( "-info" ) ) {
 		r = BSPInfo( args );

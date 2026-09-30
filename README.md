@@ -30,6 +30,9 @@ without the original PRT, with explicit enclosure and numerical limits.
 Optional [detail and group inference](docs/DECOMPILATION.md#group-inference-policy)
 can now export cell-supported detail flags and surface-supported `func_group`
 assemblies, with bounded work, rebuild-order protection and explicit uncertainty.
+The [geometry optimizer](docs/GEOMETRY-OPTIMIZATION.md) now provides bounded
+post-LIGHT triangle reduction and reports in CLI/workbench, initially for an
+explicit Quake3e OpenGL contract on eligible Quake III surfaces.
 The packaged 0.3.0 archive remains unchanged.
 
 Recover an editable map with a texture-recovery report:
@@ -59,6 +62,8 @@ See [decompilation options and limits](docs/DECOMPILATION.md). The traditional
   meshes, retained model placements and inference of missing early face materials.
 - OBJ/ASE exports with parallel curve tessellation, preserved entity placement
   and configurable detail, available from both CLI and workbench.
+- Conservative post-LIGHT triangle reduction with material/runtime guards,
+  shared-index protection, deterministic jobs and separate BSP/report outputs.
 - Qt projects, quality presets, asynchronous queues, cancellation, searchable logs,
   diagnostics, reports, build history, hardware discovery and light/dark themes.
 - Separate CLI, optional Qt-free and GPU-disabled builds, portable runtime/source
@@ -95,6 +100,7 @@ native validation of 242 installed-map entries without distributing game assets.
 - [Detail/group inference and the light/recreation roadmap](docs/RECOVERY-INFERENCE.md)
 - [Planned intelligent VIS and geometry optimization](docs/COMPILER-OPTIMIZATION.md)
 - [Exact planar reduction core and remaining renderer gates](docs/PLANAR-REDUCTION.md)
+- [Geometry optimizer, renderer contract and validation](docs/GEOMETRY-OPTIMIZATION.md)
 - [Upstream provenance and credits](docs/UPSTREAM.md)
 - [Completed tasks and known issues](docs/PROGRESS.md)
 

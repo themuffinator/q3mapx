@@ -34,7 +34,9 @@ def fixture(root, lighting):
         for x in range(n):
             a = y*(n+1)+x+1
             b, c, d = a+1, a+n+2, a+n+1
-            for tri in ((a, d, b), (b, d, c)):
+            # Assimp reverses winding on import; supply the Y-up OBJ winding
+            # matching vn so the resulting Quake face is visible from above.
+            for tri in ((a, b, d), (b, c, d)):
                 lines.append('f '+' '.join(f'{i}/{i}/1' for i in tri))
     (models/'grid.obj').write_text('\n'.join(lines)+'\n', encoding='utf-8')
     (models/'grid.mtl').write_text('newmtl textures/q3mapx/grid\nKd 1 1 1\n', encoding='utf-8')

@@ -5,10 +5,10 @@
 `libs/q3mapx/planar_reduction.*` implements the first transformation core for
 [M10](PLAN.md#m10--geometry-optimization-without-presentation-changes). It removes
 redundant interior vertices and retriangulates their incident faces. It is a
-library with independent tests; **no compiler option, BSP rewrite or workbench
-control uses it yet**. The mathematical contract below is a prerequisite for the
-requested appearance-preserving optimizer, not a claim of renderer equivalence.
-Existing compiler outputs and material policies remain unchanged.
+library with independent tests. The subsequent [native optimizer](GEOMETRY-OPTIMIZATION.md)
+now uses it through an explicit Quake3e OpenGL material/format contract in the CLI
+and workbench. The mathematical contract below is a prerequisite for that adapter,
+not a standalone claim of renderer equivalence. Ordinary compilation stays unchanged.
 
 The inherited meta stage already deduplicates and groups compatible triangles.
 This core goes further: it can remove tessellation from those compiled groups.
@@ -97,7 +97,8 @@ ASan/UBSan. The tests include:
 - Two original generated OBJ grids compiled through the actual Quake 3
   BSP/VIS/LIGHT pipeline, then inspected without rewriting the BSP.
 
-The generated 16-by-16 grid remains 512 triangles after ordinary meta processing.
+The original core-only validation fixture (before the later winding correction)
+remains 512 triangles after ordinary meta processing.
 The compiler emits six grid surfaces of at most 64 vertices each; this
 core preserves each surface's boundary and reduces their combined count to 146.
 Those counts are mathematical candidates, before runtime-material checks:
@@ -138,16 +139,14 @@ triangle order. Exact affine input normals are not proof that all derived shader
 values stay affine. Horizontal faces may avoid the particular Z-distance issue,
 but that alone does not approve their complete rendering behavior.
 
-Next implementation work must provide conservative, profile-specific material
-eligibility and explicit rejection reasons; native surface/lump adapters;
-unchanged collision, visibility, ownership and baked data; atomic output;
-worker-count determinism; and CLI/workbench review controls. A post-LIGHT,
-index-only rewrite is a candidate design because baked attributes are then known.
-It needs its own native-writer validation and must not enable recovery-only saves.
-The initial BSP-stage design remains under evaluation rather than being assumed
-safe. Engine comparisons must use windowed execution and registered render-target
-screenshots, with no input injection or operating-system capture. Neither game
-render validation nor optimized BSP publication occurred in this round.
+The subsequent [post-LIGHT native adapter](GEOMETRY-OPTIMIZATION.md) supplies
+bounded material inventory, explicit eligibility/rejection reasons, index-only
+publication, native preservation tests, worker parity and CLI/workbench workflows.
+It targets Quake3e OpenGL and requires authored `nomarks` and `nodlight`; it does
+not qualify the original renderer's specialized iterators. Its independent render
+matrix and corrected fixture are recorded separately. Other orientations,
+renderer/material profiles, native formats and the initial BSP-stage design remain
+open. The older record above is retained as core-only evidence.
 
 ## Reproduce
 

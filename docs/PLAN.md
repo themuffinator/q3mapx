@@ -345,12 +345,21 @@ Separate compiler workstream; see [compiler optimization design](COMPILER-OPTIMI
   topology/interpolant predicates, replayable edits and independent rational
   oracles; measure read-only candidates on compiled, baked synthetic grids.
   See [core contract and evidence](PLANAR-REDUCTION.md). This prerequisite is not
-  an enabled compiler/GUI optimizer or a claim of renderer equivalence.
+  by itself a claim of renderer equivalence; the native adapter has separate gates.
+- [x] Deliver an initial post-LIGHT IBSP46 adapter, bounded shader inventory,
+  deterministic surface jobs, shared-index allocation, checked BSP/report output
+  and CLI/workbench workflows for explicit Quake3e OpenGL use. Qualify authored
+  nomarks/nodlight horizontal world surfaces through independent byte/topology
+  checks and engine render targets. See [the implemented scope](GEOMETRY-OPTIMIZATION.md).
 - [ ] Analyze regional triangle costs and safe reduction opportunities relative
   to existing meta-surface processing; preserve source-to-output provenance.
 - [ ] Add native adapters and conservative renderer/material eligibility, including
   dynamic-light, fog, deformation and vertex-color quantization constraints.
   Compare pre-LIGHT and post-LIGHT application before choosing the initial pass.
+  The first adapter chooses post-LIGHT so final quantized colors are known;
+  unsupported behavior is protected. A dynamic-light qualification failure
+  narrowed the initial contract without changing its raster tolerance. Other
+  orientations, materials, renderers and native formats remain open.
 - [ ] Remove proven redundant geometry and retriangulate compatible planar regions
   while preserving coverage, interpolation, materials, lightmaps, seams and normals.
 - [ ] Investigate redundant patch tessellation with correct LOD/stitching, retaining
@@ -359,6 +368,10 @@ Separate compiler workstream; see [compiler optimization design](COMPILER-OPTIMI
   contracts. Evaluate compiled-BSP rewriting separately from the source-build pass.
 - [ ] Provide reports, regional exclusions, CPU/job determinism and visual comparison
   tools; reject transformations whose presentation equivalence cannot be established.
+  Surface reports, exact shader/surface exclusions, one/four-worker parity and an
+  optional fixed-camera Quake3e harness are delivered for the initial adapter.
+  Workbench region overlays/exclusions, broader native/hardware qualification and
+  performance measurements remain open.
 
 Acceptance: fewer rendered triangles with preserved appearance and behavior, tested
 with difficult UV/lighting/material cases, multiple views/distances and animation

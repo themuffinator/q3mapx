@@ -1914,3 +1914,95 @@ inclusion failures, raw sidecar writers, intermittent Windows delays, conservati
 recursive portal clipping and inherited compiler warnings remain recorded.
 Previously policy-blocked cleanup targets were not retried; the packaged 0.3.0
 archive remains unchanged.
+
+## 2026-09-30 — Native triangle optimizer and renderer qualification
+
+Added `-optimize-geometry` and two workbench workflows for bounded, post-LIGHT
+IBSP46 analysis/publication. The initial contract explicitly targets Quake3e
+OpenGL. It admits supported opaque horizontal world surfaces only when both
+assets and native flags already disable marks and dynamic lights, normals/colors
+are constant, mappings are globally exactly affine and no fog/shared model owner
+is present. Other materials and geometry receive explicit protection reasons.
+The independent exact reduction core removes interior fan vertices and retains
+every boundary segment; separate surface jobs have stable budget allocation and
+one/four-worker output parity. Source BSP and complete shader inventory identities
+are rechecked before checked BSP/report publication.
+
+The shader scanner inventories unlisted files and duplicate VFS definitions under
+file/token/definition budgets. It rejects malformed structure, NUL even inside
+comments, overlong renderer tokens and signed-char-dependent non-ASCII tokens;
+overlong image paths are protected. VFS reads now accept a pre-allocation byte
+limit and reject incomplete packed reads. Runtime remapping and other renderer
+contracts remain unsupported. Quake3e's consistent nodlight handling differs from
+the original renderer's specialized iterators, so BSP writing requires explicit
+`-renderer quake3e-gl`; analysis alone describes that profile without writing a BSP.
+
+Native compiler output exposed shared index subsequences between surfaces. The
+new allocator reserves all unchanged owners' slots and places changed indices
+only in existing unreferenced contiguous storage. Insufficient storage fails
+without publication. Only changed surface first-index/count fields and allocated
+index values may differ: vertex bytes, IDs, lump layout, file size, collision,
+VIS, ownership, entities and baked data are retained. Tests check the complete
+byte boundary, shared-owner/index controls, exclusions, malformed/oversized data,
+hard work/storage failures, output rollback, source aliases, loader acceptance and
+idempotence. The generated ambient grid falls from 512 to 144 triangles across
+six surfaces; the point-light control keeps all 512 because colors vary.
+
+The engine qualification first caught inconsistent winding/normals in the imported
+grid fixture; corrected winding makes the reduced face visible. The preceding
+core-only 146/496 figures remain historical. The first visible-face matrix also
+rejected a broader dynamic-light policy: 19/60 comparisons exceeded the preset
+raster tolerance, reaching a two-step channel difference and 2,338 changed pixels.
+Restricting candidates to already-authored nodlight surfaces passed the same
+tolerance without relaxation. Sixty comparisons cover five cameras/distances,
+four lighting cases and three renderer configurations. All twenty repeat controls
+are byte-identical; a deliberate 16-unit geometry error changes 71,308 pixels.
+The final matrix's maximum is one 8-bit channel step at 61/307,200 pixels, against
+a limit of one step and 0.1%. Engine counters confirm 530 → 162 submitted scene
+triangles in every view, with 376 vertices retained. This is synthetic count and
+finite-raster evidence, not a hardware-GPU, frame-time or universal pixel-identity
+claim.
+
+The original cgame fixture calls the reference engine's registered screenshot
+command using SDL offscreen, windowed operation, disabled input devices and
+software Mesa llvmpipe. No OS capture or input injection is used. Read-only external
+assets and GPL-compatible Quake3e headers/build support the optional test; no engine
+implementation or game content is redistributed. The [credits](UPSTREAM.md) and
+[validation record](validation/geometry-optimize.json) identify the dependency and
+source/binary identities. Final captured BSP lumps also match the final parser
+build's generated inputs/outputs. Successive Windows fixture builds exposed native
+surface/index reordering as well; the matrix was repeated against the exact final
+artifacts. This inherited compiler-order issue is separate from fixed-input
+optimizer determinism and remains open.
+
+The GUI exposes analysis and optimization through normal staging, queue, logs and
+reports, includes the renderer choice in commands and explains the initial scope.
+Unavailable catalogs/profiles block run/menu actions before creating output folders.
+Actual compiler queue tests and compact offscreen window previews pass on Windows
+and Linux. Exclusions and custom budgets currently use the CLI; region overlays,
+broader materials/formats and native/hardware rendering validation remain planned.
+
+Broad 62-group Windows/Linux sweeps found one new dispatch regression: putting
+`-renderer` before the mode could fall through to ordinary BSP compilation. The
+geometry mode now resolves anywhere in remaining arguments, with that ordering
+exercised by the preservation test. All other Windows groups passed; Linux also
+skipped `area_factors` because a GPU backend was unavailable. After repair, eight
+relevant groups passed on both platforms and four native/pipeline groups passed
+under ASan/UBSan. The three core groups passed in the preceding sanitizer run.
+Subsequent parser-boundary changes were rechecked with both material/native groups
+on all three builds. The ledger retains failed runs as failed and records the
+successful follow-ups rather than relabelling the original sweeps. Sanitizers keep
+the established process-lifetime leak exclusion; address/undefined checks remain active.
+
+See [the user guide](GEOMETRY-OPTIMIZATION.md) and [updated M10 plan](PLAN.md#m10--geometry-optimization-without-presentation-changes).
+Inherited `UnsortedSet`/GCC inline warnings, VIS merge baseline omissions, raw
+sidecar writers, intermittent Windows delays and conservative recursive clipping
+remain open. The stripped-light, broader inference and automatic VIS workstreams
+remain active. The portable 0.3.0 archive is unchanged. Useful test artifacts/logs
+stay in their build directories and `.agents/tmp/continuation/geometry-*`.
+
+Automatic approval review rejected cleanup of the new disposable renderer probe
+and intermediate nodlight-matrix folders/files with “blocked by policy.” They were
+verified as project-local with no reparse links but remain in
+`.agents/tmp/continuation/geometry-render/`; no alternate deletion was attempted.
+Earlier blocked cleanup targets were not retried either.

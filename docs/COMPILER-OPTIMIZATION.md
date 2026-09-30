@@ -114,12 +114,15 @@ cases instead of enabling a speculative transformation for every game profile.
 
 The [exact planar reduction core](PLANAR-REDUCTION.md) now removes compatible
 interior fan vertices with bounded effort, stable edit history and independent
-rational checks. A generated compiled grid offers 512 → 146 mathematical
-candidates with ambient lighting but only 512 → 496 with a point-light bake.
-These are read-only measurements. Native publication, material/profile eligibility,
-renderer comparison and CLI/workbench controls remain open; no compiler option
-currently applies this reduction. The renderer audit also finds dynamic-light
-behavior that cannot be certified from affine BSP attributes alone.
+rational checks. The [post-LIGHT native optimizer](GEOMETRY-OPTIMIZATION.md) now
+adds bounded shader analysis, index-only IBSP46 publication and CLI/workbench
+workflows for an explicit Quake3e OpenGL profile. Eligible opaque horizontal
+world surfaces must already disable marks/dynamic lights and have constant native
+colors/normals and exact affine UVs. The corrected generated grid reaches 512 →
+144, while the adapter protects the entire point-lit grid. A failed broader
+dynamic-light render matrix narrowed eligibility without relaxing the preset
+tolerance. Other orientations, materials, renderers, formats and regional review
+remain open; exact affine BSP attributes alone do not certify runtime behavior.
 
 ### Preservation contract
 

@@ -258,9 +258,9 @@ int vfsGetFileCount( const char *filename ){
 }
 
 // NOTE: when loading a file, you have to allocate one extra byte and set it to \0
-MemBuffer vfsLoadFile( const char *filename, int index /* = 0 */, bool script /* = false */ ){
+MemBuffer vfsLoadFile( const char *filename, int index /* = 0 */, bool script /* = false */, size_t maxBytes ){
 
-	const auto load_full_path = [script] ( const char *filename ) -> MemBuffer
+	const auto load_full_path = [script,maxBytes] ( const char *filename ) -> MemBuffer
 	{
 		if( script ) g_loadedScriptLocation( filename );
 
@@ -268,8 +268,10 @@ MemBuffer vfsLoadFile( const char *filename, int index /* = 0 */, bool script /*
 
 		FILE *f = fopen( filename, "rb" );
 		if ( f != nullptr ) {
-			fseek( f, 0, SEEK_END );
-			buffer = MemBuffer( ftell( f ) );
+			if ( fseek( f, 0, SEEK_END ) != 0 ) { fclose(f); return {}; }
+			const long bytes = ftell(f);
+			if ( bytes < 0 || uint64_t(bytes) > maxBytes ) { fclose(f); return {}; }
+			buffer = MemBuffer( bytes );
 			rewind( f );
 
 			if ( fread( buffer.data(), 1, buffer.size(), f ) != buffer.size() ) {
@@ -304,6 +306,7 @@ MemBuffer vfsLoadFile( const char *filename, int index /* = 0 */, bool script /*
 	{
 		if ( strEqual( file.name.c_str(), fixedname ) && 0 == index-- )
 		{
+			if (file.size > maxBytes) return {};
 			if( script ) g_loadedScriptLocation( file.pak.unzFilePath.c_str(), " :: ", filename );
 
 			unzFile zipfile = file.pak.zipfile;
@@ -312,7 +315,7 @@ MemBuffer vfsLoadFile( const char *filename, int index /* = 0 */, bool script /*
 			if ( unzOpenCurrentFile( zipfile ) == UNZ_OK ) {
 				buffer = MemBuffer( file.size );
 
-				if ( unzReadCurrentFile( zipfile, buffer.data(), file.size ) < 0 ) {
+				if ( unzReadCurrentFile( zipfile, buffer.data(), file.size ) != static_cast<int64_t>(file.size) ) {
 					buffer = MemBuffer();
 				}
 				unzCloseCurrentFile( zipfile );

@@ -316,6 +316,20 @@ static void HelpScale()
 	HelpOptions( "BSP Scaling", 0, 80, options );
 }
 
+static void HelpGeometry()
+{
+	HelpOptions("Conservative Quake III geometry reduction",0,80,{
+		{"-optimize-geometry <final.bsp>", "Analyze final baked IBSP46 against all available shader scripts; writes .geometry.json by default"},
+		{"-o <result.bsp>", "Write a separate BSP with fewer active triangles; retain vertices, surface IDs, other data and file size"},
+		{"-renderer quake3e-gl", "Required for BSP publication; qualified Quake3e OpenGL contract. Original Quake III specialized shader iterators do not consistently honor nodlight"},
+		{"-report <result.json>", "Set the atomic JSON report destination"},
+		{"-exclude-shader <name>", "Protect an exact shader name; may be repeated"},
+		{"-exclude-surface <N>", "Protect a surface index; may be repeated"},
+		{"-max-work <1..1000000000>", "Distribute a deterministic reduction budget across candidates (default 50000000); hard exhaustion preserves outputs"},
+		{"-game quake3", "Initial contract: explicit supported opaque materials, authored nomarks and nodlight, world horizontal faces, constant normals/colors and no fog; matching assets and compatible renderer required"},
+	});
+}
+
 static void HelpShift()
 {
 	const std::vector<HelpOption> options = {
@@ -531,6 +545,7 @@ void HelpMain( const char* arg )
 		{ "-light", "Light Stage" },
 		{ "-analyze", "Analyzing BSP-like file structure" },
 		{ "-bsp-evidence", "Report validated partition, brush, regional and stored-PVS evidence" },
+		{ "-optimize-geometry", "Analyze or reduce compatible final Quake III triangle surfaces" },
 		{ "-scale", "Scaling" },
 		{ "-shift", "Shift" },
 		{ "-convert", "Converting & Decompiling" },
@@ -552,6 +567,7 @@ void HelpMain( const char* arg )
 		HelpLight,
 		HelpAnalyze,
 		HelpEvidence,
+		HelpGeometry,
 		HelpScale,
 		HelpShift,
 		HelpConvert,

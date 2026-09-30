@@ -37,7 +37,8 @@ add_library(q3mapx_jobs STATIC libs/q3mapx/job_pool.cpp)
 target_include_directories(q3mapx_jobs PUBLIC libs)
 target_link_libraries(q3mapx_jobs PUBLIC Threads::Threads)
 add_library(q3mapx_io STATIC libs/q3mapx/atomic_file.cpp libs/q3mapx/portal_graph.cpp
-    libs/q3mapx/cell_graph.cpp libs/q3mapx/exact_predicates.cpp libs/q3mapx/planar_reduction.cpp)
+    libs/q3mapx/cell_graph.cpp libs/q3mapx/exact_predicates.cpp libs/q3mapx/planar_reduction.cpp
+    libs/q3mapx/quake3_materials.cpp)
 target_include_directories(q3mapx_io PUBLIC libs)
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/libs/q3mapx/columns.cl Q3MAPX_COLUMN_KERNEL)
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS libs/q3mapx/columns.cl)
@@ -299,6 +300,13 @@ if(BUILD_TESTING)
         --compiler $<TARGET_FILE:q3mapx> --unit $<TARGET_FILE:planar_reduction_test>
         --work-dir ${CMAKE_BINARY_DIR}/tests/planar-reduction-native)
     set_tests_properties(planar_reduction_native PROPERTIES TIMEOUT 180)
+    add_executable(quake3_materials_test tests/quake3_materials.cpp)
+    target_link_libraries(quake3_materials_test PRIVATE q3mapx_io)
+    add_test(NAME quake3_materials COMMAND quake3_materials_test)
+    add_test(NAME geometry_optimize COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/geometry_optimize.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/geometry-optimize)
+    set_tests_properties(geometry_optimize PROPERTIES TIMEOUT 300)
     add_test(NAME cell_adjacency COMMAND ${Python3_EXECUTABLE}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/cell_adjacency.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/cell-adjacency)

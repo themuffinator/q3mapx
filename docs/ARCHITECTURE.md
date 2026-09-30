@@ -112,10 +112,17 @@ The first triangle-reduction transformation is isolated in
 `libs/q3mapx/planar_reduction.*`, with binary32 exact determinant signs in
 `exact_predicates.*`. It consumes immutable geometry/32-field vertices and returns
 ordered faces plus replayable edits under explicit work/storage bounds. Native
-format adapters and renderer/material eligibility are separate planned layers.
-It is linked into the shared support library for testing but is not invoked by
-the compiler or workbench. See [its contract](PLANAR-REDUCTION.md) before using the
-core: exact affine-field preservation alone does not approve a runtime rewrite.
+format adapters and renderer/material eligibility remain separate layers.
+`quake3_materials.*` implements a bounded conservative material grammar;
+`geometry_optimize.cpp` inventories VFS definitions and applies the core only to
+qualified Quake3e OpenGL/IBSP46 world surfaces after LIGHT. Independent surfaces
+run in a job pool with deterministic budget allocation. Publication patches only
+selected index offsets/counts and free index storage, preserving every other
+native byte. It accounts for shared native index ranges before allocation and
+stages BSP/report output together. CLI/workbench workflows advertise explicit
+support through the game catalog. See [the native contract](GEOMETRY-OPTIMIZATION.md)
+and [the core contract](PLANAR-REDUCTION.md): exact affine-field preservation alone
+does not approve a runtime rewrite.
 
 ## Decisions recorded at project start
 

@@ -231,6 +231,9 @@ QWidget* Window::configuration(){
     auto* commandHeader=new QHBoxLayout; auto* commandLabel=new QLabel("Workflow & command preview"); commandLabel->setObjectName("sectionTitle"); commandHeader->addWidget(commandLabel); commandHeader->addStretch();
     workflow_=new QComboBox; workflow_->addItem("Full build · BSP → VIS → LIGHT","build"); workflow_->addItem("BSP only","bsp"); workflow_->addItem("Visibility","vis"); workflow_->addItem("Lighting","light"); workflow_->addItem("Minimap","minimap"); workflow_->addItem("Decompile BSP","decompile");
     workflow_->addItem("Export OBJ mesh","obj"); workflow_->addItem("Export ASE mesh","ase");
+    workflow_->addItem("Analyze geometry · Quake3e GL","geometry-analyze"); workflow_->addItem("Optimize geometry · Quake3e GL","geometry-optimize");
+    for(const auto* value:{"geometry-analyze","geometry-optimize"})
+        workflow_->setItemData(workflow_->findData(value),"For Quake3e OpenGL: final baked Quake III BSP and matching shader assets required. Only eligible horizontal surfaces with authored nomarks and nodlight are reduced. Outputs go into a new run folder.",Qt::ToolTipRole);
     workflow_->setObjectName("workflow");
     workflow_->setAccessibleName("Workflow"); commandHeader->addWidget(workflow_);
     auto* enqueueButton=new QPushButton("Add to queue"); connect(enqueueButton,&QPushButton::clicked,this,[this]{ enqueue(false); }); commandHeader->addWidget(enqueueButton); layout->addLayout(commandHeader);
@@ -263,7 +266,7 @@ QWidget* Window::queuePage(){
     auto* reportsPage=new QWidget; auto* reportLayout=new QVBoxLayout(reportsPage); reports_=new QComboBox; reports_->setAccessibleName("Generated report"); reportView_=codeView(); reportLayout->addWidget(reports_); reportLayout->addWidget(reportView_);
     auto* reportLimit=new QLabel("Preview shows up to 5 MiB. Open the run folder for complete report files.");
     reportLimit->setWordWrap(true); reportLayout->addWidget(reportLimit);
-    connect(reports_,&QComboBox::currentIndexChanged,this,[this]{ QFile file(reports_->currentData().toString()); reportView_->clear(); if(file.open(QIODevice::ReadOnly)) reportView_->setPlainText(QString::fromUtf8(file.read(5*1024*1024))); }); tabs->addTab(reportsPage,"Profiles && recovery reports");
+    connect(reports_,&QComboBox::currentIndexChanged,this,[this]{ QFile file(reports_->currentData().toString()); reportView_->clear(); if(file.open(QIODevice::ReadOnly)) reportView_->setPlainText(QString::fromUtf8(file.read(5*1024*1024))); }); tabs->addTab(reportsPage,"Reports && profiles");
     layout->addWidget(tabs,1); return page;
 }
 QWidget* Window::historyPage(){
@@ -308,7 +311,10 @@ void Window::updatePreview(){
     dirty_=true; setWindowModified(true); const auto p=project(); title_->setText(p.name.isEmpty() ? "Untitled project" : p.name);
     setWindowTitle((p.name.isEmpty() ? "Untitled project" : p.name)+"[*] — q3mapx Workbench");
     const auto commands=buildPlan(p,workflow_->currentData().toString(),QDir(p.outputRoot).filePath("<new-run>"));
-    QStringList lines; for(const auto& job:commands) lines << job.label+"\n"+displayCommand(job);
+    QStringList lines;
+    if(workflow_->currentData().toString().startsWith("geometry-"))
+        lines << "For Quake3e OpenGL: use a final baked BSP and matching shader assets.\nOnly eligible horizontal surfaces already disabling marks and dynamic lights can be reduced.";
+    for(const auto& job:commands) lines << job.label+"\n"+displayCommand(job);
     preview_->setPlainText(lines.join("\n\n"));
     inspection_->setContext(p.compiler,QDir::toNativeSeparators(p.source),p.game);
     refreshGameHint();
@@ -324,6 +330,8 @@ void Window::enqueue(bool start){
         const auto p=project(); const QString workflow=workflow_->currentData().toString();
         if(catalog_.loading() || catalogCompiler_!=compiler_->text()) throw std::runtime_error("Wait for the compiler's game profiles to finish loading.");
         const auto* profile=catalog_.find(p.game);
+        if(workflow.startsWith("geometry-") && (!profile || !profile->workflows.contains(workflow)))
+            throw std::runtime_error("Geometry analysis and optimization require advertised support from the selected compiler and game profile.");
         if(workflow=="decompile") {
             const auto error=recoverySupportError(profile,p.brushOrder,p.detailPolicy,p.groupPolicy);
             if(!error.isEmpty()) throw std::runtime_error(error.toStdString());
@@ -408,6 +416,8 @@ void Window::refreshGameHint(){
     const auto enable=[](QComboBox* combo,const char* value,bool available){
         if(auto* model=qobject_cast<QStandardItemModel*>(combo->model())) model->item(combo->findData(value))->setEnabled(available);
     };
+    for(const auto* value:{"geometry-analyze","geometry-optimize"})
+        enable(workflow_,value,profile && profile->workflows.contains(value));
     enable(brushOrder_,"rebuild",canRebuild); enable(brushOrder_,"bsp",!grouped);
     enable(detailPolicy_,"cells",canDetail); enable(groupPolicy_,"surfaces",canGroup);
     detailWork_->setEnabled(cells && canDetail); groupWork_->setEnabled(grouped && canGroup);
@@ -434,7 +444,8 @@ void Window::refreshGameHint(){
         gameHint_->setText("This compiler does not recognize the selected game profile."); run_->setEnabled(false);
     }
     else {
-        gameHint_->setText(catalog_.error()+". Enter a legacy profile manually or choose another compiler."); run_->setEnabled(recoveryAllowed);
+        gameHint_->setText(catalog_.error()+". Enter a legacy profile manually or choose another compiler.");
+        run_->setEnabled(recoveryAllowed && !workflow_->currentData().toString().startsWith("geometry-"));
     }
 }
 void Window::applyTheme(){

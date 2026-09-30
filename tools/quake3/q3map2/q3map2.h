@@ -1549,6 +1549,7 @@ int                         MiniMapBSPMain( Args& args );
 int                         FixAAS( Args& args );
 int                         AnalyzeBSP( Args& args );
 int                         BSPEvidenceMain( Args& args );
+int                         GeometryOptimizeMain( Args& args );
 int                         BSPInfo( Args& args );
 int                         ScaleBSPMain( Args& args );
 int                         ShiftBSPMain( Args& args );

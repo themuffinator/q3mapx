@@ -53,6 +53,8 @@ int main(int argc, char** argv) {
     require(catalog.find("JKA-SP") && catalog.find("JKA-SP")->id == "ja", "Case-insensitive alias resolution failed");
     require(catalog.find("sof2") && catalog.find("prophecy"), "Catalog omitted previously hidden profiles");
     for (const auto& profile:catalog.profiles()) {
+        require(profile.workflows.contains("geometry-analyze")== (profile.id=="quake3")
+            && profile.workflows.contains("geometry-optimize")== (profile.id=="quake3"),"Geometry workflow advertised for an unsupported profile");
         require(profile.recoveryBrushOrders.contains("bsp"),"Current compiler omitted default recovery policy");
         require(profile.supportsRebuildOrder()==profile.nativeWrite,"Rebuild order capability does not match the current compiler");
         require(profile.recoveryDetailPolicies.contains("legacy") && profile.recoveryGroupPolicies.contains("none"),"Current catalog omitted baseline inference policies");

@@ -87,13 +87,20 @@ int main(int argc,char** argv){
         const auto oldArgs=buildPlan(legacy,"decompile",root).front().arguments;
         for(const auto* flag:{"-brush-order","-detail-policy","-detail-max-work","-group-policy","-group-max-work"})
             require(!oldArgs.contains(flag),"Default recovery command changed");
-        for(const auto& workflow:QStringList{"decompile","minimap","obj","ase"}) {
+        for(const auto& workflow:QStringList{"decompile","minimap","obj","ase","geometry-analyze","geometry-optimize"}) {
             const auto output=prepareRun(p,workflow); auto jobs=buildPlan(p,workflow,output);
             require(jobs.front().arguments.contains("-brush-order")== (workflow=="decompile"),"Recovery setting escaped its workflow");
             for(const auto* flag:{"-detail-policy","-detail-max-work","-group-policy","-group-max-work"})
                 require(jobs.front().arguments.contains(flag)==(workflow=="decompile"),"Inference setting escaped its workflow");
             queue.enqueue(jobs); finishQueue(queue); require(queue.jobs().back().state=="Succeeded","Recovery/minimap/mesh export failed");
             require(QFileInfo(jobs.back().outputPath).size()>0,"Missing workflow output");
+            if(workflow.startsWith("geometry-")) {
+                QFile report(output+"/geometry.json"); require(report.open(QIODevice::ReadOnly),"Missing geometry report");
+                const auto result=QJsonDocument::fromJson(report.readAll()).object();
+                require(result["contract"]=="quake3e_gl_opaque_horizontal_nomarks_nodlight_v1","Geometry contract missing");
+                require(result["mode"]==(workflow=="geometry-optimize"?"write":"analyze"),"Wrong geometry workflow mode");
+                require(jobs.back().outputPath!=p.source,"Geometry output aliases the source");
+            }
             if(workflow=="decompile") {
                 QFile report(jobs.back().outputPath+".recovery.json"); require(report.open(QIODevice::ReadOnly),"Missing recovery report");
                 const auto result=QJsonDocument::fromJson(report.readAll()).object();

@@ -401,6 +401,15 @@ Use the matching Linux build directory for Release or ASan/UBSan. Reports stay i
 `build/<preset>/tests/planar-reduction*`. These tests do not establish runtime
 shader eligibility or validate a BSP rewrite; see [the core guide](PLANAR-REDUCTION.md).
 
+`quake3_materials` and `geometry_optimize` add bounded shader parsing, native
+eligibility and index-only publication controls. The latter builds ambient and
+point-lit grids, checks complete native preservation, one/four-worker parity,
+shared-index allocation and transactional failures. `workbench`, `workbench_window`
+and `game_catalog` cover the native queue paths and advertised capabilities.
+The optional `tests/renderer/geometry_render.py` uses lawful external assets and
+Quake3e OpenGL with SDL offscreen, engine screenshots and disabled input devices.
+It is not part of ordinary CTest; see [reproduction and evidence](GEOMETRY-OPTIMIZATION.md).
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

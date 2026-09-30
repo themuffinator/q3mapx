@@ -1,0 +1,333 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-30T07:21:23.3648004Z",
+  "scope": "Bounded workbench hardware discovery, validated device table and cancellation",
+  "base_revision": "f5a9947e485445db4eba7717d2861e0912131e44",
+  "source_sha256": {
+    "apps/workbench/device_inventory.h": "eb44c7ad504700426592e252a41c86a1c7a25aa481575204f8e97bea89cb268c",
+    "apps/workbench/device_inventory.cpp": "250f53da1818509141d19f96c16edde70d18f5ffa8a7fe72f6253c1c4acf1fbb",
+    "apps/workbench/hardware_page.h": "49a36e47060a792e3b465392015f057b170b4fb3d70ae4c4327f4aef50dd0791",
+    "apps/workbench/hardware_page.cpp": "3dabd0cc8d3cc48723df0fc9eb0bbde3d04cfa0b0952696c4b7173590f706e20",
+    "apps/workbench/window.h": "67f595604edb31e094c1711bd782b90b0941c985987571d1e1e0f84003104b94",
+    "apps/workbench/window.cpp": "a097c36f9b71b33c089bf7efd63fef8437e43113dbd8c6e68cd0aa1218996e05",
+    "tests/device_inventory.cpp": "f1d0798f8615a24468e5af1edd0a18dfd383506cbe9bb5ee883cdb8f232c38be",
+    "tests/workbench_window.cpp": "ea02ee3d1a1b681dd81f741df1a670abd5d05c8b54cb06af7c9444b629e0ca8d",
+    "CMakeLists.txt": "9b23a74f38b5e46b7bff21afea323d48364d14d16f30506e2da3c7c674d32ba5"
+  },
+  "output_limit_combined_bytes": 1048576,
+  "retained_stderr_bytes": 8192,
+  "default_deadline_ms": 15000,
+  "schema_device_limit": 1024,
+  "platform_checks": [
+    {
+      "build": "release",
+      "binary_sha256": {
+        "q3mapx": "249788673a42d3878c985c6204d14c3a3d9dd6ae9b55f322afff8c90f619a8f6",
+        "q3mapx-workbench": "dd41572de65708ab5d10f8d555117f70a68c082b5f4f5cb86465d1aaaf67b1cd",
+        "device_inventory_test": "a53f8fd502d1870598739a7331204c8ac4fce58bb12e167b1d85e8d3642a2ccf",
+        "workbench_window_test": "4cefbeccb72264d32ffa1373588620b6a5031b66eabd2c42539b48aaea0a9d7c"
+      },
+      "relevant_regression_groups": [
+        "game_catalog",
+        "workbench_inspector",
+        "workbench_devices",
+        "workbench",
+        "workbench_window",
+        "workbench_preview"
+      ],
+      "regression_groups_passed": 6,
+      "regression_seconds": 5.44,
+      "final_ui_polish_recheck": {
+        "groups": [
+          "workbench",
+          "workbench_window"
+        ],
+        "passed": 2,
+        "seconds": 3.19
+      },
+      "device_checks": {
+        "abandoned_children_terminated": true,
+        "cancellation": true,
+        "crash": true,
+        "empty_compiler": true,
+        "failed_start": true,
+        "query_cases": [
+          {
+            "case": "valid",
+            "error": "",
+            "passed": true
+          },
+          {
+            "case": "empty",
+            "error": "",
+            "passed": true
+          },
+          {
+            "case": "boundary",
+            "error": "",
+            "passed": true
+          },
+          {
+            "case": "messages",
+            "error": "",
+            "passed": true
+          },
+          {
+            "case": "exact-messages",
+            "error": "",
+            "passed": true
+          },
+          {
+            "case": "invalid",
+            "error": "Compiler returned an invalid device inventory",
+            "passed": true
+          },
+          {
+            "case": "large",
+            "error": "Compiler device output exceeds 1 MiB (stdout and stderr combined)",
+            "passed": true
+          },
+          {
+            "case": "stderr",
+            "error": "Compiler device output exceeds 1 MiB (stdout and stderr combined)",
+            "passed": true
+          },
+          {
+            "case": "mixed",
+            "error": "Compiler device output exceeds 1 MiB (stdout and stderr combined)",
+            "passed": true
+          },
+          {
+            "case": "slow",
+            "error": "Compiler device query timed out",
+            "passed": true
+          },
+          {
+            "case": "wrong-exit",
+            "error": "Device query failed (exit 7)",
+            "passed": true
+          }
+        ],
+        "recovery_after_errors": true,
+        "schema_rejections": 27,
+        "schema_version": 1,
+        "stale_start_failure": true,
+        "supersession": true
+      },
+      "native_inventory": {
+        "devices": [
+          {
+            "compute_units": 24,
+            "index": 0,
+            "memory_bytes": 8585216000,
+            "name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+            "unified_memory": false,
+            "vendor": "NVIDIA Corporation",
+            "version": "OpenCL 3.0 CUDA"
+          },
+          {
+            "compute_units": 96,
+            "index": 1,
+            "memory_bytes": 19565862912,
+            "name": "Intel(R) Iris(R) Xe Graphics",
+            "unified_memory": true,
+            "vendor": "Intel(R) Corporation",
+            "version": "OpenCL 3.0 NEO "
+          },
+          {
+            "compute_units": 1,
+            "index": 2,
+            "memory_bytes": 25453584384,
+            "name": "Intel(R) Iris(R) Xe Graphics",
+            "unified_memory": true,
+            "vendor": "Microsoft",
+            "version": "OpenCL 3.0 D3D12 Implementation"
+          },
+          {
+            "compute_units": 1,
+            "index": 3,
+            "memory_bytes": 8342470656,
+            "name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+            "unified_memory": false,
+            "vendor": "Microsoft",
+            "version": "OpenCL 3.0 D3D12 Implementation"
+          }
+        ],
+        "reason": "",
+        "schema_version": 1
+      },
+      "window_checks": {
+        "cancellation": true,
+        "compact_columns_fit": true,
+        "compact_three_rows": true,
+        "compiler_change_cancels": true,
+        "inventory_json": true,
+        "light_theme": true,
+        "plain_text_names": true,
+        "real_inventory": true,
+        "selection_capabilities": true,
+        "stale_ui_results_cleared": true,
+        "synthetic_devices": 2
+      },
+      "previews": [
+        {
+          "path": "build/release/tests/workbench/window-state/hardware-native.png",
+          "sha256": "551fc6e713e6e9af96c68d4b1e1615a797a6ba3016ed7de78e10411d96eb9fb7"
+        },
+        {
+          "path": "build/release/tests/workbench/window-state/hardware-devices.png",
+          "sha256": "79d25b1b54574a257b31d3a36b6180ee95848754cb13633300b7a0b19018ed09"
+        },
+        {
+          "path": "build/release/tests/workbench/window-state/hardware-compact.png",
+          "sha256": "0a32d706f62e8af54eb0d0ab8a68e1ff25820f0ef4bdc060eaf0c0a272bb9f8d"
+        },
+        {
+          "path": "build/release/tests/workbench/window-state/hardware-light.png",
+          "sha256": "f93d7edaa3c936120e1512381564b883a6cf2ef345b3740ea6fa1cd12e6d8b04"
+        }
+      ]
+    },
+    {
+      "build": "linux-release",
+      "binary_sha256": {
+        "q3mapx": "7f74af71accfe0cbd46adca45a2445a572f04ac8b92ee5e64cec129410b1b740",
+        "q3mapx-workbench": "6375df52391c5b6719254a123029c6277900e597e34dafaf2dd26061a3d17f98",
+        "device_inventory_test": "eef27109492d18cb32c9c1370ed1ee7836e15d38a7b5a98a8584332c6ee1e82e",
+        "workbench_window_test": "4b5b6a5a6964fbda27fbc3da3eb1b50162d00a555592fed9f8a88c49e07af82d"
+      },
+      "relevant_regression_groups": [
+        "game_catalog",
+        "workbench_inspector",
+        "workbench_devices",
+        "workbench",
+        "workbench_window",
+        "workbench_preview"
+      ],
+      "regression_groups_passed": 6,
+      "regression_seconds": 13.08,
+      "final_ui_polish_recheck": {
+        "groups": [
+          "workbench",
+          "workbench_window"
+        ],
+        "passed": 2,
+        "seconds": 4.57
+      },
+      "device_checks": {
+        "abandoned_children_terminated": true,
+        "cancellation": true,
+        "crash": true,
+        "empty_compiler": true,
+        "failed_start": true,
+        "query_cases": [
+          {
+            "case": "valid",
+            "error": "",
+            "passed": true
+          },
+          {
+            "case": "empty",
+            "error": "",
+            "passed": true
+          },
+          {
+            "case": "boundary",
+            "error": "",
+            "passed": true
+          },
+          {
+            "case": "messages",
+            "error": "",
+            "passed": true
+          },
+          {
+            "case": "exact-messages",
+            "error": "",
+            "passed": true
+          },
+          {
+            "case": "invalid",
+            "error": "Compiler returned an invalid device inventory",
+            "passed": true
+          },
+          {
+            "case": "large",
+            "error": "Compiler device output exceeds 1 MiB (stdout and stderr combined)",
+            "passed": true
+          },
+          {
+            "case": "stderr",
+            "error": "Compiler device output exceeds 1 MiB (stdout and stderr combined)",
+            "passed": true
+          },
+          {
+            "case": "mixed",
+            "error": "Compiler device output exceeds 1 MiB (stdout and stderr combined)",
+            "passed": true
+          },
+          {
+            "case": "slow",
+            "error": "Compiler device query timed out",
+            "passed": true
+          },
+          {
+            "case": "wrong-exit",
+            "error": "Device query failed (exit 7)",
+            "passed": true
+          }
+        ],
+        "recovery_after_errors": true,
+        "schema_rejections": 27,
+        "schema_version": 1,
+        "stale_start_failure": true,
+        "supersession": true
+      },
+      "native_inventory": {
+        "devices": [],
+        "reason": "Finding OpenCL platforms (OpenCL -1001)",
+        "schema_version": 1
+      },
+      "window_checks": {
+        "cancellation": true,
+        "compact_columns_fit": true,
+        "compact_three_rows": true,
+        "compiler_change_cancels": true,
+        "inventory_json": true,
+        "light_theme": true,
+        "plain_text_names": true,
+        "real_inventory": true,
+        "selection_capabilities": true,
+        "stale_ui_results_cleared": true,
+        "synthetic_devices": 2
+      },
+      "previews": [
+        {
+          "path": "build/linux-release/tests/workbench/window-state/hardware-native.png",
+          "sha256": "349f53faba839ff395336a123bb228ed636e1e68edc975dc45180bcc56c410bd"
+        },
+        {
+          "path": "build/linux-release/tests/workbench/window-state/hardware-devices.png",
+          "sha256": "a1555d2a33694e32066830fcfecae5cdac1ebf46b59399d9230f9eb43a4e4506"
+        },
+        {
+          "path": "build/linux-release/tests/workbench/window-state/hardware-compact.png",
+          "sha256": "d46bdaaff7e21a08764a625f43e8ffcc7b4b95665ef0d5869973a1c7360ba64c"
+        },
+        {
+          "path": "build/linux-release/tests/workbench/window-state/hardware-light.png",
+          "sha256": "1fb98242efd4c2642e66ea46ba5328e935740c281ca531d22d7ff3e0ca21528b"
+        }
+      ]
+    }
+  ],
+  "preview_method": "Qt QWidget::render into QImage with -platform offscreen; no OS capture or mouse/keyboard injection",
+  "sanitizer_scope": "No new GUI sanitizer run; the existing sanitizer preset disables Qt. The separate CLI path-bound checks passed ASan/UBSan in cli-path-bounds.json.",
+  "logs": ".agents/tmp/continuation/hardware-*.log",
+  "packaged_release": {
+    "path": "build/package/q3mapx-0.3.0-windows-x64.zip",
+    "sha256": "b503bc43567bdea3c09432d7c1a460ddbf7f6018447db6cb4f0cc574447edaa5",
+    "unchanged": true
+  },
+  "unrelated_open_issue": "GameCatalog discards stderr without accounting for it against a combined stream budget; tracked in PLAN.md"
+}

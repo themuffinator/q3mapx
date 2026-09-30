@@ -47,7 +47,9 @@ with its discovery failure shown beside the selection.
 - Build queue: stage status, elapsed time, logs, diagnostics and generated reports.
 - History: the latest 100 completed runs, their output folders and reloadable
   project snapshots. The snapshot references the staged source copy.
-- Hardware: asynchronous JSON device inventory from the configured compiler.
+- Hardware: a GPU device table with vendor, memory and compute-unit counts;
+  selected-device details show the OpenCL version and whether memory is shared
+  with the host. The full validated inventory remains available in a JSON tab.
 - BSP inspection: choose any BSP, inspect its format and named file sections,
   compare ambiguous directory layouts, and save the full JSON report. The
   optional profile check uses the project's selected game. The inspection file
@@ -73,6 +75,23 @@ or enabled profile check clears the previous report. Saving uses atomic replacem
 and refuses to replace the inspected BSP. Directory checks do not validate geometry
 or establish game compatibility; see [inspection scope](BSP-INSPECTION.md).
 
+The updated hardware page is also available in development builds after 0.3.0.
+Use **Refresh device inventory** to query the selected compiler, including after
+replacing it at the same path. **Cancel query** stops discovery; changing the
+compiler clears its previous result and cancels an active query. Late replies
+cannot replace the current inventory. Queries have a fifteen-second deadline
+and a 1 MiB combined stdout/stderr limit. Validated inventories contain at most
+1,024 devices; malformed fields, duplicate indices, failed starts, nonzero exits
+and crashes produce a diagnostic instead of device rows. Compiler messages retain
+their first 8 KiB. No available OpenCL GPU is a valid result: CPU workflows remain
+available, with the compiler's reason shown in the details pane.
+
+Device indices match the compiler's `-devices` output and can be entered under
+**Project → Quality & compute** for minimaps. Memory is driver-reported global
+memory, which can include shared host memory. Compute-unit counts are not a
+performance ranking across vendors. Different OpenCL implementations may list
+the same physical GPU more than once; the page preserves these separate indices.
+
 ## Validation and limits
 
 Automated tests run the real compiler through the Qt queue, including complete
@@ -87,6 +106,12 @@ Inspector tests cover real native directory reports, malformed schemas, oversize
 output on either stream, timeouts, cancellation, failed starts and superseded
 queries. The window test switches ambiguous layouts, saves reports, checks source
 protection and paints both standard and compact inspection layouts.
+Device tests cover real and GPU-free replies, 27 malformed-schema cases, exact
+and excessive output bounds on both streams, diagnostics, timeouts, crashes,
+cancellation, failed starts and supersession. The window test checks device
+selection, compiler changes and cancellation, then paints standard and compact
+hardware layouts in both themes. [Recorded validation](validation/hardware-inventory.json)
+includes Windows and Linux results and the generated preview locations.
 The GUI can render its own widget tree directly to PNG:
 
 ```sh

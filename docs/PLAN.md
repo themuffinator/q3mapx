@@ -185,6 +185,11 @@ not a redefinition of the overall goal around the existing release:
 - [x] Bound repeated validation of overlapping surface-index ranges, retaining
   local vertex limits, ignored unused values and the original first-error order;
   measure adversarial costs and check native-map compatibility.
+- [x] Replace the raw workbench hardware query with a validated device table,
+  bounded combined output, deadlines, cancellation and stale-reply protection;
+  verify GPU-free replies and compiler changes on Windows and Linux.
+- [ ] Apply combined-output accounting to game-catalog discovery; it currently
+  limits retained stdout but discards stderr without counting its byte total.
 - [ ] Profile larger recovery workloads and address measured costs with geometry,
   UV/material and worker-count parity evidence before claiming speedups.
   Initial whole-command comparisons now cover a dense generated room and private

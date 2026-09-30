@@ -1124,3 +1124,45 @@ error; larger arguments fail at the global guard. All must exit normally with
 status 1 and without sanitizer failures. Evidence is recorded in
 [the path-bound verification](validation/cli-path-bounds.json). The confirmed
 hardware-query output/supersession task remains the next GUI change.
+
+## 2026-09-30 — Bounded hardware discovery and device details
+
+Replaced the workbench's unbounded, merged-channel hardware query with an
+asynchronous `DeviceInventory` client. It limits combined stdout/stderr to
+1 MiB, retains at most 8 KiB of compiler messages, validates schema and field
+types, requires a normal successful exit, and enforces a fifteen-second deadline.
+Cancellation closes output channels and terminates the child; generation checks
+prevent stale results and startup errors from replacing a newer query. Changing
+the compiler cancels discovery and clears its rows/report. Refreshing also works
+after a compiler is replaced at the same path.
+
+The hardware page now lists device indices, names, vendors, memory and compute
+units. Selecting a row shows OpenCL capabilities and shared/separate host memory;
+the original validated fields remain in a JSON tab. Errors and bounded driver
+messages appear in the details pane. Empty inventories explain the GPU's absence
+while keeping CPU workflows available. Driver strings are displayed as text;
+memory figures and compute-unit counts are not used to rank unlike devices.
+
+Windows and Linux release builds pass the six relevant workbench regression
+groups. The new client tests cover eleven query modes, 27 schema rejections,
+exact output/diagnostic boundaries, mixed-stream overflow, crashes, startup
+failure, cancellation, supersession, terminated abandoned children and recovery
+after errors. The real Windows driver reports four OpenCL entries (including
+translation-layer entries); Linux exercises the no-platform result. The window
+test also uses two synthetic devices for consistent selection and lifecycle
+coverage on either host. Direct Qt painting verifies standard/compact layouts,
+plain-text device names, all table columns and light/dark themes, without OS
+capture or input injection. The test fixture disables Windows CRT newline
+conversion so byte-boundary cases measure actual transport bytes.
+
+[Validation evidence](validation/hardware-inventory.json) records build/source
+identities, outcomes and preview hashes. Local logs remain in
+`.agents/tmp/continuation/hardware-*.log`; generated fixtures/previews stay in
+each build's designated test directories. No external code or dependency was
+introduced. The 0.3.0 packaged archive remains unchanged.
+
+Separate review confirmed that game-catalog discovery discards stderr without
+counting it against a combined output budget. Its retained stdout has a size
+guard and it has a deadline, but combined stream accounting remains a follow-up
+in the plan. Decompiler inference and intelligent VIS/geometry optimization also
+remain active roadmap work; this GUI task does not implement those algorithms.

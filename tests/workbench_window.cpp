@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "window.h"
 #include "inspection_page.h"
+#include "hardware_page.h"
 #include <QAction>
 #include <QApplication>
 #include <QComboBox>
@@ -13,6 +14,8 @@
 #include <QLineEdit>
 #include <QListWidget>
 #include <QTableWidget>
+#include <QHeaderView>
+#include <QScrollBar>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QtEndian>
@@ -25,7 +28,7 @@ static void require(bool condition, const char* message) {
 }
 int main(int argc, char** argv) {
     QApplication app(argc, argv);
-    require(argc == 3, "Expected project and isolated settings directory");
+    require(argc == 4, "Expected project, isolated settings directory and device-query fixture executable");
     require(QDir().mkpath(argv[2]),"Cannot create isolated window test output directory");
     const auto project = workbench::Project::load(argv[1]);
     QFile source(project.source); require(source.open(QIODevice::ReadOnly), "Cannot read fixture source");
@@ -41,6 +44,58 @@ int main(int argc, char** argv) {
     auto* inspectButton=window.findChild<QPushButton*>("inspectBsp");
     auto* lumpTable=window.findChild<QTableWidget*>("inspectionLumps");
     require(inspector && inspectionPage && inspectFile && inspectButton && lumpTable,"Inspector controls missing");
+    auto* inventory=window.findChild<workbench::DeviceInventory*>();
+    auto* devices=window.findChild<QTableWidget*>("computeDevices");
+    auto* refreshDevices=window.findChild<QPushButton*>("refreshDevices");
+    auto* cancelDevices=window.findChild<QPushButton*>("cancelDevices");
+    auto* deviceDetails=window.findChild<QPlainTextEdit*>("deviceDetails");
+    auto* deviceJson=window.findChild<QPlainTextEdit*>("deviceJson");
+    auto* compilerPath=window.findChild<QLineEdit*>("compilerPath");
+    require(inventory && devices && refreshDevices && cancelDevices && deviceDetails && deviceJson && compilerPath,"Device controls missing");
+    int devicePhase=0;
+    QObject::connect(inventory,&workbench::DeviceInventory::changed,&app,[&]{
+        if(inventory->loading() || inventory->report().isEmpty()) return;
+        require(inventory->error().isEmpty(),"Window device inventory failed");
+        require(devices->rowCount()==inventory->report()["devices"].toArray().size(),"Device table omitted inventory rows");
+        require(QJsonDocument::fromJson(deviceJson->toPlainText().toUtf8()).object()==inventory->report(),"Raw device report changed");
+        require(refreshDevices->isEnabled() && !cancelDevices->isEnabled(),"Finished query left incorrect controls");
+        if(devicePhase==1) {
+            require(window.renderPreview(QDir(argv[2]).filePath("hardware-native.png")),"Native hardware page did not render");
+            devicePhase=2;
+            compilerPath->setText(argv[3]);
+            require(inventory->report().isEmpty() && devices->rowCount()==0 && deviceJson->toPlainText().isEmpty(),"Changed compiler retained stale devices");
+            qputenv("Q3MAPX_TEST_DEVICES_MODE","valid"); refreshDevices->click();
+        } else if(devicePhase==2) {
+            require(devices->rowCount()==2 && devices->item(1,1)->text().contains("<b>plain text</b>"),"Device names were not preserved as text");
+            devices->selectRow(1);
+            require(deviceDetails->toPlainText().contains("OpenCL 1.2") && deviceDetails->toPlainText().contains("shared with the host"),"Device selection did not update capabilities");
+            require(window.renderPreview(QDir(argv[2]).filePath("hardware-devices.png")),"Hardware page did not render");
+            window.resize(1024,720);
+            require(window.renderPreview(QDir(argv[2]).filePath("hardware-compact.png")),"Compact hardware page did not render");
+            require(devices->viewport()->height()>=3*devices->verticalHeader()->defaultSectionSize(),"Compact hardware page cannot show three complete rows");
+            require(devices->horizontalScrollBar()->maximum()==0,"Compact hardware columns exceed the viewport");
+            for(auto* action:window.findChildren<QAction*>()) if(action->text().startsWith("Toggle &light")) action->trigger();
+            require(window.renderPreview(QDir(argv[2]).filePath("hardware-light.png")),"Light hardware page did not render");
+            devicePhase=3;
+            qputenv("Q3MAPX_TEST_DEVICES_MODE","slow"); refreshDevices->click();
+            require(inventory->loading() && !refreshDevices->isEnabled() && cancelDevices->isEnabled(),"Active query controls incorrect");
+            cancelDevices->click();
+            require(!inventory->loading() && inventory->error().contains("cancelled") && devices->rowCount()==0,"UI cancellation retained devices");
+            refreshDevices->click(); compilerPath->setText(QDir::toNativeSeparators(project.compiler));
+            require(!inventory->loading() && inventory->error().isEmpty() && inventory->report().isEmpty() && deviceJson->toPlainText().isEmpty(),"Compiler change did not cancel and clear an active query");
+            qunsetenv("Q3MAPX_TEST_DEVICES_MODE");
+            // Give killed children their finish events: they must not repopulate the UI.
+            QTimer::singleShot(100,&app,[&]{
+                require(devices->rowCount()==0 && inventory->report().isEmpty() && inventory->error().isEmpty(),"Late query updated changed compiler UI");
+                workbench::saveJson(QDir(argv[2]).filePath("hardware-checks.json"),{
+                    {"real_inventory",true},{"synthetic_devices",2},{"selection_capabilities",true},{"plain_text_names",true},
+                    {"inventory_json",true},{"compact_columns_fit",true},{"compact_three_rows",true},{"light_theme",true},
+                    {"cancellation",true},{"compiler_change_cancels",true},{"stale_ui_results_cleared",true}});
+                std::cout << "Actual window build, inspection, hardware devices, cancellation and compiler changes passed without input injection\n";
+                app.quit();
+            });
+        }
+    });
     int inspectionPhase=0;
     QString inspectedSource;
     QObject::connect(inspector,&workbench::BspInspector::changed,&app,[&]{
@@ -80,8 +135,8 @@ int main(int argc, char** argv) {
         } else if(inspectionPhase==3) {
             require(!inspector->report()["valid"].toBool() && !inspector->report()["errors"].toArray().isEmpty(),"Invalid directory diagnostics not shown");
             require(window.findChild<QPushButton*>("saveInspection")->isEnabled(),"Invalid report cannot be exported");
-            std::cout << "Actual window build, inspection, source protection, report export and invalid-input diagnostics passed without input injection\n";
-            app.quit();
+            window.findChild<QListWidget*>("navigation")->setCurrentRow(3);
+            devicePhase=1; refreshDevices->click();
         }
     });
     QTimer ready;

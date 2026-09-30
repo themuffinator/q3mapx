@@ -266,12 +266,14 @@ if(Q3MAPX_BUILD_GUI)
     find_package(Qt6 6.4 REQUIRED COMPONENTS Core Gui Widgets)
     add_library(q3mapx_workbench_core STATIC apps/workbench/project.cpp apps/workbench/job_queue.cpp apps/workbench/job_queue.h
         apps/workbench/game_catalog.cpp apps/workbench/game_catalog.h
-        apps/workbench/bsp_inspector.cpp apps/workbench/bsp_inspector.h)
+        apps/workbench/bsp_inspector.cpp apps/workbench/bsp_inspector.h
+        apps/workbench/device_inventory.cpp apps/workbench/device_inventory.h)
     set_target_properties(q3mapx_workbench_core PROPERTIES AUTOMOC ON)
     target_include_directories(q3mapx_workbench_core PUBLIC apps/workbench)
     target_link_libraries(q3mapx_workbench_core PUBLIC Qt6::Core)
     set(Q3MAPX_WORKBENCH_UI apps/workbench/window.cpp apps/workbench/window.h
-        apps/workbench/inspection_page.cpp apps/workbench/inspection_page.h)
+        apps/workbench/inspection_page.cpp apps/workbench/inspection_page.h
+        apps/workbench/hardware_page.cpp apps/workbench/hardware_page.h)
     qt_add_executable(q3mapx-workbench WIN32 apps/workbench/main.cpp ${Q3MAPX_WORKBENCH_UI})
     set_target_properties(q3mapx-workbench PROPERTIES AUTOMOC ON)
     target_link_libraries(q3mapx-workbench PRIVATE q3mapx_workbench_core Qt6::Widgets)
@@ -286,6 +288,10 @@ if(Q3MAPX_BUILD_GUI)
         target_link_libraries(bsp_inspector_test PRIVATE q3mapx_workbench_core)
         add_test(NAME workbench_inspector COMMAND bsp_inspector_test $<TARGET_FILE:q3mapx> ${CMAKE_BINARY_DIR}/tests/workbench-inspector)
         set_tests_properties(workbench_inspector PROPERTIES TIMEOUT 60)
+        add_executable(device_inventory_test tests/device_inventory.cpp)
+        target_link_libraries(device_inventory_test PRIVATE q3mapx_workbench_core)
+        add_test(NAME workbench_devices COMMAND device_inventory_test $<TARGET_FILE:q3mapx> ${CMAKE_BINARY_DIR}/tests/workbench-devices)
+        set_tests_properties(workbench_devices PROPERTIES TIMEOUT 60)
         add_executable(workbench_test tests/workbench.cpp)
         target_link_libraries(workbench_test PRIVATE q3mapx_workbench_core)
         add_test(NAME workbench COMMAND ${Python3_EXECUTABLE}
@@ -299,7 +305,7 @@ if(Q3MAPX_BUILD_GUI)
         target_link_libraries(workbench_window_test PRIVATE q3mapx_workbench_core Qt6::Widgets)
         add_test(NAME workbench_window COMMAND workbench_window_test -platform offscreen
             ${CMAKE_BINARY_DIR}/tests/workbench/project.q3mapx.json
-            ${CMAKE_BINARY_DIR}/tests/workbench/window-state)
+            ${CMAKE_BINARY_DIR}/tests/workbench/window-state $<TARGET_FILE:device_inventory_test>)
         set_tests_properties(workbench_window PROPERTIES TIMEOUT 45 FIXTURES_REQUIRED workbench_run)
         add_test(NAME workbench_preview COMMAND q3mapx-workbench -platform offscreen
             --project ${CMAKE_BINARY_DIR}/tests/workbench/project.q3mapx.json

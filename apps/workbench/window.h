@@ -9,7 +9,7 @@ class QCheckBox; class QComboBox; class QLabel; class QLineEdit; class QListWidg
 class QPushButton; class QProgressBar; class QSpinBox; class QStackedWidget; class QTableWidget; class QTreeWidget;
 
 namespace workbench {
-class InspectionPage;
+class InspectionPage; class HardwarePage;
 class Window : public QMainWindow {
     Q_OBJECT
 public:
@@ -31,7 +31,7 @@ private:
     QComboBox *game_, *quality_, *backend_, *format_, *workflow_, *reports_;
     QSpinBox *workers_, *gpu_, *size_, *samples_, *patchSteps_;
     QCheckBox* reproducibleVis_;
-    QPlainTextEdit *bspOptions_, *visOptions_, *lightOptions_, *preview_, *logView_, *reportView_, *hardware_;
+    QPlainTextEdit *bspOptions_, *visOptions_, *lightOptions_, *preview_, *logView_, *reportView_;
     QTableWidget *jobs_, *historyView_;
     QTreeWidget* diagnostics_;
     QLabel *title_, *status_, *gameHint_;
@@ -40,13 +40,13 @@ private:
     QListWidget* navigation_;
     QStackedWidget* pages_;
     InspectionPage* inspection_;
+    HardwarePage* hardware_;
     bool dirty_=false, populating_=false;
     Project project() const;
     void setProject(const Project& project);
     QWidget* configuration();
     QWidget* queuePage();
     QWidget* historyPage();
-    QWidget* hardwarePage();
     QWidget* pathField(QLineEdit*& edit,const QString& placeholder,int kind);
     void updatePreview();
     void saveProject(bool saveAs);
@@ -56,7 +56,6 @@ private:
     void appendOutput(int index,const QString& text);
     void recordHistory();
     void refreshHistory();
-    void discoverHardware();
     void refreshGames();
     void refreshGameHint();
     void applyTheme();

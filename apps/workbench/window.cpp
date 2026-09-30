@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "window.h"
 #include "inspection_page.h"
+#include "hardware_page.h"
 #include <QtWidgets>
 #include <QDesktopServices>
 #include <QJsonDocument>
@@ -36,7 +37,8 @@ Window::Window(const QString& stateDirectory):stateDirectory_(stateDirectory),qu
     navigation_=new QListWidget; navigation_->setObjectName("navigation"); navigation_->setFixedWidth(172);
     navigation_->addItems({"01   Project","02   Build queue","03   History","04   Hardware","05   BSP inspection"});
     navigation_->setSpacing(5); navigation_->setCurrentRow(0); navigation_->setAccessibleName("Workbench pages");
-    pages_=new QStackedWidget; pages_->addWidget(configuration()); pages_->addWidget(queuePage()); pages_->addWidget(historyPage()); pages_->addWidget(hardwarePage());
+    pages_=new QStackedWidget; pages_->addWidget(configuration()); pages_->addWidget(queuePage()); pages_->addWidget(historyPage());
+    hardware_=new HardwarePage; pages_->addWidget(hardware_);
     inspection_=new InspectionPage; pages_->addWidget(inspection_);
     body->addWidget(navigation_); body->addWidget(pages_,1); outer->addLayout(body,1);
     auto* footer=new QHBoxLayout; status_=new QLabel("Ready · configure a project to begin");
@@ -85,6 +87,7 @@ Window::Window(const QString& stateDirectory):stateDirectory_(stateDirectory),qu
         refreshGameHint();
     });
     connect(compiler_,&QLineEdit::textChanged,this,[this](const QString& path){
+        hardware_->setCompiler(path);
         refreshGameHint();
         QTimer::singleShot(250,this,[this,path]{
             if(compiler_->text()==path && catalogCompiler_!=path) refreshGames();
@@ -110,6 +113,7 @@ Window::Window(const QString& stateDirectory):stateDirectory_(stateDirectory),qu
 QWidget* Window::pathField(QLineEdit*& edit,const QString& placeholder,int kind){
     auto* widget=new QWidget; auto* row=new QHBoxLayout(widget); row->setContentsMargins(0,0,0,0);
     edit=new QLineEdit; edit->setPlaceholderText(placeholder); edit->setAccessibleName(placeholder); widget->setFocusProxy(edit); widget->setFocusPolicy(Qt::StrongFocus);
+    if(kind==2) edit->setObjectName("compilerPath");
     auto* browse=new QPushButton("Browse…"); row->addWidget(edit,1); row->addWidget(browse);
     connect(browse,&QPushButton::clicked,this,[this,edit,kind]{
         const QString path=kind==1 ? QFileDialog::getExistingDirectory(this,"Choose folder",edit->text())
@@ -210,13 +214,6 @@ QWidget* Window::historyPage(){
     historyView_->horizontalHeader()->setSectionResizeMode(3,QHeaderView::Stretch); historyView_->verticalHeader()->hide(); historyView_->setEditTriggers(QAbstractItemView::NoEditTriggers); historyView_->setSelectionBehavior(QAbstractItemView::SelectRows);
     connect(historyView_,&QTableWidget::cellDoubleClicked,this,[this](int row,int){ const auto path=historyView_->item(row,3)->text(); QDesktopServices::openUrl(QUrl::fromLocalFile(path)); }); layout->addWidget(historyView_,1);
     auto* reload=new QPushButton("Load selected run's project"); connect(reload,&QPushButton::clicked,this,[this]{ const int row=historyView_->currentRow(); if(row<0 || !confirmDiscard()) return; try { loadProject(QDir(historyView_->item(row,3)->text()).filePath("project.q3mapx.json")); navigation_->setCurrentRow(0); } catch(const std::exception& e){ showError(e.what()); } }); layout->addWidget(reload,0,Qt::AlignLeft); return page;
-}
-QWidget* Window::hardwarePage(){
-    auto* page=new QWidget; auto* layout=new QVBoxLayout(page); layout->setContentsMargins(0,0,0,0);
-    auto* title=new QLabel("Compute devices"); title->setObjectName("pageTitle"); layout->addWidget(title);
-    auto* note=new QLabel("Minimaps can use OpenCL GPUs. Automatic mode chooses CPU for small workloads and falls back if GPU compute is unavailable. Lighting defaults to the CPU job pool; experimental GPU area factors are available through advanced LIGHT arguments."); note->setWordWrap(true); note->setObjectName("notice"); layout->addWidget(note);
-    auto* discover=new QPushButton("Refresh device inventory"); connect(discover,&QPushButton::clicked,this,&Window::discoverHardware); layout->addWidget(discover,0,Qt::AlignLeft);
-    hardware_=codeView(); hardware_->setPlainText("Refresh to query the configured compiler.\n\nCPU workers: automatic detection, or 1–1024.\nGPU backend: OpenCL 1.2 or later.\nNo GPU SDK is required to run q3mapx."); layout->addWidget(hardware_,1); return page;
 }
 Project Window::project() const {
     Project p; p.name=name_->text(); p.source=QDir::fromNativeSeparators(source_->text()); p.gameRoot=QDir::fromNativeSeparators(gameRoot_->text());
@@ -350,15 +347,6 @@ void Window::refreshGameHint(){
         gameHint_->setText(catalog_.error()+". Enter a legacy profile manually or choose another compiler."); run_->setEnabled(true);
     }
 }
-void Window::discoverHardware(){
-    hardware_->setPlainText("Querying compiler…"); auto* process=new QProcess(this); process->setProcessChannelMode(QProcess::MergedChannels);
-    connect(process,&QProcess::finished,this,[this,process](int code,QProcess::ExitStatus status){
-        hardware_->setPlainText(QString::fromUtf8(process->readAll())+((code!=0 || status!=QProcess::NormalExit) ? "\nDevice query failed." : "")); process->deleteLater();
-    });
-    connect(process,&QProcess::errorOccurred,this,[this,process](QProcess::ProcessError error){ if(error==QProcess::FailedToStart) { hardware_->setPlainText(process->errorString()); process->deleteLater(); } });
-    QTimer::singleShot(15000,process,[process]{ if(process->state()!=QProcess::NotRunning) process->kill(); });
-    process->start(compiler_->text(),{"-devices"});
-}
 void Window::applyTheme(){
     const bool dark=theme_!="light";
     const QString bg=dark ? "#141a21" : "#f2f5f7", panel=dark ? "#1c2530" : "#ffffff", text=dark ? "#e3ebf2" : "#202e3c", muted=dark ? "#9aaec1" : "#506377", border=dark ? "#314151" : "#cad5df";
@@ -394,6 +382,7 @@ void Window::closeEvent(QCloseEvent* event){
     if(!confirmDiscard()) { event->ignore(); return; }
     queue_.cancel();
     inspection_->cancel();
+    hardware_->cancel();
     if(QDir().mkpath(stateDirectory_)) try {
         saveJson(QDir(stateDirectory_).filePath("ui.json"),{{"schema_version",1},{"theme",theme_},{"geometry",QString::fromLatin1(saveGeometry().toBase64())}});
         saveJson(QDir(stateDirectory_).filePath("last-queue.json"),queue_.report());

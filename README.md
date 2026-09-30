@@ -62,7 +62,8 @@ See [decompilation options and limits](docs/DECOMPILATION.md). The traditional
 - Decompilation with improved texture matching and UV reconstruction, preserved
   brush entities/origins/patches, Valve 220 output and a JSON recovery report.
 - [Multi-triangle UV fitting](docs/UV-RECOVERY.md) with seam/uncertainty diagnostics,
-  bounded work and an explicit compatibility policy for previous texture recovery.
+  precise full texture offsets and patch controls, bounded work and an explicit
+  compatibility policy for previous texture recovery.
 - Native Alice, F.A.K.K.2, Allied Assault and early Quake III recovery; terrain
   meshes, retained model placements and inference of missing early face materials.
 - OBJ/ASE exports with parallel curve tessellation, preserved entity placement

@@ -84,6 +84,13 @@ triangles and fits an improved mapping only when they agree. Conflicting charts
 retain a largest-triangle transform and are reported. Use `-uv-policy triangle`
 to retain the preceding recovery path; this option requires MAP export without
 `-fast`. The workbench's ordinary decompile jobs inherit the new default.
+Consensus serialization preserves whole recovered texture offsets and uses
+round-trip decimal precision for texture parameters and patch control data.
+Triangle compatibility keeps the preceding wrapping/rounding behavior. The
+optional `uv_output` report object identifies this policy and counts Valve
+parameters that require a fallback because pixel conversion exceeds MAP storage.
+Recompilation still depends on current material assets and texture-bias settings;
+see [absolute UV validation and limits](UV-RECOVERY.md#output-precision-and-texture-addressing).
 Development builds after 0.3.0 use the same detail-flag policy for fast and full
 recovery in all three MAP formats. Earlier fast recovery wrote zero detail flags,
 which could turn detail geometry into structural splitters when rebuilt.

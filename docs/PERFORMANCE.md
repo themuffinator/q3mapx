@@ -428,7 +428,8 @@ and compiler/input identities, remain in the [raw measurements](benchmarks/vis-c
 
 The default [multi-triangle recovery](UV-RECOVERY.md) adds evidence collection,
 affine checks/fitting and bounded per-face reporting. This is an accuracy feature
-with measured additional cost. Windows x64 measurements on an Intel Core
+with measured additional cost. The following `9bb349c` measurements precede the
+subsequent offset/precision serialization repair. Windows x64 runs on an Intel Core
 i7-13700H use one worker, Valve 220 output and five alternating observations per
 policy after one warmup. Runs were sequential after the build/test jobs finished.
 
@@ -451,3 +452,15 @@ All observations, compiler/input identities, decisions and limitations are in th
 [validation record](validation/uv-consensus.json). Private native inputs and assets
 are not distributed. Timing variation, especially on short commands, remains
 visible in the individual observations.
+
+With full texture offsets and precise serialization, a fresh generated-room run
+measures 0.1638 seconds for the current triangle compatibility path and 0.1953
+seconds for current consensus output (five alternating samples after warmup,
+one worker on the same machine). The complete-command difference is 31 ms or
+19.2%; it includes consensus analysis/reporting and is not an isolated measurement
+of decimal formatting cost. All observations and identities are retained in
+[output validation](validation/uv-output.json). MAP/report output remains
+repeatable, the compatibility MAP matches the pre-consensus reference, and
+non-UV structure agrees, with patch positions compared as parsed binary32 values.
+This does not claim a speedup, arbitrary-map fidelity, or newly measured private-map
+performance for the revised writer.

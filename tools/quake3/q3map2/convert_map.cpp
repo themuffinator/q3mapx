@@ -50,8 +50,16 @@ struct DecompileStats {
 	size_t fallbackFaces = 0, degenerateUVs = 0, degenerateTriangles = 0;
 	size_t patches = 0, approximateQuakeFaces = 0, inferredMaterials = 0;
 	size_t brushesWithDetailFlag = 0;
+	size_t unrepresentableUVOutputs = 0;
 };
 static DecompileStats recovery;
+static bool PreciseTextureOutput(){
+	return decompileOptions.uvPolicy == DecompileOptions::UVPolicy::Consensus;
+}
+
+static bool FloatTextureParameter( double value ){
+	return std::isfinite( value ) && std::abs( value ) <= std::numeric_limits<float>::max();
+}
 struct UVRecoveryRecord {
 	int brush, plane;
 	size_t triangles;
@@ -669,6 +677,7 @@ static void ConvertBrushFast( FILE *f, int bspBrushNum, const Vector3& origin, E
 }
 
 static void ConvertBrush( FILE *f, int bspBrushNum, const Vector3& origin, EBrushType brushType, const ModelTriangles& modelTriangles ){
+	const bool preciseUV = PreciseTextureOutput();
 
 	bspBrush_to_buildBrush( bspBrushes[bspBrushNum] );
 
@@ -785,8 +794,9 @@ static void ConvertBrush( FILE *f, int bspBrushNum, const Vector3& origin, EBrus
 					uv[i] = { sts[i][0], sts[i][1] };
 				}
 				q3mapx::Affine2 matrix;
-				if ( FitTextureUV( uvMatches, vert, origin, texX, texY, bspBrushNum, buildSide.planenum, matrix )
-				  || q3mapx::solveAffine( xy, uv, matrix ) ) {
+				const bool matchedUV = FitTextureUV( uvMatches, vert, origin, texX, texY, bspBrushNum, buildSide.planenum, matrix )
+				    || q3mapx::solveAffine( xy, uv, matrix );
+				if ( matchedUV ) {
 					for ( int i = 0; i < 2; ++i ) buildSide.texMat[i] = Vector3( matrix[i][0], matrix[i][1], matrix[i][2] );
 					++recovery.matchedFaces;
 				}
@@ -798,28 +808,50 @@ static void ConvertBrush( FILE *f, int bspBrushNum, const Vector3& origin, EBrus
 				/* print brush side */
 				if( brushType == EBrushType::Bp ){
 					/* ( 640 24 -224 ) ( 448 24 -224 ) ( 448 -232 -224 ) ( ( 0 0.03125 0 ) ( -0.03125 0 0.75 ) ) common/caulk 0 0 0 */
-					fprintf( f, "( ( %.8f %.8f %.8f ) ( %.8f %.8f %.8f ) ) %s %d 0 0\n",
-					         buildSide.texMat[0][0], buildSide.texMat[0][1], FRAC( buildSide.texMat[0][2] ),
-					         buildSide.texMat[1][0], buildSide.texMat[1][1], FRAC( buildSide.texMat[1][2] ),
+					fprintf( f, preciseUV ? "( ( %.9g %.9g %.9g ) ( %.9g %.9g %.9g ) ) %s %d 0 0\n"
+					                     : "( ( %.8f %.8f %.8f ) ( %.8f %.8f %.8f ) ) %s %d 0 0\n",
+					         buildSide.texMat[0][0], buildSide.texMat[0][1], preciseUV ? buildSide.texMat[0][2] : FRAC( buildSide.texMat[0][2] ),
+					         buildSide.texMat[1][0], buildSide.texMat[1][1], preciseUV ? buildSide.texMat[1][2] : FRAC( buildSide.texMat[1][2] ),
 					         texture,
 					         contentFlag
 					       );
 				}
 				else if( brushType == EBrushType::Valve220 ){
 					// brush_primit.cpp Valve220_from_BP()
-					const double scale[2]{ 1.0 / ( vector2_length( buildSide.texMat[0].vec2() ) * buildSide.shaderInfo->shaderWidth ),
-					                       1.0 / ( vector2_length( buildSide.texMat[1].vec2() ) * buildSide.shaderInfo->shaderHeight ) };
-					const double shift[2]{ FRAC( buildSide.texMat[0][2] ) * buildSide.shaderInfo->shaderWidth,
-					                       FRAC( buildSide.texMat[1][2] ) * buildSide.shaderInfo->shaderHeight };
-
-					const DoubleVector3 basis_s = vector3_normalised( texX * buildSide.texMat[0][0] + texY * buildSide.texMat[0][1] );
-					const DoubleVector3 basis_t = vector3_normalised( texX * buildSide.texMat[1][0] + texY * buildSide.texMat[1][1] );
+					double scale[2], shift[2];
+					DoubleVector3 basis[2];
+					const auto project = [&]{
+						bool representable = true;
+						for ( size_t axis = 0; axis < 2; ++axis ) {
+							const auto& row = buildSide.texMat[axis];
+							const int size = axis == 0 ? buildSide.shaderInfo->shaderWidth : buildSide.shaderInfo->shaderHeight;
+							scale[axis] = 1.0 / ( vector2_length( row.vec2() ) * size );
+							shift[axis] = ( preciseUV ? double( row[2] ) : FRAC( row[2] ) ) * size;
+							basis[axis] = vector3_normalised( texX * row[0] + texY * row[1] );
+							representable &= FloatTextureParameter( shift[axis] ) && FloatTextureParameter( scale[axis] )
+							    && float( scale[axis] ) != 0;
+							for ( size_t component = 0; component < 3; ++component )
+								representable &= FloatTextureParameter( basis[axis][component] );
+						}
+						return representable;
+					};
+					if ( !project() && preciseUV ) {
+						// A native repeat offset can fit binary32 while its pixel
+						// representation cannot. Do not publish an unreadable MAP.
+						++recovery.unrepresentableUVOutputs;
+						if ( matchedUV ) { --recovery.matchedFaces; ++recovery.fallbackFaces; }
+						Sys_FPrintf( SYS_WRN, "Brush %d plane %d: Valve texture parameters exceed MAP storage; using fallback\n", bspBrushNum, buildSide.planenum );
+						buildSide.texMat[0] = { 1 / 32.0, 0, 0 };
+						buildSide.texMat[1] = { 0, 1 / 32.0, 0 };
+						project();
+					}
 
 					/* ( 640 24 -224 ) ( 448 24 -224 ) ( 448 -232 -224 ) common/caulk [ 1 0 0 0 ] [ 0 -1 0 48 ] 90 0.5 0.5 0 0 0 */
-					fprintf( f, "%s [ %.8f %.8f %.8f %.8f ] [ %.8f %.8f %.8f %.8f ] 0 %.8f %.8f %d 0 0\n",
+					fprintf( f, preciseUV ? "%s [ %.17g %.17g %.17g %.17g ] [ %.17g %.17g %.17g %.17g ] 0 %.17g %.17g %d 0 0\n"
+					                     : "%s [ %.8f %.8f %.8f %.8f ] [ %.8f %.8f %.8f %.8f ] 0 %.8f %.8f %d 0 0\n",
 					         texture,
-					         basis_s.x(), basis_s.y(), basis_s.z(), shift[0],
-					         basis_t.x(), basis_t.y(), basis_t.z(), shift[1],
+					         basis[0].x(), basis[0].y(), basis[0].z(), shift[0],
+					         basis[1].x(), basis[1].y(), basis[1].z(), shift[1],
 					         scale[0], scale[1],
 					         contentFlag
 					       );
@@ -891,8 +923,8 @@ static void ConvertBrush( FILE *f, int bspBrushNum, const Vector3& origin, EBrus
 					rotate = 180.0f;
 				}
 
-				shift[0] = buildSide.shaderInfo->shaderWidth * FRAC( texMat[0][2] / buildSide.shaderInfo->shaderWidth );
-				shift[1] = buildSide.shaderInfo->shaderHeight * FRAC( texMat[1][2] / buildSide.shaderInfo->shaderHeight );
+				shift[0] = preciseUV ? texMat[0][2] : buildSide.shaderInfo->shaderWidth * FRAC( texMat[0][2] / buildSide.shaderInfo->shaderWidth );
+				shift[1] = preciseUV ? texMat[1][2] : buildSide.shaderInfo->shaderHeight * FRAC( texMat[1][2] / buildSide.shaderInfo->shaderHeight );
 
 				// If the 2d cross-product of the x and y axes is positive, one of the axes has a negative scale.
 				if ( vector2_cross( Vector2( texMat[0][0], texMat[0][1] ), Vector2( texMat[1][0], texMat[1][1] ) ) > 0 ) {
@@ -908,7 +940,8 @@ static void ConvertBrush( FILE *f, int bspBrushNum, const Vector3& origin, EBrus
 #endif
 				/* print brush side */
 				/* ( 640 24 -224 ) ( 448 24 -224 ) ( 448 -232 -224 ) common/caulk 0 48 0 0.500000 0.500000 0 0 0 */
-				fprintf( f, "%s %.8f %.8f %.8f %.8f %.8f %d 0 0\n",
+				fprintf( f, preciseUV ? "%s %.9g %.9g %.9g %.9g %.9g %d 0 0\n"
+				                     : "%s %.8f %.8f %.8f %.8f %.8f %d 0 0\n",
 				         texture,
 				         shift[0], shift[1], rotate, scale[0], scale[1],
 				         contentFlag
@@ -1082,7 +1115,8 @@ static void ConvertPatch( FILE *f, int num, const bspDrawSurface_t& ds, const Ve
 			const Vector3 xyz = dv.xyz + origin;
 
 			/* print vertex */
-			fprintf( f, " ( %f %f %f %f %f )", xyz[ 0 ], xyz[ 1 ], xyz[ 2 ], dv.st[ 0 ], dv.st[ 1 ] );
+			fprintf( f, PreciseTextureOutput() ? " ( %.9g %.9g %.9g %.9g %.9g )" : " ( %f %f %f %f %f )",
+			    xyz[ 0 ], xyz[ 1 ], xyz[ 2 ], dv.st[ 0 ], dv.st[ 1 ] );
 		}
 
 		/* end row */
@@ -1611,6 +1645,11 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		count( "normalized_unused_flare_fogs", bspNormalizedUnusedFlareFogs );
 		count( "normalized_unused_native_equations", bspNormalizedUnusedNativeEquations );
 		count( "inferred_material_faces", recovery.inferredMaterials );
+		writer.Key( "uv_output" ); writer.StartObject();
+		writer.Key( "policy" ); writer.String( PreciseTextureOutput() ? "preserve_offsets_and_precision" : "legacy_wrapped_decimal" );
+		writer.Key( "preserves_integer_offsets" ); writer.Bool( PreciseTextureOutput() && !fast );
+		count( "unrepresentable_valve_faces", recovery.unrepresentableUVOutputs );
+		writer.EndObject();
 		writer.Key( "uv_recovery" ); writer.StartObject();
 		writer.Key( "policy" ); writer.String( decompileOptions.uvPolicy == DecompileOptions::UVPolicy::Consensus ? "consensus" : "triangle" );
 		writer.Key( "enabled" ); writer.Bool( !fast && decompileOptions.uvPolicy == DecompileOptions::UVPolicy::Consensus );
@@ -1666,6 +1705,7 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		if(bspEarlyVersion==43 || bspEarlyVersion==44) writer.String("This format has no brush-side material names. Visible face names and UVs are inferred from rendered triangles; unmatched faces use common/caulk and fallback UVs. Raw brush contents and side flags remain in source order in this report.");
 		writer.String( "Triangle soup geometry is not exported separately; collision brushes may approximate it." );
 		writer.String( "Fallback texture axes are used on faces without a usable rendered triangle, including hidden faces." );
+		writer.String( "Consensus output preserves whole texture offsets and uses round-trip decimal precision for stored parameters. Native compiler texture biases and source reconstruction loss cannot be undone; rebuilding with different shader or compiler semantics can still change UVs. Triangle compatibility mode retains legacy offset wrapping and decimal rounding. Constant axes and unsupported output representations retain fallback mappings." );
 		writer.String( "UV consensus uses bounded overlap-weighted samples and a capped binary32 error allowance. Conflicting, ill-conditioned or limited evidence retains the largest-triangle mapping; charts are not averaged across a detected seam. Independent integer UV biases can also cause conflicts. Report errors describe fitting, not a guarantee of exact serialized/rebuilt UVs or original author intent." );
 		if ( detailEvidence ) writer.String( "Cell detail inference proposes opaque world brushes with witnessed open-cell interiors as detail under current material semantics. Protected materials and ambiguous/opaque interiors retain the baseline; original author flags and rebuilt VIS equivalence are unproven." );
 		if ( groupRecovery ) writer.String( "Shared render surfaces propose authoring assemblies independently of detail flags. Generated func_groups copy recovered worldspawn compile parameters and preserve compiled opacity order; original groups/names/parameters and rebuilt rendering equivalence are unproven. Protected, ambiguous and order-incompatible proposals remain flat. Patches and brush entities are not regrouped." );

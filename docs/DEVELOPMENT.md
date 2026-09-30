@@ -500,8 +500,9 @@ CTest. The native matrix can also compare the explicit compatibility policy
 against a preceding executable:
 
 ```sh
-ctest --test-dir build/release -R '^uv_(fit|fit_oracle|recovery)$' -V
+ctest --test-dir build/release -R '^uv_(fit|fit_oracle|recovery|output)$' -V
 python tests/uv_recovery.py --compiler build/release/bin/q3mapx --reference /path/to/preceding/q3mapx --work-dir build/release/tests/uv-recovery
+python tests/uv_output.py --compiler build/release/bin/q3mapx --reference /path/to/9bb349c/q3mapx --work-dir build/release/tests/uv-output
 python benchmarks/uv_recovery.py --compiler build/release/bin/q3mapx --reference /path/to/preceding/q3mapx --work-dir build/release/tests/uv-recovery-benchmark
 ```
 
@@ -513,6 +514,17 @@ legacy MAP compatibility and unchanged non-UV MAP content. It measures added
 recovery cost, not a speedup. Optional `--map`, `--game` and `--game-root` use an
 independent native BSP copy and read-only assets without redistributing either.
 See [the feature's scope and limits](UV-RECOVERY.md).
+
+`uv_output` has a 300-second timeout and verifies absolute UVs, native patch
+controls and output-representation fallbacks. Its optional reference must support
+the triangle policy (9bb349c or newer); it checks previous default losses and
+explicit compatibility separately. `uv_recovery` and its benchmark discover
+whether the reference supports that policy and select it when available.
+The seam/candidate-limit controls compare rebuilt texture fields, accounting for
+one uniform integer bias in the compatibility path, instead of requiring the
+two serializers to spell the same transform identically. Absolute-output tests
+allow no such bias. Benchmark patch positions are compared as parsed binary32
+values, while their UVs are treated as texture definitions.
 
 ## Task commits
 

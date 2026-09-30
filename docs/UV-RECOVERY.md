@@ -12,7 +12,8 @@ q3mapx -convert -format map_bp -uv-policy consensus -report recovery.json exampl
 ```
 
 `consensus` is the default. `triangle` retains the preceding largest-overlap
-triangle path for compatibility and comparison. An explicit policy requires MAP
+triangle path, integer-offset wrapping and decimal serialization for compatibility
+and comparison. An explicit policy requires MAP
 export without `-fast`; fast export continues using its existing fallback axes.
 The workbench inherits the default without a new required setting. Spatial UV
 overlays and per-face manual corrections remain planned.
@@ -55,6 +56,41 @@ the exported transform. Choosing one triangle does not reconstruct every chart
 on a face that contains multiple mappings. Compiler-generated integer UV biases
 can also produce conflicts; they are not silently unwrapped because texture
 addressing semantics may make an integer offset significant.
+
+## Output precision and texture addressing
+
+Consensus output keeps the recovered whole texture offsets. Reducing an offset
+modulo one texture repeat can change `clampmap` and other non-repeating material
+behavior; equality modulo a tile is not sufficient evidence of fidelity.
+Brush-primitive matrices and classic MAP parameters use nine significant decimal
+digits, enough to round-trip their stored binary32 values. Derived Valve 220
+bases, shifts and scales use 17 significant digits before the MAP reader's own
+binary32 conversion. Scientific notation retains small gradients/scales that
+fixed eight-decimal output could turn into zero. The affine fitting and existing
+classic-shear approximation policies remain unchanged.
+
+Patch control positions and UVs use nine significant digits as well, including
+fast export. This preserves the stored binary32 values after the existing origin
+addition; it does not recover precision already lost during compilation or that
+addition. The explicit triangle compatibility path retains the older six-decimal
+patch representation. Brush plane-point serialization is a separate mechanism
+and is not changed by texture precision.
+
+A Valve pixel shift may overflow MAP storage even though the native offset in
+texture repeats is finite. Consensus export validates its derived parameters,
+reports the affected brush/plane, and uses a finite fallback in that case. The
+optional schema-1 `uv_output` object names the serialization `policy`, whether
+full recovery `preserves_integer_offsets`, and the number of
+`unrepresentable_valve_faces`. These describe export policy and exceptions, not
+a universal round-trip or author-intent guarantee. UV fit decisions/residuals
+remain distinct from later output-representation failures.
+
+Absolute reconstruction still depends on compatible assets and compiler settings.
+The compiler normally biases rendered UVs by integer repeats unless the shader
+uses `q3map_globaltexture`. Decompilation cannot restore a bias that is absent from
+the BSP, and a later compile can apply new biases. The absolute-coordinate tests
+use a clamped shader with `q3map_globaltexture` so that this behavior cannot hide
+an export error. No shader semantics are silently changed by recovery.
 
 ## Bounds and reports
 
@@ -107,11 +143,20 @@ requires the explicit triangle policy's MAP bytes to match the preceding compile
 These fixtures do not establish recovery of arbitrary authored MAPs. Existing
 round-trip tests additionally cover oblique brushes, patches, grouping, lighting,
 native recovery-only formats and output failures. See [test instructions](DEVELOPMENT.md#multi-triangle-uv-recovery)
-and [recorded evidence](validation/uv-consensus.json).
+and [recorded fitting evidence](validation/uv-consensus.json).
 
-Current MAP writers still reduce integer texture shifts and use fixed decimal
-precision. Classic MAP syntax cannot express arbitrary shear, and constant UV
-axes still use the existing fallback. Non-repeating materials, extreme transforms,
-split-face reconstruction and broader renderer/authoring fidelity need separate
+`uv_output` separately checks absolute coordinates through 24 native rebuilds in
+IBSP/RBSP and all three MAP formats, with both world and translated brush geometry.
+Cases cover signed/multi-tile offsets, large offsets, small gradients and small
+scales. Patch control positions/UVs must match exactly; brush coordinates are
+checked with an explicit binary32 allowance without any integer-bias correction.
+Eight additional controls cover diagnosed Valve range fallbacks and patch
+precision during fast export. Optional preceding-binary comparisons reproduce
+the losses and require unchanged triangle-policy MAP bytes. See
+[output evidence](validation/uv-output.json).
+
+Classic MAP syntax cannot express arbitrary shear, and constant UV axes still
+use the existing fallback. Extreme transforms, serialized brush geometry,
+split-face reconstruction and broader renderer/editor round trips need separate
 qualification. This feature improves supported affine recovery and exposes
 conflicts; it does not complete all decompilation or light-inference work.

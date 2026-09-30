@@ -296,8 +296,10 @@ limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md
   exporter: preserve already-supported transforms, fit agreeing evidence, report
   conflicts/limits and retain a compatibility policy. Independent numeric oracles
   and native world/entity rebuilds cover the initial affine recovery contract.
-  Non-repeating texture offsets, constant axes, extreme export precision and
-  geometric/chart reconstruction remain open.
+  Consensus output now preserves recovered whole texture offsets and small
+  parameters, with precise patch control serialization and native absolute-UV
+  rebuild tests. Constant axes, extreme arithmetic, broader renderer/editor
+  qualification and geometric/chart reconstruction remain open.
   Fast nonaxial plane output now avoids float-basis/decimal truncation, with exact
   stored-plane rebuild controls across six dominant-axis/sign orientations.
 - [ ] Add CLI/workbench review, confidence/provenance overlays, manual corrections

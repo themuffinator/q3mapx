@@ -2333,3 +2333,67 @@ lookahead/quoted-line issues, compiler warnings, VIS discrepancies, raw-sidecar
 publication and intermittent Windows process delays remain outside this round.
 No new unrelated defect was reproduced. Light inference, intelligent VIS/geometry
 work and the planned Radiant patch painting/lightmap-density features remain open.
+
+## 2026-09-30 — Absolute texture offsets and MAP output precision
+
+Consensus recovery now retains whole texture offsets instead of reducing them
+modulo a repeat. This matters for clamped/non-repeating materials. Brush-primitive
+matrices and classic MAP parameters use nine significant digits; derived Valve
+axes/shifts/scales use 17. Small BP gradients and classic/Valve scales no longer
+become zero through fixed eight-decimal formatting. The explicit triangle policy
+retains the preceding selection, wrapping and serialization for compatibility.
+No compiler texture-bias or shader behavior was changed.
+
+Patch positions and UVs now retain their stored binary32 precision after the
+existing entity-origin addition, including during fast export. The former
+six-decimal text lost small control values. Source precision discarded before
+export cannot be recovered by printing more digits. Brush plane-point formatting
+is a separate issue and was not changed here.
+
+Valve parameter generation checks the MAP representation before publishing it.
+A finite native offset in texture repeats can overflow when converted into
+pixels; that case reports the brush/plane and emits the existing finite fallback.
+Matched/fallback counts remain consistent, and the optional schema-1 `uv_output`
+object records policy and range exceptions independently of affine-fit residuals.
+
+The new native matrix passes 24 absolute-coordinate rebuild cases and eight
+range/fast-export controls on Windows Release, Linux Release and Linux ASan/UBSan.
+It covers IBSP/RBSP, all three MAP writers, six axial face orientations, world and
+translated brush geometry, signed/large offsets, small gradients/scales and patch
+control data. A clamped shader with `q3map_globaltexture` prevents compiler tile
+biases from masking a loss. No modulo or uniform integer-bias correction is
+allowed in these comparisons. Solids/materials/contents remain exact, as do patch
+control positions/UVs; the small-gradient case isolates decimal loss by keeping
+both coordinates within (0, 1). Final absolute UV error is at most 5.33e-15 repeats
+on these controlled cases, with identical metrics across the three platforms.
+
+Comparisons with `9bb349c` reproduce discarded offsets, zeroed BP gradients,
+zeroed classic/Valve scales and rounded patch controls. All 24 triangle-policy
+MAPs match that reference exactly. The preceding 60-case consensus/seam/order
+matrix also passes on all three platforms, including 60 Windows compatibility
+comparisons. Seam/limit controls now compare rebuilt texture fields, allowing
+one uniform compatibility-path integer bias, so different numeric spelling does
+not weaken their check against averaging incompatible charts. The other 68
+Windows CTest groups pass; Linux passes 69 of 70 and skips unavailable GPU
+`area_factors`. All 15 selected sanitizer groups pass, with the final refined
+absolute-UV matrix rerun independently. Established lifetime-leak exclusions remain.
+
+See [the output contract](UV-RECOVERY.md#output-precision-and-texture-addressing),
+[test instructions](DEVELOPMENT.md#multi-triangle-uv-recovery) and
+[validation evidence](validation/uv-output.json). Logs, the preceding executable,
+the evidence generator and a generated dense benchmark remain in
+`.agents/tmp/continuation/uv-output/`; native reports/cases remain in each build's
+`tests/uv-output/` and `tests/uv-recovery/`. The benchmark also checks the reference
+policy-discovery path against a pre-consensus compiler. It compares current
+triangle/full recovery costs and makes no isolated serialization speedup claim.
+Its medians are 0.1638/0.1953 seconds on the generated 13,296-face room: 31 ms
+of added full-recovery work, with repeatable outputs and unchanged non-UV structure.
+No portable archive was refreshed, no engine/editor was launched, and earlier
+policy-blocked cleanup targets were not retried.
+
+Constant axes, extreme arithmetic, classic shear, serialized brush geometry,
+original compiler biases and broader editor/renderer qualification remain open.
+No new unrelated defect was reproduced. Previously documented parser-sign/include
+line issues, compiler warnings, VIS discrepancies, raw-sidecar publication and
+intermittent Windows process delays remain outside this round. The light-inference,
+intelligent compiler and Radiant authoring workstreams remain active.

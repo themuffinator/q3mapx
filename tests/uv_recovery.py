@@ -15,6 +15,15 @@ from integration import run
 from patch_input import payloads
 
 
+def reference_uv_policy(compiler, directory):
+    """References before consensus have no policy flag; newer ones require it."""
+    directory.mkdir(parents=True, exist_ok=True)
+    result = subprocess.run([str(compiler), '-help', '-convert'], cwd=directory, capture_output=True, timeout=20)
+    (directory/'reference-help.log').write_bytes(result.stdout+result.stderr)
+    assert result.returncode == 0
+    return ['-uv-policy','triangle'] if b'-uv-policy' in result.stdout else []
+
+
 def f32(value):
     return struct.unpack('<f', struct.pack('<f', value))[0]
 
@@ -135,18 +144,21 @@ def rebuilt_error(data, model):
     return max(errors)
 
 
-def target_face(text, height):
-    matches = []
-    for line in text.decode().splitlines():
-        if not line.lstrip().startswith('('): continue
-        points = re.findall(r'\(\s*([-+\d.eE]+)\s+([-+\d.eE]+)\s+([-+\d.eE]+)\s*\)',line)[:3]
-        if len(points) != 3: continue
-        p = [list(map(float, point)) for point in points]
-        if all(abs(point[2]-height)<.001 for point in p):
-            cross = (p[2][0]-p[0][0])*(p[1][1]-p[0][1])-(p[2][1]-p[0][1])*(p[1][0]-p[0][0])
-            if cross > 0: matches.append(line)
-    assert len(matches) == 1, (height,matches)
-    return matches[0]
+def target_mapping(data, model):
+    parts = payloads(data); stride, _, _ = sizes(data)
+    _, first, positions = top_surface(data, model)
+    return {point: struct.unpack_from('<2f', parts[10], (first+i)*stride+12) for i,point in enumerate(positions)}
+
+
+def same_fallback_mapping(a, b, model):
+    # The compatibility writer wraps integer shifts and uses fewer decimal
+    # digits. Compare the rebuilt selected field, not its textual spelling;
+    # one uniform bias is allowed, never independent per-vertex wrapping.
+    left, right = target_mapping(a,model), target_mapping(b,model)
+    assert left.keys() == right.keys()
+    first = next(iter(left))
+    bias = [round(left[first][axis]-right[first][axis]) for axis in range(2)]
+    assert max(abs(left[p][axis]-right[p][axis]-bias[axis]) for p in left for axis in range(2)) < 1e-5
 
 
 def main():
@@ -156,6 +168,7 @@ def main():
     p.add_argument('--work-dir', type=Path, required=True)
     a = p.parse_args(); compiler = a.compiler.resolve(); root = a.work_dir.resolve()
     reference = a.reference.resolve() if a.reference else None
+    reference_options = reference_uv_policy(reference, root) if reference else []
     results = []; ordered_maps = {}
     for game in ('quake3', 'ja'):
         directory = root/game
@@ -171,13 +184,12 @@ def main():
         geometry = solid_signature(original)
         for model in (0,1):
             if model: assert model_origin(payloads(original), model) == [112,0,64]
-            target_height = top_surface(original,model)[2][0][2]+model_origin(payloads(original),model)[2]
             for mode in ('quantized','reordered','seam','nearby','limit'):
                 native, target = render_islands(original, model, mode)
                 path = directory/f'{model}-{mode}.bsp'; path.write_bytes(native)
                 for fmt in ('map','map_bp','map_220'):
                     name = f'{model}-{mode}-{fmt}'
-                    outputs, errors, summaries = {}, {}, {}
+                    outputs, errors, summaries, rebuilt_outputs = {}, {}, {}, {}
                     for policy in ('triangle','consensus'):
                         output = directory/f'{name}-{policy}.map'
                         run(compiler,[*base,'-decompile','-format',fmt,'-uv-policy',policy,'-o',output,path],directory,name+'-'+policy)
@@ -187,11 +199,12 @@ def main():
                         assert report['uv_recovery']['policy'] == policy
                         run(compiler,[*base,'-meta',output],directory,name+'-'+policy+'-rebuild')
                         rebuilt = output.with_suffix('.bsp').read_bytes()
+                        rebuilt_outputs[policy] = rebuilt
                         assert solid_signature(rebuilt) == geometry, (name, 'brush geometry/material/contents changed')
                         if mode in ('quantized','reordered','nearby'): errors[policy] = rebuilt_error(rebuilt,model)
                     if reference:
                         old = directory/f'{name}-reference.map'
-                        run(reference,[*base,'-decompile','-format',fmt,'-o',old,path],directory,name+'-reference')
+                        run(reference,[*base,'-decompile','-format',fmt,*reference_options,'-o',old,path],directory,name+'-reference')
                         assert old.read_bytes() == outputs['triangle'], (name, 'triangle policy changed preceding MAP')
                     records = [record for record in summaries['consensus']['faces'] if target in record['surfaces']]
                     if mode == 'limit':
@@ -202,7 +215,7 @@ def main():
                         expected = ('conflicting_mappings',) if mode == 'seam' else ('consistent','triangle_consistent')
                         assert any(record['status'] in expected for record in records), (name, records)
                     if mode in ('seam','limit'):
-                        assert target_face(outputs['consensus'], target_height) == target_face(outputs['triangle'], target_height), name
+                        same_fallback_mapping(rebuilt_outputs['consensus'], rebuilt_outputs['triangle'], model)
                     if mode == 'quantized': ordered_maps[game,model,fmt] = outputs['consensus']
                     if mode == 'reordered': assert outputs['consensus'] == ordered_maps[game,model,fmt], (name,'triangle-order dependence')
                     if mode == 'quantized' and fmt == 'map_220':

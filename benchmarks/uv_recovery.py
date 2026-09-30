@@ -7,12 +7,15 @@ import hashlib
 import json
 from pathlib import Path
 import platform
+import re
 import statistics
+import struct
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'tests'))
 from fixtures import create_fixture
 from integration import run
+from uv_recovery import reference_uv_policy
 
 
 def digest(data):
@@ -26,6 +29,12 @@ def structure(data):
             fields = line.split()
             assert fields[0] == b'(' and fields[15] != b'[' and fields[16] == b'['
             result.append(b' '.join(fields[:16]+fields[-3:]))
+        elif line.lstrip().startswith(b'( ('):
+            # Patch rows: compare parsed binary32 positions, allowing the new
+            # decimal spelling and treating patch UVs as texture definitions.
+            points = re.findall(rb'\(\s*([^()]+)\)', line)
+            assert points and all(len(point.split()) == 5 for point in points)
+            result.append(b'patch-row '+b''.join(struct.pack('<3f',*map(float,point.split()[:3])) for point in points))
         else: result.append(line)
     return b'\n'.join(result)
 
@@ -59,7 +68,8 @@ def main():
                  '-decompile','-format','map_220','-o',output]
     old_map = None
     if a.reference:
-        run(a.reference.resolve(),[*arguments,path],root,'reference',timeout=300)
+        reference_options = reference_uv_policy(a.reference.resolve(),root)
+        run(a.reference.resolve(),[*arguments,*reference_options,path],root,'reference',timeout=300)
         old_map = output.read_bytes()
     expected, reports, measurements = {}, {}, []
     for iteration in range(a.repeat+1):

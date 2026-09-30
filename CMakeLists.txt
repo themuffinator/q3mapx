@@ -207,6 +207,10 @@ if(BUILD_TESTING)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/uv_recovery.py --compiler $<TARGET_FILE:q3mapx>
         --work-dir ${CMAKE_BINARY_DIR}/tests/uv-recovery)
     set_tests_properties(uv_recovery PROPERTIES TIMEOUT 600)
+    add_test(NAME uv_output COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/uv_output.py --compiler $<TARGET_FILE:q3mapx>
+        --work-dir ${CMAKE_BINARY_DIR}/tests/uv-output)
+    set_tests_properties(uv_output PROPERTIES TIMEOUT 300)
     add_executable(lighting_math_test tests/lighting_math.cpp tools/quake3/q3map2/lighting_math.cpp)
     target_include_directories(lighting_math_test PRIVATE libs tools/quake3/common tools/quake3/q3map2)
     add_test(NAME lighting_math COMMAND lighting_math_test)

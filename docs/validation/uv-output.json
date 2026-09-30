@@ -1,0 +1,1233 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-30T19:38:29.335054+00:00",
+  "base_revision": "9bb349cf7c6d94143985871d4ae1a9b39e78522a",
+  "scope": "Preserve absolute recovered brush UV offsets and parameter precision, patch controls and explicit Valve range fallbacks",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "32e30a076e04f8c0465bd603186d930c4d8d3e9ee1e21272762de0a947508df7",
+    "tools/quake3/q3map2/convert_map.cpp": "365cef08519b7963f5c62850780c0cb5fcfdbe8ea5702cc04d82328156f358ca",
+    "tools/quake3/q3map2/help.cpp": "a02b20fc3d6a2126d992a0484b6423e690a54d955b4bc4a52f6d26c7a88e37ec",
+    "libs/q3mapx/affine.h": "b74f6a2d7a19727d4b07ac219289ed59e0db32432c7e4274c6ddde2c5d78624b",
+    "libs/q3mapx/uv_fit.cpp": "2ca3ef892a841f215b03dc71391705e0ac5d470756168ad9bfe2b69cb9d15194",
+    "libs/q3mapx/uv_fit.h": "a1cac1072835c20ae274a759015dbe92320fee041e80a8f229c65832e002effa",
+    "tests/uv_output.py": "420ae1b04f9c5185a5a3fa5ede785df5e86360be4715c521856650991ab897db",
+    "tests/uv_recovery.py": "cf7c8ae04834c3646daf8ecac80cffefadbdcabfa7198d67c29a7d686720761e",
+    "tests/fixtures.py": "5cc300117041bc22a719451f9915bca17cc5af10094521408538b850284436c7",
+    "tests/integration.py": "3bb8e703e9e898a4c079f6a52321941aeb54876a7eac7804b8e1069c1541dfb3",
+    "tests/patch_input.py": "af6edf90302cea60ce16674c6758ef5d9683997777557749b22d225c52873e51",
+    "benchmarks/uv_recovery.py": "9c2baa3f9bbc0d35c829dd156c3ab1b19c1221636038e1959b8a73528f14e9ae"
+  },
+  "windows_reference": {
+    "path": ".agents/tmp/continuation/uv-output/q3mapx-before.exe",
+    "sha256": "9556fe84151cf584fdefe808db76c2b1eb96f53e875e2612bfd24951e9b671af"
+  },
+  "fixture_provenance": "First-party generated IBSP/RBSP geometry with controlled native binary32 affine fields and patch controls. Clamped/global-texture shader avoids compiler integer-bias equivalence masking export loss.",
+  "platforms": {
+    "windows": {
+      "compiler": {
+        "path": "build/release/bin/q3mapx.exe",
+        "sha256": "c376086355540ab9a1c5559395770a11c07f099666d4936831d9c2121e14326f"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/uv-output/build-win-final.log",
+        "sha256": "7a8329db64b12d467e088592e701c9b94efc726804f973a7dda8ab7b2c7184b2"
+      },
+      "ctest": {
+        "path": ".agents/tmp/continuation/uv-output/suite-win-final.log",
+        "sha256": "9a66e5745d8f7fabba69c108c045d368d8d3b099d59791279439f5a676209685",
+        "groups": 68,
+        "failures": 0,
+        "skipped": [],
+        "tests": [
+          "workbench",
+          "patch_input",
+          "vis_passage_clipping",
+          "brush_input",
+          "recovery_order",
+          "recovery_groups",
+          "vis_merge",
+          "brush_cells",
+          "script_input",
+          "vis_reproducible",
+          "lighting_gpu",
+          "recovery_classification",
+          "meta_order",
+          "cell_adjacency",
+          "bsp_inspect",
+          "portal_evidence",
+          "game_profiles",
+          "gpu_columns",
+          "planar_reduction_native",
+          "planar_reduction_oracle",
+          "vis_passage_storage",
+          "geometry_optimize",
+          "workbench_devices",
+          "index_validation_cli",
+          "workbench_window",
+          "bsp_evidence",
+          "binary_outputs",
+          "native_early",
+          "portal_validation",
+          "bsp_analyze",
+          "area_factors",
+          "native_fakk",
+          "raven_compat",
+          "mesh_export",
+          "lighting_materials",
+          "export_outputs",
+          "workbench_inspector",
+          "recovery_outputs",
+          "uv_fit_oracle",
+          "native_mohaa",
+          "bsp_validation",
+          "lightgrid_cli",
+          "vis_clip",
+          "lightgrid",
+          "minimap",
+          "cli_options",
+          "recovery_group_order",
+          "index_validation",
+          "uv_fit",
+          "vis_mask",
+          "portal_graph",
+          "quake3_materials",
+          "game_catalog",
+          "compiler_pipeline",
+          "columns",
+          "terrain",
+          "ftx",
+          "cell_graph",
+          "planar_reduction",
+          "workbench_preview",
+          "lighting_math",
+          "decompile_recovery",
+          "atomic_file",
+          "cli_help",
+          "job_pool",
+          "decompile_math",
+          "area_factors_disabled",
+          "cli_games"
+        ]
+      },
+      "absolute_uv_report": {
+        "path": "build/release/tests/uv-output/validation.json",
+        "sha256": "fc49f1f04e899ce98e104698eb9a36b187947e48a077806e86f391206cd054c0"
+      },
+      "final_native_log": {
+        "path": ".agents/tmp/continuation/uv-output/native-win-final.log",
+        "sha256": "6a629ded6d7cfa37094c5bf9525da507dd99d8bc0f331cc44af40a8d994af831"
+      },
+      "absolute_uv_cases": 24,
+      "additional_controls": [
+        {
+          "game": "quake3",
+          "case": "unrepresentable_valve_shift",
+          "fallback_faces": 17,
+          "brush_solids_preserved": true
+        },
+        {
+          "game": "quake3",
+          "case": "fast-patches-map",
+          "patch_control_positions_and_uvs_exact": true
+        },
+        {
+          "game": "quake3",
+          "case": "fast-patches-map_bp",
+          "patch_control_positions_and_uvs_exact": true
+        },
+        {
+          "game": "quake3",
+          "case": "fast-patches-map_220",
+          "patch_control_positions_and_uvs_exact": true
+        },
+        {
+          "game": "ja",
+          "case": "unrepresentable_valve_shift",
+          "fallback_faces": 17,
+          "brush_solids_preserved": true
+        },
+        {
+          "game": "ja",
+          "case": "fast-patches-map",
+          "patch_control_positions_and_uvs_exact": true
+        },
+        {
+          "game": "ja",
+          "case": "fast-patches-map_bp",
+          "patch_control_positions_and_uvs_exact": true
+        },
+        {
+          "game": "ja",
+          "case": "fast-patches-map_220",
+          "patch_control_positions_and_uvs_exact": true
+        }
+      ],
+      "maximum_absolute_error_repeats": 5.329070518200751e-15,
+      "maximum_tolerance_ratio": 0.053290705182007514,
+      "triangle_reference_map_comparisons": 24,
+      "consensus_report": {
+        "path": "build/release/tests/uv-recovery/validation.json",
+        "sha256": "1ae5d0d2e8bfaf94501611fb5024b89fe8de0cde7ed06d94eee1325452e00f08"
+      },
+      "consensus_cases": 60,
+      "consensus_triangle_reference_map_comparisons": 60
+    },
+    "linux": {
+      "compiler": {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "99e54d37faff1a86e789fba9408eb9c307ceaf20fe4bb2525d9b33ff7d112dc7"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/uv-output/build-linux-final.log",
+        "sha256": "7e55e3814066860421ef6d0275f3844f353d46669449dc2c3a6f99773bd3f40e"
+      },
+      "ctest": {
+        "path": ".agents/tmp/continuation/uv-output/suite-linux-final.log",
+        "sha256": "90c9a8f3ca9515020a0fa97d410ea08711e11cb9406f7ef9b6cb859ec4e6c277",
+        "groups": 70,
+        "failures": 0,
+        "skipped": [
+          "area_factors"
+        ],
+        "tests": [
+          "workbench",
+          "vis_passage_clipping",
+          "patch_input",
+          "script_input",
+          "meta_order",
+          "recovery_groups",
+          "brush_input",
+          "uv_recovery",
+          "game_profiles",
+          "recovery_order",
+          "brush_cells",
+          "cell_adjacency",
+          "vis_merge",
+          "recovery_classification",
+          "portal_evidence",
+          "lighting_materials",
+          "native_fakk",
+          "bsp_evidence",
+          "vis_reproducible",
+          "geometry_optimize",
+          "bsp_validation",
+          "bsp_inspect",
+          "binary_outputs",
+          "index_validation_cli",
+          "portal_validation",
+          "planar_reduction_native",
+          "mesh_export",
+          "gpu_columns",
+          "vis_passage_storage",
+          "native_early",
+          "bsp_analyze",
+          "raven_compat",
+          "recovery_outputs",
+          "cli_options",
+          "minimap",
+          "export_outputs",
+          "native_mohaa",
+          "planar_reduction_oracle",
+          "lighting_gpu",
+          "workbench_inspector",
+          "lightgrid_cli",
+          "workbench_window",
+          "workbench_devices",
+          "decompile_recovery",
+          "uv_fit_oracle",
+          "compiler_pipeline",
+          "atomic_file",
+          "lightgrid",
+          "recovery_group_order",
+          "game_catalog",
+          "index_validation",
+          "vis_clip",
+          "columns",
+          "planar_reduction",
+          "job_pool",
+          "cli_help",
+          "portal_graph",
+          "cli_games",
+          "vis_mask",
+          "ftx",
+          "workbench_preview",
+          "lighting_math",
+          "area_factors_disabled",
+          "quake3_materials",
+          "terrain",
+          "cell_graph",
+          "decompile_math",
+          "uv_fit",
+          "area_factors",
+          "uv_output"
+        ]
+      },
+      "absolute_uv_report": {
+        "path": "build/linux-release/tests/uv-output/validation.json",
+        "sha256": "90ecccb8cefc1928c8ca29bcffc045bbedd22304afda0501ba210982efe5257f"
+      },
+      "final_native_log": {
+        "path": ".agents/tmp/continuation/uv-output/native-linux-final.log",
+        "sha256": "a19a89eca41171d952926988b7ba36ed57084b2b882d0a0b1b160904762d7935"
+      },
+      "absolute_uv_cases": 24,
+      "additional_controls": [
+        {
+          "game": "quake3",
+          "case": "unrepresentable_valve_shift",
+          "fallback_faces": 17,
+          "brush_solids_preserved": true
+        },
+        {
+          "game": "quake3",
+          "case": "fast-patches-map",
+          "patch_control_positions_and_uvs_exact": true
+        },
+        {
+          "game": "quake3",
+          "case": "fast-patches-map_bp",
+          "patch_control_positions_and_uvs_exact": true
+        },
+        {
+          "game": "quake3",
+          "case": "fast-patches-map_220",
+          "patch_control_positions_and_uvs_exact": true
+        },
+        {
+          "game": "ja",
+          "case": "unrepresentable_valve_shift",
+          "fallback_faces": 17,
+          "brush_solids_preserved": true
+        },
+        {
+          "game": "ja",
+          "case": "fast-patches-map",
+          "patch_control_positions_and_uvs_exact": true
+        },
+        {
+          "game": "ja",
+          "case": "fast-patches-map_bp",
+          "patch_control_positions_and_uvs_exact": true
+        },
+        {
+          "game": "ja",
+          "case": "fast-patches-map_220",
+          "patch_control_positions_and_uvs_exact": true
+        }
+      ],
+      "maximum_absolute_error_repeats": 5.329070518200751e-15,
+      "maximum_tolerance_ratio": 0.053290705182007514,
+      "triangle_reference_map_comparisons": 0,
+      "consensus_report": {
+        "path": "build/linux-release/tests/uv-recovery/validation.json",
+        "sha256": "6463fbbfeebe270c3d3c88b99b936e1a5048283d4603335fe46b93360cc8b368"
+      },
+      "consensus_cases": 60,
+      "consensus_triangle_reference_map_comparisons": 0
+    },
+    "sanitized": {
+      "compiler": {
+        "path": "build/linux-sanitized/bin/q3mapx",
+        "sha256": "3390991538c2d09c650f18578b4724191d85694066f9f8e15249223ab03112ec"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/uv-output/build-sanitized-final.log",
+        "sha256": "e2d200f74e1ab12664c8410d417a8c1511a3df64d6da9104f7badac2ea6e563f"
+      },
+      "ctest": {
+        "path": ".agents/tmp/continuation/uv-output/suite-sanitized-final.log",
+        "sha256": "09fda70107893d28a88a0b3c80cc96b140935bf7097e89fa9f3e6b0f01b163d1",
+        "groups": 15,
+        "failures": 0,
+        "skipped": [],
+        "tests": [
+          "recovery_groups",
+          "recovery_order",
+          "brush_cells",
+          "binary_outputs",
+          "recovery_classification",
+          "native_fakk",
+          "native_mohaa",
+          "native_early",
+          "decompile_recovery",
+          "uv_fit_oracle",
+          "uv_fit",
+          "decompile_math",
+          "compiler_pipeline",
+          "uv_output",
+          "uv_recovery"
+        ]
+      },
+      "absolute_uv_report": {
+        "path": "build/linux-sanitized/tests/uv-output/validation.json",
+        "sha256": "b07484e7250fd30d5db26ff83a92d0bff797275f982cbcc681d6667faaa4bb5c"
+      },
+      "final_native_log": {
+        "path": ".agents/tmp/continuation/uv-output/native-sanitized-final.log",
+        "sha256": "a19a89eca41171d952926988b7ba36ed57084b2b882d0a0b1b160904762d7935"
+      },
+      "absolute_uv_cases": 24,
+      "additional_controls": [
+        {
+          "game": "quake3",
+          "case": "unrepresentable_valve_shift",
+          "fallback_faces": 17,
+          "brush_solids_preserved": true
+        },
+        {
+          "game": "quake3",
+          "case": "fast-patches-map",
+          "patch_control_positions_and_uvs_exact": true
+        },
+        {
+          "game": "quake3",
+          "case": "fast-patches-map_bp",
+          "patch_control_positions_and_uvs_exact": true
+        },
+        {
+          "game": "quake3",
+          "case": "fast-patches-map_220",
+          "patch_control_positions_and_uvs_exact": true
+        },
+        {
+          "game": "ja",
+          "case": "unrepresentable_valve_shift",
+          "fallback_faces": 17,
+          "brush_solids_preserved": true
+        },
+        {
+          "game": "ja",
+          "case": "fast-patches-map",
+          "patch_control_positions_and_uvs_exact": true
+        },
+        {
+          "game": "ja",
+          "case": "fast-patches-map_bp",
+          "patch_control_positions_and_uvs_exact": true
+        },
+        {
+          "game": "ja",
+          "case": "fast-patches-map_220",
+          "patch_control_positions_and_uvs_exact": true
+        }
+      ],
+      "maximum_absolute_error_repeats": 5.329070518200751e-15,
+      "maximum_tolerance_ratio": 0.053290705182007514,
+      "triangle_reference_map_comparisons": 0,
+      "consensus_report": {
+        "path": "build/linux-sanitized/tests/uv-recovery/validation.json",
+        "sha256": "33edc959da874c6562bbd4658c065b50ad58a53237df56c2f2ac461caa207ec0"
+      },
+      "consensus_cases": 60,
+      "consensus_triangle_reference_map_comparisons": 0
+    }
+  },
+  "windows_consensus_log": {
+    "path": ".agents/tmp/continuation/uv-output/consensus-win-final.log",
+    "sha256": "a050b282044746c2e63cd2bc079c946d51a717490536e9c98182708e76752ec1"
+  },
+  "validation_sequence": "Full/targeted suites passed, then uv_output was rerun on all three platforms after keeping both small-gradient UV axes positive to isolate decimal truncation from whole-offset wrapping. Production code was unchanged.",
+  "windows_case_comparisons": [
+    {
+      "game": "quake3",
+      "case": "offsets",
+      "format": "map",
+      "absolute_uv_error": {
+        "max_error_repeats": 0,
+        "max_tolerance_ratio": 0,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "48ce9f130f30fd75b0e3629bf8689b4160bd4a885e5456413f0336d1b7e229e0",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 7.0,
+        "max_tolerance_ratio": 4893354.666666667,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    },
+    {
+      "game": "quake3",
+      "case": "offsets",
+      "format": "map_bp",
+      "absolute_uv_error": {
+        "max_error_repeats": 0,
+        "max_tolerance_ratio": 0,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "48ce9f130f30fd75b0e3629bf8689b4160bd4a885e5456413f0336d1b7e229e0",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 7.0,
+        "max_tolerance_ratio": 4893354.666666667,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    },
+    {
+      "game": "quake3",
+      "case": "offsets",
+      "format": "map_220",
+      "absolute_uv_error": {
+        "max_error_repeats": 0,
+        "max_tolerance_ratio": 0,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "48ce9f130f30fd75b0e3629bf8689b4160bd4a885e5456413f0336d1b7e229e0",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 7.0,
+        "max_tolerance_ratio": 4893354.666666667,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    },
+    {
+      "game": "quake3",
+      "case": "fine-gradient",
+      "format": "map",
+      "absolute_uv_error": {
+        "max_error_repeats": 3.552713678800501e-15,
+        "max_tolerance_ratio": 0.03552713678800501,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "6e85797196bf345d3e1488654c432dc95e1abe049610b80b3e611a0755d3f4f5",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 3.552713678800501e-15,
+        "max_tolerance_ratio": 0.03552713678800501,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    },
+    {
+      "game": "quake3",
+      "case": "fine-gradient",
+      "format": "map_bp",
+      "absolute_uv_error": {
+        "max_error_repeats": 3.552713678800501e-15,
+        "max_tolerance_ratio": 0.03552713678800501,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "6e85797196bf345d3e1488654c432dc95e1abe049610b80b3e611a0755d3f4f5",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 5.1200004236306995e-08,
+        "max_tolerance_ratio": 511999.98907236475,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    },
+    {
+      "game": "quake3",
+      "case": "fine-gradient",
+      "format": "map_220",
+      "absolute_uv_error": {
+        "max_error_repeats": 5.329070518200751e-15,
+        "max_tolerance_ratio": 0.053290705182007514,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "6e85797196bf345d3e1488654c432dc95e1abe049610b80b3e611a0755d3f4f5",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 5.329070518200751e-15,
+        "max_tolerance_ratio": 0.053290705182007514,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    },
+    {
+      "game": "quake3",
+      "case": "fine-scale",
+      "format": "map",
+      "absolute_uv_error": {
+        "max_error_repeats": 0,
+        "max_tolerance_ratio": 0,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "3ce3b7c8a6393a8e3f524fa50cc90c2064fab0a24fb29882741629fd8ec255ae",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 8589934588.0,
+        "max_tolerance_ratio": 524287.9997558594,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    },
+    {
+      "game": "quake3",
+      "case": "fine-scale",
+      "format": "map_bp",
+      "absolute_uv_error": {
+        "max_error_repeats": 0,
+        "max_tolerance_ratio": 0,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "3ce3b7c8a6393a8e3f524fa50cc90c2064fab0a24fb29882741629fd8ec255ae",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 0,
+        "max_tolerance_ratio": 0,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    },
+    {
+      "game": "quake3",
+      "case": "fine-scale",
+      "format": "map_220",
+      "absolute_uv_error": {
+        "max_error_repeats": 0,
+        "max_tolerance_ratio": 0,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "3ce3b7c8a6393a8e3f524fa50cc90c2064fab0a24fb29882741629fd8ec255ae",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 8589934588.0,
+        "max_tolerance_ratio": 524287.9997558594,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    },
+    {
+      "game": "quake3",
+      "case": "large-offsets",
+      "format": "map",
+      "absolute_uv_error": {
+        "max_error_repeats": 0,
+        "max_tolerance_ratio": 0,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "660c38f9ab01ee97f259b49b1fcfa0d81c9ef300724cea084fae620420ef4943",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 1048576.0,
+        "max_tolerance_ratio": 524352.9454201657,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    },
+    {
+      "game": "quake3",
+      "case": "large-offsets",
+      "format": "map_bp",
+      "absolute_uv_error": {
+        "max_error_repeats": 0,
+        "max_tolerance_ratio": 0,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "660c38f9ab01ee97f259b49b1fcfa0d81c9ef300724cea084fae620420ef4943",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 1048576.0,
+        "max_tolerance_ratio": 524352.9454201657,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    },
+    {
+      "game": "quake3",
+      "case": "large-offsets",
+      "format": "map_220",
+      "absolute_uv_error": {
+        "max_error_repeats": 0,
+        "max_tolerance_ratio": 0,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "660c38f9ab01ee97f259b49b1fcfa0d81c9ef300724cea084fae620420ef4943",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 1048576.0,
+        "max_tolerance_ratio": 524352.9454201657,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    },
+    {
+      "game": "ja",
+      "case": "offsets",
+      "format": "map",
+      "absolute_uv_error": {
+        "max_error_repeats": 0,
+        "max_tolerance_ratio": 0,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "fff93b98500243580f75f436174f948c4c0e07b0db20fa39c1063ac7eee5ccc0",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 7.0,
+        "max_tolerance_ratio": 4893354.666666667,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    },
+    {
+      "game": "ja",
+      "case": "offsets",
+      "format": "map_bp",
+      "absolute_uv_error": {
+        "max_error_repeats": 0,
+        "max_tolerance_ratio": 0,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "fff93b98500243580f75f436174f948c4c0e07b0db20fa39c1063ac7eee5ccc0",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 7.0,
+        "max_tolerance_ratio": 4893354.666666667,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    },
+    {
+      "game": "ja",
+      "case": "offsets",
+      "format": "map_220",
+      "absolute_uv_error": {
+        "max_error_repeats": 0,
+        "max_tolerance_ratio": 0,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "fff93b98500243580f75f436174f948c4c0e07b0db20fa39c1063ac7eee5ccc0",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 7.0,
+        "max_tolerance_ratio": 4893354.666666667,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    },
+    {
+      "game": "ja",
+      "case": "fine-gradient",
+      "format": "map",
+      "absolute_uv_error": {
+        "max_error_repeats": 3.552713678800501e-15,
+        "max_tolerance_ratio": 0.03552713678800501,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "b8aba00b1b1df37d8a192a846d93096413c0a2f86fed4e5ae7984b31ca36fc54",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 3.552713678800501e-15,
+        "max_tolerance_ratio": 0.03552713678800501,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    },
+    {
+      "game": "ja",
+      "case": "fine-gradient",
+      "format": "map_bp",
+      "absolute_uv_error": {
+        "max_error_repeats": 3.552713678800501e-15,
+        "max_tolerance_ratio": 0.03552713678800501,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "b8aba00b1b1df37d8a192a846d93096413c0a2f86fed4e5ae7984b31ca36fc54",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 5.1200004236306995e-08,
+        "max_tolerance_ratio": 511999.98907236475,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    },
+    {
+      "game": "ja",
+      "case": "fine-gradient",
+      "format": "map_220",
+      "absolute_uv_error": {
+        "max_error_repeats": 5.329070518200751e-15,
+        "max_tolerance_ratio": 0.053290705182007514,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "b8aba00b1b1df37d8a192a846d93096413c0a2f86fed4e5ae7984b31ca36fc54",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 5.329070518200751e-15,
+        "max_tolerance_ratio": 0.053290705182007514,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    },
+    {
+      "game": "ja",
+      "case": "fine-scale",
+      "format": "map",
+      "absolute_uv_error": {
+        "max_error_repeats": 0,
+        "max_tolerance_ratio": 0,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "30628dc17602046567e3757e8b6c764a9dbaced346f37e5b3be4acd558334de4",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 8589934588.0,
+        "max_tolerance_ratio": 524287.9997558594,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    },
+    {
+      "game": "ja",
+      "case": "fine-scale",
+      "format": "map_bp",
+      "absolute_uv_error": {
+        "max_error_repeats": 0,
+        "max_tolerance_ratio": 0,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "30628dc17602046567e3757e8b6c764a9dbaced346f37e5b3be4acd558334de4",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 0,
+        "max_tolerance_ratio": 0,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    },
+    {
+      "game": "ja",
+      "case": "fine-scale",
+      "format": "map_220",
+      "absolute_uv_error": {
+        "max_error_repeats": 0,
+        "max_tolerance_ratio": 0,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "30628dc17602046567e3757e8b6c764a9dbaced346f37e5b3be4acd558334de4",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 8589934588.0,
+        "max_tolerance_ratio": 524287.9997558594,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    },
+    {
+      "game": "ja",
+      "case": "large-offsets",
+      "format": "map",
+      "absolute_uv_error": {
+        "max_error_repeats": 0,
+        "max_tolerance_ratio": 0,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "367a8fd1b534a241b7ac3117df4e69964eb639c08aa5a9c2103db8d984d24c39",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 1048576.0,
+        "max_tolerance_ratio": 524352.9454201657,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    },
+    {
+      "game": "ja",
+      "case": "large-offsets",
+      "format": "map_bp",
+      "absolute_uv_error": {
+        "max_error_repeats": 0,
+        "max_tolerance_ratio": 0,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "367a8fd1b534a241b7ac3117df4e69964eb639c08aa5a9c2103db8d984d24c39",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 1048576.0,
+        "max_tolerance_ratio": 524352.9454201657,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    },
+    {
+      "game": "ja",
+      "case": "large-offsets",
+      "format": "map_220",
+      "absolute_uv_error": {
+        "max_error_repeats": 0,
+        "max_tolerance_ratio": 0,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "native_sha256": "367a8fd1b534a241b7ac3117df4e69964eb639c08aa5a9c2103db8d984d24c39",
+      "brush_solids_preserved": true,
+      "patch_control_positions_and_uvs_exact": true,
+      "previous_absolute_uv_error": {
+        "max_error_repeats": 1048576.0,
+        "max_tolerance_ratio": 524352.9454201657,
+        "samples": 68,
+        "models": [
+          0,
+          1
+        ]
+      },
+      "previous_patch_controls_exact": false,
+      "triangle_reference_map_parity": true
+    }
+  ],
+  "platform_agreement": {
+    "absolute_uv_error_metrics_identical": true,
+    "case_counts": 24
+  },
+  "sanitizer_native_log_scan": {
+    "logs": 320,
+    "diagnostics": 0,
+    "log_set_sha256": "5e3f25bbf708abf7a7eeccee55dd54192d84b8ab3fb8ee7e255aab2a445dc518",
+    "asan_options": "detect_leaks=0:abort_on_error=1",
+    "ubsan_options": "print_stacktrace=1"
+  },
+  "benchmark": {
+    "schema_version": 1,
+    "recorded_utc": "2026-09-30T19:35:13.444970+00:00",
+    "kind": "generated_47x47_room",
+    "game": "quake3",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "compiler_sha256": "c376086355540ab9a1c5559395770a11c07f099666d4936831d9c2121e14326f",
+    "reference_sha256": "46b17bb571e353d0f40a1e5afe9ca741fb25d1b59d360e9942c795de13238df1",
+    "source_sha256": "f8fc6db035242b272163a08895820c3ca3a7b055a031c692f2eb549bb5f2d322",
+    "source_bytes": 4187452,
+    "sources_preserved": true,
+    "triangle_reference_map_parity": true,
+    "non_uv_map_content_identical": true,
+    "policy_repeatability": true,
+    "map_sha256": {
+      "triangle": "2f19d1ead1add47dee5210d2f5f38c31783d522a8a0df4db46ea9143a27953a7",
+      "consensus": "2732e49868ac268d87c4421fedab16a7899b210e17a8380061f0a3d7f6364f48"
+    },
+    "faces": 13296,
+    "uv_recovery_counts": {
+      "conflicting_mappings": 1105,
+      "consistent": 233,
+      "storage_precision": 4357,
+      "triangle_consistent": 5362
+    },
+    "omitted_face_records": 1057,
+    "median_seconds": {
+      "triangle": 0.16381950001232326,
+      "consensus": 0.19527950003976002
+    },
+    "consensus_over_triangle_ratio": 1.1920406302367557,
+    "limits": [
+      "Whole-command overhead measurement; not a speedup or parallel scaling claim.",
+      "Native author UVs are unavailable; unchanged non-UV text and fit residuals do not prove original-map fidelity."
+    ],
+    "raw_report": {
+      "path": ".agents/tmp/continuation/uv-output/benchmark-dense/benchmark.json",
+      "sha256": "99ec43a1ea28d47b1baf22894c3af90b2f1c9d6cbd519c0e2b7d1dd69b155c54"
+    },
+    "cpu": "13th Gen Intel Core i7-13700H; 14 cores, 20 logical processors",
+    "configuration": {
+      "workers": 1,
+      "format": "map_220",
+      "measured_runs_per_policy": 5,
+      "warmups_per_policy": 1
+    },
+    "observations": [
+      {
+        "policy": "triangle",
+        "warmup": true,
+        "seconds": 0.1620217000017874
+      },
+      {
+        "policy": "consensus",
+        "warmup": true,
+        "seconds": 0.21321900002658367
+      },
+      {
+        "policy": "consensus",
+        "warmup": false,
+        "seconds": 0.21198000002186745
+      },
+      {
+        "policy": "triangle",
+        "warmup": false,
+        "seconds": 0.16552909999154508
+      },
+      {
+        "policy": "triangle",
+        "warmup": false,
+        "seconds": 0.1605691000004299
+      },
+      {
+        "policy": "consensus",
+        "warmup": false,
+        "seconds": 0.1758655000012368
+      },
+      {
+        "policy": "consensus",
+        "warmup": false,
+        "seconds": 0.18141790002118796
+      },
+      {
+        "policy": "triangle",
+        "warmup": false,
+        "seconds": 0.16381950001232326
+      },
+      {
+        "policy": "triangle",
+        "warmup": false,
+        "seconds": 0.15430449997074902
+      },
+      {
+        "policy": "consensus",
+        "warmup": false,
+        "seconds": 0.20221029996173456
+      },
+      {
+        "policy": "consensus",
+        "warmup": false,
+        "seconds": 0.19527950003976002
+      },
+      {
+        "policy": "triangle",
+        "warmup": false,
+        "seconds": 0.1687524999724701
+      }
+    ]
+  },
+  "limits": [
+    "Native data/rebuild validation; no engine or editor was launched and no broad renderer/editor equivalence is claimed.",
+    "Nine significant digits round-trip stored binary32 parameters, not all preceding affine/origin arithmetic.",
+    "Unknown original compiler biases, constant-axis fallback, classic shear, full brush plane serialization and extreme arithmetic remain separate limitations.",
+    "Valve output range checks provide explicit fallbacks rather than exact recovery when pixel parameters cannot be stored.",
+    "Linux area_factors is skipped for an unavailable GPU; established ASan lifetime-leak exclusions remain.",
+    "Benchmark compares current full recovery against the current triangle path, not an isolated serialization speedup.",
+    "Known parser-sign/include-line issues, existing compiler warnings, raw-sidecar publication, VIS discrepancies and intermittent Windows process delays remain open."
+  ]
+}

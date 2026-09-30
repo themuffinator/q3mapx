@@ -284,6 +284,11 @@ limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md
   three lighting controls and 6,000 generated ordering layouts cover this policy.
   Repeated/disconnected assemblies, original parameter inference, alternatives,
   saved overrides, broader calibration and workbench review remain open.
+- [x] Extract bounded native IBSP/RBSP baked-lighting observations with per-style
+  internal atlas/vertex/control/grid provenance, geometric texel associations,
+  explicit ambiguity, deterministic jobs and output-preserving limits. See
+  [the extraction contract](LIGHTING-EVIDENCE.md). Colors remain encoded; patch
+  and constant-chart inversion, external/deluxe data and bake calibration remain.
 - [ ] Infer stripped entity lights from baked lightmaps, vertex/grid and available
   directional lighting. Explain sky/sun, surface emitters, ambient and indirect
   contributions before fitting residual point/spot lights; account for bake settings.

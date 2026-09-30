@@ -2397,3 +2397,66 @@ No new unrelated defect was reproduced. Previously documented parser-sign/includ
 line issues, compiler warnings, VIS discrepancies, raw-sidecar publication and
 intermittent Windows process delays remain outside this round. The light-inference,
 intelligent compiler and Radiant authoring workstreams remain active.
+
+## 2026-09-30 — Bounded baked-lighting evidence
+
+Added `-bsp-evidence -lighting` as the first implemented extraction stage for
+source-light recovery. Native IBSP/RBSP readers, including Qfusion's 512-pixel
+FBSP atlas layout, now report stored atlas, vertex/control and expanded lightgrid
+observations with styles and source associations. Other adapters explicitly
+report unsupported lighting extraction. The default evidence command is unchanged.
+
+Indexed surface UVs associate covered texel centers with geometric positions and
+interpolated normals. Shared triangle hits merge within a surface/slot; conflicting
+positions or normals become explicitly ambiguous with null mappings. Constant or
+ill-conditioned UVs, degenerate geometry, invalid pages and unsupported surface
+types have diagnostic statuses/counters. Patch controls remain controls; they are
+not sampled as a tessellated Bezier surface. Model-local coordinates remain local.
+
+Vertex RGBA and grid ambient/directed bytes retain their native styles. Grid
+positions are proposed only when conventional world bounds and stored/default
+pitch exactly match the expanded record count. Malformed pitch, unknown layout,
+zero records and source encoding remain explicit. No shader assets are loaded,
+and no gamma, sky/emitter, bounce, original light or target interpretation is
+invented from stored RGB. Point/spot fitting, calibration, deluxe/external data
+and patch/constant-chart inversion remain separate work.
+
+The persistent pool distributes surfaces among at most 32 active workers, with
+separate deterministic results and shared work/sample limits. Sampling stride,
+observation cap, source-record limits and the existing 64 MiB report ceiling
+bound processing and output. Budget or write failure preserves previous reports.
+The CLI also avoids copying its remaining argument vector simply to inspect the
+input filename, removing a GCC 13 bounds warning in that expression.
+
+The native matrix passes 99 observation reports and nine preserved-output failure
+cases on Windows Release, Linux Release and Linux ASan/UBSan. Independent rational
+coverage and analytic affine-position oracles cover rotation, reflection, shear,
+shared edges, 128/512 pages and Raven styles/grid indirection. Controlled ambiguity,
+zero normals, degenerate/constant charts, extreme UVs, ownership, unsupported
+readers, invalid pitch/counts, exact budget boundaries, non-finite input with and
+without `-force`, and actual report-ceiling failure are included. One/four-worker
+reports agree, and all 24 ordinary synthetic lighting objects are identical across
+platforms. Case/observation counts also match across the complete matrix.
+
+Five actual BSP/VIS/LIGHT bakes cover point, sun-only, emitter-only, mixed
+deluxe/bounce and Raven point lighting. Removing retained light entities leaves
+lighting observations unchanged. These cases validate extraction, not source-light
+localization or the originality of any proposed reconstruction.
+
+All 71 Windows CTest groups pass. Linux passes 70 of 71, with unavailable GPU
+`area_factors` skipped. All 11 selected ASan/UBSan groups pass, with the established
+lifetime-leak exclusion. After the final argument-copy removal and refined
+nondegenerate extreme-UV fixture, four focused groups pass on each final binary.
+The 123 retained sanitizer matrix logs contain no address/undefined-behavior
+diagnostics. No editor, renderer or input automation was used; no GPU performance
+claim or portable archive refresh is made.
+
+See [the feature contract](LIGHTING-EVIDENCE.md), [test instructions](DEVELOPMENT.md#baked-lighting-observations)
+and [validation evidence](validation/lighting-evidence.json). Build/suite logs and
+the evidence generator remain in `.agents/tmp/continuation/lighting-evidence/`;
+generated inputs/reports/logs remain under each build's `tests/lighting-evidence/`.
+Earlier policy-blocked cleanup targets were not retried. No new unrelated defect
+was reproduced. Existing parser-sign/include-line findings, compiler warnings,
+VIS discrepancies, raw-sidecar publication and intermittent Windows process delays
+remain open. The light fitter, intelligent compiler and M11 Radiant paint/density
+workstreams remain active.

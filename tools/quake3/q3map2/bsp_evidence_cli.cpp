@@ -2,6 +2,7 @@
 #include "q3map2.h"
 #include "arguments.h"
 #include "bsp_evidence.h"
+#include "bsp_lighting_evidence.h"
 #include "portal_evidence.h"
 #include "bsp_formats.h"
 #include "bspfile_abstract.h"
@@ -15,6 +16,7 @@
 #include <memory>
 #include <optional>
 #include <stdexcept>
+#include <string_view>
 
 namespace {
 constexpr uint64_t maxReportBytes = 64 * 1024 * 1024;
@@ -78,6 +80,113 @@ void flag(Writer& w, const char* key, int contents, const surfaceParm_t* parm) {
     w.Key(key);
     if (!parm || !parm->contentFlags) w.Null();
     else w.Bool((contents & parm->contentFlags) == parm->contentFlags);
+}
+
+template<typename Point> void point(Writer& w,const char* key,const Point& value) {
+    w.Key(key); w.StartArray(); for (int i=0;i<3;++i) w.Double(value[i]); w.EndArray();
+}
+void writeLighting(Writer& w,const q3mapx::LightingEvidence& data) {
+    w.Key("baked_lighting"); w.StartObject();
+    number(w,"schema_version",1); w.Key("status"); w.String(data.status);
+    w.Key("light_inference_performed"); w.Bool(false);
+    w.Key("encoding"); w.String("stored_bytes_unknown_bake_transfer_function");
+    w.Key("sampling"); w.StartObject();
+    number(w,"stride",data.options.stride); number(w,"max_observations",data.options.maxObservations);
+    number(w,"observations",data.observations); number(w,"max_surfaces",200'000);
+    number(w,"max_vertices",2'000'000); number(w,"max_grid_records",2'000'000); number(w,"max_active_workers",32);
+    w.Key("method"); w.String("atlas_xy_multiples_of_stride_and_surface_local_vertex_and_grid_record_multiples_of_stride");
+    w.EndObject();
+    w.Key("atlas"); w.StartObject(); w.Key("status"); w.String(data.atlasStatus);
+    number(w,"page_size",data.pageSize); number(w,"bytes",bspLightBytes.size());
+    number(w,"complete_pages",data.pages); number(w,"referenced_pages",data.referencedPages);
+    w.Key("page_interpretation"); w.String("surface_references_only_no_unreferenced_or_deluxe_page_guessing"); w.EndObject();
+    w.Key("surfaces"); w.StartArray();
+    for (size_t i=0;i<data.surfaces.size();++i) {
+        const auto& item=data.surfaces[i]; const auto& surface=bspDrawSurfaces[i];
+        w.StartObject(); number(w,"surface",i); number(w,"surface_type",surface.surfaceType);
+        w.Key("model"); if(item.model>=0) w.Int(item.model); else w.Null();
+        w.Key("model_ownership"); w.String(item.model==-2?"overlapping":item.model==-1?"unowned":"unique");
+        w.Key("coordinate_space"); w.String(item.model==0?"world":item.model>0?"model_local_untransformed":"stored_bsp_unknown_model");
+        number(w,"shader",surface.shaderNum);
+        w.Key("shader_name"); w.String(bspShaders[surface.shaderNum].shader);
+        number(w,"first_vertex",surface.firstVert); number(w,"vertices",surface.numVerts);
+        w.Key("lightmap_slots"); w.StartArray();
+        for (int slot=0;slot<MAX_LIGHTMAPS;++slot) {
+            const auto& info=item.slots[slot];
+            w.StartObject(); number(w,"slot",slot); number(w,"style",surface.lightmapStyles[slot]);
+            w.Key("page"); w.Int(surface.lightmapNum[slot]);
+            w.Key("status"); w.String(info.status);
+            number(w,"degenerate_or_ill_conditioned_uv_triangles",info.degenerateUVTriangles);
+            number(w,"degenerate_geometry_triangles",info.degenerateGeometryTriangles);
+            number(w,"candidate_texels",info.candidateTexels);
+            w.Key("observations"); w.StartArray();
+            for (const auto& sample:info.observations) {
+                w.StartObject(); values(w,"texel",std::array{sample.x,sample.y});
+                number(w,"first_triangle",sample.firstTriangle); number(w,"triangle_hits",sample.triangleHits);
+                w.Key("ambiguous_mapping"); w.Bool(sample.ambiguous); w.Key("triangle_boundary"); w.Bool(sample.boundary);
+                if (sample.ambiguous) { w.Key("position"); w.Null(); w.Key("normal"); w.Null(); }
+                else {
+                    point(w,"position",sample.position);
+                    if(sample.normal==std::array<double,3>{}) { w.Key("normal"); w.Null(); }
+                    else point(w,"normal",sample.normal);
+                }
+                const size_t offset=(size_t(surface.lightmapNum[slot])*data.pageSize*data.pageSize+size_t(sample.y)*data.pageSize+sample.x)*3;
+                const std::array<unsigned char,3> rgb{bspLightBytes[offset],bspLightBytes[offset+1],bspLightBytes[offset+2]};
+                values(w,"rgb",rgb);
+                w.Key("has_255_channel"); w.Bool(std::find(rgb.begin(),rgb.end(),255)!=rgb.end()); w.EndObject();
+            }
+            w.EndArray(); w.EndObject();
+        }
+        w.EndArray();
+        w.Key("vertex_role"); w.String(surface.surfaceType==MST_PATCH?"bezier_control":"stored_vertex");
+        w.Key("vertex_observations"); w.StartArray();
+        for (int v=0;v<surface.numVerts;v+=int(data.options.stride)) for (int slot=0;slot<MAX_LIGHTMAPS;++slot) {
+            if (surface.vertexStyles[slot]>=LS_UNUSED) continue;
+            const auto& vertex=bspDrawVerts[surface.firstVert+v];
+            w.StartObject(); number(w,"vertex",surface.firstVert+v); number(w,"slot",slot); number(w,"style",surface.vertexStyles[slot]);
+            point(w,"position",vertex.xyz); point(w,"stored_normal",vertex.normal);
+            const auto& color=vertex.color[slot]; values(w,"rgba",std::array{color[0],color[1],color[2],color[3]}); w.EndObject();
+        }
+        w.EndArray(); w.EndObject();
+    }
+    w.EndArray();
+    const auto& grid=data.grid;
+    w.Key("grid"); w.StartObject(); w.Key("status"); w.String(grid.status);
+    number(w,"normalized_records",bspGridPoints.size());
+    w.Key("pitch_source"); w.String(grid.storedPitch?"worldspawn_gridsize":"conventional_64_64_128");
+    if (grid.positionAvailable) {
+        point(w,"pitch",grid.pitch); point(w,"origin",grid.origin); values(w,"dimensions",grid.dimensions);
+    }
+    w.Key("observations"); w.StartArray();
+    // Unsupported adapters emit no samples, including normalized grid records.
+    if (std::string_view(data.status)=="observations_only") for (size_t i=0;i<bspGridPoints.size();i+=data.options.stride) {
+        const auto& record=bspGridPoints[i];
+        for (int slot=0;slot<MAX_LIGHTMAPS;++slot) if (record.styles[slot]<LS_UNUSED) {
+            w.StartObject(); number(w,"record",i); number(w,"slot",slot); number(w,"style",record.styles[slot]);
+            if (grid.positionAvailable) {
+                auto position=grid.origin; uint64_t remaining=i;
+                for (int a=0;a<3;++a) { position[a]+=double(remaining%grid.dimensions[a])*grid.pitch[a]; remaining/=grid.dimensions[a]; }
+                point(w,"conventional_position",position);
+            }
+            else { w.Key("conventional_position"); w.Null(); }
+            const auto& ambient=record.ambient[slot]; const auto& directed=record.directed[slot];
+            values(w,"ambient_rgb",std::array{ambient[0],ambient[1],ambient[2]});
+            values(w,"directed_rgb",std::array{directed[0],directed[1],directed[2]}); values(w,"latlong_bytes",record.latLong);
+            w.EndObject();
+        }
+    }
+    w.EndArray(); w.EndObject();
+    w.Key("limitations"); w.StartArray();
+    for (const char* note:{
+        "Only native IBSP/RBSP adapters are qualified. Styles 254/255 are unused; per-style observations remain separate. No shader assets or external lightmaps are loaded.",
+        "RGB is encoded stored data, not linear irradiance. Gamma, exposure, overbright, clamping, debug output and source contributions are unknown. A 255 channel is an endpoint observation, not proof of saturation.",
+        "Atlas positions are barycentric geometric texel centers, not recovered bake rays: padding, dilation, supersampling, nudges, bump normals and filtering cannot be undone here. Shared triangle hits are merged within one surface/slot; disagreeing positions or normals are null and ambiguous.",
+        "UV inversion rejects determinants <= 1e-12 times squared maximum edge component; barycentric boundary tolerance is 1e-9. Mapping agreement uses 1e-4 + 1e-9 times coordinate magnitude and 1e-5 per normal component. These are floating-point evidence tolerances, not exact topology proofs.",
+        "Constant or degenerate UV charts have no unique inverse and produce no atlas observations. Patch controls are exported as controls; Bezier lightmap inversion is pending. Vertex RGB/alpha can include author paint and material effects.",
+        "World-model samples are world coordinates. Other model samples remain untransformed; owner entities and runtime poses are not inferred. Coincident surfaces remain distinct observations.",
+        "Lightgrid positions use conventional world bounds and stored/default pitch only when their record counts match. Matching counts do not prove the original sampling layout. Zero records may be unpopulated or dark; compiler sample nudges are lost. Raven dictionary indices are already expanded by the native reader.",
+        "Only referenced atlas pages are read. External pages, deluxe direction pages, original lights, sky/sun, emitters, ambient and bounce are not identified or fitted. No inferred lights or targets are exported."}) w.String(note);
+    w.EndArray(); w.EndObject();
 }
 
 void writeCellAdjacency(Writer& w,const q3mapx::CellGraph& graph) {
@@ -221,7 +330,7 @@ void writeReport(FILE* output, const std::filesystem::path& source, const Identi
                  const q3mapx::BSPEvidence& evidence, unsigned regionDepth, uint64_t workLimit,
                  const q3mapx::PortalGraph* portals, const q3mapx::PortalEvidence* portalEvidence,
                  const std::filesystem::path& portalSource, const Identity& portalIdentity,
-                 const q3mapx::CellGraph* cellGraph) {
+                 const q3mapx::CellGraph* cellGraph, const q3mapx::LightingEvidence* lighting) {
     ReportStream stream(output); Writer w(stream);
     const auto path = source.generic_u8string();
     if (!g_utf8_validate(reinterpret_cast<const char*>(path.data()), path.size(), nullptr))
@@ -232,6 +341,7 @@ void writeReport(FILE* output, const std::filesystem::path& source, const Identi
     if(evidence.brushCellsRequested) scope+="_brush_interiors";
     if(portals) scope+="_portal_graph";
     if(cellGraph) scope+="_cell_adjacency";
+    if(lighting) scope+="_baked_lighting_observations";
     scope+="_and_stored_pvs";
     w.Key("scope"); w.String(scope.c_str());
     w.Key("source"); w.StartObject();
@@ -349,6 +459,7 @@ void writeReport(FILE* output, const std::filesystem::path& source, const Identi
     w.EndArray();
     if(portals) writePortals(w,*portals,*portalEvidence,portalSource,portalIdentity);
     if(cellGraph) writeCellAdjacency(w,*cellGraph);
+    if(lighting) writeLighting(w,*lighting);
     w.Key("limitations"); w.StartArray();
     if(cellGraph) {
         w.String("Cell adjacency reconstructs bounded geometric world-tree leaf paths. Repeated leaf references produce distinct cells; opaque/opaque interfaces are omitted. Original PRT hint/sky flags and compiler portal history are not recoverable from this geometry alone.");
@@ -385,13 +496,20 @@ int BSPEvidenceMain(Args& args) try {
     unsigned regionDepth=4; uint64_t workLimit=50'000'000;
     const bool brushCells=args.takeArg("-brush-cells");
     const bool cellAdjacency=args.takeArg("-cell-adjacency");
+    const bool lightingRequested=args.takeArg("-lighting");
+    q3mapx::LightingEvidenceOptions lightingOptions;
+    const bool lightingStride=args.takeArg("-lighting-stride");
+    if(lightingStride) lightingOptions.stride=ParseIntegerOption("-lighting-stride",args.takeNext(),1,1024);
+    const bool lightingLimit=args.takeArg("-lighting-max-samples");
+    if(lightingLimit) lightingOptions.maxObservations=ParseIntegerOption("-lighting-max-samples",args.takeNext(),1,200'000);
+    if((lightingStride || lightingLimit) && !lightingRequested) throw std::runtime_error("Lighting sampling options require -lighting");
     if(args.takeArg("-report")) report=args.takeNext();
     if(args.takeArg("-portals")) portalFile=args.takeNext();
     if(args.takeArg("-region-depth")) regionDepth=ParseIntegerOption("-region-depth",args.takeNext(),0,8);
     if(args.takeArg("-max-work")) workLimit=ParseIntegerOption("-max-work",args.takeNext(),1,100'000'000);
-    if(args.size()!=1 || args.getVector().front()[0]=='-')
-        throw std::runtime_error("Usage: q3mapx -game PROFILE -bsp-evidence [-brush-cells] [-cell-adjacency] [-portals matching.prt] [-report file.json] [-region-depth 0..8] [-max-work N] file.bsp");
-    const char* input=args.takeFront();
+    const char* input=args.size()==1?args.takeFront():nullptr;
+    if(!input || !*input || input[0]=='-')
+        throw std::runtime_error("Usage: q3mapx -game PROFILE -bsp-evidence [-brush-cells] [-cell-adjacency] [-lighting [-lighting-stride N] [-lighting-max-samples N]] [-portals matching.prt] [-report file.json] [-region-depth 0..8] [-max-work N] file.bsp");
     const auto source=std::filesystem::absolute(std::filesystem::path(reinterpret_cast<const char8_t*>(input))).lexically_normal();
     auto destination=source; destination.replace_extension(".evidence.json");
     if(report) destination=std::filesystem::absolute(std::filesystem::path(reinterpret_cast<const char8_t*>(report))).lexically_normal();
@@ -416,6 +534,7 @@ int BSPEvidenceMain(Args& args) try {
     LoadBSPFile(input); ParseEntities();
     auto evidence=q3mapx::analyzeBSPEvidence(regionDepth,workLimit);
     std::optional<q3mapx::CellGraph> cellGraph;
+    std::optional<q3mapx::LightingEvidence> lighting;
     if(brushCells) q3mapx::analyzeBSPBrushCells(evidence,workLimit);
     if(cellAdjacency) {
         cellGraph=q3mapx::analyzeBSPCellAdjacency(evidence,workLimit);
@@ -433,12 +552,13 @@ int BSPEvidenceMain(Args& args) try {
         if(portalIdentity.bytes!=after.bytes || portalIdentity.sha256!=after.sha256)
             throw std::runtime_error("PRT changed during evidence analysis; report not published");
     }
+    if(lightingRequested) lighting=q3mapx::analyzeBSPLighting(evidence,workLimit,lightingOptions);
     const auto after=identify(source);
     if(before.bytes!=after.bytes || before.sha256!=after.sha256) throw std::runtime_error("BSP changed during evidence analysis; report not published");
     q3mapx::OutputFiles outputs;
     writeReport(outputs.open(destination),source,before,evidence,regionDepth,workLimit,
         portals?&*portals:nullptr,portalEvidence?&*portalEvidence:nullptr,portalSource,portalIdentity,
-        cellGraph?&*cellGraph:nullptr);
+        cellGraph?&*cellGraph:nullptr,lighting?&*lighting:nullptr);
     outputs.commit();
     Sys_Printf("BSP evidence: %zu brushes, %llu world nodes, %zu regional summaries; PVS %s\n",
         evidence.brushes.size(),(unsigned long long)evidence.reachableNodes,evidence.regions.size(),evidence.visibility.present?"present":"absent");

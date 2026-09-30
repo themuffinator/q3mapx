@@ -1,4 +1,4 @@
-# BSP geometry and visibility evidence
+# BSP geometry, visibility and lighting evidence
 
 Development builds after 0.3.0 include a read-only analysis command:
 
@@ -8,6 +8,7 @@ q3mapx -game ja -bsp-evidence -report evidence.json -region-depth 3 example.bsp
 q3mapx -game quake3 -threads 4 -bsp-evidence -brush-cells example.bsp
 q3mapx -game quake3 -bsp-evidence -portals matching.prt example.bsp
 q3mapx -game quake3 -bsp-evidence -cell-adjacency example.bsp
+q3mapx -game quake3 -bsp-evidence -lighting -lighting-stride 4 example.bsp
 ```
 
 The default output is `example.evidence.json`. Select the appropriate game
@@ -28,6 +29,10 @@ protected flags, traversal-cost bounds and stored-PVS world triangle costs.
 These findings guide investigation; they do not establish safe edits. Workbench
 overlays and automatic compiler transformations remain planned.
 
+Optional `-lighting` adds [bounded baked-lighting observations](LIGHTING-EVIDENCE.md)
+from internal atlas, vertex/control and grid records. Encoded colors and styles
+remain separate from unknown bake settings and source-light interpretations.
+
 ## What the report contains
 
 JSON schema version 1 has `report_kind: "bsp_evidence"`. It is a separate report
@@ -45,6 +50,7 @@ from the directory inspector and MAP recovery reports; their schemas are unchang
 | `regions` | Node subtree summaries ranked by descending subdivision count, with depths, bounds, brush/surface references, indexed triangles and patch references |
 | `portal_analysis` | Optional explicit PRT source, regional graph/shape/protection diagnostics, structural brush samples and stored-PVS world geometry costs; see the [portal guide](PORTAL-ANALYSIS.md) |
 | `cell_adjacency` | Optional bounded world-path cells and coplanar interfaces, with enclosure, degeneracy and numerical diagnostics; see [cell reconstruction](CELL-ADJACENCY.md) |
+| `baked_lighting` | Optional native IBSP/RBSP atlas/vertex/control/grid observations, explicit sampling/layout/encoding limits; see [lighting evidence](LIGHTING-EVIDENCE.md) |
 | `limits` | Record, expanded-side, work and output ceilings, plus consumed work units |
 | `limitations`, `native_recovery_losses` | Evidence boundaries and unavailable format-specific content |
 

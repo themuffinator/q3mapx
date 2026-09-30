@@ -301,6 +301,9 @@ static void HelpEvidence()
 		{ "-portals <matching.prt>", "Include bounded PRT graph, regional traversal costs, winding/protection diagnostics and stored-PVS world triangle costs; no edits" },
 		{ "-brush-cells", "Clip bounded world-brush interiors through the BSP tree; report open/opaque witnesses and stored PVS relationships independently of leaf-brush references" },
 		{ "-cell-adjacency", "Reconstruct bounded world leaf-path cells and geometric interfaces; original PRT flags and author classifications remain unknown" },
+		{ "-lighting", "Export bounded native IBSP/RBSP atlas, vertex/control and grid observations with styles; encoded bytes and uncertain mappings remain explicit, no light inference" },
+		{ "-lighting-stride <1..1024>", "Sample atlas x/y, surface-local vertices and grid records at this interval (default 1); requires -lighting" },
+		{ "-lighting-max-samples <1..200000>", "Maximum combined lighting observations (default 50000); exhaustion preserves existing report" },
 		{ "-max-work <1..100000000>", "Bound expanded evidence work units (default 50000000); exhaustion fails without publishing a partial report" },
 	} );
 }

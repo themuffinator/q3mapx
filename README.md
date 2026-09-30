@@ -27,6 +27,9 @@ Supply a matching PRT with `-portals` for [regional portalling diagnostics](docs
 and stored-PVS world triangle costs.
 Use `-cell-adjacency` to [reconstruct bounded BSP leaf-path cells and interfaces](docs/CELL-ADJACENCY.md)
 without the original PRT, with explicit enclosure and numerical limits.
+Use `-lighting` for [bounded baked-lighting observations](docs/LIGHTING-EVIDENCE.md)
+with stored colors/styles and explicit mapping uncertainty; source-light fitting
+remains planned.
 Optional [detail and group inference](docs/DECOMPILATION.md#group-inference-policy)
 can now export cell-supported detail flags and surface-supported `func_group`
 assemblies, with bounded work, rebuild-order protection and explicit uncertainty.
@@ -99,6 +102,7 @@ native validation of 242 installed-map entries without distributing game assets.
 - [Game profiles, format coverage and native-map evidence](docs/GAME-COVERAGE.md)
 - [Asset-independent BSP inspection](docs/BSP-INSPECTION.md)
 - [BSP geometry, regional costs and visibility evidence](docs/BSP-EVIDENCE.md)
+- [Baked lighting observations and source-recovery limits](docs/LIGHTING-EVIDENCE.md)
 - [VIS modes, merge repairs and compact working data](docs/VIS.md)
 - [Measured performance and backend options](docs/PERFORMANCE.md)
 - [Installation, packaging and known limits](docs/RELEASE.md)

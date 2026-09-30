@@ -526,6 +526,35 @@ two serializers to spell the same transform identically. Absolute-output tests
 allow no such bias. Benchmark patch positions are compared as parsed binary32
 values, while their UVs are treated as texture definitions.
 
+## Baked lighting observations
+
+`lighting_evidence` exercises the optional `-bsp-evidence -lighting` report.
+Exact-rational half-plane oracles check rotated, mirrored and sheared atlas
+coverage/edge multiplicity independently of the C++ barycentric implementation.
+Analytic affine fields check geometric positions. Fixtures retain exact encoded
+RGB/RGBA/styles, 128/512 page dimensions, separate surface/model associations and
+Raven lightgrid dictionary expansion. One/four-worker reports must match exactly.
+
+```sh
+ctest --test-dir build/release -R '^lighting_evidence$' -V
+python tests/lighting_evidence.py --compiler build/release/bin/q3mapx --work-dir build/release/tests/lighting-evidence
+```
+
+Use `.exe` on Windows and the corresponding build directories on Linux and
+ASan/UBSan. The matrix includes constant/degenerate UVs, invalid page references
+and lump sizes, patch controls, ambiguous geometry/normals, extreme UVs, zero
+normals, ownership overlaps, invalid grid pitch/counts and unsupported readers.
+Budget boundaries, invalid options, non-finite active UVs with/without `-force`
+and a 64 MiB serialization failure must retain source and previous output.
+
+Five generated native BSP/VIS/LIGHT bakes cover a point light, sun-only,
+emitter-only, mixed deluxe/bounce and Raven point lighting. Removing retained
+light entities must not change lighting observations. They validate evidence
+extraction, not inverse-light localization. Fixtures/logs and `results.json`
+remain beneath the selected build's `tests/lighting-evidence/`. No installed
+assets, editor, engine or input control is needed. See
+[the supported interpretation and limits](LIGHTING-EVIDENCE.md).
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

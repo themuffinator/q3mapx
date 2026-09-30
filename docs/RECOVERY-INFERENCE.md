@@ -13,8 +13,11 @@ in projects/run snapshots and checked against compiler/profile capabilities.
 Optional [BSP cell adjacency](CELL-ADJACENCY.md) now provides bounded geometric
 interfaces without the original PRT. It is an additional diagnostic prerequisite;
 using its coverage and uncertainty to refine exported classifications remains open.
-Broader grouping, light and review tools below remain planned. Recover the closest supported
-recreation of the author's MAP: editable geometry, organization, materials,
+Optional [baked-lighting observations](LIGHTING-EVIDENCE.md) now extract bounded
+IBSP/RBSP atlas, vertex/control and grid evidence with styles and uncertainty.
+Source-light fitting and broader grouping/review tools below remain planned.
+Recover the closest supported recreation of the author's MAP: editable geometry,
+organization, materials,
 visibility behavior and source lighting. Keep exact extraction available alongside
 optional inference, and preserve the input BSP and existing recovered output.
 
@@ -145,6 +148,12 @@ groupings; report grouping similarity separately from rendering/compile parity.
 Target BSPs whose static light entities were stripped, while retaining and locking
 lights or target links that survive. Fit a plausible source-light arrangement to
 baked observations using the selected game's lighting semantics.
+
+The first extraction slice is implemented as `-bsp-evidence -lighting`, with
+bounded jobs, native style/color provenance, conservative geometry associations
+and grid-layout checks. It deliberately retains stored encoded bytes. Patch and
+constant-chart inversion, transfer-function calibration, deluxe/external channels
+and source explanations remain open before inverse fitting can be qualified.
 
 1. Extract world-space lighting samples from lightmaps, vertex lighting and the
    lightgrid; use directional/deluxe channels and separate styles when available.

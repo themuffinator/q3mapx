@@ -1,0 +1,816 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-30T20:10:05.687562+00:00",
+  "base_revision": "c9a6523149ee721409c51567187ee87798d4dc80",
+  "scope": "Bounded native stored lighting observations for subsequent recovery; no source-light fitting",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "d742373e5bcdedb79b1d06e2609a9b9a6f08d98f9db7195b1ec5b5d11efacf03",
+    "tools/quake3/q3map2/bsp_lighting_evidence.cpp": "37e70b0af323352c9e0a7a0f2777d7d21c2af236b045fc3dcda7ec2dc5cdfb08",
+    "tools/quake3/q3map2/bsp_lighting_evidence.h": "37ea4882a011756047eb1044799522733763759adc567ca4d5c777fe29d4c710",
+    "tools/quake3/q3map2/bsp_evidence_cli.cpp": "3cdf1979bb7621a95848039da575a630d45d7ba1532d69018c1bed89e3794789",
+    "tools/quake3/q3map2/help.cpp": "f5cd63ffb38d1818356f13918c9846cd76c313215580aa785db1eef1d48c5d97",
+    "tests/lighting_evidence.py": "ab6ef6a610bd67ff53d0083d7fde7fe09363a08d5c67c7587bba37ad031e9150",
+    "tests/fixtures.py": "5cc300117041bc22a719451f9915bca17cc5af10094521408538b850284436c7",
+    "tests/integration.py": "3bb8e703e9e898a4c079f6a52321941aeb54876a7eac7804b8e1069c1541dfb3",
+    "tests/native_fakk.py": "89f61ab985a71cd231823a5b7fb346f39708e3f35c1c8344887e1d8a6596ca8b"
+  },
+  "fixture_provenance": "First-party synthetic IBSP/RBSP/FBSP with analytic affine positions and exact-rational half-plane coverage oracle, plus generated point, sun-only, emitter-only, mixed deluxe/bounce and Raven point bakes.",
+  "platforms": {
+    "windows": {
+      "compiler": {
+        "path": "build/release/bin/q3mapx.exe",
+        "sha256": "3a56c80ad9e0a70a226d971b6d2e632b511248744481bd0f62714339e9aa9bfa"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/lighting-evidence/build-windows-final.log",
+        "sha256": "4543b39a3d44fb1524a5e99b47e9818a5b2c3c93b9a1c9031d5c04538665f41a"
+      },
+      "initial_suite": {
+        "path": ".agents/tmp/continuation/lighting-evidence/ctest-windows.log",
+        "sha256": "1f8e618c530d1576959a6d15b6f6f21abeeb9c00156296ddbb3d93668f6b7fd9",
+        "groups": 71,
+        "passed": 71,
+        "skipped": [],
+        "tests": [
+          "workbench",
+          "patch_input",
+          "brush_input",
+          "vis_passage_clipping",
+          "recovery_order",
+          "recovery_groups",
+          "vis_merge",
+          "brush_cells",
+          "script_input",
+          "vis_reproducible",
+          "lighting_gpu",
+          "recovery_classification",
+          "cell_adjacency",
+          "meta_order",
+          "bsp_inspect",
+          "portal_evidence",
+          "game_profiles",
+          "planar_reduction_native",
+          "planar_reduction_oracle",
+          "geometry_optimize",
+          "vis_passage_storage",
+          "gpu_columns",
+          "index_validation_cli",
+          "workbench_devices",
+          "workbench_window",
+          "native_early",
+          "bsp_evidence",
+          "portal_validation",
+          "binary_outputs",
+          "native_fakk",
+          "bsp_analyze",
+          "mesh_export",
+          "area_factors",
+          "raven_compat",
+          "lighting_materials",
+          "export_outputs",
+          "cli_options",
+          "workbench_inspector",
+          "uv_fit_oracle",
+          "recovery_outputs",
+          "bsp_validation",
+          "native_mohaa",
+          "minimap",
+          "lightgrid_cli",
+          "vis_clip",
+          "lightgrid",
+          "game_catalog",
+          "index_validation",
+          "recovery_group_order",
+          "vis_mask",
+          "planar_reduction",
+          "cell_graph",
+          "compiler_pipeline",
+          "portal_graph",
+          "terrain",
+          "columns",
+          "quake3_materials",
+          "ftx",
+          "decompile_recovery",
+          "lighting_math",
+          "uv_fit",
+          "workbench_preview",
+          "atomic_file",
+          "cli_help",
+          "job_pool",
+          "decompile_math",
+          "area_factors_disabled",
+          "cli_games",
+          "uv_output",
+          "lighting_evidence",
+          "uv_recovery"
+        ]
+      },
+      "final_focused_suite": {
+        "path": ".agents/tmp/continuation/lighting-evidence/ctest-windows-final.log",
+        "sha256": "766dcba4ebd248b7c3ddfafa0b175c65dd1806551bfa3ed2626bb6610d5d4e13",
+        "groups": 4,
+        "passed": 4,
+        "skipped": [],
+        "tests": [
+          "cli_help",
+          "cli_games",
+          "bsp_evidence",
+          "lighting_evidence"
+        ]
+      },
+      "results": {
+        "path": "build/release/tests/lighting-evidence/results.json",
+        "sha256": "02d70afe8d7986eaaee6e6b345016c44fcf619a9512701834a335508ffd038cf"
+      },
+      "observation_reports": 99,
+      "output_preservation_cases": 9,
+      "native_logs_scanned_for_sanitizer_diagnostics": 133,
+      "sanitizer_diagnostics": []
+    },
+    "linux": {
+      "compiler": {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "5dc8931da844520a89df974dcf83ff863d8f95010bc0c179db4930727e339b59"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/lighting-evidence/build-linux-final.log",
+        "sha256": "94bde3d6724c0d1ff0868fb7066b18420ff812b932921ca188b74805122456d0"
+      },
+      "initial_suite": {
+        "path": ".agents/tmp/continuation/lighting-evidence/ctest-linux.log",
+        "sha256": "1099355e9f001077d9e93894276db422f64292ec2b7d750121d9785e79cb737d",
+        "groups": 71,
+        "passed": 70,
+        "skipped": [
+          "area_factors"
+        ],
+        "tests": [
+          "workbench",
+          "vis_passage_clipping",
+          "patch_input",
+          "script_input",
+          "meta_order",
+          "recovery_groups",
+          "brush_input",
+          "uv_recovery",
+          "game_profiles",
+          "recovery_order",
+          "brush_cells",
+          "cell_adjacency",
+          "vis_merge",
+          "recovery_classification",
+          "portal_evidence",
+          "uv_output",
+          "vis_reproducible",
+          "lighting_materials",
+          "bsp_evidence",
+          "native_fakk",
+          "bsp_validation",
+          "geometry_optimize",
+          "binary_outputs",
+          "portal_validation",
+          "bsp_inspect",
+          "index_validation_cli",
+          "native_early",
+          "planar_reduction_native",
+          "mesh_export",
+          "gpu_columns",
+          "bsp_analyze",
+          "vis_passage_storage",
+          "raven_compat",
+          "cli_options",
+          "minimap",
+          "recovery_outputs",
+          "native_mohaa",
+          "export_outputs",
+          "planar_reduction_oracle",
+          "lighting_gpu",
+          "workbench_inspector",
+          "workbench_window",
+          "lightgrid_cli",
+          "workbench_devices",
+          "compiler_pipeline",
+          "decompile_recovery",
+          "uv_fit_oracle",
+          "lightgrid",
+          "vis_clip",
+          "game_catalog",
+          "atomic_file",
+          "recovery_group_order",
+          "index_validation",
+          "columns",
+          "planar_reduction",
+          "job_pool",
+          "workbench_preview",
+          "cli_help",
+          "portal_graph",
+          "cli_games",
+          "lighting_math",
+          "area_factors_disabled",
+          "vis_mask",
+          "quake3_materials",
+          "ftx",
+          "terrain",
+          "cell_graph",
+          "uv_fit",
+          "decompile_math",
+          "area_factors",
+          "lighting_evidence"
+        ]
+      },
+      "final_focused_suite": {
+        "path": ".agents/tmp/continuation/lighting-evidence/ctest-linux-final.log",
+        "sha256": "f911eda20a2206663225c782faae7df53b4937bb79c6d2c58ac8f32c80f4f3b8",
+        "groups": 4,
+        "passed": 4,
+        "skipped": [],
+        "tests": [
+          "cli_help",
+          "cli_games",
+          "bsp_evidence",
+          "lighting_evidence"
+        ]
+      },
+      "results": {
+        "path": "build/linux-release/tests/lighting-evidence/results.json",
+        "sha256": "807a192edebc14bd81f23f17f66b3a2b05a54c1b265e67b235df361001816b8e"
+      },
+      "observation_reports": 99,
+      "output_preservation_cases": 9,
+      "native_logs_scanned_for_sanitizer_diagnostics": 123,
+      "sanitizer_diagnostics": []
+    },
+    "sanitized": {
+      "compiler": {
+        "path": "build/linux-sanitized/bin/q3mapx",
+        "sha256": "3d26191498697bcb93a3e871a20889c0a7212adda441406f183e2fff5c2406f0"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/lighting-evidence/build-sanitized-final.log",
+        "sha256": "94bde3d6724c0d1ff0868fb7066b18420ff812b932921ca188b74805122456d0"
+      },
+      "initial_suite": {
+        "path": ".agents/tmp/continuation/lighting-evidence/ctest-sanitized.log",
+        "sha256": "ddfc7b58aa6e0cf9f82afc46843eb49397eed87f19170a88078d900160868ab6",
+        "groups": 11,
+        "passed": 11,
+        "skipped": [],
+        "tests": [
+          "patch_input",
+          "brush_cells",
+          "portal_evidence",
+          "brush_input",
+          "cell_adjacency",
+          "lightgrid",
+          "lighting_math",
+          "bsp_validation",
+          "job_pool",
+          "bsp_evidence",
+          "lighting_evidence"
+        ]
+      },
+      "final_focused_suite": {
+        "path": ".agents/tmp/continuation/lighting-evidence/ctest-sanitized-final.log",
+        "sha256": "f84ac41d5b40923b1e4cb6b8f1dda5983330b00270bb025ba123d34c63e0bc01",
+        "groups": 4,
+        "passed": 4,
+        "skipped": [],
+        "tests": [
+          "cli_games",
+          "cli_help",
+          "bsp_evidence",
+          "lighting_evidence"
+        ]
+      },
+      "results": {
+        "path": "build/linux-sanitized/tests/lighting-evidence/results.json",
+        "sha256": "807a192edebc14bd81f23f17f66b3a2b05a54c1b265e67b235df361001816b8e"
+      },
+      "observation_reports": 99,
+      "output_preservation_cases": 9,
+      "native_logs_scanned_for_sanitizer_diagnostics": 123,
+      "sanitizer_diagnostics": []
+    }
+  },
+  "case_counts_identical_across_platforms": true,
+  "cases": {
+    "schema_version": 1,
+    "cases": [
+      {
+        "case": "quake3-square-1",
+        "observations": 124
+      },
+      {
+        "case": "quake3-square-1-one-worker",
+        "observations": 124
+      },
+      {
+        "case": "quake3-square-3",
+        "observations": 15
+      },
+      {
+        "case": "quake3-square-3-one-worker",
+        "observations": 15
+      },
+      {
+        "case": "quake3-rotated-1",
+        "observations": 124
+      },
+      {
+        "case": "quake3-rotated-1-one-worker",
+        "observations": 124
+      },
+      {
+        "case": "quake3-rotated-3",
+        "observations": 19
+      },
+      {
+        "case": "quake3-rotated-3-one-worker",
+        "observations": 19
+      },
+      {
+        "case": "quake3-mirrored-1",
+        "observations": 124
+      },
+      {
+        "case": "quake3-mirrored-1-one-worker",
+        "observations": 124
+      },
+      {
+        "case": "quake3-mirrored-3",
+        "observations": 19
+      },
+      {
+        "case": "quake3-mirrored-3-one-worker",
+        "observations": 19
+      },
+      {
+        "case": "quake3-oblique-1",
+        "observations": 80
+      },
+      {
+        "case": "quake3-oblique-1-one-worker",
+        "observations": 80
+      },
+      {
+        "case": "quake3-oblique-3",
+        "observations": 19
+      },
+      {
+        "case": "quake3-oblique-3-one-worker",
+        "observations": 19
+      },
+      {
+        "case": "ja-square-1",
+        "observations": 248
+      },
+      {
+        "case": "ja-square-1-one-worker",
+        "observations": 248
+      },
+      {
+        "case": "ja-square-3",
+        "observations": 30
+      },
+      {
+        "case": "ja-square-3-one-worker",
+        "observations": 30
+      },
+      {
+        "case": "ja-rotated-1",
+        "observations": 248
+      },
+      {
+        "case": "ja-rotated-1-one-worker",
+        "observations": 248
+      },
+      {
+        "case": "ja-rotated-3",
+        "observations": 38
+      },
+      {
+        "case": "ja-rotated-3-one-worker",
+        "observations": 38
+      },
+      {
+        "case": "ja-mirrored-1",
+        "observations": 248
+      },
+      {
+        "case": "ja-mirrored-1-one-worker",
+        "observations": 248
+      },
+      {
+        "case": "ja-mirrored-3",
+        "observations": 38
+      },
+      {
+        "case": "ja-mirrored-3-one-worker",
+        "observations": 38
+      },
+      {
+        "case": "ja-oblique-1",
+        "observations": 160
+      },
+      {
+        "case": "ja-oblique-1-one-worker",
+        "observations": 160
+      },
+      {
+        "case": "ja-oblique-3",
+        "observations": 38
+      },
+      {
+        "case": "ja-oblique-3-one-worker",
+        "observations": 38
+      },
+      {
+        "case": "qfusion-square-1",
+        "observations": 248
+      },
+      {
+        "case": "qfusion-square-1-one-worker",
+        "observations": 248
+      },
+      {
+        "case": "qfusion-square-3",
+        "observations": 30
+      },
+      {
+        "case": "qfusion-square-3-one-worker",
+        "observations": 30
+      },
+      {
+        "case": "qfusion-rotated-1",
+        "observations": 248
+      },
+      {
+        "case": "qfusion-rotated-1-one-worker",
+        "observations": 248
+      },
+      {
+        "case": "qfusion-rotated-3",
+        "observations": 38
+      },
+      {
+        "case": "qfusion-rotated-3-one-worker",
+        "observations": 38
+      },
+      {
+        "case": "qfusion-mirrored-1",
+        "observations": 248
+      },
+      {
+        "case": "qfusion-mirrored-1-one-worker",
+        "observations": 248
+      },
+      {
+        "case": "qfusion-mirrored-3",
+        "observations": 38
+      },
+      {
+        "case": "qfusion-mirrored-3-one-worker",
+        "observations": 38
+      },
+      {
+        "case": "qfusion-oblique-1",
+        "observations": 160
+      },
+      {
+        "case": "qfusion-oblique-1-one-worker",
+        "observations": 160
+      },
+      {
+        "case": "qfusion-oblique-3",
+        "observations": 38
+      },
+      {
+        "case": "qfusion-oblique-3-one-worker",
+        "observations": 38
+      },
+      {
+        "case": "constant",
+        "observations": 24
+      },
+      {
+        "case": "constant-one-worker",
+        "observations": 24
+      },
+      {
+        "case": "degenerate",
+        "observations": 24
+      },
+      {
+        "case": "degenerate-one-worker",
+        "observations": 24
+      },
+      {
+        "case": "ambiguous_position",
+        "observations": 140
+      },
+      {
+        "case": "ambiguous_position-one-worker",
+        "observations": 140
+      },
+      {
+        "case": "ambiguous_normal",
+        "observations": 140
+      },
+      {
+        "case": "ambiguous_normal-one-worker",
+        "observations": 140
+      },
+      {
+        "case": "zero_normal",
+        "observations": 124
+      },
+      {
+        "case": "zero_normal-one-worker",
+        "observations": 124
+      },
+      {
+        "case": "outside",
+        "observations": 24
+      },
+      {
+        "case": "outside-one-worker",
+        "observations": 24
+      },
+      {
+        "case": "extreme",
+        "observations": 24
+      },
+      {
+        "case": "extreme-one-worker",
+        "observations": 24
+      },
+      {
+        "case": "patch",
+        "observations": 44
+      },
+      {
+        "case": "patch-one-worker",
+        "observations": 44
+      },
+      {
+        "case": "missing_page",
+        "observations": 24
+      },
+      {
+        "case": "missing_page-one-worker",
+        "observations": 24
+      },
+      {
+        "case": "vertex_lit",
+        "observations": 24
+      },
+      {
+        "case": "vertex_lit-one-worker",
+        "observations": 24
+      },
+      {
+        "case": "partial_page",
+        "observations": 24
+      },
+      {
+        "case": "partial_page-one-worker",
+        "observations": 24
+      },
+      {
+        "case": "absent",
+        "observations": 24
+      },
+      {
+        "case": "absent-one-worker",
+        "observations": 24
+      },
+      {
+        "case": "overlap",
+        "observations": 124
+      },
+      {
+        "case": "overlap-one-worker",
+        "observations": 124
+      },
+      {
+        "case": "unowned",
+        "observations": 124
+      },
+      {
+        "case": "unowned-one-worker",
+        "observations": 124
+      },
+      {
+        "case": "limits",
+        "observations": 124
+      },
+      {
+        "case": "exact-limits",
+        "observations": 124
+      },
+      {
+        "case": "grid-78",
+        "observations": 124
+      },
+      {
+        "case": "grid-79",
+        "observations": 124
+      },
+      {
+        "case": "grid-80",
+        "observations": 124
+      },
+      {
+        "case": "grid-81",
+        "observations": 124
+      },
+      {
+        "case": "grid-82",
+        "observations": 124
+      },
+      {
+        "case": "grid-83",
+        "observations": 124
+      },
+      {
+        "case": "grid-84",
+        "observations": 124
+      },
+      {
+        "case": "grid-85",
+        "observations": 124
+      },
+      {
+        "case": "grid-86",
+        "observations": 124
+      },
+      {
+        "case": "grid-87",
+        "observations": 124
+      },
+      {
+        "case": "point-retained",
+        "observations": 422
+      },
+      {
+        "case": "point-stripped",
+        "observations": 422
+      },
+      {
+        "case": "unsupported",
+        "observations": 0
+      },
+      {
+        "case": "sun-retained",
+        "observations": 304
+      },
+      {
+        "case": "sun-stripped",
+        "observations": 304
+      },
+      {
+        "case": "emitter-retained",
+        "observations": 416
+      },
+      {
+        "case": "emitter-stripped",
+        "observations": 416
+      },
+      {
+        "case": "mixed-deluxe-retained",
+        "observations": 409
+      },
+      {
+        "case": "mixed-deluxe-stripped",
+        "observations": 409
+      },
+      {
+        "case": "raven-point-retained",
+        "observations": 422
+      },
+      {
+        "case": "raven-point-stripped",
+        "observations": 422
+      }
+    ],
+    "output_preservation_cases": [
+      "sample-limit",
+      "work-limit",
+      "missing-lighting",
+      "bad--lighting-stride-0",
+      "bad--lighting-stride-1025",
+      "bad--lighting-max-samples-200001",
+      "nonfinite",
+      "nonfinite-force",
+      "report-ceiling"
+    ]
+  },
+  "cross_platform_synthetic_objects": [
+    {
+      "case": "quake3-square-1.json",
+      "identical_lighting_object": true
+    },
+    {
+      "case": "quake3-square-3.json",
+      "identical_lighting_object": true
+    },
+    {
+      "case": "quake3-rotated-1.json",
+      "identical_lighting_object": true
+    },
+    {
+      "case": "quake3-rotated-3.json",
+      "identical_lighting_object": true
+    },
+    {
+      "case": "quake3-mirrored-1.json",
+      "identical_lighting_object": true
+    },
+    {
+      "case": "quake3-mirrored-3.json",
+      "identical_lighting_object": true
+    },
+    {
+      "case": "quake3-oblique-1.json",
+      "identical_lighting_object": true
+    },
+    {
+      "case": "quake3-oblique-3.json",
+      "identical_lighting_object": true
+    },
+    {
+      "case": "ja-square-1.json",
+      "identical_lighting_object": true
+    },
+    {
+      "case": "ja-square-3.json",
+      "identical_lighting_object": true
+    },
+    {
+      "case": "ja-rotated-1.json",
+      "identical_lighting_object": true
+    },
+    {
+      "case": "ja-rotated-3.json",
+      "identical_lighting_object": true
+    },
+    {
+      "case": "ja-mirrored-1.json",
+      "identical_lighting_object": true
+    },
+    {
+      "case": "ja-mirrored-3.json",
+      "identical_lighting_object": true
+    },
+    {
+      "case": "ja-oblique-1.json",
+      "identical_lighting_object": true
+    },
+    {
+      "case": "ja-oblique-3.json",
+      "identical_lighting_object": true
+    },
+    {
+      "case": "qfusion-square-1.json",
+      "identical_lighting_object": true
+    },
+    {
+      "case": "qfusion-square-3.json",
+      "identical_lighting_object": true
+    },
+    {
+      "case": "qfusion-rotated-1.json",
+      "identical_lighting_object": true
+    },
+    {
+      "case": "qfusion-rotated-3.json",
+      "identical_lighting_object": true
+    },
+    {
+      "case": "qfusion-mirrored-1.json",
+      "identical_lighting_object": true
+    },
+    {
+      "case": "qfusion-mirrored-3.json",
+      "identical_lighting_object": true
+    },
+    {
+      "case": "qfusion-oblique-1.json",
+      "identical_lighting_object": true
+    },
+    {
+      "case": "qfusion-oblique-3.json",
+      "identical_lighting_object": true
+    }
+  ],
+  "limits": [
+    "Full Windows/Linux suites and 11 selected sanitizer groups precede the final argument-vector-copy removal; four focused groups on each final binary cover that parser change and the refined extreme-UV fixture.",
+    "ASan leak detection uses the established lifetime-leak exclusion; undefined/address error reporting remains enabled.",
+    "Linux area_factors is skipped because a GPU is unavailable.",
+    "Colors remain encoded; original transfer functions, author paint, sky, emitters, ambient and bounce are not separated.",
+    "Patch and constant-UV chart inversion, external/deluxe data, source fitting and target inference remain pending.",
+    "Grid positions are conventional count-matched candidates; stored source bake nudges and sample supports are unknown.",
+    "No renderer/editor/input automation, GPU work or portable archive refresh was performed.",
+    "Existing parser-sign/include-line findings, compiler warnings, VIS discrepancies, raw-sidecar publication and intermittent Windows process delays remain open."
+  ]
+}

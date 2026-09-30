@@ -177,8 +177,14 @@ not a redefinition of the overall goal around the existing release:
 - [x] Bring the bounded BSP inspector into the workbench with asynchronous
   discovery, useful directory/compatibility details and visible invalid-input
   diagnostics; preserve the CLI and test real compiler responses.
+- [x] Extend checked publication to recovered MAP/report pairs after larger-map
+  investigation exposed replacement before report failure; retain exact output
+  bytes and verify rollback, buffered failures and legacy conversion.
 - [ ] Profile larger recovery workloads and address measured costs with geometry,
   UV/material and worker-count parity evidence before claiming speedups.
+  Initial whole-command comparisons now cover a dense generated room and private
+  native maps. Publication failures found during that work are repaired; finer
+  reconstruction profiling and scheduling changes remain open.
 - [ ] Continue native-format, input-validation and GUI improvements found by those
   checks, update the guides and validate the resulting release on Windows/Linux.
 

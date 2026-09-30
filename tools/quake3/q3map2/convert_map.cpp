@@ -37,6 +37,7 @@
 #include "qspatial.h"
 #include "decompile.h"
 #include "q3mapx/affine.h"
+#include "q3mapx/atomic_file.h"
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/stringbuffer.h"
 #include <map>
@@ -958,7 +959,7 @@ static void ConvertEPairs( FILE *f, const entity_t& e, bool skip_origin ){
    exports an quake map file from the bsp
  */
 
-static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ){
+static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 	recovery = {};
 	detailBrushes.assign( bspBrushes.size(), false );
 	for ( const auto& leaf : bspLeafs ) {
@@ -996,8 +997,13 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ){
 	    : StringStream( PathExtensionless( bspName ), "_converted.map" );
 	Sys_Printf( "writing %s\n", name.c_str() );
 
-	/* open it */
-	FILE *f = SafeOpenWrite( name );
+	// Complete both outputs before publishing either. Publish the report first
+	// so only the smaller companion needs a rollback copy if MAP replacement fails.
+	const bool wantReport = decompileOptions.report || decompileOptions.automaticReport;
+	const auto report = decompileOptions.report ? StringStream( decompileOptions.report ) : StringStream( name, ".recovery.json" );
+	q3mapx::OutputFiles outputs;
+	FILE* reportFile = wantReport ? outputs.open( report.c_str() ) : nullptr;
+	FILE* f = outputs.open( name.c_str() );
 
 	/* print header */
 	fprintf( f, "// Recovered by q3mapx " Q3MAPX_VERSION "; original source metadata may be unavailable.\n" );
@@ -1042,17 +1048,7 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ){
 		fprintf( f, "}\n\n" );
 	}
 
-	/* close the file and return */
-	const bool failed = ferror( f ) != 0;
-	if ( fclose( f ) != 0 || failed ) Error( "Failed to finish writing %s", name.c_str() );
-	Sys_Printf( "Recovered %zu brushes, %zu patches; %zu/%zu faces matched texture coordinates, %zu used fallback\n",
-	    recovery.brushes, recovery.patches, recovery.matchedFaces, recovery.faces, recovery.fallbackFaces );
-	if ( recovery.skippedBrushes || recovery.degenerateUVs || recovery.approximateQuakeFaces ) {
-		Sys_Warning( "Recovery: %zu invalid brushes skipped, %zu degenerate UV transforms, %zu approximate Quake texture transforms\n",
-		    recovery.skippedBrushes, recovery.degenerateUVs, recovery.approximateQuakeFaces );
-	}
-	if ( decompileOptions.report || decompileOptions.automaticReport ) {
-		const auto report = decompileOptions.report ? StringStream( decompileOptions.report ) : StringStream( name, ".recovery.json" );
+	if ( wantReport ) {
 		rapidjson::StringBuffer buffer;
 		rapidjson::PrettyWriter<rapidjson::StringBuffer> writer( buffer );
 		writer.StartObject();
@@ -1164,13 +1160,22 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ){
 		writer.String( "Fallback texture axes are used on faces without a usable rendered triangle, including hidden faces." );
 		writer.EndArray();
 		writer.EndObject();
-		SaveFile( report, buffer.GetString(), int( buffer.GetSize() ) );
-		Sys_Printf( "Recovery report: %s\n", report.c_str() );
+		if ( std::fwrite( buffer.GetString(), 1, buffer.GetSize(), reportFile ) != buffer.GetSize() )
+			throw std::runtime_error( "Cannot write recovery report " + std::string( report.c_str() ) );
 	}
+	outputs.commit();
+	Sys_Printf( "Recovered %zu brushes, %zu patches; %zu/%zu faces matched texture coordinates, %zu used fallback\n",
+	    recovery.brushes, recovery.patches, recovery.matchedFaces, recovery.faces, recovery.fallbackFaces );
+	if ( recovery.skippedBrushes || recovery.degenerateUVs || recovery.approximateQuakeFaces ) {
+		Sys_Warning( "Recovery: %zu invalid brushes skipped, %zu degenerate UV transforms, %zu approximate Quake texture transforms\n",
+		    recovery.skippedBrushes, recovery.degenerateUVs, recovery.approximateQuakeFaces );
+	}
+	if ( wantReport ) Sys_Printf( "Recovery report: %s\n", report.c_str() );
 
 	/* return to sender */
 	return 0;
 }
+catch ( const std::exception& error ) { Error( "MAP recovery: %s", error.what() ); }
 
 int ConvertBSPToMap( char *bspName ){
 	return ConvertBSPToMap_Ext( bspName, EBrushType::Quake );

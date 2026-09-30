@@ -947,3 +947,40 @@ Separate code review found that the older hardware-discovery query still reads
 unbounded merged output on completion and has no generation check for superseded
 replies. This needs a follow-up robustness task; the new inspector already has
 both controls. Larger recovery profiling remains the next performance task.
+
+## 2026-09-30 — Preserve recovered MAP/report pairs
+
+Investigation of larger recovery workloads exposed a separate publication defect:
+the previous build replaced an existing MAP before attempting its report. A real
+directory-at-report-path regression confirms that failure replaced the original
+editable map. MAP recovery now uses the checked output group already used by mesh
+exports. Both streams finish before publication; report replacement precedes MAP
+replacement, with rollback if the latter fails. Legacy conversion without a report
+still works. The textual geometry and recovery schema are unchanged.
+
+New regressions cover all three MAP encodings, implicit/explicit/absent reports,
+directory destinations, Windows sharing-lock rollback and retry, Linux file-size
+limits on MAP/report writes and linked-output rejection. Windows/Linux release
+each pass thirteen relevant groups (8.89/32.65 seconds); Linux ASan/UBSan passes
+seven (140.06 seconds, documented CLI leak setting). The window queue and native
+Alice/F.A.K.K.2, MOHAA and early Quake III fixtures remain green.
+
+Added a whole-command recovery comparison harness with alternating samples,
+input/executable identities and exact MAP/report checks across worker counts.
+The 47×47 generated room contains 2,216 brushes and 13,296 recovered faces. Output
+is identical at 1/4/20 requested workers; measured variation does not demonstrate
+a speedup from buffered staging. Reconstruction is still serial. The performance
+guide records that finding, so further scheduling changes require finer profiling.
+
+Private native comparisons retain identical MAP/report output on Jedi Academy
+`t3_stamp` and Allied Assault `m1l1` at 1/4/20 workers. Asset loading and file
+publication are included; their timing variation also does not establish a
+consistent speedup. [Validation evidence](validation/recovery-outputs.json) links
+the measured observations and records all three tested compiler identities.
+Logs and the pre-fix reproduction remain under `.agents/tmp/continuation`; private
+outputs are under `build/recovery-output-*`. No proprietary geometry is committed.
+
+The recovery guide states the same multi-file interruption, concurrent-writer and
+metadata limitations as mesh publication. No new unrelated issue was found in
+these checks; the separately logged hardware-query hardening remains queued.
+The previously packaged 0.3.0 archive is unchanged.

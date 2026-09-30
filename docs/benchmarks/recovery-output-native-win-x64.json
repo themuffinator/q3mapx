@@ -1,0 +1,1771 @@
+{
+  "schema_version": 1,
+  "scope": "Whole-command MAP/report publication comparison on private native BSP copies",
+  "interpretation": "Exact output parity; variation across requested worker counts does not establish a consistent speedup or parallel scaling",
+  "benchmarks": [
+    {
+      "schema_version": 1,
+      "kind": "whole_process_map_recovery",
+      "game": "ja",
+      "fixture_kind": "local_native_map",
+      "timestamp_utc": "2026-09-30T05:57:24.282051+00:00",
+      "platform": "Windows-10-10.0.26200-SP0",
+      "processor": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+      "logical_cpus": 20,
+      "format": "map_220",
+      "fast": false,
+      "input_sha256": "886680f55a494d9accd5fcd7de70b952962e8d8741169dedf15f3a5f91e62101",
+      "input_bytes": 12754764,
+      "counts": null,
+      "compiler_sha256": {
+        "baseline": "cf9cd5741fd588b8c4a284a4da20fcf73299034868fe94c2cd786919f340e48e",
+        "q3mapx": "019075d0d6bf319c1a3a0c8d45ccaf153de1f133b3eeb0a107f125f62c828d3a"
+      },
+      "warmup_runs": 1,
+      "measured_runs": 5,
+      "map_bytes": 7341858,
+      "map_sha256": "7a31714ee7ed7fef0ccec94324624e1cf7e7f306da409bc899de7e352e5c95a3",
+      "recovery_counts": {
+        "schema_version": 1,
+        "fast": false,
+        "native_write_supported": true,
+        "entities": 1019,
+        "brushes": 4118,
+        "skipped_brushes": 0,
+        "patches": 338,
+        "faces": 26791,
+        "matched_uv_faces": 12514,
+        "fallback_uv_faces": 14277,
+        "degenerate_uv_transforms": 0,
+        "degenerate_triangles": 0,
+        "normalized_unused_lightmap_uv_pairs": 457,
+        "normalized_unused_flare_fogs": 0,
+        "normalized_unused_native_equations": 0,
+        "inferred_material_faces": 0,
+        "approximate_quake_uv_faces": 0,
+        "triangle_soup_surfaces": 4
+      },
+      "recovery_report_sha256": "a27bf599659d017890e34366016855c17ec4d557afa9c9c4e3ecfee2c18693e3",
+      "exact_map_and_report_parity": true,
+      "summaries": [
+        {
+          "implementation": "baseline",
+          "workers": 1,
+          "seconds": [
+            0.9765759000438266,
+            1.1787753999815322,
+            1.0945407000253908,
+            1.292799599992577,
+            1.3834610999911092
+          ],
+          "median_seconds": 1.1787753999815322
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 1,
+          "seconds": [
+            1.2263573000091128,
+            1.3812421000329778,
+            1.0987713999929838,
+            1.0248137000016868,
+            1.1788877999642864
+          ],
+          "median_seconds": 1.1788877999642864
+        },
+        {
+          "implementation": "baseline",
+          "workers": 4,
+          "seconds": [
+            1.265155799977947,
+            1.4366853999672458,
+            1.4156682000029832,
+            1.5417497999733314,
+            1.2529887999990024
+          ],
+          "median_seconds": 1.4156682000029832
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 4,
+          "seconds": [
+            1.0419064000016078,
+            1.0005258999881335,
+            1.2436166999978013,
+            1.1126338000176474,
+            1.0891852999920957
+          ],
+          "median_seconds": 1.0891852999920957
+        },
+        {
+          "implementation": "baseline",
+          "workers": 20,
+          "seconds": [
+            1.0027368000010028,
+            1.1583793999743648,
+            0.9547770000062883,
+            1.1398506999830715,
+            1.0161533000064082
+          ],
+          "median_seconds": 1.0161533000064082
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 20,
+          "seconds": [
+            1.2348235999816097,
+            1.1200014000060037,
+            1.2204682000447065,
+            1.170806400012225,
+            1.0898044999921694
+          ],
+          "median_seconds": 1.170806400012225
+        }
+      ],
+      "records": [
+        {
+          "implementation": "baseline",
+          "workers": 1,
+          "warmup": true,
+          "stage": "baseline-1-0",
+          "seconds": 1.1937837000004947,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 1,
+          "warmup": true,
+          "stage": "q3mapx-1-0",
+          "seconds": 1.2102579000056721,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 1,
+          "warmup": false,
+          "stage": "q3mapx-1-1",
+          "seconds": 1.2263573000091128,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 1,
+          "warmup": false,
+          "stage": "baseline-1-1",
+          "seconds": 0.9765759000438266,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 1,
+          "warmup": false,
+          "stage": "baseline-1-2",
+          "seconds": 1.1787753999815322,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 1,
+          "warmup": false,
+          "stage": "q3mapx-1-2",
+          "seconds": 1.3812421000329778,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 1,
+          "warmup": false,
+          "stage": "q3mapx-1-3",
+          "seconds": 1.0987713999929838,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 1,
+          "warmup": false,
+          "stage": "baseline-1-3",
+          "seconds": 1.0945407000253908,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 1,
+          "warmup": false,
+          "stage": "baseline-1-4",
+          "seconds": 1.292799599992577,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 1,
+          "warmup": false,
+          "stage": "q3mapx-1-4",
+          "seconds": 1.0248137000016868,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 1,
+          "warmup": false,
+          "stage": "q3mapx-1-5",
+          "seconds": 1.1788877999642864,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 1,
+          "warmup": false,
+          "stage": "baseline-1-5",
+          "seconds": 1.3834610999911092,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 4,
+          "warmup": true,
+          "stage": "baseline-4-0",
+          "seconds": 1.074529400037136,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 4,
+          "warmup": true,
+          "stage": "q3mapx-4-0",
+          "seconds": 1.205227600003127,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 4,
+          "warmup": false,
+          "stage": "q3mapx-4-1",
+          "seconds": 1.0419064000016078,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 4,
+          "warmup": false,
+          "stage": "baseline-4-1",
+          "seconds": 1.265155799977947,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 4,
+          "warmup": false,
+          "stage": "baseline-4-2",
+          "seconds": 1.4366853999672458,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 4,
+          "warmup": false,
+          "stage": "q3mapx-4-2",
+          "seconds": 1.0005258999881335,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 4,
+          "warmup": false,
+          "stage": "q3mapx-4-3",
+          "seconds": 1.2436166999978013,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 4,
+          "warmup": false,
+          "stage": "baseline-4-3",
+          "seconds": 1.4156682000029832,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 4,
+          "warmup": false,
+          "stage": "baseline-4-4",
+          "seconds": 1.5417497999733314,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 4,
+          "warmup": false,
+          "stage": "q3mapx-4-4",
+          "seconds": 1.1126338000176474,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 4,
+          "warmup": false,
+          "stage": "q3mapx-4-5",
+          "seconds": 1.0891852999920957,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 4,
+          "warmup": false,
+          "stage": "baseline-4-5",
+          "seconds": 1.2529887999990024,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 20,
+          "warmup": true,
+          "stage": "baseline-20-0",
+          "seconds": 0.959428200032562,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 20,
+          "warmup": true,
+          "stage": "q3mapx-20-0",
+          "seconds": 1.095428799977526,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 20,
+          "warmup": false,
+          "stage": "q3mapx-20-1",
+          "seconds": 1.2348235999816097,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 20,
+          "warmup": false,
+          "stage": "baseline-20-1",
+          "seconds": 1.0027368000010028,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 20,
+          "warmup": false,
+          "stage": "baseline-20-2",
+          "seconds": 1.1583793999743648,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 20,
+          "warmup": false,
+          "stage": "q3mapx-20-2",
+          "seconds": 1.1200014000060037,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 20,
+          "warmup": false,
+          "stage": "q3mapx-20-3",
+          "seconds": 1.2204682000447065,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 20,
+          "warmup": false,
+          "stage": "baseline-20-3",
+          "seconds": 0.9547770000062883,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 20,
+          "warmup": false,
+          "stage": "baseline-20-4",
+          "seconds": 1.1398506999830715,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 20,
+          "warmup": false,
+          "stage": "q3mapx-20-4",
+          "seconds": 1.170806400012225,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 20,
+          "warmup": false,
+          "stage": "q3mapx-20-5",
+          "seconds": 1.0898044999921694,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 20,
+          "warmup": false,
+          "stage": "baseline-20-5",
+          "seconds": 1.0161533000064082,
+          "arguments": [
+            "-game",
+            "ja",
+            "-fs_basepath",
+            "E:\\Games\\Jedi Academy",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\ja\\input.bsp"
+          ]
+        }
+      ],
+      "input_origin": {
+        "archive": "assets0.pk3",
+        "map": "maps/t3_stamp.bsp"
+      }
+    },
+    {
+      "schema_version": 1,
+      "kind": "whole_process_map_recovery",
+      "game": "mohaa",
+      "fixture_kind": "local_native_map",
+      "timestamp_utc": "2026-09-30T05:58:08.204754+00:00",
+      "platform": "Windows-10-10.0.26200-SP0",
+      "processor": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+      "logical_cpus": 20,
+      "format": "map_220",
+      "fast": false,
+      "input_sha256": "38ab956dd4dcd89b0068ceca4c24bd46bc6142415a0491d59850d361de87f514",
+      "input_bytes": 7354304,
+      "counts": null,
+      "compiler_sha256": {
+        "baseline": "cf9cd5741fd588b8c4a284a4da20fcf73299034868fe94c2cd786919f340e48e",
+        "q3mapx": "019075d0d6bf319c1a3a0c8d45ccaf153de1f133b3eeb0a107f125f62c828d3a"
+      },
+      "warmup_runs": 1,
+      "measured_runs": 5,
+      "map_bytes": 4605352,
+      "map_sha256": "505440fd979f8e7df35a9fa10ddfcfb19fac031b6b5ebd95a1eb48d881fd0c0c",
+      "recovery_counts": {
+        "schema_version": 1,
+        "fast": false,
+        "native_write_supported": false,
+        "native_terrain_triangles": 1128,
+        "native_terrain_removed_triangles": 1176,
+        "entities": 932,
+        "brushes": 2711,
+        "skipped_brushes": 0,
+        "patches": 615,
+        "faces": 16170,
+        "matched_uv_faces": 3753,
+        "fallback_uv_faces": 12417,
+        "degenerate_uv_transforms": 0,
+        "degenerate_triangles": 21,
+        "normalized_unused_lightmap_uv_pairs": 0,
+        "normalized_unused_flare_fogs": 0,
+        "normalized_unused_native_equations": 0,
+        "inferred_material_faces": 0,
+        "approximate_quake_uv_faces": 0,
+        "triangle_soup_surfaces": 18
+      },
+      "recovery_report_sha256": "1187b99f758c0c803e5d69113fc69b0fc9e9325ff7ade7d44ddf69c973c35f39",
+      "exact_map_and_report_parity": true,
+      "summaries": [
+        {
+          "implementation": "baseline",
+          "workers": 1,
+          "seconds": [
+            0.4293197999941185,
+            0.6647112999926321,
+            0.6138340999605134,
+            0.47648100001970306,
+            0.5845406000153162
+          ],
+          "median_seconds": 0.5845406000153162
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 1,
+          "seconds": [
+            0.5795787000097334,
+            0.41587010002695024,
+            0.5844942000112496,
+            0.5123824999900535,
+            0.40491410001413897
+          ],
+          "median_seconds": 0.5123824999900535
+        },
+        {
+          "implementation": "baseline",
+          "workers": 4,
+          "seconds": [
+            0.36742010002490133,
+            0.3735185000114143,
+            0.38159609999274835,
+            0.3710980000323616,
+            0.4055147999897599
+          ],
+          "median_seconds": 0.3735185000114143
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 4,
+          "seconds": [
+            0.368865399970673,
+            0.38577960000839084,
+            0.3721572000067681,
+            0.3668601000099443,
+            0.37848450004821643
+          ],
+          "median_seconds": 0.3721572000067681
+        },
+        {
+          "implementation": "baseline",
+          "workers": 20,
+          "seconds": [
+            0.506943499960471,
+            0.5110609999974258,
+            0.49282169999787584,
+            0.36276369995903224,
+            0.36529299995163456
+          ],
+          "median_seconds": 0.49282169999787584
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 20,
+          "seconds": [
+            0.37304859998403117,
+            0.40328749996842816,
+            0.374823699996341,
+            0.3751522999955341,
+            0.41784070001449436
+          ],
+          "median_seconds": 0.3751522999955341
+        }
+      ],
+      "records": [
+        {
+          "implementation": "baseline",
+          "workers": 1,
+          "warmup": true,
+          "stage": "baseline-1-0",
+          "seconds": 0.5114335999824107,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 1,
+          "warmup": true,
+          "stage": "q3mapx-1-0",
+          "seconds": 0.39140859997132793,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 1,
+          "warmup": false,
+          "stage": "q3mapx-1-1",
+          "seconds": 0.5795787000097334,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 1,
+          "warmup": false,
+          "stage": "baseline-1-1",
+          "seconds": 0.4293197999941185,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 1,
+          "warmup": false,
+          "stage": "baseline-1-2",
+          "seconds": 0.6647112999926321,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 1,
+          "warmup": false,
+          "stage": "q3mapx-1-2",
+          "seconds": 0.41587010002695024,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 1,
+          "warmup": false,
+          "stage": "q3mapx-1-3",
+          "seconds": 0.5844942000112496,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 1,
+          "warmup": false,
+          "stage": "baseline-1-3",
+          "seconds": 0.6138340999605134,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 1,
+          "warmup": false,
+          "stage": "baseline-1-4",
+          "seconds": 0.47648100001970306,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 1,
+          "warmup": false,
+          "stage": "q3mapx-1-4",
+          "seconds": 0.5123824999900535,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 1,
+          "warmup": false,
+          "stage": "q3mapx-1-5",
+          "seconds": 0.40491410001413897,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 1,
+          "warmup": false,
+          "stage": "baseline-1-5",
+          "seconds": 0.5845406000153162,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "1",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 4,
+          "warmup": true,
+          "stage": "baseline-4-0",
+          "seconds": 0.48288720002165064,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 4,
+          "warmup": true,
+          "stage": "q3mapx-4-0",
+          "seconds": 0.66074409999419,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 4,
+          "warmup": false,
+          "stage": "q3mapx-4-1",
+          "seconds": 0.368865399970673,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 4,
+          "warmup": false,
+          "stage": "baseline-4-1",
+          "seconds": 0.36742010002490133,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 4,
+          "warmup": false,
+          "stage": "baseline-4-2",
+          "seconds": 0.3735185000114143,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 4,
+          "warmup": false,
+          "stage": "q3mapx-4-2",
+          "seconds": 0.38577960000839084,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 4,
+          "warmup": false,
+          "stage": "q3mapx-4-3",
+          "seconds": 0.3721572000067681,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 4,
+          "warmup": false,
+          "stage": "baseline-4-3",
+          "seconds": 0.38159609999274835,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 4,
+          "warmup": false,
+          "stage": "baseline-4-4",
+          "seconds": 0.3710980000323616,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 4,
+          "warmup": false,
+          "stage": "q3mapx-4-4",
+          "seconds": 0.3668601000099443,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 4,
+          "warmup": false,
+          "stage": "q3mapx-4-5",
+          "seconds": 0.37848450004821643,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 4,
+          "warmup": false,
+          "stage": "baseline-4-5",
+          "seconds": 0.4055147999897599,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "4",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 20,
+          "warmup": true,
+          "stage": "baseline-20-0",
+          "seconds": 0.3848699000081979,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 20,
+          "warmup": true,
+          "stage": "q3mapx-20-0",
+          "seconds": 0.4826877999585122,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 20,
+          "warmup": false,
+          "stage": "q3mapx-20-1",
+          "seconds": 0.37304859998403117,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 20,
+          "warmup": false,
+          "stage": "baseline-20-1",
+          "seconds": 0.506943499960471,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 20,
+          "warmup": false,
+          "stage": "baseline-20-2",
+          "seconds": 0.5110609999974258,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 20,
+          "warmup": false,
+          "stage": "q3mapx-20-2",
+          "seconds": 0.40328749996842816,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 20,
+          "warmup": false,
+          "stage": "q3mapx-20-3",
+          "seconds": 0.374823699996341,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 20,
+          "warmup": false,
+          "stage": "baseline-20-3",
+          "seconds": 0.49282169999787584,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 20,
+          "warmup": false,
+          "stage": "baseline-20-4",
+          "seconds": 0.36276369995903224,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 20,
+          "warmup": false,
+          "stage": "q3mapx-20-4",
+          "seconds": 0.3751522999955341,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "q3mapx",
+          "workers": 20,
+          "warmup": false,
+          "stage": "q3mapx-20-5",
+          "seconds": 0.41784070001449436,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        },
+        {
+          "implementation": "baseline",
+          "workers": 20,
+          "warmup": false,
+          "stage": "baseline-20-5",
+          "seconds": 0.36529299995163456,
+          "arguments": [
+            "-game",
+            "mohaa",
+            "-fs_basepath",
+            "E:\\Games\\Medal of Honor Allied Assault",
+            "-threads",
+            "20",
+            "-decompile",
+            "-format",
+            "map_220",
+            "-o",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\recovered.map",
+            "E:\\Repositories\\q3mapx\\build\\recovery-output-native\\mohaa\\input.bsp"
+          ]
+        }
+      ],
+      "input_origin": {
+        "archive": "Pak5.pk3",
+        "map": "maps/m1l1.bsp"
+      }
+    }
+  ]
+}

@@ -44,6 +44,20 @@ explicitly requested. `-o` requires a `.map` extension and `-report` requires `.
 Unknown conversion formats/options now produce a diagnostic instead of silently
 choosing ASE or ignoring the option.
 
+Development after 0.3.0 stages the MAP and its report beside their destinations
+using buffered, checked writes. Both must finish before either is published. A
+report-path or write/close failure preserves existing outputs. The report is
+published first; if MAP replacement then fails, the old report is restored, or
+the newly created report is removed. Legacy conversion without a report uses
+one atomic MAP replacement. Directories and symbolic links are rejected as output
+destinations. A failed rollback identifies the retained original backup.
+
+The MAP and report are separate filesystem names: process/power loss between
+their replacements can leave different generations. Concurrent writers, metadata
+preservation and power-loss durability are outside this guarantee. Fatal compiler
+exits can leave identifiable `.q3mapx-*.tmp` siblings. The portable 0.3.0 archive
+predates these protections.
+
 Use the correct game profile and resource paths: shader dimensions affect texture
 recovery. Valve 220 and brush primitives preserve affine texture mappings. Classic
 Quake texture definitions cannot represent arbitrary shear; the report counts

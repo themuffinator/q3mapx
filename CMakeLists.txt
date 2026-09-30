@@ -175,6 +175,10 @@ if(BUILD_TESTING)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/export_outputs.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_CURRENT_BINARY_DIR}/tests/export_outputs)
     set_tests_properties(export_outputs PROPERTIES TIMEOUT 180)
+    add_test(NAME recovery_outputs COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/recovery_outputs.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_CURRENT_BINARY_DIR}/tests/recovery_outputs)
+    set_tests_properties(recovery_outputs PROPERTIES TIMEOUT 180)
     add_executable(decompile_math_test tests/decompile_math.cpp)
     target_include_directories(decompile_math_test PRIVATE libs)
     add_test(NAME decompile_math COMMAND decompile_math_test)

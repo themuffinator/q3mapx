@@ -1,0 +1,889 @@
+{
+  "schema_version": 1,
+  "kind": "whole_process_map_recovery",
+  "game": "quake3",
+  "fixture_kind": "dense-room-47x47",
+  "timestamp_utc": "2026-09-30T05:49:37.582132+00:00",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+  "logical_cpus": 20,
+  "format": "map_220",
+  "fast": false,
+  "input_sha256": "feef04913c956b6a27471f0867734db54924dd96d354d87ddbc1b222275182ae",
+  "input_bytes": 4187452,
+  "counts": {
+    "shaders": 1,
+    "planes": 464,
+    "nodes": 8491,
+    "leaves": 8494,
+    "models": 2,
+    "brushes": 2216,
+    "sides": 13296,
+    "vertices": 44237,
+    "indices": 12,
+    "surfaces": 11058
+  },
+  "compiler_sha256": {
+    "baseline": "cf9cd5741fd588b8c4a284a4da20fcf73299034868fe94c2cd786919f340e48e",
+    "q3mapx": "019075d0d6bf319c1a3a0c8d45ccaf153de1f133b3eeb0a107f125f62c828d3a"
+  },
+  "warmup_runs": 1,
+  "measured_runs": 5,
+  "map_bytes": 3093455,
+  "map_sha256": "2f19d1ead1add47dee5210d2f5f38c31783d522a8a0df4db46ea9143a27953a7",
+  "exact_map_and_report_parity": true,
+  "summaries": [
+    {
+      "implementation": "baseline",
+      "workers": 1,
+      "seconds": [
+        0.14443840004969388,
+        0.15530430001672357,
+        0.14798660000087693,
+        0.16697590000694618,
+        0.19023220002418384
+      ],
+      "median_seconds": 0.15530430001672357
+    },
+    {
+      "implementation": "q3mapx",
+      "workers": 1,
+      "seconds": [
+        0.15129040001193061,
+        0.14565379999112338,
+        0.14360540005145594,
+        0.1526196000049822,
+        0.17983209999511018
+      ],
+      "median_seconds": 0.15129040001193061
+    },
+    {
+      "implementation": "baseline",
+      "workers": 4,
+      "seconds": [
+        0.19364369998220354,
+        0.15848569996887818,
+        0.19170210004085675,
+        0.17408089997479692,
+        0.1609988000127487
+      ],
+      "median_seconds": 0.17408089997479692
+    },
+    {
+      "implementation": "q3mapx",
+      "workers": 4,
+      "seconds": [
+        0.1529988999827765,
+        0.16094550001434982,
+        0.14989300002343953,
+        0.15691080002579838,
+        0.1893864000448957
+      ],
+      "median_seconds": 0.15691080002579838
+    },
+    {
+      "implementation": "baseline",
+      "workers": 20,
+      "seconds": [
+        0.15467280003940687,
+        0.16608220001216978,
+        0.1444772999966517,
+        0.14483770000515506,
+        0.21014560002367944
+      ],
+      "median_seconds": 0.15467280003940687
+    },
+    {
+      "implementation": "q3mapx",
+      "workers": 20,
+      "seconds": [
+        0.16314379998948425,
+        0.17002840002533048,
+        0.1622258999850601,
+        0.14943910000147298,
+        0.14568620000500232
+      ],
+      "median_seconds": 0.1622258999850601
+    }
+  ],
+  "records": [
+    {
+      "implementation": "baseline",
+      "workers": 1,
+      "warmup": true,
+      "stage": "baseline-1-0",
+      "seconds": 0.15273349999915808,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "1",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "workers": 1,
+      "warmup": true,
+      "stage": "q3mapx-1-0",
+      "seconds": 0.5110053999815136,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "1",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "workers": 1,
+      "warmup": false,
+      "stage": "q3mapx-1-1",
+      "seconds": 0.15129040001193061,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "1",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "workers": 1,
+      "warmup": false,
+      "stage": "baseline-1-1",
+      "seconds": 0.14443840004969388,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "1",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "workers": 1,
+      "warmup": false,
+      "stage": "baseline-1-2",
+      "seconds": 0.15530430001672357,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "1",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "workers": 1,
+      "warmup": false,
+      "stage": "q3mapx-1-2",
+      "seconds": 0.14565379999112338,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "1",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "workers": 1,
+      "warmup": false,
+      "stage": "q3mapx-1-3",
+      "seconds": 0.14360540005145594,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "1",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "workers": 1,
+      "warmup": false,
+      "stage": "baseline-1-3",
+      "seconds": 0.14798660000087693,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "1",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "workers": 1,
+      "warmup": false,
+      "stage": "baseline-1-4",
+      "seconds": 0.16697590000694618,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "1",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "workers": 1,
+      "warmup": false,
+      "stage": "q3mapx-1-4",
+      "seconds": 0.1526196000049822,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "1",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "workers": 1,
+      "warmup": false,
+      "stage": "q3mapx-1-5",
+      "seconds": 0.17983209999511018,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "1",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "workers": 1,
+      "warmup": false,
+      "stage": "baseline-1-5",
+      "seconds": 0.19023220002418384,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "1",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "workers": 4,
+      "warmup": true,
+      "stage": "baseline-4-0",
+      "seconds": 0.21835029998328537,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "4",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "workers": 4,
+      "warmup": true,
+      "stage": "q3mapx-4-0",
+      "seconds": 0.16270880005322397,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "4",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "workers": 4,
+      "warmup": false,
+      "stage": "q3mapx-4-1",
+      "seconds": 0.1529988999827765,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "4",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "workers": 4,
+      "warmup": false,
+      "stage": "baseline-4-1",
+      "seconds": 0.19364369998220354,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "4",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "workers": 4,
+      "warmup": false,
+      "stage": "baseline-4-2",
+      "seconds": 0.15848569996887818,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "4",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "workers": 4,
+      "warmup": false,
+      "stage": "q3mapx-4-2",
+      "seconds": 0.16094550001434982,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "4",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "workers": 4,
+      "warmup": false,
+      "stage": "q3mapx-4-3",
+      "seconds": 0.14989300002343953,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "4",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "workers": 4,
+      "warmup": false,
+      "stage": "baseline-4-3",
+      "seconds": 0.19170210004085675,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "4",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "workers": 4,
+      "warmup": false,
+      "stage": "baseline-4-4",
+      "seconds": 0.17408089997479692,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "4",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "workers": 4,
+      "warmup": false,
+      "stage": "q3mapx-4-4",
+      "seconds": 0.15691080002579838,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "4",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "workers": 4,
+      "warmup": false,
+      "stage": "q3mapx-4-5",
+      "seconds": 0.1893864000448957,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "4",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "workers": 4,
+      "warmup": false,
+      "stage": "baseline-4-5",
+      "seconds": 0.1609988000127487,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "4",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "workers": 20,
+      "warmup": true,
+      "stage": "baseline-20-0",
+      "seconds": 0.1611202999483794,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "20",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "workers": 20,
+      "warmup": true,
+      "stage": "q3mapx-20-0",
+      "seconds": 0.16299380001146346,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "20",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "workers": 20,
+      "warmup": false,
+      "stage": "q3mapx-20-1",
+      "seconds": 0.16314379998948425,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "20",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "workers": 20,
+      "warmup": false,
+      "stage": "baseline-20-1",
+      "seconds": 0.15467280003940687,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "20",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "workers": 20,
+      "warmup": false,
+      "stage": "baseline-20-2",
+      "seconds": 0.16608220001216978,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "20",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "workers": 20,
+      "warmup": false,
+      "stage": "q3mapx-20-2",
+      "seconds": 0.17002840002533048,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "20",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "workers": 20,
+      "warmup": false,
+      "stage": "q3mapx-20-3",
+      "seconds": 0.1622258999850601,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "20",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "workers": 20,
+      "warmup": false,
+      "stage": "baseline-20-3",
+      "seconds": 0.1444772999966517,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "20",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "workers": 20,
+      "warmup": false,
+      "stage": "baseline-20-4",
+      "seconds": 0.14483770000515506,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "20",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "workers": 20,
+      "warmup": false,
+      "stage": "q3mapx-20-4",
+      "seconds": 0.14943910000147298,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "20",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "q3mapx",
+      "workers": 20,
+      "warmup": false,
+      "stage": "q3mapx-20-5",
+      "seconds": 0.14568620000500232,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "20",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    },
+    {
+      "implementation": "baseline",
+      "workers": 20,
+      "warmup": false,
+      "stage": "baseline-20-5",
+      "seconds": 0.21014560002367944,
+      "arguments": [
+        "-game",
+        "quake3",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\recovery-benchmark",
+        "-threads",
+        "20",
+        "-decompile",
+        "-format",
+        "map_220",
+        "-o",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\recovered.map",
+        "E:\\Repositories\\q3mapx\\build\\recovery-output-benchmark\\input.bsp"
+      ]
+    }
+  ],
+  "recovery_counts": {
+    "schema_version": 1,
+    "fast": false,
+    "native_write_supported": true,
+    "entities": 3,
+    "brushes": 2216,
+    "skipped_brushes": 0,
+    "patches": 1,
+    "faces": 13296,
+    "matched_uv_faces": 11057,
+    "fallback_uv_faces": 2239,
+    "degenerate_uv_transforms": 0,
+    "degenerate_triangles": 0,
+    "normalized_unused_lightmap_uv_pairs": 0,
+    "normalized_unused_flare_fogs": 0,
+    "normalized_unused_native_equations": 0,
+    "inferred_material_faces": 0,
+    "approximate_quake_uv_faces": 0,
+    "triangle_soup_surfaces": 0
+  },
+  "recovery_report_sha256": "e69f7b218a64b042f1003e63287fe3772ec8699fec426bf2cc401fa5fd7f1c49",
+  "interpretation": "Publication safety change; variations do not establish a recovery speedup or parallel scaling"
+}

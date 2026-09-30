@@ -94,6 +94,31 @@ deterministic-lighting build `dda68d7`, including lightgrid computation. All fou
 lighting lumps were byte-identical on every run. This is a synthetic material
 fixture result, not a claim for every map. [Raw measurements](benchmarks/light-culling-win-x64.json).
 
+## MAP recovery measurements after 0.3.0
+
+MAP/report publication now uses checked, buffered staging. A 47×47 generated room
+with 2,216 brushes and 13,296 recovered faces produced identical MAP bytes and
+JSON metadata before/after this change at 1, 4 and 20 requested workers. Five
+alternating measurements followed warmup for each worker count. At one worker,
+whole-command medians were 0.1553 and 0.1513 seconds; individual measurements and
+the other worker counts vary enough that this does **not** establish a speedup.
+The change protects existing outputs on reported failures. Its buffer size alone
+is not an optimization result, and brush reconstruction remains serial.
+
+[Raw observations](benchmarks/recovery-output-win-x64.json) include executable and
+input hashes, exact output comparison, counts and all samples. Reproduce with
+`benchmarks/recovery.py`; optional private native inputs use read-only game assets.
+Further recovery optimization needs pass-level measurements and the same output
+checks before changing reconstruction or scheduling.
+
+Private native comparisons also preserve exact MAP/report output for Jedi Academy
+`t3_stamp` (4,118 brushes, 26,791 faces) and Allied Assault `m1l1` (2,711 brushes,
+16,170 faces) at all three worker counts. These whole-command samples include
+installed asset loading and both files' publication. Timing changes vary by run
+and worker-count group, so no consistent native recovery speedup is claimed.
+[Native observations](benchmarks/recovery-output-native-win-x64.json) retain hashes,
+counts and measurements without distributing the maps or their recovered geometry.
+
 ## Raven lightgrid packing
 
 RBSP/FBSP writers now index approximate lightgrid matches by lighting style and

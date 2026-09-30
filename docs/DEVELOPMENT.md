@@ -110,6 +110,23 @@ scripts in `tests/` or `benchmarks/`; put generated large data in ignored output
 
 ## Benchmark commands
 
+For MAP recovery comparisons that require identical generated text and recovery
+metadata across implementations and worker counts:
+
+```sh
+python benchmarks/recovery.py --baseline build/reference/bin/q3mapx --compiler build/release/bin/q3mapx --work-dir build/recovery-benchmark --grid 47 --threads 1 4 20 --repeat 5
+```
+
+Use q3mapx binaries with the same output-version header. The harness alternates
+baseline/candidate runs after warmup, includes startup, assets and both output
+files, and checks executable/input hashes before and after comparison. For private
+native maps, add `--map /path/to/input.bsp --game ja --game-root /path/to/game`.
+It copies the BSP into the work directory, uses installed assets read-only, and
+records hashes/counts rather than native geometry in `benchmark.json`. `--format`
+selects `map`, `map_bp` or `map_220`; `--fast` measures recovery without UV matching.
+Keep timings separate from output-parity evidence and do not infer parallel
+speedup merely from changing the requested worker count.
+
 Run the repeatable benchmark from the repository root:
 
 ```sh

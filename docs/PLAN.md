@@ -396,6 +396,70 @@ states. Cache/index reordering is reported separately from triangle reduction.
 Approximate decimation does not satisfy this preservation requirement. Engine
 render validation uses windowed operation and registered render-target screenshots.
 
+## M11 — Radiant painting and per-surface lighting controls
+
+User-requested expansion, 2026-09-30. These are planned authoring features, with
+compiler support and companion Radiant integration both required for completion.
+Start with NRC as the editor target; audit its extension points before choosing
+a plugin or maintained editor patch. The q3mapx workbench alone does not deliver
+painting or previews inside Radiant.
+
+### Patch vertex RGB and alpha painting
+
+- [ ] Add independently editable per-vertex RGB and alpha on patches, without
+  requiring `alphaMod` brushes. Define persistent source metadata and its mapping
+  from authored patch vertices to tessellated vertices; preserve unpainted defaults.
+- [ ] Add Radiant painting with separate RGB/alpha channel controls, color picking,
+  brush size/strength/falloff, fill/reset, selection masks and undo/redo. Provide
+  immediate color/alpha visualization and a material preview that respects the
+  supported shader's use of those channels.
+- [ ] Define how authored color/alpha interacts with lighting, shader modifiers
+  and native BSP color/light-style channels. Preserve the intended result through
+  patch subdivision, tessellation, LOD stitching, merging and geometry optimization;
+  keep seams and deliberately discontinuous painted regions intact.
+- [ ] Preserve source paint through save/reload, duplication and patch editing.
+  Recover compiled colors during decompilation, and restore original paint only
+  where retained authoring metadata supports it; distinguish paint from baked light.
+
+Acceptance: paint RGB and alpha independently in Radiant, save/reopen the map and
+compile it through the CLI with the same intended material appearance, without
+auxiliary alpha-modifying brushes. Validate gradients, transparent boundaries,
+adjacent patches, tessellation/LOD changes, lit and unlit materials, supported
+native formats and one/multiple workers. Preview and runtime comparisons must
+state the supported shader/rendering contract.
+
+### Per-surface lightmap density with preview
+
+- [ ] Add persistent lightmap-density overrides for individual brush faces and
+  patch surfaces, editable in Radiant without splitting entities or cloning
+  shaders. Define units, scaling and precedence against global, entity and shader
+  settings, with clear inheritance and reset-to-default behavior.
+- [ ] Provide interactive texel-grid/checker and density overlays in Radiant's
+  viewport, including curved patches. Show effective sampling density and an
+  estimated lightmap cost; identify unsupported/unlightmapped surfaces and any
+  native-format limits or clamping. Distinguish estimates from actual baked atlas
+  placement and sample counts, and allow inspection of the compiled result.
+- [ ] Carry each authored surface's override through BSP splitting, patch
+  tessellation, meta merging and lightmap allocation. Prevent merges from silently
+  erasing different density settings, and report effective values in CLI/workbench
+  diagnostics. Preserve settings through editor save/reload and duplication.
+- [ ] Validate mixed densities on adjacent coplanar faces and curved patches,
+  entity transforms, packing limits, inherited settings and legacy MAP input.
+  Check preview predictions against compiled sampling/atlas data, lighting seams,
+  memory/compile cost and worker determinism.
+
+Acceptance: changing a selected surface's density updates its Radiant preview
+and affects that surface's effective compile setting while other surfaces retain
+their settings. Source settings survive save/reload and the compile workflow;
+maps without overrides retain existing results. A shared atlas may be repacked,
+so unrelated atlas coordinates are not promised to remain byte-identical.
+
+Shared delivery requirement: use versioned, validated source metadata with stable
+authoring associations rather than transient compiled surface numbers. Define
+legacy editor/compiler compatibility and explicit diagnostics for unsupported or
+lost metadata. Deliver the compiler/CLI contract, Radiant integration, fixtures
+and documentation together; preserve the existing headless workflow.
+
 ## Next execution sequence
 
 Retain the open robustness and recovery-performance tasks above. Begin the new
@@ -403,7 +467,10 @@ workstreams with shared evidence extraction, known-source fixtures and compariso
 tools. Advance detail/group inference and regional VIS/triangle diagnostics next.
 Develop light fitting from surface/sky explanations through point lights and then
 spotlight/target recovery. Gate automatic compiler edits on their independent
-visibility or presentation checks. Each completed implementation, validation and
+visibility or presentation checks. For M11, establish source metadata and native
+format semantics first, then implement compiler propagation, Radiant tools and
+preview validation. These authoring additions retain the existing recovery and
+optimization priorities. Each completed implementation, validation and
 documentation task gets its own commit; these additions do not mark any new
 feature as already delivered or narrow the broader continuing development goal.
 

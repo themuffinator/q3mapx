@@ -124,6 +124,24 @@ support through the game catalog. See [the native contract](GEOMETRY-OPTIMIZATIO
 and [the core contract](PLANAR-REDUCTION.md): exact affine-field preservation alone
 does not approve a runtime rewrite.
 
+## Planned Radiant authoring boundary
+
+[M11](PLAN.md#m11--radiant-painting-and-per-surface-lighting-controls) adds patch
+vertex RGB/alpha painting and per-surface lightmap-density editing with previews
+inside Radiant. Treat the editor integration and compiler support as separate
+components of one delivery. Audit NRC's extension points before choosing a
+plugin or editor patch; compiler/workbench controls alone do not fulfill the
+Radiant interaction requirement.
+
+Define a versioned source-data contract for authored patch channels and individual
+face/patch density overrides. Preserve associations across editor operations and
+compiler-generated splits/merges instead of storing transient BSP surface IDs.
+Authored paint, baked lighting and shader modulation need explicit composition
+rules; recovery must not present inseparable baked data as original paint.
+Density previews expose effective settings and estimated cost, with compiled
+sampling/atlas data as the validation reference. Existing MAPs and headless
+compilation retain their defaults; unsupported metadata requires clear diagnostics.
+
 ## Decisions recorded at project start
 
 | Decision | Rationale |

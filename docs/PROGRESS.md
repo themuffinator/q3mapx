@@ -2192,3 +2192,19 @@ review and remain outside this round's fixture claims. Existing `UnsortedSet`
 layout, patch aggregate and clone-brush lifetime warnings remain, alongside the
 previously documented VIS, raw-sidecar and intermittent Windows-delay issues.
 Broader light inference and automatic VIS/geometry work remain active.
+
+## 2026-09-30 — Radiant authoring feature plan
+
+Added M11 for the two requested authoring features: independently painted patch
+vertex RGB/alpha in Radiant without `alphaMod` brushes, and per-surface lightmap
+density controls with an interactive Radiant preview. The plan includes editor
+tools, persistent source metadata, compiler propagation, shader/lighting semantics,
+native-format limits, compatibility, preview validation and acceptance fixtures.
+Both features remain unchecked and unimplemented by this documentation update.
+
+Recorded the editor/compiler boundary in the architecture and added M11's
+dependency order to the execution sequence. Radiant integration is part of the
+delivery; workbench options alone cannot fulfill the requested editor workflow.
+Validation: checked the supplied image against both planned features, reviewed
+the documentation links and ran `git diff --check`. No runtime code changed or
+runtime tests were needed. No new unrelated issues were discovered.

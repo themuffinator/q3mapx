@@ -77,6 +77,19 @@ compiler as a subprocess for integration tests. Unit tests target invariants of
 new scheduling, validation, and application logic. Benchmark data records the
 revision, hardware, thread/backend settings, and repeated elapsed measurements.
 
+## Planned inference and optimization boundary
+
+The next planned analysis layer will share validated geometry, region boundaries
+and source provenance across [recovery inference](RECOVERY-INFERENCE.md) and
+[compiler optimization](COMPILER-OPTIMIZATION.md). Their objectives and application
+policies remain separate: recovery proposes authoring hypotheses, while compiler
+options apply only transformations that meet visibility or presentation contracts.
+Structural participation changes run before portal generation in a full build;
+VIS-only processing preserves a conservative mapping to the existing BSP clusters.
+Lighting inference uses the game's forward lighting semantics and records how much
+of the baked data its hypotheses explain. None of these planned systems is yet a
+capability of the current binaries.
+
 ## Decisions recorded at project start
 
 | Decision | Rationale |

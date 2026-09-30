@@ -12,22 +12,32 @@ decompile action in the CLI and workbench.
 A compiled BSP does not preserve the original editor grouping, all source brush
 boundaries, source model instances, or removed entities. Decompilation cannot
 promise an identical source map. Report which data was reconstructed, approximated,
-or unavailable. Do not fabricate source metadata.
+or unavailable. New inference work will propose plausible detail flags, groups
+and stripped lights, with evidence and uncertainty recorded separately from
+surviving source metadata.
 
-## Planned work
+## Current foundation and planned inference
 
-1. Validate file headers, lump ranges, counts, model/surface/brush references,
-   plane indices, triangle indices, and patch dimensions before conversion.
-2. Fix texture candidate lookup. The imported spatial search must be checked for
-   triangles whose maximum bound extends beyond a brush while still overlapping it.
-3. Make UV reconstruction tolerate degenerate triangles, avoid non-finite results,
-   and retain explicit fallback diagnostics.
-4. Preserve origin offsets and entity properties, handle malformed model numbers,
-   and validate patch control-point access.
-5. Generate a recovery report with counts and warnings, and expose lossless versus
-   approximate recovery clearly in the workbench.
-6. Measure conversion performance on generated dense geometry before introducing
-   spatial-index or parallel reconstruction changes.
+Validated native loaders, spatial texture matching, finite UV reconstruction,
+brush-entity/origin/patch preservation and recovery reports are implemented below.
+Further recovery performance work remains active.
+
+The next fidelity work is specified in [recovery inference](RECOVERY-INFERENCE.md):
+
+- Detail/structural classification using BSP and visibility/portal evidence, with
+  explicit handling of missing or ambiguous VIS data.
+- Inferred `func_group` assemblies that retain effective compile properties and
+  entity ownership, independently of whether their brushes are detail.
+- Point/spot light inference from baked lighting, accounting for sky/sun, surface
+  emitters and indirect light; appropriate recovery of spotlight target links.
+- More accurate brush/UV/patch reconstruction and CLI/workbench tools for reviewing
+  evidence, applying manual corrections and comparing rebuilt geometry and lighting.
+
+These are planned options, not current command-line capabilities. Known-source
+fixtures, held-out lighting samples and recorded uncertainty will distinguish a
+close visual recreation from recovery of uniquely identifiable authoring data.
+The separate [intelligent compiler options](COMPILER-OPTIMIZATION.md) optimize new
+builds; they do not silently alter the decompiler's reconstruction objective.
 
 ## Usage
 
@@ -69,15 +79,17 @@ A per-material bounds hierarchy searches all overlapping triangles, including
 triangles larger than the source brush face. The previous maximum-bound cutoff
 could miss these. Degenerate triangles are excluded. The affine solve works on
 edge differences in double precision, rejects ill-conditioned geometry and
-constant/non-finite UV axes, and supplies finite fallback transforms. Brush-detail
-membership is collected once from leaf references.
+constant/non-finite UV axes, and supplies finite fallback transforms. Current
+brush-detail membership uses nonopaque leaf references and explicit structural
+shader flags; it is a heuristic, not the planned portal-participation analysis.
 
 The version 1 JSON report records entities, exported/skipped brushes, patches,
 matched/fallback faces, degenerate triangles/transforms, approximate Quake UVs,
 triangle-soup surface count, paths, output format, and recovery limitations.
 Fallback faces include invisible brush sides that have no rendered triangle;
 their count alone does not imply a visible defect. Model instances and editor
-grouping cannot be reconstructed from data the BSP no longer contains.
+grouping cannot be uniquely determined from data the BSP no longer contains;
+future proposals and source-assisted matching will identify their evidence explicitly.
 
 ## Acceptance fixtures
 

@@ -984,3 +984,33 @@ The recovery guide states the same multi-file interruption, concurrent-writer an
 metadata limitations as mesh publication. No new unrelated issue was found in
 these checks; the separately logged hardware-query hardening remains queued.
 The previously packaged 0.3.0 archive is unchanged.
+
+## 2026-09-30 — Expand recovery fidelity and intelligent compiler roadmap
+
+Added M8–M10 to the implementation plan and two detailed designs:
+[recovery inference](RECOVERY-INFERENCE.md) and
+[compiler optimization](COMPILER-OPTIMIZATION.md). M8 covers detail/structural
+classification from BSP/VIS/portal evidence, `func_group` reconstruction, stripped
+entity-light inference with surface/sky/indirect contributions, spotlight target
+matching/replacement, and additional UV/brush/patch/entity reconstruction tools.
+It includes provenance, uncertainty, saved corrections and rebuild comparisons.
+
+M9 is a separate VIS/portal workstream: diagnose regional inefficiency, conservatively
+simplify supported VIS graphs, and develop coordinated full-build changes for poor
+detail usage. M10 separately targets reduced rendered triangle counts while retaining
+coverage, attribute interpolation, material effects, collision and visibility.
+Both define trial changes, rejection/fallback, regional exclusions and measured
+acceptance, including runtime visibility cost and difficult shader/LOD cases.
+
+Source review confirms that BSP compilation creates the PRT before VIS runs,
+that current detail recovery is a leaf-membership heuristic, that group compile
+parameters are applied before `func_group` collapse, and that spotlight target
+distance affects cone interpretation. The designs account for these existing
+contracts. Primary inverse-rendering and appearance-preservation references are
+linked as conceptual background; no external code or new dependencies were added.
+
+Validation is documentation-only: reviewed the designs against the existing code,
+checked local documentation links and whitespace, and kept every new implementation
+item unchecked. Binaries and release artifacts are unchanged. No new unrelated
+issue was found; the existing hardware-query and recovery-performance tasks remain
+open alongside these additions. The continuing development goal remains active.

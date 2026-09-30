@@ -79,6 +79,8 @@ native validation of 242 installed-map entries without distributing game assets.
 - [Measured performance and backend options](docs/PERFORMANCE.md)
 - [Installation, packaging and known limits](docs/RELEASE.md)
 - [BSP decompilation design](docs/DECOMPILATION.md)
+- [Planned detail/group/light inference and recreation tools](docs/RECOVERY-INFERENCE.md)
+- [Planned intelligent VIS and geometry optimization](docs/COMPILER-OPTIMIZATION.md)
 - [Upstream provenance and credits](docs/UPSTREAM.md)
 - [Completed tasks and known issues](docs/PROGRESS.md)
 

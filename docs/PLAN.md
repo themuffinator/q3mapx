@@ -193,6 +193,93 @@ Publication of several filesystem names cannot be advertised as one crash-atomic
 operation; documented failure guarantees must match the actual implementation.
 Keep remaining work visible as development proceeds.
 
+## M8 — Decompiler inference and authoring fidelity
+
+User-requested expansion, 2026-09-30. This work is planned; current MAP recovery
+does not yet implement these inference systems. Detailed design, source-data
+limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md).
+
+- [ ] Build shared BSP evidence/provenance analysis and a known-source evaluation
+  corpus, with saved overrides and a versioned report extension.
+- [ ] Infer detail versus structural geometry using BSP partitions, leaf/cluster
+  relationships, VIS/PVS and compatible portal evidence; validate classifications
+  by recompilation, preserve seals/occluders and expose ambiguous cases.
+- [ ] Infer useful `func_group` membership from geometry, materials, repeated
+  assemblies and compile-property evidence, independently of detail classification.
+  Preserve entity ownership and distinguish inferred groups from surviving metadata.
+- [ ] Infer stripped entity lights from baked lightmaps, vertex/grid and available
+  directional lighting. Explain sky/sun, surface emitters, ambient and indirect
+  contributions before fitting residual point/spot lights; account for bake settings.
+- [ ] Infer spotlight position, aim, cone and falloff; find compatible surviving
+  targets and connect them appropriately, or propose clearly labelled replacement
+  target entities without disturbing existing gameplay links.
+- [ ] Improve multi-triangle UV fitting, compatible brush-fragment reconstruction,
+  plane/grid recovery, patches/model instances, hidden faces and entity relationships.
+- [ ] Add CLI/workbench review, confidence/provenance overlays, manual corrections
+  and iterative rebuild comparisons for geometry, collision, visibility and lighting.
+
+Acceptance: known-source tests separate extraction fidelity, inference accuracy
+and rebuild similarity. Stripped-light fixtures include sun-only/emissive-only
+negative cases, mixed lighting and missing assets; target-link tests prevent
+unrelated retargeting. Missing or ambiguous evidence remains explicit. An exact
+original MAP cannot be promised when compilation discarded its distinguishing
+information; the objective is the closest supported, editable recreation.
+
+## M9 — Intelligent visibility and portal optimization
+
+Separate compiler workstream; see [compiler optimization design](COMPILER-OPTIMIZATION.md).
+
+- [ ] Diagnose regional over-portalling, inefficient splits and poor detail usage,
+  attributing costs to source geometry and comparing current merge/hint options.
+- [ ] Add a VIS-only option for conservative graph simplification with correct
+  cluster mapping and bounded increases in runtime visibility work.
+- [ ] Add a coordinated full-build option that examines regional structure and
+  trial-rebuilds justified detail/splitter changes before generating BSP/PRT/VIS.
+  Retain sealing, occlusion, area portals, explicit constraints and collision.
+- [ ] Expose automatic validated application, exclusions, explanations and fallback
+  in CLI/workbench; preserve the source MAP and regenerate affected downstream data.
+- [ ] Measure total build time, memory, portals/clusters and potentially visible
+  surfaces/triangles on badly detailed maps and deliberately difficult controls.
+
+Acceptance: reduce measured inefficiency without false culling, broken connectivity
+or leaks. Portal count alone is insufficient: a compile-time win cannot silently
+cause unacceptable runtime overdraw. VIS runs after portal generation, so source
+reclassification requires an explicit BSP rebuild. Baseline visibility inclusion,
+geometric invariants and spatial correspondence across rebuilt trees form the
+correctness checks; screenshot/ray samples alone do not establish safety.
+
+## M10 — Geometry optimization without presentation changes
+
+Separate compiler workstream; see [compiler optimization design](COMPILER-OPTIMIZATION.md).
+
+- [ ] Analyze regional triangle costs and safe reduction opportunities relative
+  to existing meta-surface processing; preserve source-to-output provenance.
+- [ ] Remove proven redundant geometry and retriangulate compatible planar regions
+  while preserving coverage, interpolation, materials, lightmaps, seams and normals.
+- [ ] Investigate redundant patch tessellation with correct LOD/stitching, retaining
+  curved silhouettes and all topology-sensitive shader behavior.
+- [ ] Protect collision, contents, visibility, entity ownership and native format
+  contracts. Evaluate compiled-BSP rewriting separately from the source-build pass.
+- [ ] Provide reports, regional exclusions, CPU/job determinism and visual comparison
+  tools; reject transformations whose presentation equivalence cannot be established.
+
+Acceptance: fewer rendered triangles with preserved appearance and behavior, tested
+with difficult UV/lighting/material cases, multiple views/distances and animation
+states. Cache/index reordering is reported separately from triangle reduction.
+Approximate decimation does not satisfy this preservation requirement. Engine
+render validation uses windowed operation and registered render-target screenshots.
+
+## Next execution sequence
+
+Retain the open robustness and recovery-performance tasks above. Begin the new
+workstreams with shared evidence extraction, known-source fixtures and comparison
+tools. Advance detail/group inference and regional VIS/triangle diagnostics next.
+Develop light fitting from surface/sky explanations through point lights and then
+spotlight/target recovery. Gate automatic compiler edits on their independent
+visibility or presentation checks. Each completed implementation, validation and
+documentation task gets its own commit; these additions do not mark any new
+feature as already delivered or narrow the broader continuing development goal.
+
 ## Initial execution order
 
 Start with M0 and M1. Advance robustness and decompilation before using complex

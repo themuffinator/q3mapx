@@ -886,3 +886,34 @@ companion after truncating the mesh, so a companion-open failure can destroy a
 previous export. This is the first repair in the new continuation plan, followed
 by workbench inspection and measurement of larger recovery workloads. The earlier
 cleanup restriction is unchanged; no blocked deletion was retried.
+
+## 2026-09-30 — Checked mesh output and paired-file rollback
+
+OBJ/MTL and ASE now use checked stdio streams staged beside their destinations.
+All buffered streams must close successfully before any destination is replaced.
+OBJ publishes MTL before the mesh, keeping only the smaller companion as a rollback
+copy. A reported mesh replacement failure restores that MTL, or removes a newly
+created one. The helper rejects duplicate paths, directories and links; abandoned
+streams and successful rollback copies are cleaned up. A failed restoration keeps
+its original backup and names it in the error. Single ASE publication needs no
+backup copy. Stdio uses bounded 64 KiB buffers for the many small text records.
+
+The new real-command regression reproduces data loss in the packaged 0.3.0 writer:
+an unwritable companion path empties the previous OBJ. The repaired writer preserves
+it. Windows sharing locks exercise rollback with both existing/new MTL files and
+successful retry. Linux process-local file-size limits force actual buffered write
+failures for OBJ and ASE. Link tests protect source files. Successful OBJ, MTL and
+ASE bytes match 0.3.0 on the same fixture; geometry and worker parity checks remain
+green. No game, input injection or OS screen capture is used.
+
+Windows release and Linux release pass seven relevant groups (6.82/13.44 seconds);
+Linux ASan/UBSan passes four (44.41 seconds, documented CLI leak setting).
+[Validation evidence](validation/export-outputs.json) records the checks and byte
+comparison. Logs and the pre-fix reproduction remain under
+`.agents/tmp/continuation`; generated test outputs are in each build's
+`tests/export_outputs`. The shipped 0.3.0 archive is unchanged.
+
+Several names cannot be published as one atomic filesystem operation: interruption
+between the two OBJ replacements can leave mixed generations. Metadata and
+power-loss durability are outside this guarantee; concurrent writers are unsupported.
+These limits are explicit in the recovery guide. No new unrelated defect was found.

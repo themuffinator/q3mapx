@@ -30,6 +30,7 @@
 
 /* dependencies */
 #include "q3map2.h"
+#include "q3mapx/atomic_file.h"
 #include <set>
 
 
@@ -256,7 +257,7 @@ void Convert_ReferenceLightmaps( const char* base, std::vector<int>& lmIndices )
    exports an 3d studio ase file from the bsp
  */
 
-int ConvertBSPToOBJ( char *bspName ){
+int ConvertBSPToOBJ( char *bspName ) try {
 	objVertexCount=0; objLastShaderNum=INT_MIN; objLightmaps.clear();
 	int modelNum;
 	FILE            *f, *fmtl;
@@ -277,9 +278,11 @@ int ConvertBSPToOBJ( char *bspName ){
 	const auto base = StringStream( PathFilename( dirname.c_str() ) );
 	if(lightmapsAsTexcoord) Convert_ReferenceLightmaps(base,lmIndices);
 
-	/* open it */
-	f = SafeOpenWrite( name );
-	fmtl = SafeOpenWrite( mtlname );
+	// Publish materials first and the mesh last, keeping only the smaller
+	// material file as a rollback copy if the final mesh replacement fails.
+	q3mapx::OutputFiles outputs;
+	fmtl = outputs.open( std::filesystem::u8path(mtlname.c_str()) );
+	f = outputs.open( std::filesystem::u8path(name.c_str()) );
 
 	/* print header */
 	fprintf( f, "o %s\r\n", base.c_str() );
@@ -322,9 +325,9 @@ int ConvertBSPToOBJ( char *bspName ){
 	}
 
 	/* close the file and return */
-	fclose( f );
-	fclose( fmtl );
+	outputs.commit();
 
 	/* return to sender */
 	return 0;
 }
+catch ( const std::exception& error ) { Error( "OBJ export: %s", error.what() ); }

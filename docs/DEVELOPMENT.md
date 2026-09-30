@@ -192,6 +192,10 @@ counts. Loose source paths and archive entries always become the same independen
 private input name. Native regression groups are `native_fakk`, `native_mohaa`
 and `native_early`; `mesh_export` verifies curved geometry, normals, entity
 placement, worker parity, lightmap lookup and allocation/output boundaries.
+`export_outputs` exercises actual companion-open errors, Windows sharing-lock
+rollback/retry, POSIX file-size-limit write failures and link rejection. It checks
+old output contents and source bytes, not only nonzero process status. These
+fixtures write only to their designated test output directory.
 
 ## Task commits
 

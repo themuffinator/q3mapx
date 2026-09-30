@@ -16,6 +16,10 @@ The native GUI is `build/release/bin/q3mapx-workbench`; see the [workbench guide
 For the portable Windows archive, dependencies, source and installation steps,
 see [release packaging](docs/RELEASE.md).
 
+Development after 0.3.0 adds checked, staged mesh output and OBJ/material rollback
+on publication errors. See [export guarantees and limits](docs/DECOMPILATION.md).
+The packaged 0.3.0 archive remains unchanged.
+
 Recover an editable map with a texture-recovery report:
 
 ```sh

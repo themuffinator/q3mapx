@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "scope": "Post-0.3.0 checked OBJ/MTL and ASE publication; not multi-file crash atomicity",
+  "old_release_companion_failure": "Verified 0.3.0 truncates an existing OBJ to zero bytes before MTL open failure",
+  "platform_checks": [
+    {
+      "schema_version": 1,
+      "compiler_sha256": "cf9cd5741fd588b8c4a284a4da20fcf73299034868fe94c2cd786919f340e48e",
+      "platform": "nt",
+      "checks": [
+        "companion-directory",
+        "replace-pair",
+        "replace-ase",
+        "rollback-material-False",
+        "retry-unlocked-False",
+        "rollback-material-True",
+        "retry-unlocked-True"
+      ],
+      "result": "passed",
+      "build": "release"
+    },
+    {
+      "schema_version": 1,
+      "compiler_sha256": "f1ee8a8f7ce831562d385422006ec67ac1ba6c36438093a3dc25e08900ce0ef2",
+      "platform": "posix",
+      "checks": [
+        "companion-directory",
+        "replace-pair",
+        "replace-ase",
+        "write-limit-obj",
+        "write-limit-ase",
+        "reject-linked-output"
+      ],
+      "result": "passed",
+      "build": "linux-release"
+    },
+    {
+      "schema_version": 1,
+      "compiler_sha256": "847329f9e585b56a0848299d958e5e914acbdfd506e8ede3f7e8cfdf5342395d",
+      "platform": "posix",
+      "checks": [
+        "companion-directory",
+        "replace-pair",
+        "replace-ase",
+        "write-limit-obj",
+        "write-limit-ase",
+        "reject-linked-output"
+      ],
+      "result": "passed",
+      "build": "linux-sanitized"
+    }
+  ],
+  "successful_output_parity": {
+    "baseline": "0.3.0 portable",
+    "compiler_sha256": "cf9cd5741fd588b8c4a284a4da20fcf73299034868fe94c2cd786919f340e48e",
+    "output_sha256": {
+      ".obj": "fed8778d29f1c8f982e0bc3a707541a29c0eb5d66ac597dddde593d0120db6f0",
+      ".mtl": "ece10ad776543322f96930b2a979155c8e76b052935e511d7bf10ef6142a33d2",
+      ".ase": "2657a907f29d45a8dc11c9f3b9f525c20a2efcf6201a72839ce79271cbe6c7f4"
+    },
+    "byte_identical": true
+  },
+  "suites": [
+    {
+      "build": "release",
+      "passed": 7,
+      "seconds": 6.82
+    },
+    {
+      "build": "linux-release",
+      "passed": 7,
+      "seconds": 13.44
+    },
+    {
+      "build": "linux-sanitized",
+      "passed": 4,
+      "seconds": 44.41
+    }
+  ],
+  "limits": [
+    "No group atomicity across process/power loss",
+    "Concurrent modification of output paths unsupported",
+    "Rollback failure retains an identified original backup",
+    "Metadata and power-loss durability not guaranteed"
+  ]
+}

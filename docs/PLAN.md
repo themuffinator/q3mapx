@@ -171,7 +171,7 @@ The requested continuing development retains performance, robustness, recovery,
 game coverage and the workbench as active areas. These are the first priorities,
 not a redefinition of the overall goal around the existing release:
 
-- [ ] Protect mesh exports against write/close failures and failed publication;
+- [x] Protect mesh exports against write/close failures and failed publication;
   stage OBJ/MTL together, roll back a published companion on a reported failure,
   and verify existing files survive actual filesystem errors.
 - [ ] Bring the bounded BSP inspector into the workbench with asynchronous

@@ -201,8 +201,22 @@ counts. MAP recovery keeps the original control points.
 Before allocation or opening outputs, expanded storage is capped at 4,194,304
 vertices and 25,165,824 indices. Lower curve detail for a map that exceeds this
 budget. Invalid options, unsafe expansion and non-finite entity origins fail
-before existing exports are replaced. Output I/O is still the inherited direct
-writer; interruption or a disk error can leave an incomplete mesh file.
+before existing exports are replaced. In development after 0.3.0, mesh streams
+write to reserved sibling files. Every write/close is checked before publication;
+a failed generation or close preserves the previous exports. Directories and
+symbolic links are rejected as destinations. ASE publishes with one atomic
+replacement. OBJ publishes its completed MTL and then its mesh; a reported later
+replacement failure restores the old MTL (or removes the newly created companion).
+Failures are visible to the CLI and workbench, and a retry can succeed once an
+external file-sharing lock is released.
+
+The two OBJ filenames are not a single crash-atomic transaction: process or power
+loss between their replacements can leave mixed generations. Fatal exits during
+generation can leave identifiable `.q3mapx-*.tmp` sibling files. If rollback itself
+fails, the diagnostic names the retained original backup for manual recovery.
+Avoid concurrent writers or external changes to the same output paths. Filesystem
+metadata and power-loss durability are not guaranteed by this mechanism. The
+packaged 0.3.0 release predates these changes.
 
 OBJ references its actual sibling MTL filename. `-lightmapsastexcoord` and
 `-deluxemapsastexcoord` retain their existing meaning; only referenced OBJ

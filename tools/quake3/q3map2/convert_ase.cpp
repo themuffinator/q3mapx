@@ -31,6 +31,7 @@
 /* dependencies */
 #include "q3map2.h"
 #include "convert_obj.h"
+#include "q3mapx/atomic_file.h"
 
 
 
@@ -315,7 +316,7 @@ static void ConvertLightmap( FILE *f, const char *base, int lightmapNum ){
    exports an 3d studio ase file from the bsp
  */
 
-int ConvertBSPToASE( char *bspName ){
+int ConvertBSPToASE( char *bspName ) try {
 	int modelNum;
 	FILE            *f;
 	entity_t        *e;
@@ -336,7 +337,8 @@ int ConvertBSPToASE( char *bspName ){
 	}
 
 	/* open it */
-	f = SafeOpenWrite( name );
+	q3mapx::OutputFiles outputs;
+	f = outputs.open( std::filesystem::u8path(name.c_str()) );
 
 	/* print header */
 	fprintf( f, "*3DSMAX_ASCIIEXPORT\t200\r\n" );
@@ -390,8 +392,9 @@ int ConvertBSPToASE( char *bspName ){
 	}
 
 	/* close the file and return */
-	fclose( f );
+	outputs.commit();
 
 	/* return to sender */
 	return 0;
 }
+catch ( const std::exception& error ) { Error( "ASE export: %s", error.what() ); }

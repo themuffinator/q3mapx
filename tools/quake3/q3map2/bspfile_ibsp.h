@@ -1,8 +1,9 @@
 
 #pragma once
+#include <cstdio>
 
 void                        LoadIBSPFile( const char *filename );
-void                        WriteIBSPFile( const char *filename );
+int                         WriteIBSPFile( FILE *file );
 void                        LoadIBSPorRBSPFilePartially( const char *filename );
 
 class MemBuffer;

@@ -26,6 +26,7 @@
 #pragma once
 
 #include <vector>
+#include <cstdio>
 
 
 /* ydnar: compiler flags, because games have widely varying content/surface flags */
@@ -105,7 +106,8 @@ struct game_t
 	int bspVersion;                                     /* bsp version to use */
 	bool lumpSwap;                                      /* cod-style len/ofs order */
 	typedef void ( *bspFunc )( const char * );
-	bspFunc load, write;                                /* load/write function pointers */
+	bspFunc load;
+	int ( *write )( FILE* );                            /* borrowed checked output; returns byte count */
 	std::vector<surfaceParm_t> surfaceParms;            /* surfaceparm array */
 	int brushBevelsSurfaceFlagsMask;                    /* apply only these surfaceflags to bevels to reduce extra bsp shaders amount; applying them to get correct physics at walkable brush edges and vertices */
 	const char* title = "";

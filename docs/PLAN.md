@@ -197,13 +197,17 @@ not a redefinition of the overall goal around the existing release:
   reconstruction profiling and scheduling changes remain open.
 - [ ] Continue native-format, input-validation and GUI improvements found by those
   checks, update the guides and validate the resulting release on Windows/Linux.
+  Remaining raw sidecar writers and fixed-size lightmap path-format warnings
+  need their own audit; checked BSP/SaveFile publication does not cover them.
 - [ ] Localize intermittent Windows process delays outside the measured VIS
   passes. They occur with both preceding and current executables at 20/70 workers;
   preserve complete-command timing evidence while investigating serial work,
   publication and worker shutdown separately.
-- [ ] Make fatal BSP/SaveFile write failures clean staged files as well as protect
-  the old destination. A Linux VIS file-size-limit test preserves the BSP/PRT but
-  exposes the inherited `SafeWrite` exit path bypassing the staging destructor.
+- [x] Make reported BSP/SaveFile write failures clean staged files as well as
+  protect the old destination. Both native serializers and shared buffer saves
+  now use owned, checked streams; failures unwind before the fatal diagnostic.
+  OS write-limit, sharing-lock, successful retry and output parity checks cover
+  this path. See [output safety](OUTPUT-SAFETY.md).
 
 Each task must have its own implementation, validation evidence and commit.
 Publication of several filesystem names cannot be advertised as one crash-atomic

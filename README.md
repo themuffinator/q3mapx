@@ -19,6 +19,8 @@ see [release packaging](docs/RELEASE.md).
 Development after 0.3.0 adds checked, staged MAP/report and mesh output with
 companion rollback on publication errors, plus an asynchronous [BSP inspection page](docs/BSP-INSPECTION.md)
 in the workbench. See [export guarantees and limits](docs/DECOMPILATION.md).
+BSP and shared buffer saves now also close and discard unfinished staging files
+on reported write failures; see [output safety](docs/OUTPUT-SAFETY.md).
 The new [`-bsp-evidence` command](docs/BSP-EVIDENCE.md) reports validated brush,
 partition, regional and stored-visibility observations for inference development.
 Optional [detail and group inference](docs/DECOMPILATION.md#group-inference-policy)

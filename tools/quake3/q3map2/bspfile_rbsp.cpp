@@ -152,9 +152,9 @@ void LoadRBSPFile( const char *filename ){
    writes a raven bsp file
  */
 
-void WriteRBSPFile( const char *filename ){
+int WriteRBSPFile( FILE *file ){
 	rbspHeader_t header{};
-	// Validate/pack before opening even the temporary output file. Grid records
+	// Validate/pack before emitting any bytes. Grid records
 	// contain bytes only, so SwapBSPFile does not change the comparison semantics.
 	Sys_Printf( "Storing lightgrid: %zu points\n", bspGridPoints.size() );
 	auto grid = q3mapx::packLightGrid<bspGridPoint_t>( bspGridPoints );
@@ -166,8 +166,7 @@ void WriteRBSPFile( const char *filename ){
 	header.version = LittleLong( g_game->bspVersion );
 
 	/* write initial header */
-	FILE *file = SafeOpenWrite( filename );
-	SafeWrite( file, &header, sizeof( header ) );    /* overwritten later */
+	q3mapx::writeOutput( file, &header, sizeof( header ) );    /* overwritten later */
 
 	{ /* add marker lump */
 		time_t t;
@@ -196,14 +195,11 @@ void WriteRBSPFile( const char *filename ){
 	AddLump( file, header.lumps[LUMP_FOGS], bspFogs );
 	AddLump( file, header.lumps[LUMP_DRAWINDEXES], bspDrawIndexes );
 
-	/* emit bsp size */
-	const int size = ftell( file );
-	Sys_Printf( "Wrote %.1f MB (%d bytes)\n", (float) size / ( 1024 * 1024 ), size );
+	/* AddLump bounds the file size before every write. */
+	const int size = int(q3mapx::tellOutput( file ));
 
 	/* write the completed header */
-	if ( fseek( file, 0, SEEK_SET ) != 0 ) Error( "BSP header seek failed" );
-	SafeWrite( file, &header, sizeof( header ) );
-
-	/* close the file */
-	SafeClose( file );
+	q3mapx::seekOutput( file, 0 );
+	q3mapx::writeOutput( file, &header, sizeof( header ) );
+	return size; // The owner checks close/flush and publishes the complete file.
 }

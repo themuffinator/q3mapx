@@ -92,8 +92,6 @@ char *ExpandArg( const char *path );    // from cmd line
 FILE    *SafeOpenWrite( const char *filename, const char *mode = "wb" );
 FILE    *SafeOpenRead( const char *filename, const char *mode = "rb" );
 void    SafeRead( FILE *f, MemBuffer& buffer );
-void    SafeWrite( FILE *f, const void *buffer, int count );
-void    SafeClose( FILE *f );
 
 /// \brief loads file from absolute \p filename path or emits \c Error
 MemBuffer LoadFile( const char *filename );

@@ -257,6 +257,10 @@ if(BUILD_TESTING)
     add_executable(atomic_file_test tests/atomic_file.cpp)
     target_link_libraries(atomic_file_test PRIVATE q3mapx_io)
     add_test(NAME atomic_file COMMAND atomic_file_test ${CMAKE_BINARY_DIR}/tests/atomic-file)
+    add_test(NAME binary_outputs COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/binary_outputs.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/binary-outputs)
+    set_tests_properties(binary_outputs PROPERTIES TIMEOUT 120)
     add_executable(columns_test tests/columns.cpp)
     target_link_libraries(columns_test PRIVATE q3mapx_compute)
     add_test(NAME columns COMMAND columns_test)

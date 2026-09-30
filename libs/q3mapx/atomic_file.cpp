@@ -3,6 +3,8 @@
 #include <atomic>
 #include <cerrno>
 #include <exception>
+#include <limits>
+#include <stdexcept>
 #include <string>
 #include <system_error>
 #ifdef _WIN32
@@ -16,6 +18,40 @@
 #endif
 
 namespace q3mapx {
+void writeOutput( FILE* stream, const void* data, size_t size ){
+    if ( !stream || ( size && !data ) ) throw std::invalid_argument("Invalid output stream/buffer");
+    errno = 0;
+    if ( ( size && std::fwrite( data, 1, size, stream ) != size ) || std::ferror( stream ) )
+        throw std::system_error( errno ? errno : EIO, std::generic_category(), "Cannot write output" );
+}
+
+std::int64_t tellOutput( FILE* stream ){
+    if ( !stream ) throw std::invalid_argument("Invalid output stream");
+    errno = 0;
+#ifdef _WIN32
+    const auto offset = _ftelli64( stream );
+#else
+    const auto offset = ftello( stream );
+#endif
+    if ( offset < 0 )
+        throw std::system_error( errno ? errno : EIO, std::generic_category(), "Cannot locate output position" );
+    return offset;
+}
+
+void seekOutput( FILE* stream, std::int64_t offset ){
+    if ( !stream || offset < 0 ) throw std::invalid_argument("Invalid output stream/offset");
+    errno = 0;
+#ifdef _WIN32
+    const int result = _fseeki64( stream, offset, SEEK_SET );
+#else
+    if ( offset > std::numeric_limits<off_t>::max() ) throw std::overflow_error("Output offset exceeds supported range");
+    const int result = fseeko( stream, off_t(offset), SEEK_SET );
+#endif
+    // Seeking can flush a buffered write. Do not discard its failure.
+    if ( result != 0 || std::ferror( stream ) )
+        throw std::system_error( errno ? errno : EIO, std::generic_category(), "Cannot seek output" );
+}
+
 AtomicFile::AtomicFile( std::filesystem::path destination ) : destination_( std::move(destination) ){
     static std::atomic<unsigned long long> serial{0};
 #ifdef _WIN32

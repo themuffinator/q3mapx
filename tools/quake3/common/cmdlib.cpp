@@ -37,6 +37,7 @@
 #include <cerrno>
 #include <filesystem>
 #include <limits>
+#include <stdexcept>
 #include "q3mapx/atomic_file.h"
 
 #ifdef WIN32
@@ -162,19 +163,6 @@ void SafeRead( FILE *f, MemBuffer& buffer ){
 }
 
 
-void SafeWrite( FILE *f, const void *buffer, int count ){
-	if ( count < 0 || ( count && !buffer ) ) Error( "Invalid file write length/buffer" );
-	if ( count && fwrite( buffer, 1, size_t(count), f ) != size_t(count) ) {
-		Error( "File write failure" );
-	}
-}
-
-void SafeClose( FILE *f ){
-	const bool failed = ferror(f) != 0;
-	if ( fclose(f) != 0 || failed ) Error( "File close/flush failure" );
-}
-
-
 /*
    ==============
    FileExists
@@ -206,13 +194,12 @@ MemBuffer LoadFile( const char *filename ){
  */
 void    SaveFile( const char *filename, const void *buffer, int count ){
 	try {
-		q3mapx::AtomicFile output(filename);
-		FILE *f = SafeOpenWrite( output.temporary().string().c_str() );
-		SafeWrite( f, buffer, count );
-		SafeClose( f );
+		if ( count < 0 || ( count && !buffer ) ) throw std::invalid_argument("Invalid file write length/buffer");
+		q3mapx::OutputFiles output;
+		q3mapx::writeOutput( output.open(filename), buffer, size_t(count) );
 		output.commit();
 	}
-	catch ( const std::exception& error ) { Error( "%s", error.what() ); }
+	catch ( const std::exception& error ) { Error( "Cannot save %s: %s", filename, error.what() ); }
 }
 
 

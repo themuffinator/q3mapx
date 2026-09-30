@@ -1540,3 +1540,45 @@ BSP/PRT preservation provided here. Shared writer cleanup and localization of th
 Windows delays are explicit follow-ups in the plan. Existing `UnsortedSet` build
 warnings remain. No external code/dependency was added, no game/input/capture
 automation was used, and the 0.3.0 archive is unchanged.
+
+## 2026-09-30 — Checked BSP and buffer-write cleanup
+
+Repaired the failed-write staging leak exposed by the preceding VIS round. Both
+native BSP serializers now borrow streams owned by `OutputFiles`; shared
+`SaveFile` buffers use the same owner. Checked writes, 64-bit seeks/positions,
+lump-range errors, buffered close failures and replacement failures unwind before
+the fatal compiler diagnostic. Streams close before staging files are removed,
+and existing destinations survive. Removed the unused fatal `SafeWrite` and
+`SafeClose` helpers. Shader remapping finishes before opening output, and byte
+order restoration no longer repeats it. BSP success messages follow publication.
+
+Added empty-world, ordinary and large-lightmap IBSP/RBSP failure/retry fixtures,
+directory/link guards and independent profile-save failures. Linux exercises
+actual short writes, buffered header-seek and close failures with file-size
+limits; Windows denies replacement with sharing locks. The output-owner unit
+test covers binary overwrite, a real read-only stream error, argument rejection
+and 64-bit positions while retaining a five-byte file. VIS now requires no new
+staging files after failure; its test-side cleanup workaround is gone.
+
+Final validation: 11 release CTest groups pass on Windows (24.10 seconds) and
+Linux (70.02 seconds); seven ASan/UBSan groups pass (216.32 seconds), with the
+established process-lifetime leak exclusion. There are 10 Windows and 13 Linux
+failure/destination checks, with the 13 repeated under sanitizers. Windows cannot
+create the three test symbolic links without additional privileges; Linux covers
+all three. Six successful rewrites on each release platform match the preceding
+`5af3d3f` executable byte-for-byte after masking only the unused timestamp.
+The final 31-graph/120-map VIS checks pass on all three builds, with identical
+real-map PVS matrices and preserved BSP/PRT retry inputs. No unfinished stage
+remains in the checked test areas.
+
+See [output guarantees](OUTPUT-SAFETY.md) and [validation identities/results](validation/checked-writes.json).
+Useful build/test logs, before/after evidence and preceding executables remain
+under `.agents/tmp/continuation/checked-writes-*`; generated fixtures remain in
+the designated `build/*/tests` directories. No performance gain is claimed.
+
+Separate findings remain open: intermittent Windows process delays outside VIS
+passes, remaining raw sidecar writers, and inherited ZIP uninitialized-value,
+`UnsortedSet` layout, deprecated `u8path` and lightmap path-format build warnings.
+This round does not provide crash recovery or a transaction spanning every
+compiler output. No external code/dependency was added, no game/input/capture
+automation was used, and the packaged 0.3.0 archive remains unchanged.

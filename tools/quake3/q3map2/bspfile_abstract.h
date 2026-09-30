@@ -25,7 +25,9 @@
 
 /* dependencies */
 #include "q3map2.h"
+#include "q3mapx/atomic_file.h"
 #include <bit>
+#include <stdexcept>
 #include <type_traits>
 
 // File offsets are validated independently of -force; it must never disable memory safety.
@@ -41,19 +43,19 @@ extern size_t bspNormalizedUnusedFlareFogs;
  */
 template<typename T>
 void AddLump( FILE *file, bspLump_t& lump, const std::vector<T>& data ){
-	if ( data.size() > size_t(INT_MAX - 3) / sizeof(T) ) Error( "BSP lump exceeds supported size" );
+	if ( data.size() > size_t(INT_MAX - 3) / sizeof(T) ) throw std::overflow_error( "BSP lump exceeds supported size" );
 	const int length = int(sizeof( T ) * data.size());
-	const long offset = ftell(file);
-	if ( offset < 0 || offset > INT_MAX - 3 - length ) Error( "BSP exceeds supported 2 GiB size limit" );
+	const auto offset = q3mapx::tellOutput(file);
+	if ( offset > INT_MAX - 3 - length ) throw std::overflow_error( "BSP exceeds supported 2 GiB size limit" );
 	/* add lump to bsp file header */
 	lump.offset = LittleLong( int(offset) );
 	lump.length = LittleLong( length );
 
 	/* write lump to file */
-	SafeWrite( file, data.data(), length );
+	q3mapx::writeOutput( file, data.data(), size_t(length) );
 
 	/* write padding zeros */
-	SafeWrite( file, std::array<byte, 3>{}.data(), ( ( length + 3 ) & ~3 ) - length );
+	q3mapx::writeOutput( file, std::array<byte, 3>{}.data(), ( ( length + 3 ) & ~3 ) - length );
 }
 
 

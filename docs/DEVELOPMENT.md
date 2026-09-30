@@ -294,7 +294,8 @@ optional policy arrays and grouping's rebuild-order dependency. See
 `vis_merge` exercises hint/sky directions, parallel openings, far-plane culling,
 convex/concave/folded joins, winding and leaf capacity boundaries, complete
 contraction and self-edge rejection. Real publication failures must preserve the
-input BSP and PRT; a successful retry consumes the PRT. Its matched generated
+input BSP and PRT and leave no new staging file; a successful retry consumes the
+PRT. Its matched generated
 structural/manual-detail maps cover all four solvers and default/merge/mergeportals/
 hint selections at 1/4/20 workers. `--workers` can select additional stress counts.
 The merge matrix also checks `-nosort` without changing its job-slot ordering.
@@ -313,6 +314,16 @@ legacy executable, records whole-process medians, requested passage storage and
 per-cluster visible surface/triangle distributions. Existing merge-mode PVS
 differences are recorded separately from required compaction parity; this is not
 a renderer benchmark or validation of the planned intelligent transformation.
+
+`binary_outputs` checks native IBSP/RBSP publication and shared profile saves
+against real Windows sharing locks and POSIX file-size limits. Empty, ordinary
+and large-lump inputs distinguish buffered header-seek and immediate write
+failures. It requires original preservation, clean staging, successful retry,
+directory/link rejection and no premature success message. Run it with
+`--reference /path/to/previous/q3mapx` for full output-byte parity after masking
+only the unused timestamp. `atomic_file` also checks 64-bit positions, invalid
+operations and a real read-only stream error. See [output safety](OUTPUT-SAFETY.md)
+for the covered writers and failure guarantees.
 
 ## Task commits
 

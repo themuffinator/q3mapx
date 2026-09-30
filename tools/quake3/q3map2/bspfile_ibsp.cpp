@@ -311,7 +311,7 @@ void LoadIBSPorRBSPFilePartially( const char *filename ){
    writes an id bsp file
  */
 
-void WriteIBSPFile( const char *filename ){
+int WriteIBSPFile( FILE *file ){
 	ibspHeader_t header{};
 
 	//%	Swapfile();
@@ -321,8 +321,7 @@ void WriteIBSPFile( const char *filename ){
 	header.version = LittleLong( g_game->bspVersion );
 
 	/* write initial header */
-	FILE *file = SafeOpenWrite( filename );
-	SafeWrite( file, &header, sizeof( header ) );    /* overwritten later */
+	q3mapx::writeOutput( file, &header, sizeof( header ) );    /* overwritten later */
 
 	{ /* add marker lump */
 		time_t t;
@@ -354,14 +353,11 @@ void WriteIBSPFile( const char *filename ){
 	/* advertisements */
 	AddLump( file, header.lumps[LUMP_ADVERTISEMENTS], bspAds );
 
-	/* emit bsp size */
-	const int size = ftell( file );
-	Sys_Printf( "Wrote %.1f MB (%d bytes)\n", (float) size / ( 1024 * 1024 ), size );
+	/* AddLump bounds the file size before every write. */
+	const int size = int(q3mapx::tellOutput( file ));
 
 	/* write the completed header */
-	if ( fseek( file, 0, SEEK_SET ) != 0 ) Error( "BSP header seek failed" );
-	SafeWrite( file, &header, sizeof( header ) );
-
-	/* close the file */
-	SafeClose( file );
+	q3mapx::seekOutput( file, 0 );
+	q3mapx::writeOutput( file, &header, sizeof( header ) );
+	return size; // The owner checks close/flush and publishes the complete file.
 }

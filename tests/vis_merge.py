@@ -196,7 +196,6 @@ def main():
     target.with_suffix('.prt').write_text(retry_prt)
     staging_pattern = target.name + '.q3mapx-*.tmp'
     staging_before = set(target.parent.glob(staging_pattern))
-    staging_leftovers = []
     failure_options = {}
     if os.name == 'nt':
         import ctypes
@@ -224,16 +223,8 @@ def main():
         assert result.returncode == 1 and b'ERROR' in result.stdout, result.stdout[-2000:]
         assert target.read_bytes() == original_bytes
         assert target.with_suffix('.prt').read_text() == retry_prt
-        # The inherited SafeWrite fatal path can bypass the staging destructor.
-        # Record that separate cleanup limitation; remove only new disposable
-        # files from this private test output after checking their exact target.
-        for staged in sorted(set(target.parent.glob(staging_pattern)) - staging_before):
-            assert staged.is_file() and not staged.is_symlink()
-            assert staged.resolve().parent == target.parent.resolve()
-            assert staged.resolve().is_relative_to(root)
-            staging_leftovers.append({'name': staged.name, 'bytes': staged.stat().st_size,
-                                     'sha256': hashlib.sha256(staged.read_bytes()).hexdigest()})
-            staged.unlink()
+        assert set(target.parent.glob(staging_pattern)) == staging_before, 'Failed BSP write left staged files'
+        assert b'Wrote ' not in result.stdout, 'Failed publication reported success'
     finally:
         if os.name == 'nt':
             assert kernel.CloseHandle(handle)
@@ -290,7 +281,7 @@ def main():
                     map_records.append(record)
     report = {'graph_checks': records, 'map_checks': map_records,
               'publication_failure_preserves_bsp_and_prt': True, 'successful_retry_consumes_prt': True,
-              'publication_failure_staging_leftovers_removed': staging_leftovers}
+              'publication_failure_cleans_staging': True}
     (root/'report.json').write_text(json.dumps(report, indent=2)+'\n')
     print(f'{len(records)} VIS graph checks, two controlled self-edge rejections and {len(map_records)} real-map worker checks passed')
 

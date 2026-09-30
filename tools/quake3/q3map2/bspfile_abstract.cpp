@@ -95,14 +95,14 @@ void SwapBlock( std::vector<T>& block ){
    byte swaps all data in the abstract bsp
  */
 
-static void SwapBSPFile(){
+static void SwapBSPFile( bool remapShaders = true ){
 	/* models */
 	SwapBlock( bspModels );
 
 	/* shaders (don't swap the name) */
 	for ( bspShader_t& shader : bspShaders )
 	{
-		if ( doingBSP ){
+		if ( doingBSP && remapShaders ){
 			const shaderInfo_t& si = ShaderInfoForShader( shader.shader );
 			if ( !strEmptyOrNull( si.remapShader ) ) {
 				// copy and clear the rest of memory // check for overflow by String64
@@ -244,13 +244,20 @@ void WriteBSPFile( const char *filename ){
 	Sys_Printf( "Writing %s\n", filename );
 	if ( !g_game || !g_game->write ) Error( "WriteBSPFile: unsupported BSP file format" );
 	try {
-		q3mapx::AtomicFile output(filename);
+		// Legacy shader remapping may report fatal errors; finish it before any
+		// output stream exists. Native serializers throw on all I/O/range errors.
 		SwapBSPFile();
-		g_game->write( output.temporary().string().c_str() );
-		SwapBSPFile();
-		output.commit();
+		int size;
+		try {
+			q3mapx::OutputFiles output;
+			size = g_game->write( output.open(filename) );
+			output.commit();
+		}
+		catch ( ... ) { SwapBSPFile(false); throw; }
+		SwapBSPFile(false);
+		Sys_Printf( "Wrote %.1f MB (%d bytes)\n", (float) size / ( 1024 * 1024 ), size );
 	}
-	catch ( const std::exception& error ) { Error( "%s", error.what() ); }
+	catch ( const std::exception& error ) { Error( "Cannot write BSP %s: %s", filename, error.what() ); }
 }
 
 

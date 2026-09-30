@@ -1,11 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include <cstdint>
 #include <cstdio>
 #include <filesystem>
 #include <memory>
 #include <vector>
 
 namespace q3mapx {
+// Borrowed streams: throw on failure so the OutputFiles owner can close and
+// remove its staging files before the caller reports a fatal compiler error.
+void writeOutput( FILE* stream, const void* data, size_t size );
+std::int64_t tellOutput( FILE* stream );
+void seekOutput( FILE* stream, std::int64_t offset ); // Absolute, nonnegative.
+
 // A reserved sibling path; the original remains intact until a complete file is committed.
 class AtomicFile {
 public:
@@ -32,6 +39,7 @@ public:
     ~OutputFiles();
     OutputFiles( const OutputFiles& ) = delete;
     OutputFiles& operator=( const OutputFiles& ) = delete;
+    // The returned stream is borrowed; only this owner may close it.
     FILE* open( std::filesystem::path destination );
     // Checks every stream, prepares rollback copies, then publishes the files.
     void commit();

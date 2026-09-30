@@ -17,10 +17,9 @@ visibility. `-reproducible` fixes result-publication order across worker counts
 for the selected mode; it does not make different modes equivalent. `-saveprt`
 keeps the PRT for another run. Without it, the PRT is removed only after the BSP
 has been written successfully. A reported output failure preserves both the old
-BSP and the PRT needed to retry.
-The inherited fatal write path can still leave a partial `.q3mapx-*.tmp` staging
-file; shared writer cleanup is tracked separately and is not repaired by this
-VIS change.
+BSP and the PRT needed to retry. Checked BSP writers now close their streams and
+remove unfinished `.q3mapx-*.tmp` files before reporting write, seek, flush or
+publication errors. See [output safety and limits](OUTPUT-SAFETY.md).
 
 ## Existing merge options
 

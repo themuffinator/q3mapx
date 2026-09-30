@@ -80,6 +80,51 @@ void flag(Writer& w, const char* key, int contents, const surfaceParm_t* parm) {
     else w.Bool((contents & parm->contentFlags) == parm->contentFlags);
 }
 
+void writeCellAdjacency(Writer& w,const q3mapx::CellGraph& graph) {
+    w.Key("cell_adjacency"); w.StartObject();
+    w.Key("status"); w.String(graph.status);
+    w.Key("method"); w.String("bounded_convex_world_path_cells_and_coplanar_face_intersections");
+    w.Key("original_prt_recovered"); w.Bool(false);
+    w.Key("author_classification_proven"); w.Bool(false);
+    bounds(w,"enclosure",graph.mins,graph.maxs);
+    w.Key("enclosure_volume"); w.Double(graph.enclosureVolume);
+    w.Key("summed_cell_volume"); w.Double(graph.cellVolume);
+    number(w,"open_faces_on_enclosure",graph.enclosedOpenFaces);
+    number(w,"degenerate_fragments",graph.degenerateFragments);
+    const q3mapx::CellLimits limits;
+    w.Key("limits"); w.StartObject();
+    number(w,"cells",limits.cells); number(w,"stored_boundary_faces",limits.faces);
+    number(w,"output_interfaces",limits.faces);
+    number(w,"stored_boundary_points",limits.points); number(w,"output_interface_points",limits.points);
+    number(w,"faces_per_cell",limits.cellFaces); number(w,"points_per_cell",limits.cellPoints);
+    number(w,"pending_points",limits.pendingPoints);
+    w.Key("cap_vertex_merge_distance"); w.Double(q3mapx::cellVertexMergeDistance);
+    w.Key("minimum_face_area"); w.Double(q3mapx::cellMinimumArea);
+    w.Key("max_absolute_coordinate"); w.Double(q3mapx::cellCoordinateLimit);
+    w.Key("volume_absolute_tolerance"); w.Double(q3mapx::cellVolumeAbsoluteTolerance);
+    w.Key("volume_relative_tolerance"); w.Double(q3mapx::cellVolumeRelativeTolerance); w.EndObject();
+    w.Key("cells"); w.StartArray();
+    for(size_t i=0;i<graph.cells.size();++i) {
+        const auto& cell=graph.cells[i]; w.StartObject(); number(w,"index",i);
+        w.Key("leaf"); w.Int(cell.leaf); w.Key("cluster"); w.Int(cell.cluster);
+        w.Key("volume"); w.Double(cell.volume); number(w,"faces",cell.faces);
+        bounds(w,"bounds",cell.mins,cell.maxs);
+        w.Key("interior_point"); w.StartArray(); for(double v:cell.center) w.Double(v); w.EndArray(); w.EndObject();
+    }
+    w.EndArray(); w.Key("interfaces"); w.StartArray();
+    for(const auto& face:graph.interfaces) {
+        w.StartObject(); number(w,"front_cell",face.front); number(w,"back_cell",face.back);
+        w.Key("partition_node"); w.Int(face.node); w.Key("area"); w.Double(face.area);
+        w.Key("kind");
+        const int front=graph.cells[face.front].cluster,back=graph.cells[face.back].cluster;
+        w.String(front<0 || back<0?"open_opaque":front==back?"within_cluster":"between_clusters");
+        w.Key("points"); w.StartArray();
+        for(const auto& point:face.points) { w.StartArray(); for(double v:point) w.Double(v); w.EndArray(); }
+        w.EndArray(); w.EndObject();
+    }
+    w.EndArray(); w.EndObject();
+}
+
 void writePortals(Writer& w, const q3mapx::PortalGraph& graph, const q3mapx::PortalEvidence& data,
                   const std::filesystem::path& source, const Identity& identity) {
     w.Key("portal_analysis"); w.StartObject();
@@ -175,7 +220,8 @@ void writePortals(Writer& w, const q3mapx::PortalGraph& graph, const q3mapx::Por
 void writeReport(FILE* output, const std::filesystem::path& source, const Identity& identity,
                  const q3mapx::BSPEvidence& evidence, unsigned regionDepth, uint64_t workLimit,
                  const q3mapx::PortalGraph* portals, const q3mapx::PortalEvidence* portalEvidence,
-                 const std::filesystem::path& portalSource, const Identity& portalIdentity) {
+                 const std::filesystem::path& portalSource, const Identity& portalIdentity,
+                 const q3mapx::CellGraph* cellGraph) {
     ReportStream stream(output); Writer w(stream);
     const auto path = source.generic_u8string();
     if (!g_utf8_validate(reinterpret_cast<const char*>(path.data()), path.size(), nullptr))
@@ -185,6 +231,7 @@ void writeReport(FILE* output, const std::filesystem::path& source, const Identi
     std::string scope="normalized_geometry_partition_associations";
     if(evidence.brushCellsRequested) scope+="_brush_interiors";
     if(portals) scope+="_portal_graph";
+    if(cellGraph) scope+="_cell_adjacency";
     scope+="_and_stored_pvs";
     w.Key("scope"); w.String(scope.c_str());
     w.Key("source"); w.StartObject();
@@ -301,7 +348,13 @@ void writeReport(FILE* output, const std::filesystem::path& source, const Identi
     }
     w.EndArray();
     if(portals) writePortals(w,*portals,*portalEvidence,portalSource,portalIdentity);
+    if(cellGraph) writeCellAdjacency(w,*cellGraph);
     w.Key("limitations"); w.StartArray();
+    if(cellGraph) {
+        w.String("Cell adjacency reconstructs bounded geometric world-tree leaf paths. Repeated leaf references produce distinct cells; opaque/opaque interfaces are omitted. Original PRT hint/sky flags and compiler portal history are not recoverable from this geometry alone.");
+        w.String("The enclosure is the stored world-model bounds expanded by one unit. Open faces touching it make exterior completeness unknown. Volume balance is a consistency check, not proof of exact topology; floating-point clipping, vertex merging and sliver thresholds remain explicit.");
+        w.String("Interfaces do not prove source brush causality, detail classification, visibility equivalence or supplied PRT completeness. No portal graph is automatically substituted into VIS.");
+    }
     if(evidence.brushCellsRequested) {
         w.String("Brush-cell clipping measures world-space convex interiors, independent of stored leaf-brush references. It does not identify source detail flags or material opacity; brushes in other models are excluded.");
         w.String("Witnesses have at least 0.01 units of clearance from every brush/path plane. Missing witnesses, thin fragments, unavailable enclosures, geometric limits or volume mismatch are inconclusive, not proof of an empty or structural brush.");
@@ -311,11 +364,11 @@ void writeReport(FILE* output, const std::filesystem::path& source, const Identi
         "Partition associations are exact unoriented plane matches, not proof that a brush created a portal or was originally structural. Nearby/scaled planes are not merged.",
         "Leaf-path matches restrict associations to ancestors of referenced world leaves. Matching detail faces and submodel faces are still possible; no detail/group/light inference is performed.",
         "Stored PVS describes the compiled result; absent, fast or all-visible VIS cannot establish the original author's classifications. Compile mode cannot be recovered from these bytes.",
-        "No PRT or leaf-cell adjacency is reconstructed. Regional split counts rank investigation sites; they do not establish excessive or removable portalling.",
+        cellGraph?nullptr:"No PRT or leaf-cell adjacency is reconstructed. Regional split counts rank investigation sites; they do not establish excessive or removable portalling.",
         "Regions are non-overlapping node subtrees at the requested depth, or terminal nodes above it. Early leaf children outside those subtrees are omitted. Stored bounds are not reconstructed convex cells.",
         "References count multiplicity, not unique geometry or runtime draw calls. Indexed triangle references omit runtime patch tessellation, shader passes and external model meshes.",
         "Indices use native-reader normalization; early brush source indices are included. Native terrain is included as normalized triangles. Unsupported native extensions follow the recovery-loss list.",
-        "No BSP, MAP or PVS edits are made. Source stability is checked by SHA-256 before loading and after analysis; concurrent source/output modification is unsupported."}) w.String(note);
+        "No BSP, MAP or PVS edits are made. Source stability is checked by SHA-256 before loading and after analysis; concurrent source/output modification is unsupported."}) if(note) w.String(note);
     w.EndArray();
     w.Key("native_recovery_losses"); w.StartArray();
     for(const auto& loss:bspRecoveryLosses) {
@@ -331,12 +384,13 @@ int BSPEvidenceMain(Args& args) try {
     const char* portalFile = nullptr;
     unsigned regionDepth=4; uint64_t workLimit=50'000'000;
     const bool brushCells=args.takeArg("-brush-cells");
+    const bool cellAdjacency=args.takeArg("-cell-adjacency");
     if(args.takeArg("-report")) report=args.takeNext();
     if(args.takeArg("-portals")) portalFile=args.takeNext();
     if(args.takeArg("-region-depth")) regionDepth=ParseIntegerOption("-region-depth",args.takeNext(),0,8);
     if(args.takeArg("-max-work")) workLimit=ParseIntegerOption("-max-work",args.takeNext(),1,100'000'000);
     if(args.size()!=1 || args.getVector().front()[0]=='-')
-        throw std::runtime_error("Usage: q3mapx -game PROFILE -bsp-evidence [-brush-cells] [-portals matching.prt] [-report file.json] [-region-depth 0..8] [-max-work N] file.bsp");
+        throw std::runtime_error("Usage: q3mapx -game PROFILE -bsp-evidence [-brush-cells] [-cell-adjacency] [-portals matching.prt] [-report file.json] [-region-depth 0..8] [-max-work N] file.bsp");
     const char* input=args.takeFront();
     const auto source=std::filesystem::absolute(std::filesystem::path(reinterpret_cast<const char8_t*>(input))).lexically_normal();
     auto destination=source; destination.replace_extension(".evidence.json");
@@ -361,7 +415,14 @@ int BSPEvidenceMain(Args& args) try {
     }
     LoadBSPFile(input); ParseEntities();
     auto evidence=q3mapx::analyzeBSPEvidence(regionDepth,workLimit);
+    std::optional<q3mapx::CellGraph> cellGraph;
     if(brushCells) q3mapx::analyzeBSPBrushCells(evidence,workLimit);
+    if(cellAdjacency) {
+        cellGraph=q3mapx::analyzeBSPCellAdjacency(evidence,workLimit);
+        Sys_Printf("Cell adjacency: %s; %zu path cells, %zu interfaces, %llu open enclosure faces, %llu degenerate fragments\n",
+            cellGraph->status,cellGraph->cells.size(),cellGraph->interfaces.size(),
+            (unsigned long long)cellGraph->enclosedOpenFaces,(unsigned long long)cellGraph->degenerateFragments);
+    }
     if(portals) {
         portalEvidence=q3mapx::analyzePortalEvidence(evidence,*portals,workLimit);
         if(!portalEvidence->worldMapping || portalEvidence->unmappedClusters || portalEvidence->probeDisagreements || portalEvidence->invalidGeometry)
@@ -376,7 +437,8 @@ int BSPEvidenceMain(Args& args) try {
     if(before.bytes!=after.bytes || before.sha256!=after.sha256) throw std::runtime_error("BSP changed during evidence analysis; report not published");
     q3mapx::OutputFiles outputs;
     writeReport(outputs.open(destination),source,before,evidence,regionDepth,workLimit,
-        portals?&*portals:nullptr,portalEvidence?&*portalEvidence:nullptr,portalSource,portalIdentity);
+        portals?&*portals:nullptr,portalEvidence?&*portalEvidence:nullptr,portalSource,portalIdentity,
+        cellGraph?&*cellGraph:nullptr);
     outputs.commit();
     Sys_Printf("BSP evidence: %zu brushes, %llu world nodes, %zu regional summaries; PVS %s\n",
         evidence.brushes.size(),(unsigned long long)evidence.reachableNodes,evidence.regions.size(),evidence.visibility.present?"present":"absent");

@@ -1774,3 +1774,72 @@ probes, preceding executables and logs remain under
 `.agents/tmp/continuation/passage-clipping-*`, and fixtures/reports in the existing
 build test directories. No external code/dependency was added, no game/input or
 capture automation was used, and the packaged 0.3.0 archive remains unchanged.
+
+## 2026-09-30 — Reconstruct bounded world-cell adjacency from BSP geometry
+
+Added opt-in `-bsp-evidence -cell-adjacency` as a shared geometric prerequisite
+for detail inference and intelligent regional VIS work. It clips an explicit
+world-model enclosure through normalized BSP planes, retains separate leaf-path
+cells and intersects opposing face fragments on their originating partition.
+Reports include cell bounds/volume, interface polygons/area/endpoints, open
+enclosure faces, numerical degeneracies and fixed geometry limits. Analysis does
+not depend on stored leaf AABBs, leaf-brush references, PVS or a supplied PRT.
+Negative clusters define the opaque category; opaque/opaque interfaces are omitted.
+Repeated leaf records remain distinct path cells. Shared internal nodes disable
+the analysis rather than expanding ambiguous paths.
+
+The core and traversal are iterative, handle early formats' native world roots
+and share the evidence command's work budget and checked 64 MiB report writer.
+Capacity/work exhaustion or an invalid enclosure preserves prior output. The
+default report is unchanged: 20 preceding/current Linux comparisons across
+plain, brush-cell, PRT and combined modes retain exact report bytes. This stage
+is serial, makes no performance claim, does not substitute reconstructed geometry
+into VIS, and does not change decompiler policies or the workbench UI.
+
+The independent unit oracle checks 24 generated box trees with 64 cells each,
+covering 4,772 adjacency/area and rejection checks. Additional controls cover
+scaled oblique planes, single/shared leaves, thin slabs, cap-collapse disclosure,
+exact geometry capacities and a 10,000-node tree. CLI controls compare every
+reported interface with the matched compiled PRT by endpoints, area and symmetric
+convex containment, while checking its vertices against both actual native paths.
+Quake 3/Raven structural/manual-detail pairs, the 64-sided corridor, all six
+recovery-only readers, relocated/single-leaf roots, modified leaf bounds, absent/
+present VIS, one/four workers, combined analyses and protected failures pass.
+
+Windows Release, Linux Release and ASan/UBSan all pass the two new groups plus
+existing compiler-pipeline, BSP evidence, brush-cell and portal-evidence groups.
+The five reconstructed graph objects are exactly equal across the three builds.
+The new CLI controls take 5.85, 8.43 and 59.09 seconds respectively; these are test
+suite runtimes, not compiler-speed measurements. The sanitizer regression suite
+finishes in 401.34 seconds with the established process-lifetime leak exclusion;
+address/undefined-behavior checks remain active. A separate Windows grid=9 run
+matches 718 open and 726 opaque interfaces for each native writer, with 431 path
+cells and one reported degeneracy event. No copyrighted map assets are included.
+
+The oblique control demonstrates why this is not exact original-PRT recovery:
+the original float portal construction and clipping of serialized BSP planes
+differ by up to 0.0474 plane/edge units and 0.647% face area. Tests retain these
+observations under explicit 0.1-unit/1% PRT-comparison tolerances while requiring
+native path membership within `2e-6` units. The corridor reports 194 degeneracy
+events. Balanced volume does not prove topology, and original hint/sky flags,
+author structural causality and completeness outside the enclosure remain unknown.
+See [the guide](CELL-ADJACENCY.md) and [validation record](validation/cell-adjacency.json)
+for limits, exact identities and executed evidence.
+
+Automatic merge gates remain open: after the preceding clipping repair, combined
+merging still omits 2 baseline visibility bits on grid=5 and 27 on grid=9. The
+next geometric step is bounded interface/PRT area coverage and protected-flag
+correspondence before regional transformation proposals. These diagnostics do not
+establish a safe automatic edit. Stripped-light inference, broader authoring
+recovery and appearance-preserving triangle optimization remain in the plan.
+
+Other findings include inherited `UnsortedSet` layout warnings and a Linux GCC 13
+array-bounds warning while inlining the inherited `Args::getVector` into the
+evidence CLI; exercised commands pass, but the warning remains recorded. Earlier
+raw sidecar writers, intermittent Windows process delays and conservative recursive
+portal clipping remain open. Prior policy-blocked cleanup targets were not retried.
+Useful probes, reference executable, scripts and logs stay under
+`.agents/tmp/continuation/cell-adjacency-*` and `auto-vis-probe*`; reusable fixtures
+and reports stay in their build test directories. No external code/dependency was
+added, no game/input/capture automation was used, and the packaged 0.3.0 archive
+remains unchanged.

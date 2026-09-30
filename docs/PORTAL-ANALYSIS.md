@@ -12,6 +12,11 @@ also producing stored visibility, run VIS with `-saveprt`. Analysis works before
 VIS, but leaves visibility-dependent costs null. It needs no game assets and
 does not modify BSP, PRT, MAP or PVS data. `-brush-cells` can be requested together
 with `-portals` under the same work budget.
+Optional [`-cell-adjacency`](CELL-ADJACENCY.md) adds geometric BSP path cells and
+interfaces to the same report, also without changing the supplied PRT. These
+objects remain independent: complete polygon coverage/pairing certification is
+not yet implemented, and original protected flags cannot be inferred from the
+BSP cell geometry alone.
 
 This is a diagnostic step toward the [intelligent VIS compiler](COMPILER-OPTIMIZATION.md),
 not its automatic optimization mode. It identifies expensive regions and evidence

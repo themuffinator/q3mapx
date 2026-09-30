@@ -308,6 +308,21 @@ indices, self-edges, winding/byte/point limits, every record truncation and a
 seeded malformed corpus. Seeded decimal and scientific floats must have the
 same binary32 values as the preceding `scanf` reader.
 
+`cell_graph` independently compares generated box-tree face adjacency and areas,
+with analytic oblique cuts, repeated/single leaves, thin/degenerate geometry, exact
+capacity boundaries, malformed inputs and a 10,000-node iterative traversal.
+`cell_adjacency` compares every reconstructed interface with matched compiled PRT
+polygons and verifies its vertices against both native leaf paths. Quake 3/Raven
+structural/detail pairs, a 64-sided corridor, all six recovery-only readers,
+relocated/single-leaf roots, changed leaf bounds, worker parity, work exhaustion
+and protected output have separate controls. The oblique fixture measures and
+records the difference between float PRT construction and serialized BSP-plane
+geometry under explicit comparison tolerances; it does not require false byte
+equivalence. Reports remain identical before/after VIS and with/without a supplied
+PRT. Each build writes `tests/cell-adjacency/validation.json`; `--grid 9` selects
+larger axial controls. See [cell adjacency](CELL-ADJACENCY.md) for numerical limits
+and the distinction between reconstruction and original portal recovery.
+
 `portal_evidence` compares Quake 3 and Raven structural/manual-detail fixtures
 before and after VIS. Independent oracles remove individual edges to find
 bridges, traverse the BSP frontier, triangulate polygon fans and union world

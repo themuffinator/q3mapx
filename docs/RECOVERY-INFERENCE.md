@@ -10,6 +10,9 @@ implemented with bounded geometry and per-brush decisions. Optional
 surface-supported assemblies with explicit ambiguity and loader-order constraints.
 Both policies and their work budgets are now selectable in the workbench, saved
 in projects/run snapshots and checked against compiler/profile capabilities.
+Optional [BSP cell adjacency](CELL-ADJACENCY.md) now provides bounded geometric
+interfaces without the original PRT. It is an additional diagnostic prerequisite;
+using its coverage and uncertainty to refine exported classifications remains open.
 Broader grouping, light and review tools below remain planned. Recover the closest supported
 recreation of the author's MAP: editable geometry, organization, materials,
 visibility behavior and source lighting. Keep exact extraction available alongside
@@ -26,6 +29,9 @@ the original author's recovered metadata solely because its rebuild looks simila
 - Build a reusable, bounded analysis model from validated planes, nodes, leaves,
   brushes, surfaces, clusters/PVS, entities, materials and native extensions.
   Record the BSP hash, game profile, asset identities and assumed compile settings.
+  The current cell reconstruction separates repeated leaf paths, reports open
+  enclosure faces and numerical degeneracies, and bounds work/geometry. It does
+  not establish the original portal flags, author causality or global completeness.
 - Associate each proposal with source record indices, spatial bounds, supporting
   and conflicting evidence, alternatives, and a confidence category. Calibrate
   confidence against known-source fixtures before publishing numeric probabilities.
@@ -67,15 +73,16 @@ without relying on leaf-brush references. Strict interior witnesses and current
 exported-side material semantics support detail proposals; protected or uncertain
 cases retain the legacy baseline. A 36-rebuild corpus includes deliberately
 removed references and non-first-side structural materials, alongside analytical
-geometry, VIS, budget and worker controls. It does not yet reconstruct complete
-leaf adjacency, accept PRTs, prove portal causality, save user overrides or expose
+geometry, VIS, budget and worker controls. The classifier does not yet consume
+the new bounded cell-adjacency evidence or supplied PRTs, prove portal causality, save user overrides or expose
 GUI proposal review. The workbench exposes policy/budget selection, not per-brush
 accept/reject review. Broader real-map classification calibration remains open.
 
 1. Relate brush faces to BSP partition planes, adjacent leaf cells, opaque space,
    cluster boundaries and PVS changes. When a compatible PRT is supplied, use its
-   portal graph directly. Otherwise investigate reconstructing bounded leaf-cell
-   adjacency from the BSP tree; do not assume the original PRT is stored in the BSP.
+   portal graph directly. Without one, use bounded leaf-cell reconstruction from
+   the BSP tree with explicit enclosure/degeneracy limits; do not assume the
+   original PRT or its protected flags are stored in the BSP.
 2. Estimate which brushes supported visibility partitions and which were inserted
    without creating them. Separate retained compiler flags from geometric evidence.
    Identical PVS rows, brush size or a leaf reference alone cannot establish the

@@ -1,0 +1,527 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-30T14:41:48.161785+00:00",
+  "base_revision": "695d335fbba6a1513ede3d84b8b922e5313cef1e",
+  "scope": "Optional BSP-only bounded convex world-path cells and visibility-relevant coplanar interfaces",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "62e5b0dbaae8cf1f7e18499c5643e8c6cd1422a2230fdd8db6f5e2735d7413d5",
+    "libs/q3mapx/cell_graph.h": "00d5bb9ed4047f4f299e54f1ef30c657168576f1e5f1df2448951ccfe00d788f",
+    "libs/q3mapx/cell_graph.cpp": "8441756d71be3d0009fe167449769e7b3d9e0165e12887e6e280d2e639e907f2",
+    "tools/quake3/q3map2/bsp_cell_adjacency.cpp": "e32d573143a7587c16db71aeeaf924e4a36648912644bb2d965d462c0f76f410",
+    "tools/quake3/q3map2/bsp_evidence.h": "37bf5a3bf60c88e8426abd7f694b3901772657bd783453bf8557cf830925f176",
+    "tools/quake3/q3map2/bsp_evidence_cli.cpp": "2cdaa7a2eba84aa7b24fa907da3d55a86c621c7bb582ca2e2e51324d7be68f00",
+    "tools/quake3/q3map2/help.cpp": "247c851506f2e9d8304d734f6ca140ab91f950a04bf73ddae2389d43ff6a13f4",
+    "tests/cell_graph.cpp": "83b86436bc8af0e597c5fae0a132bb2e890175eaf1969a7851281baa87ba314a",
+    "tests/cell_adjacency.py": "d7aeffae266b81b5027a3d0b482a3cfee74a8ed27707e05e5c9b00ad33ca3101",
+    "tests/portal_evidence.py": "1ca3333a8f498d71ee0ba2836ecb517f670d74addbfab71a4bd0c3dfea95261e",
+    "tests/vis_fixtures.py": "1fa706f41f11a08224ba403e23274d83e7fd10823f8c9100e3067a7e2f4fd7f4",
+    "tests/fixtures.py": "5cc300117041bc22a719451f9915bca17cc5af10094521408538b850284436c7",
+    "tests/integration.py": "3bb8e703e9e898a4c079f6a52321941aeb54876a7eac7804b8e1069c1541dfb3",
+    "tests/native_early.py": "bfa20c88c2817fbf9d8a2c04e65a38d5c77d384fd621b5076ddc1b1b0bea853d",
+    "tests/native_fakk.py": "89f61ab985a71cd231823a5b7fb346f39708e3f35c1c8344887e1d8a6596ca8b",
+    "tests/native_mohaa.py": "edd0958735e0632edbfed4da9d4f8b2e60f6b5e2f6013b1585c0180a74c46fc1"
+  },
+  "platforms": {
+    "windows": {
+      "compiler": {
+        "path": "build/release/bin/q3mapx.exe",
+        "sha256": "8762068b1bf328757bb15997ba8cb585a2d3f53cf0ec96294e83a5553678dd2c"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/cell-adjacency-build-final-win.log",
+        "sha256": "6442daa325652eaaa9414f3c12facd012e740abe2605ceaf5d47d6273034d0ef"
+      },
+      "ctest": [
+        {
+          "path": ".agents/tmp/continuation/cell-adjacency-tests-final-win.log",
+          "sha256": "56cfd70c72bda935e64a272a39c5394e6975ab5ce8094d51aa653411098cb636",
+          "passed_groups": [
+            {
+              "name": "cell_graph",
+              "seconds": 0.13
+            },
+            {
+              "name": "cell_adjacency",
+              "seconds": 5.85
+            }
+          ],
+          "total_seconds": 6.0
+        },
+        {
+          "path": ".agents/tmp/continuation/cell-adjacency-regressions-win.log",
+          "sha256": "2a22bb4ccf4924c08c46ec7e5d4f4bba242c75e1e04069e76feacbcb833d38b0",
+          "passed_groups": [
+            {
+              "name": "compiler_pipeline",
+              "seconds": 0.81
+            },
+            {
+              "name": "bsp_evidence",
+              "seconds": 1.49
+            },
+            {
+              "name": "brush_cells",
+              "seconds": 10.78
+            },
+            {
+              "name": "portal_evidence",
+              "seconds": 2.35
+            }
+          ],
+          "total_seconds": 15.43
+        }
+      ],
+      "integration_validation": {
+        "path": "build/release/tests/cell-adjacency/validation.json",
+        "sha256": "4de94404bb5d7698c39b1e551e9d7cbcb7d382940899d83531620be934f834f7"
+      },
+      "exact_graph_semantics_sha256": "7e358c44dba607d124b9b9bd64715781e95a39ac037bde0adcd728f200553ba1"
+    },
+    "linux": {
+      "compiler": {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "50e884e394d10e146a91c986763f603aad4ef3d06e980a665e208cec3e8bf1bc"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/cell-adjacency-build-linux.log",
+        "sha256": "5d56361958dce332b9c5a734c45b717c7002a1c4c62ef0bb5682ac794abe955a"
+      },
+      "ctest": [
+        {
+          "path": ".agents/tmp/continuation/cell-adjacency-tests-linux.log",
+          "sha256": "70ebff570e783e83b385b37a65d12168ec14bd948576de7b6dfa2f62ec4bda14",
+          "passed_groups": [
+            {
+              "name": "compiler_pipeline",
+              "seconds": 4.11
+            },
+            {
+              "name": "bsp_evidence",
+              "seconds": 7.24
+            },
+            {
+              "name": "brush_cells",
+              "seconds": 39.05
+            },
+            {
+              "name": "cell_graph",
+              "seconds": 0.02
+            },
+            {
+              "name": "cell_adjacency",
+              "seconds": 8.43
+            },
+            {
+              "name": "portal_evidence",
+              "seconds": 12.79
+            }
+          ],
+          "total_seconds": 71.89
+        }
+      ],
+      "integration_validation": {
+        "path": "build/linux-release/tests/cell-adjacency/validation.json",
+        "sha256": "3eaa5ba245259744467161fa1bed88a90e5b0a2f643c393dc0f792bb83c21794"
+      },
+      "exact_graph_semantics_sha256": "7e358c44dba607d124b9b9bd64715781e95a39ac037bde0adcd728f200553ba1"
+    },
+    "asan_ubsan": {
+      "compiler": {
+        "path": "build/linux-sanitized/bin/q3mapx",
+        "sha256": "70239bc1c6bc8c6859af17ffedac85518c621a91e2603da98cbc2e847e152d8c"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/cell-adjacency-build-asan.log",
+        "sha256": "f07220f5d1f705e31cdd13543f08da065bc66c59e4d4314a9726116a984dc8e9"
+      },
+      "ctest": [
+        {
+          "path": ".agents/tmp/continuation/cell-adjacency-tests-asan.log",
+          "sha256": "5d610d558294262988dd08cafcb432447e8cd1ca225ec4732509f42359926123",
+          "passed_groups": [
+            {
+              "name": "compiler_pipeline",
+              "seconds": 24.73
+            },
+            {
+              "name": "bsp_evidence",
+              "seconds": 39.75
+            },
+            {
+              "name": "brush_cells",
+              "seconds": 224.39
+            },
+            {
+              "name": "cell_graph",
+              "seconds": 0.3
+            },
+            {
+              "name": "cell_adjacency",
+              "seconds": 59.09
+            },
+            {
+              "name": "portal_evidence",
+              "seconds": 52.88
+            }
+          ],
+          "total_seconds": 401.34
+        }
+      ],
+      "integration_validation": {
+        "path": "build/linux-sanitized/tests/cell-adjacency/validation.json",
+        "sha256": "e4632e206c9587c61049c3e6e5b5c5760a566bcba8239d74fc0c234aadc4bff0"
+      },
+      "exact_graph_semantics_sha256": "7e358c44dba607d124b9b9bd64715781e95a39ac037bde0adcd728f200553ba1"
+    }
+  },
+  "cross_platform_exact_graph_equality": true,
+  "unit_checks": {
+    "independent_adjacency_area_and_rejections": 4772,
+    "generated_box_trees": 24,
+    "cells_per_tree": 64,
+    "deep_tree_nodes": 10000,
+    "additional_controls": [
+      "scaled oblique analytic area/volume",
+      "single/repeated leaf records",
+      "resolvable thin slab",
+      "collapsed-cap uncertainty",
+      "exact geometry capacities",
+      "initial and intermediate pending geometry bounds"
+    ]
+  },
+  "known_source_pairs": [
+    {
+      "game": "quake3",
+      "detail": false,
+      "rounded": false,
+      "clusters": 40,
+      "cells": 72,
+      "interfaces": 238,
+      "interface_kinds": {
+        "between_clusters": 94,
+        "open_opaque": 144
+      },
+      "degenerate_fragments": 0,
+      "enclosure_volume": 86453640.0,
+      "prt_comparison": {
+        "boundary_tolerance_units": 0.0001,
+        "relative_area_tolerance": 1e-07,
+        "max_plane_edge_deviation_units": 1.4210854715202004e-14,
+        "max_relative_area_error": 0
+      },
+      "source_map_sha256_lf": "12b395273982267931e5cf7f4954412dcafc1f8c1ff4e3f6098b5cec63a31519",
+      "source_prt_sha256_lf": "78f70cde49b1741157a13dda5c5d1f12ef865c15a3aa09530e8de0032af18f2b"
+    },
+    {
+      "game": "quake3",
+      "detail": true,
+      "rounded": false,
+      "clusters": 4,
+      "cells": 20,
+      "interfaces": 20,
+      "interface_kinds": {
+        "between_clusters": 4,
+        "open_opaque": 16
+      },
+      "degenerate_fragments": 0,
+      "enclosure_volume": 86453640.0,
+      "prt_comparison": {
+        "boundary_tolerance_units": 0.0001,
+        "relative_area_tolerance": 1e-07,
+        "max_plane_edge_deviation_units": 0,
+        "max_relative_area_error": 0
+      },
+      "source_map_sha256_lf": "842f669bab274224fb687d23ba74b267f117aa192ef0e240c66f1ca3690d7fcc",
+      "source_prt_sha256_lf": "3b4d14fa74d5a701a4782429f18ea36d0537bd0fb7627b9635b39504c1025232"
+    },
+    {
+      "game": "ja",
+      "detail": false,
+      "rounded": false,
+      "clusters": 40,
+      "cells": 72,
+      "interfaces": 238,
+      "interface_kinds": {
+        "between_clusters": 94,
+        "open_opaque": 144
+      },
+      "degenerate_fragments": 0,
+      "enclosure_volume": 86453640.0,
+      "prt_comparison": {
+        "boundary_tolerance_units": 0.0001,
+        "relative_area_tolerance": 1e-07,
+        "max_plane_edge_deviation_units": 1.4210854715202004e-14,
+        "max_relative_area_error": 0
+      },
+      "source_map_sha256_lf": "12b395273982267931e5cf7f4954412dcafc1f8c1ff4e3f6098b5cec63a31519",
+      "source_prt_sha256_lf": "78f70cde49b1741157a13dda5c5d1f12ef865c15a3aa09530e8de0032af18f2b"
+    },
+    {
+      "game": "ja",
+      "detail": true,
+      "rounded": false,
+      "clusters": 4,
+      "cells": 20,
+      "interfaces": 20,
+      "interface_kinds": {
+        "between_clusters": 4,
+        "open_opaque": 16
+      },
+      "degenerate_fragments": 0,
+      "enclosure_volume": 86453640.0,
+      "prt_comparison": {
+        "boundary_tolerance_units": 0.0001,
+        "relative_area_tolerance": 1e-07,
+        "max_plane_edge_deviation_units": 0,
+        "max_relative_area_error": 0
+      },
+      "source_map_sha256_lf": "842f669bab274224fb687d23ba74b267f117aa192ef0e240c66f1ca3690d7fcc",
+      "source_prt_sha256_lf": "3b4d14fa74d5a701a4782429f18ea36d0537bd0fb7627b9635b39504c1025232"
+    },
+    {
+      "game": "quake3",
+      "detail": false,
+      "rounded": true,
+      "clusters": 5,
+      "cells": 327,
+      "interfaces": 326,
+      "interface_kinds": {
+        "between_clusters": 4,
+        "open_opaque": 322
+      },
+      "degenerate_fragments": 194,
+      "enclosure_volume": 209886600.0,
+      "prt_comparison": {
+        "boundary_tolerance_units": 0.1,
+        "relative_area_tolerance": 0.01,
+        "max_plane_edge_deviation_units": 0.047389943345096906,
+        "max_relative_area_error": 0.006467718200166584
+      },
+      "source_map_sha256_lf": "0d4cfdfb491226feb8715f873775d2b6813861ba51c0a70f3ffba989c6c3c07c",
+      "source_prt_sha256_lf": "89ccff966caf3de6b694dfaf3281da55300044b55e060576f36e12c910520c12"
+    }
+  ],
+  "native_recovery_only_profiles": [
+    "alice",
+    "fakk2",
+    "mohaa",
+    "q3-ihv",
+    "q3test44",
+    "q3test45"
+  ],
+  "checks": [
+    "Native path-halfspace membership for every interface vertex and cell interior",
+    "PRT one-to-one polygon, endpoint, area and bidirectional containment oracle",
+    "IBSP/RBSP structural and manual-detail pairs",
+    "64-sided oblique corridor",
+    "No PRT required; unchanged graph before/after VIS or with supplied PRT",
+    "Exact 1/4-worker report parity",
+    "Combined brush-cell and PRT evidence with shared work budget",
+    "Exact/exhausted budgets, source/output preservation and clean staging",
+    "Stored leaf bounds independence",
+    "Repeated leaf path cells and exposed enclosure faces",
+    "Shared internal-node abstention",
+    "Enclosure coordinate and publication failures",
+    "Six native recovery-only readers with exact normalized graph equality",
+    "Relocated early-format world head and single-leaf world"
+  ],
+  "protected_failure_cases": [
+    "quake3-structural-shared-budget",
+    "quake3-structural-cell-budget",
+    "quake3-structural-enclosure",
+    "quake3-structural-protect-input",
+    "quake3-structural-publish-directory",
+    "ja-structural-shared-budget",
+    "ja-structural-cell-budget",
+    "ja-structural-enclosure",
+    "ja-structural-protect-input",
+    "ja-structural-publish-directory"
+  ],
+  "larger_windows_grid9": {
+    "validation": {
+      "path": ".agents/tmp/continuation/cell-adjacency-grid9/validation.json",
+      "sha256": "484756f29244ea1a94eb1f7c898c20f1d3e30bf14c87811f364f7f2facc91ea9"
+    },
+    "known_source_pairs": [
+      {
+        "game": "quake3",
+        "detail": false,
+        "rounded": false,
+        "clusters": 220,
+        "cells": 431,
+        "interfaces": 1444,
+        "interface_kinds": {
+          "between_clusters": 718,
+          "open_opaque": 726
+        },
+        "degenerate_fragments": 1,
+        "enclosure_volume": 500712840.0,
+        "prt_comparison": {
+          "boundary_tolerance_units": 0.0001,
+          "relative_area_tolerance": 1e-07,
+          "max_plane_edge_deviation_units": 1.1368683772161603e-13,
+          "max_relative_area_error": 1.4210854715202005e-15
+        },
+        "source_map_sha256_lf": "b909fa274c6cff0db02ab62e2b90cfc30c203658ea111cbd1cba618d28ef7947",
+        "source_prt_sha256_lf": "c380ee429fd47212bb90bff2110002b7bb48fb8ba70e8b83d7d9b8ac666894fc"
+      },
+      {
+        "game": "quake3",
+        "detail": true,
+        "rounded": false,
+        "clusters": 4,
+        "cells": 20,
+        "interfaces": 20,
+        "interface_kinds": {
+          "between_clusters": 4,
+          "open_opaque": 16
+        },
+        "degenerate_fragments": 0,
+        "enclosure_volume": 500712840.0,
+        "prt_comparison": {
+          "boundary_tolerance_units": 0.0001,
+          "relative_area_tolerance": 1e-07,
+          "max_plane_edge_deviation_units": 0,
+          "max_relative_area_error": 0
+        },
+        "source_map_sha256_lf": "1dfe4763ebe536648213557459286a7f7a1579f8ea6409f65463fd56e00908b2",
+        "source_prt_sha256_lf": "b512b39319967db1b1f16bad2f18599a4f489e10a40cd24b1011849876ea2bda"
+      },
+      {
+        "game": "ja",
+        "detail": false,
+        "rounded": false,
+        "clusters": 220,
+        "cells": 431,
+        "interfaces": 1444,
+        "interface_kinds": {
+          "between_clusters": 718,
+          "open_opaque": 726
+        },
+        "degenerate_fragments": 1,
+        "enclosure_volume": 500712840.0,
+        "prt_comparison": {
+          "boundary_tolerance_units": 0.0001,
+          "relative_area_tolerance": 1e-07,
+          "max_plane_edge_deviation_units": 1.1368683772161603e-13,
+          "max_relative_area_error": 1.4210854715202005e-15
+        },
+        "source_map_sha256_lf": "b909fa274c6cff0db02ab62e2b90cfc30c203658ea111cbd1cba618d28ef7947",
+        "source_prt_sha256_lf": "c380ee429fd47212bb90bff2110002b7bb48fb8ba70e8b83d7d9b8ac666894fc"
+      },
+      {
+        "game": "ja",
+        "detail": true,
+        "rounded": false,
+        "clusters": 4,
+        "cells": 20,
+        "interfaces": 20,
+        "interface_kinds": {
+          "between_clusters": 4,
+          "open_opaque": 16
+        },
+        "degenerate_fragments": 0,
+        "enclosure_volume": 500712840.0,
+        "prt_comparison": {
+          "boundary_tolerance_units": 0.0001,
+          "relative_area_tolerance": 1e-07,
+          "max_plane_edge_deviation_units": 0,
+          "max_relative_area_error": 0
+        },
+        "source_map_sha256_lf": "1dfe4763ebe536648213557459286a7f7a1579f8ea6409f65463fd56e00908b2",
+        "source_prt_sha256_lf": "b512b39319967db1b1f16bad2f18599a4f489e10a40cd24b1011849876ea2bda"
+      },
+      {
+        "game": "quake3",
+        "detail": false,
+        "rounded": true,
+        "clusters": 5,
+        "cells": 327,
+        "interfaces": 326,
+        "interface_kinds": {
+          "between_clusters": 4,
+          "open_opaque": 322
+        },
+        "degenerate_fragments": 194,
+        "enclosure_volume": 209886600.0,
+        "prt_comparison": {
+          "boundary_tolerance_units": 0.1,
+          "relative_area_tolerance": 0.01,
+          "max_plane_edge_deviation_units": 0.047389943345096906,
+          "max_relative_area_error": 0.006467718200166584
+        },
+        "source_map_sha256_lf": "0d4cfdfb491226feb8715f873775d2b6813861ba51c0a70f3ffba989c6c3c07c",
+        "source_prt_sha256_lf": "89ccff966caf3de6b694dfaf3281da55300044b55e060576f36e12c910520c12"
+      }
+    ]
+  },
+  "preceding_default_compatibility": {
+    "validation": {
+      "path": ".agents/tmp/continuation/cell-adjacency-default-parity/validation.json",
+      "sha256": "02a2475cbf99fdba23b2a965eed7f679445694daea5ca0c27a6a6bb365c46856"
+    },
+    "script": {
+      "path": ".agents/tmp/continuation/cell-adjacency-default-parity.py",
+      "sha256": "faef61fb4ce0d71f7a84a9db5a3a0955f0176a4136cc410d5d4ba390cc845472"
+    },
+    "executables": [
+      {
+        "path": ".agents/tmp/continuation/cell-adjacency-baseline-linux",
+        "sha256": "446baaf52aac255d900cb1a3fc233ead2a6c35d49bbe8c87a392632306e99677"
+      },
+      {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "50e884e394d10e146a91c986763f603aad4ef3d06e980a665e208cec3e8bf1bc"
+      }
+    ],
+    "byte_identical_reports": 20,
+    "options": [
+      "default evidence",
+      "brush cells",
+      "supplied portals",
+      "brush cells plus supplied portals"
+    ]
+  },
+  "automatic_merge_gate_recheck": {
+    "base_revision": "695d335fbba6a1513ede3d84b8b922e5313cef1e",
+    "windows_compiler_sha256": "9d539ce7935e1334fb640368ac8cb85f6ff2be8f4e2cfa1c85cca2df3e5d1574",
+    "probe_script": {
+      "path": ".agents/tmp/continuation/auto-vis-probe.py",
+      "sha256": "5ae7e4aa4f3a5c654e36d2042367ee5c92041904941c70dc10687d705efcdcc4"
+    },
+    "raw_results": {
+      "path": ".agents/tmp/continuation/auto-vis-probe/results.json",
+      "sha256": "bff043e0b90d3eb1041584de92253fc6349e4a642fd51ae5e6c72f981569b453"
+    },
+    "cases": [
+      {
+        "grid": 5,
+        "clusters": 84,
+        "combined_merge_missing_baseline_bits": 2
+      },
+      {
+        "grid": 9,
+        "clusters": 220,
+        "combined_merge_missing_baseline_bits": 27
+      }
+    ],
+    "interpretation": "Baseline-inclusion gate still fails after passage clipping repair; no automatic merge enabled. Single probe times are not a performance benchmark."
+  },
+  "sanitizers": "ASan/UBSan enabled; detect_leaks=0 for inherited process-lifetime allocations, abort_on_error=1, UBSAN stack traces enabled",
+  "limitations": [
+    "Explicit world-model enclosure only; no global topology or leak certification",
+    "No original PRT flags, compiler history or author classification is recovered",
+    "Opaque/opaque interfaces omitted; repeated native leaves remain separate path cells",
+    "Degeneracy events and numerical thresholds remain relevant even with balanced volume",
+    "Oblique compiled PRT differs by up to 0.0474 plane/edge units and 0.647% face area in this fixture",
+    "Independent native-path checks use 2e-6 units; oblique PRT comparison uses separate 0.1-unit/1% tolerances",
+    "No automatic PRT substitution, optimizer transformation, inference-policy change or GUI change",
+    "Serial diagnostic stage; no speedup or peak-memory claim; unchanged packaged 0.3.0 archive"
+  ],
+  "other_findings": [
+    "Inherited UnsortedSet layout warnings",
+    "Linux GCC 13 reports array-bounds warning while inlining inherited Args::getVector into evidence CLI; exercised commands pass",
+    "Existing merge visibility inclusion, raw sidecar writers and intermittent Windows process delays remain open"
+  ],
+  "result": "passed"
+}

@@ -300,6 +300,7 @@ static void HelpEvidence()
 		{ "-region-depth <0..8>", "Subtree frontier for regional split/reference counts (default 4); these are observations, not optimization proposals" },
 		{ "-portals <matching.prt>", "Include bounded PRT graph, regional traversal costs, winding/protection diagnostics and stored-PVS world triangle costs; no edits" },
 		{ "-brush-cells", "Clip bounded world-brush interiors through the BSP tree; report open/opaque witnesses and stored PVS relationships independently of leaf-brush references" },
+		{ "-cell-adjacency", "Reconstruct bounded world leaf-path cells and geometric interfaces; original PRT flags and author classifications remain unknown" },
 		{ "-max-work <1..100000000>", "Bound expanded evidence work units (default 50000000); exhaustion fails without publishing a partial report" },
 	} );
 }

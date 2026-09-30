@@ -240,8 +240,11 @@ limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md
   The CLI now offers bounded convex brush-interior evidence and an opt-in cell
   policy with current-material protection and per-brush decision provenance.
   Thirty-six additional rebuilds cover missing detail references, non-first-side
-  structural semantics and positive/negative controls. Complete leaf adjacency,
-  PRT integration, wider calibration, saved overrides and GUI review remain open.
+  structural semantics and positive/negative controls. Optional
+  [bounded leaf-path adjacency](CELL-ADJACENCY.md) now reconstructs geometric
+  interfaces without the original PRT. Enclosure/degeneracy limits, original
+  portal metadata and author causality remain explicit. Complete correspondence,
+  inference integration, wider calibration, saved overrides and GUI review remain open.
   The workbench now saves independent detail/group policies and their budgets,
   checks advertised support and rejects incompatible jobs before staging. Known
   assemblies exercise actual queue export; compact/full light/dark window checks
@@ -295,6 +298,11 @@ Separate compiler workstream; see [compiler optimization design](COMPILER-OPTIMI
   half-plane feasibility, plus matched 64-point native portals and ordinary-map
   reference parity. Recursive portal clipping still has a conservative small-
   buffer fallback; this does not complete the broader geometric/merge audit.
+- [x] Reconstruct bounded world-path cells and their coplanar interfaces from BSP
+  planes/tree, independently of stored leaf bounds, PVS and PRT. Expose enclosure,
+  numerical and work/memory limits. Check independent box/oblique oracles, matched
+  compiled portals and native recovery-only readers. This geometric prerequisite
+  does not recover protected PRT flags or authorize VIS substitution.
 - [ ] Diagnose regional over-portalling, inefficient splits and poor detail usage,
   attributing costs to source geometry and comparing current merge/hint options.
   `-bsp-evidence` now ranks subtree subdivision/reference costs for investigation;
@@ -307,6 +315,11 @@ Separate compiler workstream; see [compiler optimization design](COMPILER-OPTIMI
   An isolation probe confirms that disabling polygon merging alone does not
   remove the baseline-inclusion failures; leaf merging needs its own correctness
   argument and validation gate before automatic selection.
+  The complete-winding repair still leaves 2/27 omitted baseline bits on the
+  grid=5/grid=9 combined-merge probes. Use reconstructed cell interfaces for
+  bounded geometric correspondence/coverage checks before proposing transformations;
+  original PRT construction and serialized BSP planes have measurable oblique
+  differences, so successful point probes are insufficient.
 - [ ] Add a VIS-only option for conservative graph simplification with correct
   cluster mapping and bounded increases in runtime visibility work.
 - [ ] Add a coordinated full-build option that examines regional structure and

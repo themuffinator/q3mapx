@@ -7,6 +7,7 @@ q3mapx -game quake3 -bsp-evidence example.bsp
 q3mapx -game ja -bsp-evidence -report evidence.json -region-depth 3 example.bsp
 q3mapx -game quake3 -threads 4 -bsp-evidence -brush-cells example.bsp
 q3mapx -game quake3 -bsp-evidence -portals matching.prt example.bsp
+q3mapx -game quake3 -bsp-evidence -cell-adjacency example.bsp
 ```
 
 The default output is `example.evidence.json`. Select the appropriate game
@@ -18,8 +19,10 @@ does not load those assets. All six recovery-only profiles are accepted.
 
 This is the first shared evidence layer for [recovery inference](RECOVERY-INFERENCE.md)
 and [compiler optimization](COMPILER-OPTIMIZATION.md). It reports observations;
-it does not infer detail flags, groups or lights, reconstruct portals, or change
-compiled geometry/visibility. Supplying `-portals matching.prt` adds
+it does not infer detail flags, groups or lights, or change compiled geometry/
+visibility. Optional `-cell-adjacency` [reconstructs bounded world-tree cells and
+geometric interfaces](CELL-ADJACENCY.md) without recovering original PRT metadata.
+Supplying `-portals matching.prt` adds
 [regional portal diagnostics](PORTAL-ANALYSIS.md), including adjacency, shape,
 protected flags, traversal-cost bounds and stored-PVS world triangle costs.
 These findings guide investigation; they do not establish safe edits. Workbench
@@ -41,6 +44,7 @@ from the directory inspector and MAP recovery reports; their schemas are unchang
 | `visibility` | Presence, stored dimensions, number of referenced cluster IDs, visible-pair counts, row extrema, density, all-visible status and missing diagonal bits |
 | `regions` | Node subtree summaries ranked by descending subdivision count, with depths, bounds, brush/surface references, indexed triangles and patch references |
 | `portal_analysis` | Optional explicit PRT source, regional graph/shape/protection diagnostics, structural brush samples and stored-PVS world geometry costs; see the [portal guide](PORTAL-ANALYSIS.md) |
+| `cell_adjacency` | Optional bounded world-path cells and coplanar interfaces, with enclosure, degeneracy and numerical diagnostics; see [cell reconstruction](CELL-ADJACENCY.md) |
 | `limits` | Record, expanded-side, work and output ceilings, plus consumed work units |
 | `limitations`, `native_recovery_losses` | Evidence boundaries and unavailable format-specific content |
 

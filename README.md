@@ -25,6 +25,8 @@ The new [`-bsp-evidence` command](docs/BSP-EVIDENCE.md) reports validated brush,
 partition, regional and stored-visibility observations for inference development.
 Supply a matching PRT with `-portals` for [regional portalling diagnostics](docs/PORTAL-ANALYSIS.md)
 and stored-PVS world triangle costs.
+Use `-cell-adjacency` to [reconstruct bounded BSP leaf-path cells and interfaces](docs/CELL-ADJACENCY.md)
+without the original PRT, with explicit enclosure and numerical limits.
 Optional [detail and group inference](docs/DECOMPILATION.md#group-inference-policy)
 can now export cell-supported detail flags and surface-supported `func_group`
 assemblies, with bounded work, rebuild-order protection and explicit uncertainty.

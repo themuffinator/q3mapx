@@ -3,6 +3,7 @@
 #include <array>
 #include <cstdint>
 #include <vector>
+#include "q3mapx/cell_graph.h"
 
 namespace q3mapx {
 // Indices refer to the validated, normalized BSP arrays, not necessarily native
@@ -57,4 +58,5 @@ BSPEvidence analyzeBSPEvidence(unsigned regionDepth, uint64_t workLimit);
 // Convex brush interiors clipped through the world tree. Does not depend on
 // stored brush/leaf references or interpret source detail/material semantics.
 void analyzeBSPBrushCells(BSPEvidence& evidence, uint64_t workLimit);
+CellGraph analyzeBSPCellAdjacency(BSPEvidence& evidence, uint64_t workLimit);
 }

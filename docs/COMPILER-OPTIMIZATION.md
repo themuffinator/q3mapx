@@ -30,6 +30,15 @@ detail controls and independent graph/geometry/PVS oracles validate these report
 They do not yet identify proven-safe transformations or implement either planned
 automatic compiler option.
 
+Optional [`-cell-adjacency`](CELL-ADJACENCY.md) now derives bounded convex path
+cells and coplanar interfaces directly from the BSP. This gives the correspondence
+work actual polygons rather than stored boxes or center probes. It retains
+enclosure and numerical uncertainty and does not recover original PRT flags.
+Matched oblique portals show measurable construction differences; complete area
+coverage and protected-flag correspondence remain prerequisites. After the full-
+winding clipping repair, combined merging still omits 2 baseline bits on grid=5
+and 27 on grid=9. No automatic transformation is enabled by this evidence stage.
+
 Start with reports and proposals. Once a transformation meets its correctness
 gates, the selected optimization mode may apply validated changes automatically
 to the build copy and fall back on the unchanged region when it cannot validate

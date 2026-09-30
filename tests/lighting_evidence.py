@@ -208,10 +208,15 @@ def main():
         elif mode=='overlap': assert data['surfaces'][3]['model_ownership']=='overlapping'
         elif mode=='unowned': assert data['surfaces'][2]['model_ownership']=='unowned'
         else: assert not slot['observations'],mode
-        if mode=='constant': assert slot['degenerate_or_ill_conditioned_uv_triangles']==2
+        if mode=='constant':
+            assert slot['degenerate_or_ill_conditioned_uv_triangles']==0 and slot['constant_primitive_regions']==2
+            assert len(slot['constant_regions'])==2
+            assert all(s['footprint']==[{'texel':[1,1],'weight':1.0,'rgb':[1,1,4],'has_255_channel':False}] for s in slot['constant_regions'])
         if mode=='extreme': assert slot['degenerate_geometry_triangles']==0 and slot['degenerate_or_ill_conditioned_uv_triangles']==0
         if mode=='degenerate': assert slot['degenerate_geometry_triangles']==2
-        if mode=='patch': assert slot['status']=='patch_parameterization_pending' and surface['vertex_role']=='bezier_control'
+        if mode=='patch':
+            assert slot['status']=='bezier_analyzed' and surface['vertex_role']=='bezier_control'
+            assert len(slot['patch_observations'])==9 and all(s['position'] is not None for s in slot['patch_observations'])
         if mode in ('partial_page','missing_page','absent'): assert slot['status']=='invalid_or_unavailable_page'
         if mode=='vertex_lit': assert slot['status']=='no_internal_page'
 

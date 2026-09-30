@@ -287,8 +287,14 @@ limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md
 - [x] Extract bounded native IBSP/RBSP baked-lighting observations with per-style
   internal atlas/vertex/control/grid provenance, geometric texel associations,
   explicit ambiguity, deterministic jobs and output-preserving limits. See
-  [the extraction contract](LIGHTING-EVIDENCE.md). Colors remain encoded; patch
-  and constant-chart inversion, external/deluxe data and bake calibration remain.
+  [the extraction contract](LIGHTING-EVIDENCE.md). Colors remain encoded;
+  external/deluxe data and bake calibration remain.
+- [x] Associate curved-patch lightmap texels through bounded tensor UV inversion,
+  with folded/singular mappings and boundary uncertainty exposed. Export constant
+  UV primitive regions with representative geometry and correlated internal texel
+  footprints. Preserve stored controls and distinguish their normal field from
+  geometric normals; neither is asserted to recover the original bake or runtime
+  tessellation. Alternate-root review and broader bake/renderer qualification remain.
 - [ ] Infer stripped entity lights from baked lightmaps, vertex/grid and available
   directional lighting. Explain sky/sun, surface emitters, ambient and indirect
   contributions before fitting residual point/spot lights; account for bake settings.

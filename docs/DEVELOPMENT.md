@@ -555,6 +555,39 @@ remain beneath the selected build's `tests/lighting-evidence/`. No installed
 assets, editor, engine or input control is needed. See
 [the supported interpretation and limits](LIGHTING-EVIDENCE.md).
 
+`bezier_uv` tests the standalone bounded inverse against 512 independent
+polynomial queries. Exact rational power-to-Bernstein conversion generates affine,
+rotated/reflected/sheared, folded and coupled biquadratic fields. Known roots must
+lie within the reported parameter radii; regular queries must include every
+expected root, while singular queries must remain unresolved. A rotated rank-one
+chart reaches the 1,023-node ceiling. Outside and parameter-boundary cases test
+exclusion and the distinction between an interior enclosure and boundary tolerance.
+
+`lighting_curves` checks 139 native curved/constant reports across IBSP, Raven
+RBSP and Qfusion FBSP, plus two worker-limit failures that preserve the BSP and
+previous report. Independent analytic inverses and 70-digit decimal polynomial
+solves validate texel coverage, XYZ and derivative normals. Stored normal fields
+have a separate interpolation oracle. Cases include folds, genuinely coupled
+UVs, bowed chart boundaries, multiple tiles, styles, zero geometry/normals and
+large translations. Exact-center/off-center/outside constant UVs check correlated
+texel support and weights. One/four-worker reports agree; stride and combined
+observation accounting include the new arrays. The earlier `lighting_evidence`
+matrix additionally checks indexed-triangle constant regions and actual bakes.
+
+```sh
+cmake --build build/release --target q3mapx bezier_uv_test
+ctest --test-dir build/release -R '^(bezier_uv|lighting_curves|lighting_evidence)$' -V
+python tests/bezier_uv.py --unit build/release/bin/bezier_uv_test --work-dir build/release/tests/bezier-uv
+python tests/lighting_curves.py --compiler build/release/bin/q3mapx --work-dir build/release/tests/lighting-curves
+```
+
+The core and native tests have 180- and 600-second CTest timeouts. Their respective
+build-local `tests/bezier-uv/` and `tests/lighting-curves/` directories retain inputs,
+outputs, logs and `results.json`. Qualification is recorded in
+[curve/constant-region evidence](validation/lighting-curves.json). These tests
+validate stored tensor geometry associations, not the original bake rays,
+runtime LOD, decoded irradiance or source-light localization.
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

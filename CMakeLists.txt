@@ -38,7 +38,7 @@ target_include_directories(q3mapx_jobs PUBLIC libs)
 target_link_libraries(q3mapx_jobs PUBLIC Threads::Threads)
 add_library(q3mapx_io STATIC libs/q3mapx/atomic_file.cpp libs/q3mapx/portal_graph.cpp
     libs/q3mapx/cell_graph.cpp libs/q3mapx/exact_predicates.cpp libs/q3mapx/planar_reduction.cpp
-    libs/q3mapx/quake3_materials.cpp libs/q3mapx/uv_fit.cpp)
+    libs/q3mapx/quake3_materials.cpp libs/q3mapx/uv_fit.cpp libs/q3mapx/bezier_uv.cpp)
 target_include_directories(q3mapx_io PUBLIC libs)
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/libs/q3mapx/columns.cl Q3MAPX_COLUMN_KERNEL)
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS libs/q3mapx/columns.cl)
@@ -167,6 +167,16 @@ if(BUILD_TESTING)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/lighting_evidence.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/lighting-evidence)
     set_tests_properties(lighting_evidence PROPERTIES TIMEOUT 300)
+    add_executable(bezier_uv_test tests/bezier_uv.cpp)
+    target_link_libraries(bezier_uv_test PRIVATE q3mapx_io)
+    add_test(NAME bezier_uv COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/bezier_uv.py --unit $<TARGET_FILE:bezier_uv_test>
+        --work-dir ${CMAKE_BINARY_DIR}/tests/bezier-uv)
+    set_tests_properties(bezier_uv PROPERTIES TIMEOUT 180)
+    add_test(NAME lighting_curves COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/lighting_curves.py --compiler $<TARGET_FILE:q3mapx>
+        --work-dir ${CMAKE_BINARY_DIR}/tests/lighting-curves)
+    set_tests_properties(lighting_curves PROPERTIES TIMEOUT 600)
     add_executable(ftx_test tests/ftx.cpp)
     target_include_directories(ftx_test PRIVATE libs)
     add_test(NAME ftx COMMAND ftx_test)

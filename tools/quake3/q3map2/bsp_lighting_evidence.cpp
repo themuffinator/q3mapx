@@ -3,6 +3,7 @@
 #include "bsp_lighting_evidence.h"
 #include "bspfile_ibsp.h"
 #include "bspfile_rbsp.h"
+#include "q3mapx/bezier_uv.h"
 #include <atomic>
 #include <charconv>
 #include <cmath>
@@ -25,12 +26,95 @@ Point difference(const Vector3& a, const Vector3& b) {
     return {double(a[0])-b[0], double(a[1])-b[1], double(a[2])-b[2]};
 }
 double length(const Point& a) { return std::hypot(a[0], a[1], a[2]); }
-bool sameMapping(const LightmapObservation& a, const LightmapObservation& b) {
+void normalize(Point& p) { const double n=length(p); if(n>0) for(auto& v:p) v/=n; }
+Point cross(const Point& a,const Point& b) { return {a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]}; }
+template<typename A,typename B> bool sameMapping(const A& a, const B& b) {
     for (size_t i=0; i<3; ++i) {
         if (std::abs(a.position[i]-b.position[i]) > 1e-4 + 1e-9*std::max(std::abs(a.position[i]),std::abs(b.position[i]))) return false;
         if (std::abs(a.normal[i]-b.normal[i]) > 1e-5) return false;
     }
     return true;
+}
+bool samePatchMapping(const PatchLightmapObservation& a,const PatchLightmapObservation& b) {
+    if(!sameMapping(a,b)) return false;
+    for(size_t i=0;i<3;++i) if(std::abs(a.geometricNormal[i]-b.geometricNormal[i])>1e-5) return false;
+    return true;
+}
+struct PixelBounds { std::array<int,2> lo{},hi{}; };
+PixelBounds pixelBounds(const BezierUV& mins,const BezierUV& maxs,int size,int stride) {
+    PixelBounds result;
+    for(size_t a=0;a<2;++a) {
+        result.lo[a]=int(std::ceil(std::clamp(mins[a]-.5-1e-8,0.0,double(size))));
+        result.hi[a]=int(std::floor(std::clamp(maxs[a]-.5+1e-8,-1.0,double(size-1))));
+        result.lo[a]=((result.lo[a]+stride-1)/stride)*stride;
+    }
+    return result;
+}
+void mergePatch(PatchLightmapObservation& a,const PatchLightmapObservation& b) {
+    const bool disagreement=a.rootHits && b.rootHits && !samePatchMapping(a,b);
+    if(!a.rootHits && b.rootHits) {
+        a.firstTile=b.firstTile; a.parameter=b.parameter; a.parameterRadius=b.parameterRadius;
+        a.position=b.position; a.normal=b.normal; a.geometricNormal=b.geometricNormal;
+    }
+    a.ambiguous|=b.ambiguous || disagreement; a.unresolved|=b.unresolved; a.boundary|=b.boundary;
+    a.rootHits+=b.rootHits; a.maxUVResidual=std::max(a.maxUVResidual,b.maxUVResidual);
+}
+
+void samplePatch(const bspDrawSurface_t& surface,int slot,int size,int stride,
+                 LightmapSlotEvidence& output,std::vector<int>& lookup,Budget& work,Budget& samples) {
+    output.status="bezier_analyzed";
+    const auto charge=[&](uint64_t n) { work.spend(n); };
+    const int tilesX=(surface.patchWidth-1)/2;
+    for(int row=0;row+2<surface.patchHeight;row+=2) for(int col=0;col+2<surface.patchWidth;col+=2) {
+        charge(1); ++output.patchTiles;
+        const int tile=(row/2)*tilesX+col/2;
+        BezierUVNet uv;
+        std::array<Point,9> xyz,normals;
+        for(int y=0;y<3;++y) for(int x=0;x<3;++x) {
+            const auto& v=bspDrawVerts[surface.firstVert+(row+y)*surface.patchWidth+col+x];
+            const int i=y*3+x;
+            for(size_t a=0;a<2;++a) uv[i][a]=double(v.lightmap[slot][a])*size;
+            for(size_t a=0;a<3;++a) { xyz[i][a]=v.xyz[a]; normals[i][a]=v.normal[a]; }
+        }
+        if(std::all_of(uv.begin()+1,uv.end(),[&](const auto& p) { return p==uv[0]; })) {
+            ++output.constantRegions;
+            if(tile%stride==0) {
+                samples.spend(1);
+                ConstantLightmapRegion item; item.patch=true; item.primitive=tile;
+                for(size_t a=0;a<2;++a) item.uv[a]=uv[0][a]/size;
+                const auto at=evaluateBezier(xyz,.5,.5); item.position=at.value;
+                item.normal=evaluateBezier(normals,.5,.5).value; normalize(item.normal);
+                item.geometricNormal=cross(at.du,at.dv); normalize(item.geometricNormal);
+                output.constants.push_back(item);
+            }
+            continue;
+        }
+        const BezierUVChart chart(uv,charge);
+        output.patchNodes+=chart.nodes(); output.patchUnresolvedRegions+=chart.unresolvedRegions();
+        const auto bounds=pixelBounds(chart.mins(),chart.maxs(),size,stride);
+        for(int y=bounds.lo[1];y<=bounds.hi[1];y+=stride) for(int x=bounds.lo[0];x<=bounds.hi[0];x+=stride) {
+            charge(1); ++output.patchCandidateTexels;
+            const auto inverse=chart.invert({x+.5,y+.5},charge);
+            if(inverse.roots.empty() && !inverse.unresolved) continue;
+            PatchLightmapObservation sample; sample.x=x; sample.y=y; sample.firstTile=tile; sample.unresolved=inverse.unresolved;
+            for(const auto& root:inverse.roots) {
+                PatchLightmapObservation hit; hit.x=x; hit.y=y; hit.firstTile=tile; hit.rootHits=1;
+                hit.parameter=root.parameter; hit.parameterRadius=root.radius; hit.maxUVResidual=root.residual; hit.boundary=root.boundary;
+                const auto at=evaluateBezier(xyz,root.parameter[0],root.parameter[1]); hit.position=at.value;
+                hit.normal=evaluateBezier(normals,root.parameter[0],root.parameter[1]).value; normalize(hit.normal);
+                hit.geometricNormal=cross(at.du,at.dv); normalize(hit.geometricNormal);
+                mergePatch(sample,hit);
+            }
+            auto& entry=lookup[size_t(y)*size+x];
+            if(entry<0) {
+                samples.spend(1); entry=int(output.patchObservations.size()); output.patchObservations.push_back(sample);
+            }
+            else mergePatch(output.patchObservations[entry],sample);
+        }
+    }
+    std::sort(output.patchObservations.begin(),output.patchObservations.end(),[](const auto& a,const auto& b) {
+        return a.y!=b.y?a.y<b.y:a.x<b.x;
+    });
 }
 
 void sampleSurface(size_t index, LightingEvidence& result, Budget& work, Budget& samples) {
@@ -49,13 +133,13 @@ void sampleSurface(size_t index, LightingEvidence& result, Budget& work, Budget&
         if (result.atlasStatus != std::string_view("available") || uint64_t(page) >= result.pages) {
             output.status = "invalid_or_unavailable_page"; continue;
         }
-        if (surface.surfaceType == MST_PATCH) { output.status = "patch_parameterization_pending"; continue; }
-        if (surface.surfaceType != MST_PLANAR && surface.surfaceType != MST_TRIANGLE_SOUP) {
+        if (surface.surfaceType != MST_PLANAR && surface.surfaceType != MST_TRIANGLE_SOUP && surface.surfaceType != MST_PATCH) {
             output.status = "unsupported_surface_type"; continue;
         }
         output.status = surface.numIndexes ? "analyzed" : "no_indexed_triangles";
         work.spend(uint64_t(size)*size);
         lookup.assign(size_t(size)*size, -1);
+        if(surface.surfaceType==MST_PATCH) { samplePatch(surface,slot,size,stride,output,lookup,work,samples); continue; }
         for (int triangle=0; triangle<surface.numIndexes/3; ++triangle) {
             work.spend(1);
             std::array<const bspDrawVert_t*,3> v;
@@ -67,6 +151,21 @@ void sampleSurface(size_t index, LightingEvidence& result, Budget& work, Budget&
             const auto a = difference(v[1]->xyz,v[0]->xyz), b = difference(v[2]->xyz,v[0]->xyz);
             if (length({a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]}) == 0) {
                 ++output.degenerateGeometryTriangles; continue;
+            }
+            if(uv[0]==uv[1] && uv[0]==uv[2]) {
+                ++output.constantRegions;
+                if(triangle%stride==0) {
+                    samples.spend(1);
+                    ConstantLightmapRegion item; item.primitive=triangle;
+                    for(size_t axis=0;axis<2;++axis) item.uv[axis]=uv[0][axis]/size;
+                    for(size_t axis=0;axis<3;++axis) for(size_t corner=0;corner<3;++corner) {
+                        item.position[axis]+=double(v[corner]->xyz[axis])/3;
+                        item.normal[axis]+=double(v[corner]->normal[axis])/3;
+                    }
+                    normalize(item.normal); item.geometricNormal=cross(a,b); normalize(item.geometricNormal);
+                    output.constants.push_back(item);
+                }
+                continue;
             }
             const double ax=uv[1][0]-uv[0][0], ay=uv[1][1]-uv[0][1];
             const double bx=uv[2][0]-uv[0][0], by=uv[2][1]-uv[0][1];

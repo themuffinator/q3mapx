@@ -2460,3 +2460,68 @@ was reproduced. Existing parser-sign/include-line findings, compiler warnings,
 VIS discrepancies, raw-sidecar publication and intermittent Windows process delays
 remain open. The light fitter, intelligent compiler and M11 Radiant paint/density
 workstreams remain active.
+
+## 2026-09-30 — Curved and constant-region lighting evidence
+
+Extended `-bsp-evidence -lighting` to associate stored atlas texels with native
+biquadratic patch geometry. A bounded tensor UV inverse uses outward-rounded
+control/derivative bounds, subdivision and numerical refinement. It explores
+folded charts, preserves repeated-hit diagnostics and marks unresolved coverage
+or conflicting geometry explicitly. It never selects one plausible position from
+an ambiguous fold. The original control records remain available alongside the
+new curved-surface associations.
+
+The report distinguishes normalized stored-control normal interpolation from
+geometric derivative normals. Derivatives use difference control nets: testing
+exposed and fixed spurious tiny tangents on constant geometry in the initial
+implementation. Constant UV triangles and patch tiles now retain full-primitive
+support, representative geometry and conventional internal bilinear footprints.
+Repeated regions sharing texels remain correlated evidence, with no guessed
+external clamp/wrap behavior or color-transfer interpretation.
+
+All new sampling uses the existing persistent worker pool, combined work/sample
+budgets and atomic report writer. Per-tile node/depth and per-query root/iteration
+bounds prevent unbounded inversion. Interior enclosures, parameter-edge tolerance,
+unresolved regions and normal definitions are documented in the report contract.
+Actual bake rays, runtime LOD and original source lights are still unknown.
+
+The standalone inverse passes 512 polynomial queries against independent rational
+construction and known roots, including multiple roots, reflections, coupled
+fields, boundaries and singular charts. The rotated rank-one case reaches the
+1,023-node limit without claiming resolved coverage. Known roots lie inside the
+reported parameter radii; maximum parameter error is 7.75e-10 on these fixtures.
+
+The native matrix passes 139 reports and two preserved-output limit failures on
+Windows Release, Linux Release and Linux ASan/UBSan. It covers IBSP, Raven RBSP
+and Qfusion FBSP with analytical/70-digit polynomial inverse oracles, exact
+footprints and colors, multiple tiles/styles, varying stored normals, zero
+geometry/normals and large translations. Maximum XYZ error is 8.51e-9 map units,
+geometric-normal component error 6.88e-10 and stored-normal component error
+5.56e-16 on these controlled cases. One/four-worker results agree, and all 139
+lighting objects are identical across the three platforms. The preceding
+99-report/nine-failure matrix, including five actual bakes, also passes on each
+platform; it now checks indexed constant-region support and curved patch records.
+
+All 73 Windows CTest groups pass. Linux passes 72 of 73, skipping unavailable GPU
+`area_factors`. All 11 selected ASan/UBSan groups pass with the established
+lifetime-leak exclusion. The final clarification of report limitation strings
+and strengthened regression assertions are covered by three final focused groups
+on each final binary. No editor, renderer, input automation, GPU performance
+measurement or portable archive refresh was performed.
+The 265 retained sanitizer matrix logs contain no address/undefined-behavior
+diagnostics.
+
+See [the extraction contract](LIGHTING-EVIDENCE.md),
+[test instructions](DEVELOPMENT.md#baked-lighting-observations) and
+[validation evidence](validation/lighting-curves.json). Logs and the evidence
+generator remain in `.agents/tmp/continuation/lighting-curves/`; generated core
+queries and native BSP/reports remain under each build's `tests/bezier-uv/`,
+`tests/lighting-curves/` and `tests/lighting-evidence/`. Earlier policy-blocked
+cleanup targets were not retried.
+
+Alternative-root review, calibration, external/deluxe channels, source-light and
+spot-target fitting remain open. No new unrelated defect was reproduced.
+Previously documented parser-sign/include-line findings, compiler warnings, VIS
+discrepancies, raw-sidecar publication and intermittent Windows process delays
+remain outside this round. Intelligent compiler work and the M11 Radiant
+RGB/alpha painting and per-surface density/preview plan remain active.

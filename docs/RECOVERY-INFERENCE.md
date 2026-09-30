@@ -15,6 +15,8 @@ interfaces without the original PRT. It is an additional diagnostic prerequisite
 using its coverage and uncertainty to refine exported classifications remains open.
 Optional [baked-lighting observations](LIGHTING-EVIDENCE.md) now extract bounded
 IBSP/RBSP atlas, vertex/control and grid evidence with styles and uncertainty.
+Curved patch inverses and constant-UV primitive regions now include bounded
+geometry associations, separate stored/geometric normals and explicit ambiguity.
 Source-light fitting and broader grouping/review tools below remain planned.
 Recover the closest supported recreation of the author's MAP: editable geometry,
 organization, materials,
@@ -151,9 +153,12 @@ baked observations using the selected game's lighting semantics.
 
 The first extraction slice is implemented as `-bsp-evidence -lighting`, with
 bounded jobs, native style/color provenance, conservative geometry associations
-and grid-layout checks. It deliberately retains stored encoded bytes. Patch and
-constant-chart inversion, transfer-function calibration, deluxe/external channels
-and source explanations remain open before inverse fitting can be qualified.
+and grid-layout checks. Curved patches use bounded tensor UV inversion;
+constant-UV primitives retain correlated texel footprints and representative
+geometry. It deliberately retains stored encoded bytes. Transfer-function
+calibration, deluxe/external channels and source explanations remain open before
+inverse fitting can be qualified. Curve boundary/LOD uncertainty and repeated
+constant-region support must carry through into any fitting weights.
 
 1. Extract world-space lighting samples from lightmaps, vertex lighting and the
    lightgrid; use directional/deluxe channels and separate styles when available.

@@ -1,0 +1,393 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-30T21:00:11.245882+00:00",
+  "base_revision": "b296e52db91692d893ddf0df7a41e94d3378465f",
+  "scope": "Bounded tensor-curve atlas inversion and constant-UV primitive support; no source-light inference",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "c0f64cd67d5cc72aec7111eb10235997acf019ba472154ff14e4efa8430e0592",
+    "libs/q3mapx/bezier_uv.cpp": "f3aeefc9c691a6692a226f4dc27fb26defab02e33a507ea10b471fd05b82912a",
+    "libs/q3mapx/bezier_uv.h": "7420ddde4eaf03e728911002c70d5f60bf7e117f8c27f306c6751f9b7f5a7f26",
+    "tools/quake3/q3map2/bsp_evidence_cli.cpp": "43b0d7b4abe6567ca09f12beb927a1438da82799ecb555807a92c9f13b776ba5",
+    "tools/quake3/q3map2/bsp_lighting_evidence.cpp": "817e0912a37abd42d7cb8da1985f750d7e0a9c2098b654852f7a8a4bb5b34c39",
+    "tools/quake3/q3map2/bsp_lighting_evidence.h": "a0a4d5fdb682e5d7d4ce54ae0b58e5c71834c64793319521fc7cf31215d4325a",
+    "tests/bezier_uv.cpp": "3aa4528e78374a3bacaa877cd3f6f8da6f02a45beed9319eafb742606bfa8239",
+    "tests/bezier_uv.py": "786c24788f942a64248cdb414ab07b519a723cf8d2c96d580d9a9c8470b0f43b",
+    "tests/lighting_curves.py": "e41e68e86094077ff530f8d3cd37e5e02ce3723bf52a3ef66b27ac772e529301",
+    "tests/lighting_evidence.py": "e01a13f036e2328fd42e6c6aacab390200a43583487f1ce4ea8bdcc635db08e5",
+    "tests/fixtures.py": "5cc300117041bc22a719451f9915bca17cc5af10094521408538b850284436c7",
+    "tests/integration.py": "3bb8e703e9e898a4c079f6a52321941aeb54876a7eac7804b8e1069c1541dfb3",
+    "tests/native_fakk.py": "89f61ab985a71cd231823a5b7fb346f39708e3f35c1c8344887e1d8a6596ca8b"
+  },
+  "fixture_provenance": "First-party rational polynomial controls, known analytical roots, 70-digit decimal coupled-polynomial inverses, and synthetic IBSP/RBSP/FBSP with independent position and normal oracles; preceding actual-bake extraction matrix retained.",
+  "platforms": {
+    "windows": {
+      "compiler": {
+        "path": "build/release/bin/q3mapx.exe",
+        "sha256": "a788e4d2749cd536211ede08d09b5e8a2c44fac6a09d39706dbfc948b9f72603"
+      },
+      "unit": {
+        "path": "build/release/bin/bezier_uv_test.exe",
+        "sha256": "cb6c4ff92059f0bb4e2160814e41d6e02d592b628ab08be1c9e8698f98ec5275"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/lighting-curves/build-windows-final.log",
+        "sha256": "4543b39a3d44fb1524a5e99b47e9818a5b2c3c93b9a1c9031d5c04538665f41a"
+      },
+      "suite": {
+        "path": ".agents/tmp/continuation/lighting-curves/ctest-windows.log",
+        "sha256": "ad37886c716680acc606841d2ac4897d2af9f183391feb41edd54dbe65d2eec1",
+        "groups": 73,
+        "passed": 73,
+        "skipped": [],
+        "tests": [
+          "workbench",
+          "patch_input",
+          "vis_passage_clipping",
+          "recovery_order",
+          "brush_input",
+          "recovery_groups",
+          "uv_recovery",
+          "vis_reproducible",
+          "vis_merge",
+          "recovery_classification",
+          "script_input",
+          "brush_cells",
+          "lighting_gpu",
+          "cell_adjacency",
+          "lighting_evidence",
+          "gpu_columns",
+          "meta_order",
+          "game_profiles",
+          "uv_output",
+          "portal_evidence",
+          "planar_reduction_native",
+          "bsp_inspect",
+          "planar_reduction_oracle",
+          "geometry_optimize",
+          "vis_passage_storage",
+          "workbench_devices",
+          "workbench_window",
+          "index_validation_cli",
+          "bsp_evidence",
+          "native_fakk",
+          "portal_validation",
+          "native_early",
+          "binary_outputs",
+          "mesh_export",
+          "bsp_analyze",
+          "area_factors",
+          "raven_compat",
+          "lighting_materials",
+          "export_outputs",
+          "workbench_inspector",
+          "uv_fit_oracle",
+          "cli_options",
+          "bsp_validation",
+          "recovery_outputs",
+          "native_mohaa",
+          "minimap",
+          "lightgrid_cli",
+          "lightgrid",
+          "cell_graph",
+          "vis_clip",
+          "index_validation",
+          "terrain",
+          "game_catalog",
+          "planar_reduction",
+          "portal_graph",
+          "ftx",
+          "compiler_pipeline",
+          "recovery_group_order",
+          "vis_mask",
+          "columns",
+          "quake3_materials",
+          "uv_fit",
+          "decompile_recovery",
+          "workbench_preview",
+          "lighting_math",
+          "atomic_file",
+          "cli_help",
+          "job_pool",
+          "decompile_math",
+          "area_factors_disabled",
+          "cli_games",
+          "bezier_uv",
+          "lighting_curves"
+        ]
+      },
+      "final_focused_suite": {
+        "path": ".agents/tmp/continuation/lighting-curves/ctest-windows-final.log",
+        "sha256": "a84c392b0b18fe22da4eb41d5d1904f7452bf158a02b6fef4395ee461397f88d",
+        "groups": 3,
+        "passed": 3,
+        "skipped": [],
+        "tests": [
+          "bezier_uv",
+          "lighting_evidence",
+          "lighting_curves"
+        ]
+      },
+      "core_results": {
+        "path": "build/release/tests/bezier-uv/results.json",
+        "sha256": "bb27dad4bb6b95f0ed460e979a5a5069d5baf66d7110fe447e4d7bc059838037",
+        "cases": 512,
+        "max_parameter_error": 7.746132624220081e-10,
+        "unresolved_singular_queries": 71,
+        "boundary_hits": 1144,
+        "max_nodes": 1023
+      },
+      "curve_results": {
+        "path": "build/release/tests/lighting-curves/results.json",
+        "sha256": "937dea43b6c219beaec02595cc1082bca305356d089942bfd7d6f0a1f3743b49",
+        "reports": 139,
+        "output_preservation_cases": [
+          "work",
+          "samples"
+        ],
+        "max_position_error": 8.501732651211569e-09,
+        "max_geometric_normal_error": 6.876796909693894e-10,
+        "max_stored_normal_error": 5.551115123125783e-16
+      },
+      "preceding_matrix_results": {
+        "path": "build/release/tests/lighting-evidence/results.json",
+        "sha256": "3dc0f1b28fd354127054ec48b0d1eb7a037c3c3d064011e3f424f786556048a6",
+        "reports": 99,
+        "output_preservation_cases": 9
+      },
+      "logs_scanned_for_sanitizer_diagnostics": 275,
+      "sanitizer_diagnostics": []
+    },
+    "linux": {
+      "compiler": {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "c374a8ff8f107f3cee62eb81c2dbe261d7db848d1c3eae6eaee97d8ef1811f30"
+      },
+      "unit": {
+        "path": "build/linux-release/bin/bezier_uv_test",
+        "sha256": "3dfdf4e850e6784555a6c502cb21d6cf31264154ee3c55f97c574c55e7c295f7"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/lighting-curves/build-linux-final.log",
+        "sha256": "94bde3d6724c0d1ff0868fb7066b18420ff812b932921ca188b74805122456d0"
+      },
+      "suite": {
+        "path": ".agents/tmp/continuation/lighting-curves/ctest-linux.log",
+        "sha256": "6f570745c6fc5f5d8d325dc79549e7e6427bf818f0b47e4678c2036206f35caa",
+        "groups": 73,
+        "passed": 72,
+        "skipped": [
+          "area_factors"
+        ],
+        "tests": [
+          "workbench",
+          "patch_input",
+          "script_input",
+          "vis_passage_clipping",
+          "recovery_groups",
+          "meta_order",
+          "brush_input",
+          "uv_recovery",
+          "brush_cells",
+          "lighting_evidence",
+          "game_profiles",
+          "vis_merge",
+          "recovery_order",
+          "cell_adjacency",
+          "recovery_classification",
+          "portal_evidence",
+          "uv_output",
+          "vis_reproducible",
+          "native_fakk",
+          "lighting_materials",
+          "bsp_evidence",
+          "geometry_optimize",
+          "bsp_validation",
+          "binary_outputs",
+          "portal_validation",
+          "bsp_inspect",
+          "native_early",
+          "index_validation_cli",
+          "planar_reduction_native",
+          "mesh_export",
+          "vis_passage_storage",
+          "raven_compat",
+          "gpu_columns",
+          "bsp_analyze",
+          "cli_options",
+          "minimap",
+          "recovery_outputs",
+          "native_mohaa",
+          "export_outputs",
+          "planar_reduction_oracle",
+          "lighting_gpu",
+          "workbench_window",
+          "workbench_inspector",
+          "lightgrid_cli",
+          "decompile_recovery",
+          "workbench_devices",
+          "compiler_pipeline",
+          "lightgrid",
+          "uv_fit_oracle",
+          "atomic_file",
+          "recovery_group_order",
+          "vis_clip",
+          "index_validation",
+          "columns",
+          "job_pool",
+          "portal_graph",
+          "planar_reduction",
+          "workbench_preview",
+          "cli_help",
+          "lighting_math",
+          "game_catalog",
+          "cli_games",
+          "area_factors_disabled",
+          "vis_mask",
+          "quake3_materials",
+          "terrain",
+          "ftx",
+          "cell_graph",
+          "uv_fit",
+          "decompile_math",
+          "area_factors",
+          "bezier_uv",
+          "lighting_curves"
+        ]
+      },
+      "final_focused_suite": {
+        "path": ".agents/tmp/continuation/lighting-curves/ctest-linux-final.log",
+        "sha256": "bb2a91a05a34af2bd768a99bb132b44a6cc2698dcd72b472610b337da2f75cbc",
+        "groups": 3,
+        "passed": 3,
+        "skipped": [],
+        "tests": [
+          "bezier_uv",
+          "lighting_evidence",
+          "lighting_curves"
+        ]
+      },
+      "core_results": {
+        "path": "build/linux-release/tests/bezier-uv/results.json",
+        "sha256": "afa300af51420f87d11d84de86d527d25cf0217bf6654863a163048b55fdd9fd",
+        "cases": 512,
+        "max_parameter_error": 7.746132624220081e-10,
+        "unresolved_singular_queries": 71,
+        "boundary_hits": 1144,
+        "max_nodes": 1023
+      },
+      "curve_results": {
+        "path": "build/linux-release/tests/lighting-curves/results.json",
+        "sha256": "55251a7faa9473d391391ac590d8cb018ad18cb7e7f2e3410e48f0364de166d3",
+        "reports": 139,
+        "output_preservation_cases": [
+          "work",
+          "samples"
+        ],
+        "max_position_error": 8.501732651211569e-09,
+        "max_geometric_normal_error": 6.876796909693894e-10,
+        "max_stored_normal_error": 5.551115123125783e-16
+      },
+      "preceding_matrix_results": {
+        "path": "build/linux-release/tests/lighting-evidence/results.json",
+        "sha256": "74889d18a8955fefea1f1047896b24ab687b94602e6454a3fb637546d1174445",
+        "reports": 99,
+        "output_preservation_cases": 9
+      },
+      "logs_scanned_for_sanitizer_diagnostics": 265,
+      "sanitizer_diagnostics": []
+    },
+    "sanitized": {
+      "compiler": {
+        "path": "build/linux-sanitized/bin/q3mapx",
+        "sha256": "369ddb9782dfcfc3c1883eb5bed40a10551f53f7fa20ee2712e6e6947398b7d1"
+      },
+      "unit": {
+        "path": "build/linux-sanitized/bin/bezier_uv_test",
+        "sha256": "ffd282be591bf764fe6aabee9b6c0b922b282b328d35ea927754b0eb10f7046e"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/lighting-curves/build-sanitized-final.log",
+        "sha256": "94bde3d6724c0d1ff0868fb7066b18420ff812b932921ca188b74805122456d0"
+      },
+      "suite": {
+        "path": ".agents/tmp/continuation/lighting-curves/ctest-sanitized.log",
+        "sha256": "54b78fd2f1ce6746e2a63ec86a71ffb0d45acf2221753e08b7e7470c896620c3",
+        "groups": 11,
+        "passed": 11,
+        "skipped": [],
+        "tests": [
+          "portal_evidence",
+          "cell_adjacency",
+          "bsp_evidence",
+          "lighting_evidence",
+          "lighting_math",
+          "job_pool",
+          "bezier_uv",
+          "lightgrid",
+          "bsp_validation",
+          "brush_cells",
+          "lighting_curves"
+        ]
+      },
+      "final_focused_suite": {
+        "path": ".agents/tmp/continuation/lighting-curves/ctest-sanitized-final.log",
+        "sha256": "0fb01ff34f2eac11bca9b5918215eb265e487f3fe53244175b442d48a2e9eb44",
+        "groups": 3,
+        "passed": 3,
+        "skipped": [],
+        "tests": [
+          "bezier_uv",
+          "lighting_evidence",
+          "lighting_curves"
+        ]
+      },
+      "core_results": {
+        "path": "build/linux-sanitized/tests/bezier-uv/results.json",
+        "sha256": "afa300af51420f87d11d84de86d527d25cf0217bf6654863a163048b55fdd9fd",
+        "cases": 512,
+        "max_parameter_error": 7.746132624220081e-10,
+        "unresolved_singular_queries": 71,
+        "boundary_hits": 1144,
+        "max_nodes": 1023
+      },
+      "curve_results": {
+        "path": "build/linux-sanitized/tests/lighting-curves/results.json",
+        "sha256": "55251a7faa9473d391391ac590d8cb018ad18cb7e7f2e3410e48f0364de166d3",
+        "reports": 139,
+        "output_preservation_cases": [
+          "work",
+          "samples"
+        ],
+        "max_position_error": 8.501732651211569e-09,
+        "max_geometric_normal_error": 6.876796909693894e-10,
+        "max_stored_normal_error": 5.551115123125783e-16
+      },
+      "preceding_matrix_results": {
+        "path": "build/linux-sanitized/tests/lighting-evidence/results.json",
+        "sha256": "74889d18a8955fefea1f1047896b24ab687b94602e6454a3fb637546d1174445",
+        "reports": 99,
+        "output_preservation_cases": 9
+      },
+      "logs_scanned_for_sanitizer_diagnostics": 265,
+      "sanitizer_diagnostics": []
+    }
+  },
+  "curve_case_and_observation_counts_identical_across_platforms": true,
+  "cross_platform_curve_objects": {
+    "compared": 139,
+    "exactly_equal": 139,
+    "qualification": "Each platform separately passes the same independent numerical tolerances; exact equality is measured, not required for floating-point fields."
+  },
+  "limits": [
+    "The broad suites precede the final clarification of two report limitation strings. Windows broad tests also precede two added regression cases. Three final focused groups on every final binary include those cases and strengthened footprint/coverage assertions.",
+    "ASan lifetime-leak exclusion remains enabled; address and undefined-behavior diagnostics remain active.",
+    "Linux area_factors skips when a GPU is unavailable; no GPU or end-to-end compile speedup is claimed.",
+    "Interior contraction enclosures establish local inverses; boundary-tolerance results do not prove exact edge coverage.",
+    "Root hits can repeat at parameter/tile boundaries. Conflicting or unresolved geometric mappings are null; alternative geometries are not individually serialized.",
+    "The actual tensor surface, interpolated stored control normals and geometric derivative normals do not reconstruct original bake tessellation, rays or runtime LOD.",
+    "Constant-UV regions share correlated conventional internal texel footprints; no external clamp/wrap or byte-transfer model is assumed.",
+    "Encoding calibration, external/deluxe data, sky/emitter/bounce explanations, source-light fitting and spotlight target inference remain open.",
+    "No editor, renderer, input automation or portable archive refresh was performed.",
+    "Previously documented parser-sign/include-line findings, compiler warnings, VIS discrepancies, raw-sidecar publication and intermittent Windows process delays remain outside this round."
+  ]
+}

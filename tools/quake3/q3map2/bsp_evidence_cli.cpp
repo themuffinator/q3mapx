@@ -3,6 +3,7 @@
 #include "arguments.h"
 #include "bsp_evidence.h"
 #include "bsp_lighting_evidence.h"
+#include "q3mapx/bezier_uv.h"
 #include "portal_evidence.h"
 #include "bsp_formats.h"
 #include "bspfile_abstract.h"
@@ -85,6 +86,35 @@ void flag(Writer& w, const char* key, int contents, const surfaceParm_t* parm) {
 template<typename Point> void point(Writer& w,const char* key,const Point& value) {
     w.Key(key); w.StartArray(); for (int i=0;i<3;++i) w.Double(value[i]); w.EndArray();
 }
+void point2(Writer& w,const char* key,const std::array<double,2>& value) {
+    w.Key(key); w.StartArray(); for(double x:value) w.Double(x); w.EndArray();
+}
+void normal(Writer& w,const char* key,const std::array<double,3>& value) {
+    if(value==std::array<double,3>{}) { w.Key(key); w.Null(); } else point(w,key,value);
+}
+void lightmapRGB(Writer& w,int page,int size,int x,int y) {
+    const size_t offset=(size_t(page)*size*size+size_t(y)*size+x)*3;
+    const std::array<unsigned char,3> rgb{bspLightBytes[offset],bspLightBytes[offset+1],bspLightBytes[offset+2]};
+    values(w,"rgb",rgb); w.Key("has_255_channel"); w.Bool(std::find(rgb.begin(),rgb.end(),255)!=rgb.end());
+}
+void writeConstantFootprint(Writer& w,const std::array<double,2>& uv,int page,int size) {
+    const double x=uv[0]*size-.5,y=uv[1]*size-.5;
+    const bool inside=x>=0 && x<=size-1 && y>=0 && y<=size-1;
+    w.Key("footprint_status"); w.String(inside?"internal_bilinear_footprint":"outside_internal_texel_centers");
+    w.Key("footprint"); w.StartArray();
+    if(inside) {
+        const int x0=int(std::floor(x)),y0=int(std::floor(y));
+        const double fx=x-x0,fy=y-y0;
+        for(int dy=0;dy<2;++dy) for(int dx=0;dx<2;++dx) {
+            const double weight=(dx?fx:1-fx)*(dy?fy:1-fy);
+            if(weight==0) continue;
+            const int tx=std::min(x0+dx,size-1),ty=std::min(y0+dy,size-1);
+            w.StartObject(); values(w,"texel",std::array{tx,ty}); w.Key("weight"); w.Double(weight);
+            lightmapRGB(w,page,size,tx,ty); w.EndObject();
+        }
+    }
+    w.EndArray();
+}
 void writeLighting(Writer& w,const q3mapx::LightingEvidence& data) {
     w.Key("baked_lighting"); w.StartObject();
     number(w,"schema_version",1); w.Key("status"); w.String(data.status);
@@ -94,8 +124,17 @@ void writeLighting(Writer& w,const q3mapx::LightingEvidence& data) {
     number(w,"stride",data.options.stride); number(w,"max_observations",data.options.maxObservations);
     number(w,"observations",data.observations); number(w,"max_surfaces",200'000);
     number(w,"max_vertices",2'000'000); number(w,"max_grid_records",2'000'000); number(w,"max_active_workers",32);
-    w.Key("method"); w.String("atlas_xy_multiples_of_stride_and_surface_local_vertex_and_grid_record_multiples_of_stride");
+    w.Key("method"); w.String("atlas_xy_multiples_of_stride_and_surface_local_vertex_grid_record_constant_primitive_multiples_of_stride");
     w.EndObject();
+    w.Key("patch_inverse"); w.StartObject();
+    w.Key("method"); w.String("bounded_tensor_biquadratic_uv_subdivision_and_preconditioned_interval_bounds");
+    w.Key("tile_order"); w.String("row_major_3x3_control_nets_step_two");
+    w.Key("normal_method"); w.String("normalized_biquadratic_stored_control_field");
+    w.Key("geometric_normal_method"); w.String("normalized_du_cross_dv_parameter_orientation");
+    number(w,"max_depth",q3mapx::bezierMaxDepth); number(w,"max_nodes_per_tile",q3mapx::bezierMaxNodes);
+    number(w,"max_root_hits_per_tile_query",q3mapx::bezierMaxRootHits); number(w,"max_iterations",q3mapx::bezierMaxIterations);
+    w.Key("uv_residual_limit_texels"); w.Double(q3mapx::bezierUVTolerance);
+    w.Key("local_parameter_radius_limit"); w.Double(q3mapx::bezierParameterTolerance); w.EndObject();
     w.Key("atlas"); w.StartObject(); w.Key("status"); w.String(data.atlasStatus);
     number(w,"page_size",data.pageSize); number(w,"bytes",bspLightBytes.size());
     number(w,"complete_pages",data.pages); number(w,"referenced_pages",data.referencedPages);
@@ -130,10 +169,37 @@ void writeLighting(Writer& w,const q3mapx::LightingEvidence& data) {
                     if(sample.normal==std::array<double,3>{}) { w.Key("normal"); w.Null(); }
                     else point(w,"normal",sample.normal);
                 }
-                const size_t offset=(size_t(surface.lightmapNum[slot])*data.pageSize*data.pageSize+size_t(sample.y)*data.pageSize+sample.x)*3;
-                const std::array<unsigned char,3> rgb{bspLightBytes[offset],bspLightBytes[offset+1],bspLightBytes[offset+2]};
-                values(w,"rgb",rgb);
-                w.Key("has_255_channel"); w.Bool(std::find(rgb.begin(),rgb.end(),255)!=rgb.end()); w.EndObject();
+                lightmapRGB(w,surface.lightmapNum[slot],data.pageSize,sample.x,sample.y); w.EndObject();
+            }
+            w.EndArray();
+            number(w,"patch_tiles",info.patchTiles); number(w,"patch_subdivision_nodes",info.patchNodes);
+            number(w,"patch_unresolved_parameter_regions",info.patchUnresolvedRegions); number(w,"patch_candidate_texels",info.patchCandidateTexels);
+            w.Key("patch_observations"); w.StartArray();
+            for(const auto& sample:info.patchObservations) {
+                w.StartObject(); values(w,"texel",std::array{sample.x,sample.y});
+                number(w,"first_tile",sample.firstTile); number(w,"root_hits",sample.rootHits);
+                w.Key("ambiguous_mapping"); w.Bool(sample.ambiguous);
+                w.Key("unresolved_coverage"); w.Bool(sample.unresolved);
+                w.Key("parameter_boundary_tolerance"); w.Bool(sample.boundary);
+                const bool known=sample.rootHits && !sample.ambiguous && !sample.unresolved;
+                if(known) {
+                    point2(w,"tile_parameter",sample.parameter); point2(w,"parameter_radius",sample.parameterRadius);
+                    point(w,"position",sample.position); normal(w,"normal",sample.normal); normal(w,"geometric_normal",sample.geometricNormal);
+                }
+                else for(const char* key:{"tile_parameter","parameter_radius","position","normal","geometric_normal"}) { w.Key(key); w.Null(); }
+                w.Key("max_uv_residual_texels"); if(sample.rootHits) w.Double(sample.maxUVResidual); else w.Null();
+                lightmapRGB(w,surface.lightmapNum[slot],data.pageSize,sample.x,sample.y); w.EndObject();
+            }
+            w.EndArray(); number(w,"constant_primitive_regions",info.constantRegions);
+            w.Key("constant_regions"); w.StartArray();
+            for(const auto& region:info.constants) {
+                w.StartObject(); w.Key("primitive_kind"); w.String(region.patch?"bezier_tile":"indexed_triangle");
+                number(w,"primitive",region.primitive);
+                w.Key("support"); w.String("entire_primitive_shares_one_stored_uv"); point2(w,"uv",region.uv);
+                w.Key("representative_method"); w.String(region.patch?"tile_parameter_center":"triangle_centroid");
+                point(w,"representative_position",region.position); normal(w,"representative_normal",region.normal);
+                normal(w,"representative_geometric_normal",region.geometricNormal);
+                writeConstantFootprint(w,region.uv,surface.lightmapNum[slot],data.pageSize); w.EndObject();
             }
             w.EndArray(); w.EndObject();
         }
@@ -180,9 +246,11 @@ void writeLighting(Writer& w,const q3mapx::LightingEvidence& data) {
     for (const char* note:{
         "Only native IBSP/RBSP adapters are qualified. Styles 254/255 are unused; per-style observations remain separate. No shader assets or external lightmaps are loaded.",
         "RGB is encoded stored data, not linear irradiance. Gamma, exposure, overbright, clamping, debug output and source contributions are unknown. A 255 channel is an endpoint observation, not proof of saturation.",
-        "Atlas positions are barycentric geometric texel centers, not recovered bake rays: padding, dilation, supersampling, nudges, bump normals and filtering cannot be undone here. Shared triangle hits are merged within one surface/slot; disagreeing positions or normals are null and ambiguous.",
-        "UV inversion rejects determinants <= 1e-12 times squared maximum edge component; barycentric boundary tolerance is 1e-9. Mapping agreement uses 1e-4 + 1e-9 times coordinate magnitude and 1e-5 per normal component. These are floating-point evidence tolerances, not exact topology proofs.",
-        "Constant or degenerate UV charts have no unique inverse and produce no atlas observations. Patch controls are exported as controls; Bezier lightmap inversion is pending. Vertex RGB/alpha can include author paint and material effects.",
+        "Indexed-triangle atlas positions are barycentric geometric texel centers, not recovered bake rays: padding, dilation, supersampling, nudges, bump normals and filtering cannot be undone here. Shared triangle hits are merged within one surface/slot; disagreeing positions or normals are null and ambiguous.",
+        "Indexed-triangle UV inversion rejects determinants <= 1e-12 times squared maximum edge component; barycentric boundary tolerance is 1e-9. Mapping agreement uses 1e-4 + 1e-9 times coordinate magnitude and 1e-5 per normal component. These are floating-point evidence tolerances, not exact topology proofs.",
+        "Patch positions evaluate the tensor biquadratic control net, not a guessed bake/runtime tessellation. Stored-normal control interpolation and geometric derivative normals are reported separately; neither reconstructs original bake normals or rays. Vertex RGB/alpha can include author paint and material effects.",
+        "Patch subdivision explores folded UV mappings. Conflicting geometric hits or unresolved parameter regions make positions/normals null. Root hits can repeat at subdivision or tile boundaries. Interior contraction enclosures establish a local inverse; boundary-tolerance results meet numeric residual/radius limits without proving exact coverage at the parameter edge.",
+        "Constant regions identify full primitives sharing one stored UV, with representative geometry and a conventional internal bilinear texel footprint. Repeated regions/texels are correlated evidence, not independent lighting measurements. No clamping/wrapping is assumed outside internal texel centers; byte interpolation/transfer functions are not applied.",
         "World-model samples are world coordinates. Other model samples remain untransformed; owner entities and runtime poses are not inferred. Coincident surfaces remain distinct observations.",
         "Lightgrid positions use conventional world bounds and stored/default pitch only when their record counts match. Matching counts do not prove the original sampling layout. Zero records may be unpopulated or dark; compiler sample nudges are lost. Raven dictionary indices are already expanded by the native reader.",
         "Only referenced atlas pages are read. External pages, deluxe direction pages, original lights, sky/sun, emitters, ambient and bounce are not identified or fitted. No inferred lights or targets are exported."}) w.String(note);

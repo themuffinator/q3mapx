@@ -28,8 +28,8 @@ and stored-PVS world triangle costs.
 Use `-cell-adjacency` to [reconstruct bounded BSP leaf-path cells and interfaces](docs/CELL-ADJACENCY.md)
 without the original PRT, with explicit enclosure and numerical limits.
 Use `-lighting` for [bounded baked-lighting observations](docs/LIGHTING-EVIDENCE.md)
-with stored colors/styles and explicit mapping uncertainty; source-light fitting
-remains planned.
+with stored colors/styles, curved-patch inverses, constant-UV primitive footprints
+and explicit mapping uncertainty; source-light fitting remains planned.
 Optional [detail and group inference](docs/DECOMPILATION.md#group-inference-policy)
 can now export cell-supported detail flags and surface-supported `func_group`
 assemblies, with bounded work, rebuild-order protection and explicit uncertainty.

@@ -15,11 +15,28 @@ struct LightmapObservation {
     bool ambiguous = false, boundary = false;
     std::array<double, 3> position{}, normal{};
 };
+struct PatchLightmapObservation {
+    int x=0,y=0,firstTile=0;
+    uint64_t rootHits=0;
+    bool ambiguous=false,unresolved=false,boundary=false;
+    std::array<double,2> parameter{},parameterRadius{};
+    double maxUVResidual=0;
+    std::array<double,3> position{},normal{},geometricNormal{};
+};
+struct ConstantLightmapRegion {
+    int primitive=0;
+    bool patch=false;
+    std::array<double,2> uv{};
+    std::array<double,3> position{},normal{},geometricNormal{};
+};
 struct LightmapSlotEvidence {
     const char* status = "unused_style";
     uint64_t degenerateUVTriangles = 0, degenerateGeometryTriangles = 0;
     uint64_t candidateTexels = 0;
     std::vector<LightmapObservation> observations;
+    uint64_t patchTiles=0,patchNodes=0,patchUnresolvedRegions=0,patchCandidateTexels=0,constantRegions=0;
+    std::vector<PatchLightmapObservation> patchObservations;
+    std::vector<ConstantLightmapRegion> constants;
 };
 struct LightingSurfaceEvidence {
     int model = -1; // -1 unowned, -2 overlapping model ranges

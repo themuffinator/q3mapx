@@ -39,6 +39,13 @@ The current converter's `detailBrushes` table marks brushes referenced by leaves
 with nonopaque clusters, then excludes explicit structural shader flags. This is
 a useful starting heuristic, not a complete reconstruction of portal participation.
 Audit it against known detail/structural labels before replacing or extending it.
+The first expanded [round-trip corpus](DECOMPILATION.md#acceptance-fixtures) now
+covers 24 fast/full recoveries of structural/detail pillars, a mixed group and
+explicit structural overrides. That audit found and repaired dropped detail
+flags in fast export. It also records remaining source/rebuild partition and PVS
+differences despite exact brush geometry, plus the ambiguity of brush-model
+detail flags. These controls precede any replacement classifier; they do not
+establish accuracy on arbitrary BSPs or recover original group membership.
 
 1. Relate brush faces to BSP partition planes, adjacent leaf cells, opaque space,
    cluster boundaries and PVS changes. When a compatible PRT is supplied, use its

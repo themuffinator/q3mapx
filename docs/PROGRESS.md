@@ -1185,3 +1185,44 @@ and Linux; [the validation record](validation/catalog-output-budget.json) includ
 the Linux time, source/binary hashes and local log paths. No compiler stage or
 packaged archive changed. No additional unrelated issue was found in this fix;
 the remaining recovery/inference and optimization roadmap remains active.
+
+## 2026-09-30 — Preserve detail flags during fast MAP recovery
+
+The known-source inference audit exposed a concrete recovery defect: every fast
+MAP writer emitted zero detail bits, although the full converter already had a
+leaf-reference classification policy. Rebuilding fast output could therefore
+turn intended detail into structural geometry. All three fast writers now use
+the full converter's policy, including its brush-shader structural override.
+The recovery report adds optional `detail_classification` metadata with exported
+flag counts, policy name/scope and an explicit statement that original author
+classification is unproven. Full MAP output on the reproduced input is byte-identical
+to the previous executable.
+
+A separate 25-pillar reproduction demonstrates the impact: the old fast output
+rebuilds from 19 nodes/4 clusters to 155 nodes/84 clusters. The repaired output
+retains 19/4, all 25 world detail flags, exact brush geometry/materials/contents
+and the sampled partition/PVS relationships at 768 world points. This is a
+specific fidelity repair, not an intelligent portal-optimization speedup claim.
+
+The reusable corpus now covers structural/detail pillars, a mixed authoring
+group and translucent structural-override brushes, with 24 recoveries across
+three formats and fast/full mode. All labelled world brush flags, exact per-model
+brush geometry/materials/contents, sealing and surviving door links are checked.
+Spatial comparisons cover 594 points and 352,836 ordered pairs per rebuild,
+without assuming persistent cluster IDs. Fast/full partition/PVS parity is
+required; source/rebuild differences are recorded separately. Four missing-VIS
+cases and 1/4-worker output parity also pass. Seven release regression groups
+pass on both Windows and Linux; six pass under Linux ASan/UBSan, including the
+full new corpus and native recovery/output-failure checks. Platform results and identities
+are in [the validation record](validation/fast-detail-recovery.json); project-local
+logs and before/after reproductions remain under `.agents/tmp/continuation`, and
+the corpus stays in each build's `tests/recovery-classification` directory.
+
+The audit found two remaining fidelity limits. Ordinary recovery can change
+partitioning/PVS despite exact brush geometry (the opaque structural control
+changes 71 nodes to 73 and adds/removes 32/8 sampled visibility pairs). The current
+leaf heuristic can also mark brush-entity geometry as detail although the authored
+MAP did not; that flag does not establish source metadata. Both remain part of
+the inference/rebuild-comparison work. Original groups still cannot be extracted
+from the compiled fixtures. Existing `UnsortedSet` compiler warnings remain
+unchanged. No external code/dependency was added; the 0.3.0 package stays unchanged.

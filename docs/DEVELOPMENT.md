@@ -230,6 +230,14 @@ rollback/retry, POSIX file-size-limit write failures and link rejection. It chec
 old output contents and source bytes, not only nonzero process status. These
 fixtures write only to their designated test output directory.
 
+`recovery_classification` builds original labelled Quake III fixtures and compares
+all three MAP formats in fast/full mode. Its `tests/recovery-classification/validation.json`
+contains source identities, classification expectations and spatial partition/PVS
+differences. It compares visibility at corresponding world points instead of
+assuming cluster indices survive rebuilding. Source/rebuild differences are
+reported separately from required fast/full parity; this is a bounded generated
+corpus, not a proof of general decompiler inference accuracy.
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

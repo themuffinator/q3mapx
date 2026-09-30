@@ -1,0 +1,1066 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-30T07:43:00.765453+00:00",
+  "scope": "Preserve the existing full-recovery detail policy during fast MAP export; known-source fidelity corpus",
+  "base_revision": "1ecda52c170ce78755a07469c78e74e26ab0171d",
+  "source_sha256": {
+    "tools/quake3/q3map2/convert_map.cpp": "0b353586044f599b966d2a93482c26e5a178ea7e290e6486ee17df44b5777c47",
+    "tests/recovery_classification.py": "82ec6a11c9b495395c3742cdcea5174dfed10f511edfeaa35e280c01a47f5454",
+    "CMakeLists.txt": "8d4783c3fd187c3cddf6540eae9d4022f28e98c50ca1d53be108c4696141870c"
+  },
+  "before": {
+    "source_sha256": "3217a571484d9c0639c631f65331d3a7b286cd97737dc747ce8ea534ac54e02f",
+    "compiler_sha256": "249788673a42d3878c985c6204d14c3a3d9dd6ae9b55f322afff8c90f619a8f6",
+    "known_source_detail_pillars": 25,
+    "recovered_detail_side_flags": 0,
+    "source_counts": {
+      "shaders": 1,
+      "planes": 112,
+      "nodes": 19,
+      "leaves": 22,
+      "models": 2,
+      "brushes": 32,
+      "sides": 192,
+      "vertices": 548,
+      "indices": 12,
+      "surfaces": 137
+    },
+    "rebuilt_counts": {
+      "shaders": 1,
+      "planes": 112,
+      "nodes": 155,
+      "leaves": 158,
+      "models": 2,
+      "brushes": 32,
+      "sides": 192,
+      "vertices": 548,
+      "indices": 12,
+      "surfaces": 137
+    },
+    "source_clusters": 4,
+    "rebuilt_clusters": 84
+  },
+  "after": {
+    "source_sha256": "3217a571484d9c0639c631f65331d3a7b286cd97737dc747ce8ea534ac54e02f",
+    "compiler_sha256": "aa7ffb28b17ffef68b5eb7694406c32de16c8bda828aafa071fe9f8cd2f82b09",
+    "world_brushes_with_detail_flag": 25,
+    "source_nodes": 19,
+    "rebuilt_nodes": 19,
+    "source_clusters": 4,
+    "rebuilt_clusters": 4,
+    "geometry_materials_contents_equal": true,
+    "sample_count": 768,
+    "spatial_signature_differences": [
+      0,
+      0,
+      0
+    ],
+    "full_map_bytes_unchanged": true,
+    "full_map_sha256": "14bff913bbd760f043ea677121d874d1108de4a3e1f211c835a4c39189e848d8",
+    "source_preserved": true
+  },
+  "platform_checks": [
+    {
+      "build": "release",
+      "compiler_sha256": "aa7ffb28b17ffef68b5eb7694406c32de16c8bda828aafa071fe9f8cd2f82b09",
+      "regression_batches": [
+        {
+          "groups": [
+            "recovery_classification"
+          ],
+          "seconds": 10.25
+        },
+        {
+          "groups": [
+            "compiler_pipeline",
+            "native_fakk",
+            "native_mohaa",
+            "native_early",
+            "recovery_outputs",
+            "decompile_recovery"
+          ],
+          "seconds": 5.04
+        }
+      ],
+      "round_trips_passed": 24,
+      "points_per_rebuild": 594,
+      "ordered_pairs_per_rebuild": 352836,
+      "missing_vis_cases": 4,
+      "worker_parity": [
+        1,
+        4
+      ],
+      "sources_preserved": true,
+      "sanitizer_settings": {},
+      "cases": [
+        {
+          "case": "detail",
+          "source_sha256": "2f3134cc62498776621a0565ad5ad729222dac3db3cf26616488fcf994870757",
+          "formats": [
+            "map",
+            "map_bp",
+            "map_220"
+          ],
+          "fast_and_full_passed": true,
+          "world_brushes_checked": 15,
+          "expected_world_detail_brushes": 9,
+          "source_comparison": [
+            {
+              "fast": false,
+              "format": "map",
+              "source_nodes": 19,
+              "nodes": 19,
+              "leaves": 22,
+              "partition_pair_differences_from_source": 0,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": false,
+              "format": "map_bp",
+              "source_nodes": 19,
+              "nodes": 19,
+              "leaves": 22,
+              "partition_pair_differences_from_source": 0,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": false,
+              "format": "map_220",
+              "source_nodes": 19,
+              "nodes": 19,
+              "leaves": 22,
+              "partition_pair_differences_from_source": 0,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": true,
+              "format": "map",
+              "source_nodes": 19,
+              "nodes": 19,
+              "leaves": 22,
+              "partition_pair_differences_from_source": 0,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": true,
+              "format": "map_bp",
+              "source_nodes": 19,
+              "nodes": 19,
+              "leaves": 22,
+              "partition_pair_differences_from_source": 0,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": true,
+              "format": "map_220",
+              "source_nodes": 19,
+              "nodes": 19,
+              "leaves": 22,
+              "partition_pair_differences_from_source": 0,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            }
+          ]
+        },
+        {
+          "case": "structural",
+          "source_sha256": "1b6941d9b80c53c21b22076fb59bbe6c3c8f6b755b2fd5d277b127b5c0e37b2f",
+          "formats": [
+            "map",
+            "map_bp",
+            "map_220"
+          ],
+          "fast_and_full_passed": true,
+          "world_brushes_checked": 15,
+          "expected_world_detail_brushes": 0,
+          "source_comparison": [
+            {
+              "fast": false,
+              "format": "map",
+              "source_nodes": 71,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 428,
+              "pvs_pairs_added_to_source": 32,
+              "pvs_pairs_removed_from_source": 8
+            },
+            {
+              "fast": false,
+              "format": "map_bp",
+              "source_nodes": 71,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 428,
+              "pvs_pairs_added_to_source": 32,
+              "pvs_pairs_removed_from_source": 8
+            },
+            {
+              "fast": false,
+              "format": "map_220",
+              "source_nodes": 71,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 428,
+              "pvs_pairs_added_to_source": 32,
+              "pvs_pairs_removed_from_source": 8
+            },
+            {
+              "fast": true,
+              "format": "map",
+              "source_nodes": 71,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 428,
+              "pvs_pairs_added_to_source": 32,
+              "pvs_pairs_removed_from_source": 8
+            },
+            {
+              "fast": true,
+              "format": "map_bp",
+              "source_nodes": 71,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 428,
+              "pvs_pairs_added_to_source": 32,
+              "pvs_pairs_removed_from_source": 8
+            },
+            {
+              "fast": true,
+              "format": "map_220",
+              "source_nodes": 71,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 428,
+              "pvs_pairs_added_to_source": 32,
+              "pvs_pairs_removed_from_source": 8
+            }
+          ]
+        },
+        {
+          "case": "mixed-group",
+          "source_sha256": "795614d30523e216961fa4135f8d44ba86004f4af2db9cfef0607adfdae0df0b",
+          "formats": [
+            "map",
+            "map_bp",
+            "map_220"
+          ],
+          "fast_and_full_passed": true,
+          "world_brushes_checked": 15,
+          "expected_world_detail_brushes": 5,
+          "source_comparison": [
+            {
+              "fast": false,
+              "format": "map",
+              "source_nodes": 51,
+              "nodes": 51,
+              "leaves": 54,
+              "partition_pair_differences_from_source": 1706,
+              "pvs_pairs_added_to_source": 80,
+              "pvs_pairs_removed_from_source": 24
+            },
+            {
+              "fast": false,
+              "format": "map_bp",
+              "source_nodes": 51,
+              "nodes": 51,
+              "leaves": 54,
+              "partition_pair_differences_from_source": 1706,
+              "pvs_pairs_added_to_source": 80,
+              "pvs_pairs_removed_from_source": 24
+            },
+            {
+              "fast": false,
+              "format": "map_220",
+              "source_nodes": 51,
+              "nodes": 51,
+              "leaves": 54,
+              "partition_pair_differences_from_source": 1706,
+              "pvs_pairs_added_to_source": 80,
+              "pvs_pairs_removed_from_source": 24
+            },
+            {
+              "fast": true,
+              "format": "map",
+              "source_nodes": 51,
+              "nodes": 51,
+              "leaves": 54,
+              "partition_pair_differences_from_source": 1706,
+              "pvs_pairs_added_to_source": 80,
+              "pvs_pairs_removed_from_source": 24
+            },
+            {
+              "fast": true,
+              "format": "map_bp",
+              "source_nodes": 51,
+              "nodes": 51,
+              "leaves": 54,
+              "partition_pair_differences_from_source": 1706,
+              "pvs_pairs_added_to_source": 80,
+              "pvs_pairs_removed_from_source": 24
+            },
+            {
+              "fast": true,
+              "format": "map_220",
+              "source_nodes": 51,
+              "nodes": 51,
+              "leaves": 54,
+              "partition_pair_differences_from_source": 1706,
+              "pvs_pairs_added_to_source": 80,
+              "pvs_pairs_removed_from_source": 24
+            }
+          ]
+        },
+        {
+          "case": "structural-override",
+          "source_sha256": "e206590aa0874e9a3dbc8a4b79e3f2e62ab654b9f3f406f6e5a1b54e4c70e516",
+          "formats": [
+            "map",
+            "map_bp",
+            "map_220"
+          ],
+          "fast_and_full_passed": true,
+          "world_brushes_checked": 15,
+          "expected_world_detail_brushes": 0,
+          "source_comparison": [
+            {
+              "fast": false,
+              "format": "map",
+              "source_nodes": 69,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 4488,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": false,
+              "format": "map_bp",
+              "source_nodes": 69,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 4488,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": false,
+              "format": "map_220",
+              "source_nodes": 69,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 4488,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": true,
+              "format": "map",
+              "source_nodes": 69,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 4488,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": true,
+              "format": "map_bp",
+              "source_nodes": 69,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 4488,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": true,
+              "format": "map_220",
+              "source_nodes": 69,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 4488,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "build": "linux-release",
+      "compiler_sha256": "25199d5506372d1729a60d9a7aed68112650695b3f0edb811fe7b6f21b1ed6e8",
+      "regression_batches": [
+        {
+          "groups": [
+            "native_fakk",
+            "native_mohaa",
+            "native_early",
+            "recovery_outputs",
+            "decompile_recovery",
+            "recovery_classification"
+          ],
+          "seconds": 34.91
+        },
+        {
+          "groups": [
+            "compiler_pipeline"
+          ],
+          "seconds": 3.31
+        }
+      ],
+      "round_trips_passed": 24,
+      "points_per_rebuild": 594,
+      "ordered_pairs_per_rebuild": 352836,
+      "missing_vis_cases": 4,
+      "worker_parity": [
+        1,
+        4
+      ],
+      "sources_preserved": true,
+      "sanitizer_settings": {},
+      "cases": [
+        {
+          "case": "detail",
+          "source_sha256": "5c463fbdbf9079e4d5125aa4f3b7c721e5228934694e263dbb2e88f4aacf7858",
+          "formats": [
+            "map",
+            "map_bp",
+            "map_220"
+          ],
+          "fast_and_full_passed": true,
+          "world_brushes_checked": 15,
+          "expected_world_detail_brushes": 9,
+          "source_comparison": [
+            {
+              "fast": false,
+              "format": "map",
+              "source_nodes": 19,
+              "nodes": 19,
+              "leaves": 22,
+              "partition_pair_differences_from_source": 0,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": false,
+              "format": "map_bp",
+              "source_nodes": 19,
+              "nodes": 19,
+              "leaves": 22,
+              "partition_pair_differences_from_source": 0,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": false,
+              "format": "map_220",
+              "source_nodes": 19,
+              "nodes": 19,
+              "leaves": 22,
+              "partition_pair_differences_from_source": 0,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": true,
+              "format": "map",
+              "source_nodes": 19,
+              "nodes": 19,
+              "leaves": 22,
+              "partition_pair_differences_from_source": 0,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": true,
+              "format": "map_bp",
+              "source_nodes": 19,
+              "nodes": 19,
+              "leaves": 22,
+              "partition_pair_differences_from_source": 0,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": true,
+              "format": "map_220",
+              "source_nodes": 19,
+              "nodes": 19,
+              "leaves": 22,
+              "partition_pair_differences_from_source": 0,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            }
+          ]
+        },
+        {
+          "case": "structural",
+          "source_sha256": "c6d4ae5ae1e24d60f17b546019ed307a8117a7cc242145325cbcc34f59d748fd",
+          "formats": [
+            "map",
+            "map_bp",
+            "map_220"
+          ],
+          "fast_and_full_passed": true,
+          "world_brushes_checked": 15,
+          "expected_world_detail_brushes": 0,
+          "source_comparison": [
+            {
+              "fast": false,
+              "format": "map",
+              "source_nodes": 71,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 428,
+              "pvs_pairs_added_to_source": 32,
+              "pvs_pairs_removed_from_source": 8
+            },
+            {
+              "fast": false,
+              "format": "map_bp",
+              "source_nodes": 71,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 428,
+              "pvs_pairs_added_to_source": 32,
+              "pvs_pairs_removed_from_source": 8
+            },
+            {
+              "fast": false,
+              "format": "map_220",
+              "source_nodes": 71,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 428,
+              "pvs_pairs_added_to_source": 32,
+              "pvs_pairs_removed_from_source": 8
+            },
+            {
+              "fast": true,
+              "format": "map",
+              "source_nodes": 71,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 428,
+              "pvs_pairs_added_to_source": 32,
+              "pvs_pairs_removed_from_source": 8
+            },
+            {
+              "fast": true,
+              "format": "map_bp",
+              "source_nodes": 71,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 428,
+              "pvs_pairs_added_to_source": 32,
+              "pvs_pairs_removed_from_source": 8
+            },
+            {
+              "fast": true,
+              "format": "map_220",
+              "source_nodes": 71,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 428,
+              "pvs_pairs_added_to_source": 32,
+              "pvs_pairs_removed_from_source": 8
+            }
+          ]
+        },
+        {
+          "case": "mixed-group",
+          "source_sha256": "74712d94f124d3003995fc4afbcf127937e7068e63b911ab47250baf2bfb9d60",
+          "formats": [
+            "map",
+            "map_bp",
+            "map_220"
+          ],
+          "fast_and_full_passed": true,
+          "world_brushes_checked": 15,
+          "expected_world_detail_brushes": 5,
+          "source_comparison": [
+            {
+              "fast": false,
+              "format": "map",
+              "source_nodes": 51,
+              "nodes": 51,
+              "leaves": 54,
+              "partition_pair_differences_from_source": 1706,
+              "pvs_pairs_added_to_source": 80,
+              "pvs_pairs_removed_from_source": 24
+            },
+            {
+              "fast": false,
+              "format": "map_bp",
+              "source_nodes": 51,
+              "nodes": 51,
+              "leaves": 54,
+              "partition_pair_differences_from_source": 1706,
+              "pvs_pairs_added_to_source": 80,
+              "pvs_pairs_removed_from_source": 24
+            },
+            {
+              "fast": false,
+              "format": "map_220",
+              "source_nodes": 51,
+              "nodes": 51,
+              "leaves": 54,
+              "partition_pair_differences_from_source": 1706,
+              "pvs_pairs_added_to_source": 80,
+              "pvs_pairs_removed_from_source": 24
+            },
+            {
+              "fast": true,
+              "format": "map",
+              "source_nodes": 51,
+              "nodes": 51,
+              "leaves": 54,
+              "partition_pair_differences_from_source": 1706,
+              "pvs_pairs_added_to_source": 80,
+              "pvs_pairs_removed_from_source": 24
+            },
+            {
+              "fast": true,
+              "format": "map_bp",
+              "source_nodes": 51,
+              "nodes": 51,
+              "leaves": 54,
+              "partition_pair_differences_from_source": 1706,
+              "pvs_pairs_added_to_source": 80,
+              "pvs_pairs_removed_from_source": 24
+            },
+            {
+              "fast": true,
+              "format": "map_220",
+              "source_nodes": 51,
+              "nodes": 51,
+              "leaves": 54,
+              "partition_pair_differences_from_source": 1706,
+              "pvs_pairs_added_to_source": 80,
+              "pvs_pairs_removed_from_source": 24
+            }
+          ]
+        },
+        {
+          "case": "structural-override",
+          "source_sha256": "7d9ba1eb35d079ef350a015d4005ab57d7d7320409cf8328d93bddfdd9ae8323",
+          "formats": [
+            "map",
+            "map_bp",
+            "map_220"
+          ],
+          "fast_and_full_passed": true,
+          "world_brushes_checked": 15,
+          "expected_world_detail_brushes": 0,
+          "source_comparison": [
+            {
+              "fast": false,
+              "format": "map",
+              "source_nodes": 69,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 4488,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": false,
+              "format": "map_bp",
+              "source_nodes": 69,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 4488,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": false,
+              "format": "map_220",
+              "source_nodes": 69,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 4488,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": true,
+              "format": "map",
+              "source_nodes": 69,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 4488,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": true,
+              "format": "map_bp",
+              "source_nodes": 69,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 4488,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": true,
+              "format": "map_220",
+              "source_nodes": 69,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 4488,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "build": "linux-sanitized",
+      "compiler_sha256": "40a82c3c388ad2a09d3fce814e93719863cfe6c8cac105d847e024722261dd7b",
+      "regression_batches": [
+        {
+          "groups": [
+            "native_fakk",
+            "native_mohaa",
+            "native_early",
+            "recovery_outputs",
+            "decompile_recovery",
+            "recovery_classification"
+          ],
+          "seconds": 201.28
+        }
+      ],
+      "round_trips_passed": 24,
+      "points_per_rebuild": 594,
+      "ordered_pairs_per_rebuild": 352836,
+      "missing_vis_cases": 4,
+      "worker_parity": [
+        1,
+        4
+      ],
+      "sources_preserved": true,
+      "sanitizer_settings": {
+        "ASAN_OPTIONS": "detect_leaks=0:abort_on_error=1"
+      },
+      "cases": [
+        {
+          "case": "detail",
+          "source_sha256": "dd970b87c2ebf8527a704904e3b70410a9102b2e6c1e1d25e216f375c4b9bff6",
+          "formats": [
+            "map",
+            "map_bp",
+            "map_220"
+          ],
+          "fast_and_full_passed": true,
+          "world_brushes_checked": 15,
+          "expected_world_detail_brushes": 9,
+          "source_comparison": [
+            {
+              "fast": false,
+              "format": "map",
+              "source_nodes": 19,
+              "nodes": 19,
+              "leaves": 22,
+              "partition_pair_differences_from_source": 0,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": false,
+              "format": "map_bp",
+              "source_nodes": 19,
+              "nodes": 19,
+              "leaves": 22,
+              "partition_pair_differences_from_source": 0,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": false,
+              "format": "map_220",
+              "source_nodes": 19,
+              "nodes": 19,
+              "leaves": 22,
+              "partition_pair_differences_from_source": 0,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": true,
+              "format": "map",
+              "source_nodes": 19,
+              "nodes": 19,
+              "leaves": 22,
+              "partition_pair_differences_from_source": 0,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": true,
+              "format": "map_bp",
+              "source_nodes": 19,
+              "nodes": 19,
+              "leaves": 22,
+              "partition_pair_differences_from_source": 0,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": true,
+              "format": "map_220",
+              "source_nodes": 19,
+              "nodes": 19,
+              "leaves": 22,
+              "partition_pair_differences_from_source": 0,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            }
+          ]
+        },
+        {
+          "case": "structural",
+          "source_sha256": "5e1f18b5a7caa889502b3665a34f411eedba7d3a092d188ed18f433b023726d9",
+          "formats": [
+            "map",
+            "map_bp",
+            "map_220"
+          ],
+          "fast_and_full_passed": true,
+          "world_brushes_checked": 15,
+          "expected_world_detail_brushes": 0,
+          "source_comparison": [
+            {
+              "fast": false,
+              "format": "map",
+              "source_nodes": 71,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 428,
+              "pvs_pairs_added_to_source": 32,
+              "pvs_pairs_removed_from_source": 8
+            },
+            {
+              "fast": false,
+              "format": "map_bp",
+              "source_nodes": 71,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 428,
+              "pvs_pairs_added_to_source": 32,
+              "pvs_pairs_removed_from_source": 8
+            },
+            {
+              "fast": false,
+              "format": "map_220",
+              "source_nodes": 71,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 428,
+              "pvs_pairs_added_to_source": 32,
+              "pvs_pairs_removed_from_source": 8
+            },
+            {
+              "fast": true,
+              "format": "map",
+              "source_nodes": 71,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 428,
+              "pvs_pairs_added_to_source": 32,
+              "pvs_pairs_removed_from_source": 8
+            },
+            {
+              "fast": true,
+              "format": "map_bp",
+              "source_nodes": 71,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 428,
+              "pvs_pairs_added_to_source": 32,
+              "pvs_pairs_removed_from_source": 8
+            },
+            {
+              "fast": true,
+              "format": "map_220",
+              "source_nodes": 71,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 428,
+              "pvs_pairs_added_to_source": 32,
+              "pvs_pairs_removed_from_source": 8
+            }
+          ]
+        },
+        {
+          "case": "mixed-group",
+          "source_sha256": "04299f726be61a007d371f5b1af3bd54fb8bdaf0c8a2f8b84a781b9f33f738d1",
+          "formats": [
+            "map",
+            "map_bp",
+            "map_220"
+          ],
+          "fast_and_full_passed": true,
+          "world_brushes_checked": 15,
+          "expected_world_detail_brushes": 5,
+          "source_comparison": [
+            {
+              "fast": false,
+              "format": "map",
+              "source_nodes": 51,
+              "nodes": 51,
+              "leaves": 54,
+              "partition_pair_differences_from_source": 1706,
+              "pvs_pairs_added_to_source": 80,
+              "pvs_pairs_removed_from_source": 24
+            },
+            {
+              "fast": false,
+              "format": "map_bp",
+              "source_nodes": 51,
+              "nodes": 51,
+              "leaves": 54,
+              "partition_pair_differences_from_source": 1706,
+              "pvs_pairs_added_to_source": 80,
+              "pvs_pairs_removed_from_source": 24
+            },
+            {
+              "fast": false,
+              "format": "map_220",
+              "source_nodes": 51,
+              "nodes": 51,
+              "leaves": 54,
+              "partition_pair_differences_from_source": 1706,
+              "pvs_pairs_added_to_source": 80,
+              "pvs_pairs_removed_from_source": 24
+            },
+            {
+              "fast": true,
+              "format": "map",
+              "source_nodes": 51,
+              "nodes": 51,
+              "leaves": 54,
+              "partition_pair_differences_from_source": 1706,
+              "pvs_pairs_added_to_source": 80,
+              "pvs_pairs_removed_from_source": 24
+            },
+            {
+              "fast": true,
+              "format": "map_bp",
+              "source_nodes": 51,
+              "nodes": 51,
+              "leaves": 54,
+              "partition_pair_differences_from_source": 1706,
+              "pvs_pairs_added_to_source": 80,
+              "pvs_pairs_removed_from_source": 24
+            },
+            {
+              "fast": true,
+              "format": "map_220",
+              "source_nodes": 51,
+              "nodes": 51,
+              "leaves": 54,
+              "partition_pair_differences_from_source": 1706,
+              "pvs_pairs_added_to_source": 80,
+              "pvs_pairs_removed_from_source": 24
+            }
+          ]
+        },
+        {
+          "case": "structural-override",
+          "source_sha256": "4203ef07a3459b12aab7cc98a21d81be63c08f35218f2e314216f006d05ee480",
+          "formats": [
+            "map",
+            "map_bp",
+            "map_220"
+          ],
+          "fast_and_full_passed": true,
+          "world_brushes_checked": 15,
+          "expected_world_detail_brushes": 0,
+          "source_comparison": [
+            {
+              "fast": false,
+              "format": "map",
+              "source_nodes": 69,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 4488,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": false,
+              "format": "map_bp",
+              "source_nodes": 69,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 4488,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": false,
+              "format": "map_220",
+              "source_nodes": 69,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 4488,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": true,
+              "format": "map",
+              "source_nodes": 69,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 4488,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": true,
+              "format": "map_bp",
+              "source_nodes": 69,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 4488,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            },
+            {
+              "fast": true,
+              "format": "map_220",
+              "source_nodes": 69,
+              "nodes": 73,
+              "leaves": 76,
+              "partition_pair_differences_from_source": 4488,
+              "pvs_pairs_added_to_source": 0,
+              "pvs_pairs_removed_from_source": 0
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "logs": ".agents/tmp/continuation/fast-detail-*.log",
+  "local_reproductions": [
+    ".agents/tmp/continuation/fast-detail-before",
+    ".agents/tmp/continuation/fast-detail-after",
+    ".agents/tmp/continuation/recovery-detail-baseline"
+  ],
+  "limits": [
+    "Finite samples and axial generated fixtures do not establish arbitrary-map classifier or visibility correctness.",
+    "Ordinary recovery changes sampled partitions/PVS on some fixtures despite exact brush geometry; differences are retained above.",
+    "The leaf heuristic can mark brush-model geometry as detail without recovering its authored flag.",
+    "No new partition-aware classifier, func_group inference, light inference or intelligent compiler optimizer is implemented by this fix."
+  ],
+  "packaged_release_changed": false
+}

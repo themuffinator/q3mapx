@@ -72,6 +72,9 @@ Use the correct game profile and resource paths: shader dimensions affect textur
 recovery. Valve 220 and brush primitives preserve affine texture mappings. Classic
 Quake texture definitions cannot represent arbitrary shear; the report counts
 such approximations. `-fast` skips texture reconstruction and reports fallback axes.
+Development builds after 0.3.0 use the same detail-flag policy for fast and full
+recovery in all three MAP formats. Earlier fast recovery wrote zero detail flags,
+which could turn detail geometry into structural splitters when rebuilt.
 
 ## Recovery details
 
@@ -82,6 +85,15 @@ edge differences in double precision, rejects ill-conditioned geometry and
 constant/non-finite UV axes, and supplies finite fallback transforms. Current
 brush-detail membership uses nonopaque leaf references and explicit structural
 shader flags; it is a heuristic, not the planned portal-participation analysis.
+
+The optional `detail_classification` object in version 1 reports names this
+policy, records its structural override scope (`brush_shader_contents`), and
+counts exported brushes with/without the detail bit. `author_classification_proven`
+is false: neither a retained flag nor leaf membership proves the original editor
+choice. Counts include brush entities and exclude synthetic origin brushes;
+brush-model leaf references can mark entity geometry as detail without identifying
+the author's source flag. This ambiguity remains work for the planned inference
+and provenance system.
 
 The version 1 JSON report records entities, exported/skipped brushes, patches,
 matched/fallback faces, degenerate triangles/transforms, approximate Quake UVs,
@@ -104,6 +116,25 @@ future proposals and source-assisted matching will identify their evidence expli
 Round-trip checks compare recoverable geometry, entity data, finite texture
 coordinates, and successful recompilation. Exact byte equality is inappropriate
 when compiler-generated ordering or metadata changes.
+
+`recovery_classification` adds 24 generated Quake III round trips: structural
+pillars, detail pillars, a mixed `func_group`, and translucent brushes with an
+explicit structural shader overriding authored detail bits. Each runs fast/full
+recovery through classic, brush-primitive and Valve 220 writers. Tests check all
+15 labelled world brushes, exact brush planes/materials/contents in every model,
+sealing, entity links and 594 spatial samples (352,836 ordered pairs) against the
+source. Fast rebuilds must match their full-recovery counterpart's node/leaf
+counts, sampled cluster partition and PVS relationships. Missing VIS input and
+1/4-worker byte parity are also covered.
+
+Source-versus-rebuild partition/PVS differences are recorded, not hidden behind
+successful recompilation. In the current opaque structural fixture, full and fast
+recovery both change 71 nodes to 73 and add/remove 32/8 sampled visibility pairs;
+brush geometry and sampled opaque space still match. These are fidelity
+differences to investigate, not evidence by themselves of incorrect rendering.
+The mixed group is flattened by compilation; this fixture does not implement group
+inference. Finite samples and this small axial-brush corpus do not prove general
+visibility or classifier correctness. See [the fast-recovery audit](validation/fast-detail-recovery.json).
 
 ## Implemented validation
 

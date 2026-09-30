@@ -46,9 +46,18 @@ struct DecompileStats {
 	size_t brushes = 0, skippedBrushes = 0, faces = 0, matchedFaces = 0;
 	size_t fallbackFaces = 0, degenerateUVs = 0, degenerateTriangles = 0;
 	size_t patches = 0, approximateQuakeFaces = 0, inferredMaterials = 0;
+	size_t brushesWithDetailFlag = 0;
 };
 static DecompileStats recovery;
 static std::vector<bool> detailBrushes;
+
+// One policy for every MAP writer, including fast texture recovery. This is a
+// leaf-reference heuristic; it does not prove the author's original choice.
+static int InferredBrushDetailFlag( int brushNum ){
+	return detailBrushes[brushNum]
+	    && !( bspShaders[bspBrushes[brushNum].shaderNum].contentFlags
+	          & GetRequiredSurfaceParm<"structural">().contentFlags ) ? C_DETAIL : 0;
+}
 
 
 
@@ -393,6 +402,8 @@ static void ConvertBrushFast( FILE *f, int bspBrushNum, const Vector3& origin, E
 	}
 
 	++recovery.brushes;
+	const int contentFlag = InferredBrushDetailFlag( bspBrushNum );
+	recovery.brushesWithDetailFlag += contentFlag != 0;
 	/* start brush */
 	fprintf( f, "\t// brush %d\n", bspBrushNum );
 	fprintf( f, "\t{\n" );
@@ -435,25 +446,25 @@ static void ConvertBrushFast( FILE *f, int bspBrushNum, const Vector3& origin, E
 			         pts[ 2 ][ 0 ], pts[ 2 ][ 1 ], pts[ 2 ][ 2 ]
 			       );
 			if ( brushType == EBrushType::Quake ) {
-				fprintf( f, "%s %.8f %.8f %.8f %.8f %.8f 0 0 0\n",
+				fprintf( f, "%s %.8f %.8f %.8f %.8f %.8f %d 0 0\n",
 				         texture,
-				         0.0f, 0.0f, 0.0f, 0.5f, 0.5f
+				         0.0f, 0.0f, 0.0f, 0.5f, 0.5f, contentFlag
 				       );
 			}
 			else if ( brushType == EBrushType::Valve220 ) {
 				Vector3 texX, texY;
 				ComputeAxisBase( buildPlane.normal(), texX, texY );
-				fprintf( f, "%s [ %.8f %.8f %.8f %.8f ] [ %.8f %.8f %.8f %.8f ] 0 0.5 0.5 0 0 0\n",
+				fprintf( f, "%s [ %.8f %.8f %.8f %.8f ] [ %.8f %.8f %.8f %.8f ] 0 0.5 0.5 %d 0 0\n",
 				         texture,
 				         texX.x(), texX.y(), texX.z(), 0.f,
-				         texY.x(), texY.y(), texY.z(), 0.f
+				         texY.x(), texY.y(), texY.z(), 0.f, contentFlag
 				       );
 			}
 			else if ( brushType == EBrushType::Bp ) {
-				fprintf( f, "( ( %.8f %.8f %.8f ) ( %.8f %.8f %.8f ) ) %s 0 0 0\n",
+				fprintf( f, "( ( %.8f %.8f %.8f ) ( %.8f %.8f %.8f ) ) %s %d 0 0\n",
 				         1.0f / 32.0f, 0.0f, 0.0f,
 				         0.0f, 1.0f / 32.0f, 0.0f,
-				         texture
+				         texture, contentFlag
 				       );
 			}
 		}
@@ -485,10 +496,8 @@ static void ConvertBrush( FILE *f, int bspBrushNum, const Vector3& origin, EBrus
 		fprintf( f, "\t{\n" );
 	}
 
-	// Build this membership table once, instead of scanning every leaf for each brush.
-	const int contentFlag = detailBrushes[bspBrushNum]
-	    && !( bspShaders[bspBrushes[bspBrushNum].shaderNum].contentFlags
-	          & GetRequiredSurfaceParm<"structural">().contentFlags ) ? C_DETAIL : 0;
+	const int contentFlag = InferredBrushDetailFlag( bspBrushNum );
+	recovery.brushesWithDetailFlag += contentFlag != 0;
 
 	/* iterate through build brush sides */
 	for ( side_t& buildSide : buildBrush.sides )
@@ -1115,6 +1124,13 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		const auto count = [&]( const char* key, size_t value ){ writer.Key( key ); writer.Uint64( value ); };
 		count( "entities", entities.size() );
 		count( "brushes", recovery.brushes );
+		writer.Key( "detail_classification" ); writer.StartObject();
+		writer.Key( "method" ); writer.String( "nonopaque_leaf_reference_heuristic" );
+		writer.Key( "structural_override_scope" ); writer.String( "brush_shader_contents" );
+		writer.Key( "author_classification_proven" ); writer.Bool( false );
+		count( "exported_brushes_with_detail_flag", recovery.brushesWithDetailFlag );
+		count( "exported_brushes_without_detail_flag", recovery.brushes - recovery.brushesWithDetailFlag );
+		writer.EndObject();
 		count( "skipped_brushes", recovery.skippedBrushes );
 		count( "patches", recovery.patches );
 		count( "faces", recovery.faces );

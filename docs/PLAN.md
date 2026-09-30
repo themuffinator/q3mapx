@@ -218,6 +218,10 @@ limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md
 - [ ] Infer detail versus structural geometry using BSP partitions, leaf/cluster
   relationships, VIS/PVS and compatible portal evidence; validate classifications
   by recompilation, preserve seals/occluders and expose ambiguous cases.
+  The initial known-source audit now covers 24 fast/full MAP round trips, exact
+  brush geometry and spatial PVS comparisons. Fast export's dropped detail bits
+  are repaired. Source/rebuild partition differences and brush-model flag
+  ambiguity remain explicit findings for the inference work.
 - [ ] Infer useful `func_group` membership from geometry, materials, repeated
   assemblies and compile-property evidence, independently of detail classification.
   Preserve entity ownership and distinguish inferred groups from surviving metadata.

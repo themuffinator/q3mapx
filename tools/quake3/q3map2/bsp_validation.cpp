@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // q3mapx: validate untrusted BSP data before legacy compiler traversal.
 #include "bspfile_abstract.h"
+#include "q3mapx/index_validation.h"
 
 #include <cmath>
 #include <cstring>
@@ -130,6 +131,7 @@ void ValidateBSPData( bool partial ){
 		index( side.shaderNum, bspShaders.size(), "brush side shader", i );
 		if ( side.surfaceNum != -1 ) index( side.surfaceNum, bspDrawSurfaces.size(), "brush side surface", i );
 	}
+	q3mapx::IndexRangeValidator triangleIndices( bspDrawIndexes );
 	for ( size_t i = 0; i < bspDrawSurfaces.size(); ++i ) {
 		auto& surface = bspDrawSurfaces[i];
 		range( surface.firstVert, surface.numVerts, bspDrawVerts.size(), "surface vertices", i );
@@ -146,9 +148,8 @@ void ValidateBSPData( bool partial ){
 			Error( "Invalid BSP: surface %zu has unknown type %d", i, int( surface.surfaceType ) );
 		}
 		if ( surface.numIndexes % 3 != 0 ) Error( "Invalid BSP: surface %zu has incomplete triangles", i );
-		for ( int j = 0; j < surface.numIndexes; ++j ) {
-			index( bspDrawIndexes[size_t( surface.firstIndex ) + j], size_t( surface.numVerts ), "triangle vertex", i );
-		}
+		if ( const auto bad = triangleIndices.firstInvalid( size_t(surface.firstIndex), size_t(surface.numIndexes), surface.numVerts ) )
+			index( bspDrawIndexes[*bad], size_t( surface.numVerts ), "triangle vertex", i );
 		if ( surface.surfaceType == MST_PATCH ) {
 			if ( surface.patchWidth < 3 || surface.patchHeight < 3
 			  || surface.patchWidth > MAX_PATCH_SIZE || surface.patchHeight > MAX_PATCH_SIZE

@@ -1,0 +1,654 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-30T06:55:45.720109+00:00",
+  "scope": "Bounded native validation of shared surface index ranges, retaining first-error semantics",
+  "baseline_revision": "b73895e0a0e67fc36e556fb7795e729fac55748f",
+  "baseline_compiler_sha256": "5a084b175eb1ee396480958e1953d96ed0ce8caf066172e07cd8a8fa6d645d85",
+  "same_acceptance_and_diagnostics_before_change": true,
+  "source_sha256": {
+    "libs/q3mapx/index_validation.h": "a27093bfedabf59341c7f04ab3bddc3bbf10237495b16d960f6ad69430b2be39",
+    "tools/quake3/q3map2/bsp_validation.cpp": "34aa333830663b35d7a9a5c8d42fad2520e13f329db25730e2d2fc11c92ed37e",
+    "tests/index_validation.cpp": "426a1fe2ea634b57b21c84b1893b5967c3213b779a04f788a7dcb7494473c825",
+    "tests/index_validation.py": "74e8469235549b73175e0782b89069ad6ef8249484621dac80a98b1bdf86c239",
+    "benchmarks/index_validation.py": "f4cba9fcb6c5e6b069ada9e86419ccfa53501199414fc7f4e8f0a031f1c857b9"
+  },
+  "platform_checks": [
+    {
+      "build": "release",
+      "compiler_sha256": "249788673a42d3878c985c6204d14c3a3d9dd6ae9b55f322afff8c90f619a8f6",
+      "regression_groups_passed": 13,
+      "seconds": 9.61,
+      "sanitizer_settings": {},
+      "strict_and_forced_native_loader_checks": 34,
+      "source_preserved": true,
+      "case_results": [
+        {
+          "case": "repeated-valid",
+          "indices": 12288,
+          "surfaces": 1000,
+          "expanded_index_references": 12288000,
+          "sha256": "146e79bd317500a925e513b42feef5177640c21f83591ab4cb903e60190b91eb",
+          "expected_first_error": null,
+          "result": "passed"
+        },
+        {
+          "case": "different-local-counts",
+          "indices": 12288,
+          "surfaces": 6,
+          "expanded_index_references": 50952,
+          "sha256": "f75d2f320144edd0c7ef447c64d3d6cd3de0fa9f3eb1a5e191e4136e01d85ad1",
+          "expected_first_error": [
+            5,
+            127
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "unused-invalid-values",
+          "indices": 12290,
+          "surfaces": 7,
+          "expanded_index_references": 49158,
+          "sha256": "2deb4952b16ce7742337450b2acacc5eb94b74e27ce307818f6070d65af01600",
+          "expected_first_error": null,
+          "result": "passed"
+        },
+        {
+          "case": "negative-prefix",
+          "indices": 12290,
+          "surfaces": 5,
+          "expanded_index_references": 49155,
+          "sha256": "72f731b3a547f39d4a7c18e352a395096671ad04d1c74e61ff01d329bcb21280",
+          "expected_first_error": [
+            4,
+            0
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "overflow-suffix",
+          "indices": 12290,
+          "surfaces": 5,
+          "expanded_index_references": 49155,
+          "sha256": "6d694f5946f71ee3bf41d0bc1d24f882a709b0e81c1cc8a28e03173098a7af57",
+          "expected_first_error": [
+            4,
+            12289
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-63",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "10aee269dd761b00032352b3045f2bb1a371111aff399e03504619339e7bf954",
+          "expected_first_error": [
+            4,
+            63
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-64",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "6de2a763e07fd952fcc8f995831a88763478b0cd2326968b5d3bdae069e27330",
+          "expected_first_error": [
+            4,
+            64
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-65",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "643a4cb89e4bbc18fa4a67563f0468fc256b9572f3775710beef6a9c08ca932e",
+          "expected_first_error": [
+            4,
+            65
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-126",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "155dfff57d1e3a785015b9d8cf327506a6bfd9e270d15dbda6f8a9f4e5713d2d",
+          "expected_first_error": [
+            4,
+            126
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-127",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "57a39338dee32f7e00bb0ae58e3f68eb49369577c9e376a7199c5d2a5c6c73e9",
+          "expected_first_error": [
+            4,
+            127
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-128",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "bf1b7a110659d1df0ade91a6f764809cb3c85cce8fabb5794c2756c666e8eff7",
+          "expected_first_error": [
+            4,
+            128
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-4095",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "6b86eea7f40ab096aa8a9c395a80a60573a731d375b5fc8343369e6a0bd644b3",
+          "expected_first_error": [
+            4,
+            4095
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-4096",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "dccdbdbf9d08cab58ae8d27b85578758910602cfe4a0658c6d8aa1fd21017370",
+          "expected_first_error": [
+            4,
+            4096
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-8191",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "947a37329ddf25bdd0047da5b8c70e0af87c91d47ee885e167936fb2f9c7c387",
+          "expected_first_error": [
+            4,
+            8191
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "empty",
+          "indices": 0,
+          "surfaces": 1,
+          "expanded_index_references": 0,
+          "sha256": "97d4a43b9e0b0c3c262db4deb6e64b3821dfdb8b02db61d545d8a67052151f4e",
+          "expected_first_error": null,
+          "result": "passed"
+        },
+        {
+          "case": "zero-vertices",
+          "indices": 3,
+          "surfaces": 1,
+          "expanded_index_references": 3,
+          "sha256": "6db0abd913030bc9426ad4ac9e0c227cd7ad2c1682cef08013adf418c298aa7b",
+          "expected_first_error": [
+            0,
+            0
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "overlap-stress",
+          "indices": 60000,
+          "surfaces": 10000,
+          "expanded_index_references": 600000000,
+          "sha256": "a9818f5440d486f6de6417e29f3e76de7bb6d84aab11fb15b61aea893688e4e3",
+          "expected_first_error": null,
+          "result": "passed"
+        }
+      ]
+    },
+    {
+      "build": "linux-release",
+      "compiler_sha256": "7f74af71accfe0cbd46adca45a2445a572f04ac8b92ee5e64cec129410b1b740",
+      "regression_groups_passed": 13,
+      "seconds": 47.85,
+      "sanitizer_settings": {},
+      "strict_and_forced_native_loader_checks": 34,
+      "source_preserved": true,
+      "case_results": [
+        {
+          "case": "repeated-valid",
+          "indices": 12288,
+          "surfaces": 1000,
+          "expanded_index_references": 12288000,
+          "sha256": "146e79bd317500a925e513b42feef5177640c21f83591ab4cb903e60190b91eb",
+          "expected_first_error": null,
+          "result": "passed"
+        },
+        {
+          "case": "different-local-counts",
+          "indices": 12288,
+          "surfaces": 6,
+          "expanded_index_references": 50952,
+          "sha256": "f75d2f320144edd0c7ef447c64d3d6cd3de0fa9f3eb1a5e191e4136e01d85ad1",
+          "expected_first_error": [
+            5,
+            127
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "unused-invalid-values",
+          "indices": 12290,
+          "surfaces": 7,
+          "expanded_index_references": 49158,
+          "sha256": "2deb4952b16ce7742337450b2acacc5eb94b74e27ce307818f6070d65af01600",
+          "expected_first_error": null,
+          "result": "passed"
+        },
+        {
+          "case": "negative-prefix",
+          "indices": 12290,
+          "surfaces": 5,
+          "expanded_index_references": 49155,
+          "sha256": "72f731b3a547f39d4a7c18e352a395096671ad04d1c74e61ff01d329bcb21280",
+          "expected_first_error": [
+            4,
+            0
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "overflow-suffix",
+          "indices": 12290,
+          "surfaces": 5,
+          "expanded_index_references": 49155,
+          "sha256": "6d694f5946f71ee3bf41d0bc1d24f882a709b0e81c1cc8a28e03173098a7af57",
+          "expected_first_error": [
+            4,
+            12289
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-63",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "10aee269dd761b00032352b3045f2bb1a371111aff399e03504619339e7bf954",
+          "expected_first_error": [
+            4,
+            63
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-64",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "6de2a763e07fd952fcc8f995831a88763478b0cd2326968b5d3bdae069e27330",
+          "expected_first_error": [
+            4,
+            64
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-65",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "643a4cb89e4bbc18fa4a67563f0468fc256b9572f3775710beef6a9c08ca932e",
+          "expected_first_error": [
+            4,
+            65
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-126",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "155dfff57d1e3a785015b9d8cf327506a6bfd9e270d15dbda6f8a9f4e5713d2d",
+          "expected_first_error": [
+            4,
+            126
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-127",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "57a39338dee32f7e00bb0ae58e3f68eb49369577c9e376a7199c5d2a5c6c73e9",
+          "expected_first_error": [
+            4,
+            127
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-128",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "bf1b7a110659d1df0ade91a6f764809cb3c85cce8fabb5794c2756c666e8eff7",
+          "expected_first_error": [
+            4,
+            128
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-4095",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "6b86eea7f40ab096aa8a9c395a80a60573a731d375b5fc8343369e6a0bd644b3",
+          "expected_first_error": [
+            4,
+            4095
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-4096",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "dccdbdbf9d08cab58ae8d27b85578758910602cfe4a0658c6d8aa1fd21017370",
+          "expected_first_error": [
+            4,
+            4096
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-8191",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "947a37329ddf25bdd0047da5b8c70e0af87c91d47ee885e167936fb2f9c7c387",
+          "expected_first_error": [
+            4,
+            8191
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "empty",
+          "indices": 0,
+          "surfaces": 1,
+          "expanded_index_references": 0,
+          "sha256": "97d4a43b9e0b0c3c262db4deb6e64b3821dfdb8b02db61d545d8a67052151f4e",
+          "expected_first_error": null,
+          "result": "passed"
+        },
+        {
+          "case": "zero-vertices",
+          "indices": 3,
+          "surfaces": 1,
+          "expanded_index_references": 3,
+          "sha256": "6db0abd913030bc9426ad4ac9e0c227cd7ad2c1682cef08013adf418c298aa7b",
+          "expected_first_error": [
+            0,
+            0
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "overlap-stress",
+          "indices": 60000,
+          "surfaces": 10000,
+          "expanded_index_references": 600000000,
+          "sha256": "a9818f5440d486f6de6417e29f3e76de7bb6d84aab11fb15b61aea893688e4e3",
+          "expected_first_error": null,
+          "result": "passed"
+        }
+      ]
+    },
+    {
+      "build": "linux-sanitized",
+      "compiler_sha256": "329dabce146301124ae678573d6d1aa74e64796326ca7421e012d525e0343f16",
+      "regression_groups_passed": 8,
+      "seconds": 189.62,
+      "sanitizer_settings": {
+        "ASAN_OPTIONS": "detect_leaks=0:abort_on_error=1"
+      },
+      "strict_and_forced_native_loader_checks": 34,
+      "source_preserved": true,
+      "case_results": [
+        {
+          "case": "repeated-valid",
+          "indices": 12288,
+          "surfaces": 1000,
+          "expanded_index_references": 12288000,
+          "sha256": "146e79bd317500a925e513b42feef5177640c21f83591ab4cb903e60190b91eb",
+          "expected_first_error": null,
+          "result": "passed"
+        },
+        {
+          "case": "different-local-counts",
+          "indices": 12288,
+          "surfaces": 6,
+          "expanded_index_references": 50952,
+          "sha256": "f75d2f320144edd0c7ef447c64d3d6cd3de0fa9f3eb1a5e191e4136e01d85ad1",
+          "expected_first_error": [
+            5,
+            127
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "unused-invalid-values",
+          "indices": 12290,
+          "surfaces": 7,
+          "expanded_index_references": 49158,
+          "sha256": "2deb4952b16ce7742337450b2acacc5eb94b74e27ce307818f6070d65af01600",
+          "expected_first_error": null,
+          "result": "passed"
+        },
+        {
+          "case": "negative-prefix",
+          "indices": 12290,
+          "surfaces": 5,
+          "expanded_index_references": 49155,
+          "sha256": "72f731b3a547f39d4a7c18e352a395096671ad04d1c74e61ff01d329bcb21280",
+          "expected_first_error": [
+            4,
+            0
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "overflow-suffix",
+          "indices": 12290,
+          "surfaces": 5,
+          "expanded_index_references": 49155,
+          "sha256": "6d694f5946f71ee3bf41d0bc1d24f882a709b0e81c1cc8a28e03173098a7af57",
+          "expected_first_error": [
+            4,
+            12289
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-63",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "10aee269dd761b00032352b3045f2bb1a371111aff399e03504619339e7bf954",
+          "expected_first_error": [
+            4,
+            63
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-64",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "6de2a763e07fd952fcc8f995831a88763478b0cd2326968b5d3bdae069e27330",
+          "expected_first_error": [
+            4,
+            64
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-65",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "643a4cb89e4bbc18fa4a67563f0468fc256b9572f3775710beef6a9c08ca932e",
+          "expected_first_error": [
+            4,
+            65
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-126",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "155dfff57d1e3a785015b9d8cf327506a6bfd9e270d15dbda6f8a9f4e5713d2d",
+          "expected_first_error": [
+            4,
+            126
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-127",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "57a39338dee32f7e00bb0ae58e3f68eb49369577c9e376a7199c5d2a5c6c73e9",
+          "expected_first_error": [
+            4,
+            127
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-128",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "bf1b7a110659d1df0ade91a6f764809cb3c85cce8fabb5794c2756c666e8eff7",
+          "expected_first_error": [
+            4,
+            128
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-4095",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "6b86eea7f40ab096aa8a9c395a80a60573a731d375b5fc8343369e6a0bd644b3",
+          "expected_first_error": [
+            4,
+            4095
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-4096",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "dccdbdbf9d08cab58ae8d27b85578758910602cfe4a0658c6d8aa1fd21017370",
+          "expected_first_error": [
+            4,
+            4096
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "tight-count-8191",
+          "indices": 9000,
+          "surfaces": 5,
+          "expanded_index_references": 44997,
+          "sha256": "947a37329ddf25bdd0047da5b8c70e0af87c91d47ee885e167936fb2f9c7c387",
+          "expected_first_error": [
+            4,
+            8191
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "empty",
+          "indices": 0,
+          "surfaces": 1,
+          "expanded_index_references": 0,
+          "sha256": "97d4a43b9e0b0c3c262db4deb6e64b3821dfdb8b02db61d545d8a67052151f4e",
+          "expected_first_error": null,
+          "result": "passed"
+        },
+        {
+          "case": "zero-vertices",
+          "indices": 3,
+          "surfaces": 1,
+          "expanded_index_references": 3,
+          "sha256": "6db0abd913030bc9426ad4ac9e0c227cd7ad2c1682cef08013adf418c298aa7b",
+          "expected_first_error": [
+            0,
+            0
+          ],
+          "result": "passed"
+        },
+        {
+          "case": "overlap-stress",
+          "indices": 60000,
+          "surfaces": 10000,
+          "expanded_index_references": 600000000,
+          "sha256": "a9818f5440d486f6de6417e29f3e76de7bb6d84aab11fb15b61aea893688e4e3",
+          "expected_first_error": null,
+          "result": "passed"
+        }
+      ]
+    }
+  ],
+  "independent_unit_checks": [
+    "Exhaustive slices around 64-index block boundaries",
+    "Seeded randomized overlapping slices and vertex limits",
+    "Negative/maximum signed indices",
+    "First offending offset matches an independent ordered scan",
+    "Empty, exact-end, oversized and overflowing ranges",
+    "No cache for ordinary disjoint scans",
+    "Bounded source visits/storage on 20000 varied overlapping slices"
+  ],
+  "work_bound_fixture": {
+    "source_indices": 240003,
+    "queries": 20000,
+    "source_values_examined": 1414304,
+    "scratch_bytes": 30008,
+    "maximum_source_visits_contract": 3280009
+  },
+  "synthetic_benchmark": "../benchmarks/index-validation-win-x64.json",
+  "private_native_benchmark": "../benchmarks/index-validation-native-win-x64.json",
+  "timing_limits": "50.3x applies to the generated shared-range stress fixture. Four private native inputs do not demonstrate a general loading speedup.",
+  "retained_logs": ".agents/tmp/continuation/index-{build,tests}-*.log",
+  "retained_baseline": ".agents/tmp/continuation/index-validation-baseline/q3mapx.exe",
+  "unchanged_release_archive_sha256": "b503bc43567bdea3c09432d7c1a460ddbf7f6018447db6cb4f0cc574447edaa5",
+  "unrelated_open_findings": [
+    "Unchecked copy into 1024-byte path buffer in BSPInfo remains a separate follow-up.",
+    "Workbench hardware discovery still needs output bounds and superseded-query handling."
+  ]
+}

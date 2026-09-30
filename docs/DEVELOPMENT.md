@@ -74,6 +74,16 @@ write test output into a real game installation or reference asset directory.
 6. Check scheduling and GPU parity at varied thread/backend settings.
 7. Check GUI project serialization, command arguments, queues, and process failures.
 
+`index_validation` compares first invalid references with an independent ordered
+scan over exhaustive boundary slices and seeded random overlaps. It also verifies
+bounded source visits and scratch storage, so the performance contract does not
+depend on a brittle wall-clock assertion. `index_validation_cli` checks the real
+native loader with repeated/shifted spans, different per-surface vertex counts,
+negative/overflowing indices, unused bad entries, empty slices and forced loads.
+The earlier binary passes the same acceptance/diagnostic cases; the new helper
+removes repeated work without changing those contracts. The
+[benchmark guide](PERFORMANCE.md#shared-bsp-index-validation) covers timing evidence.
+
 `lighting_materials` generates alpha textures, colored filters, an emissive panel,
 sun/sky, a curved patch and a brush model with an origin. It checks adaptive,
 bounced, deluxe and supersampled lighting at one and four workers. Mutating alpha

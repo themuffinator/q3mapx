@@ -182,6 +182,9 @@ not a redefinition of the overall goal around the existing release:
 - [x] Extend checked publication to recovered MAP/report pairs after larger-map
   investigation exposed replacement before report failure; retain exact output
   bytes and verify rollback, buffered failures and legacy conversion.
+- [x] Bound repeated validation of overlapping surface-index ranges, retaining
+  local vertex limits, ignored unused values and the original first-error order;
+  measure adversarial costs and check native-map compatibility.
 - [ ] Profile larger recovery workloads and address measured costs with geometry,
   UV/material and worker-count parity evidence before claiming speedups.
   Initial whole-command comparisons now cover a dense generated room and private

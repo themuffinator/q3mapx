@@ -102,6 +102,8 @@ sides and 50 million work units. `-max-work N` changes the work budget within
 path comparisons and meaningful PVS bytes; they are not elapsed time or exact CPU
 instructions. These analysis limits apply after the native loader's validation,
 not as a timeout on all preexisting parser/normalization work.
+The subsequently repaired shared-index validator now avoids repeatedly scanning
+overlapping surface ranges; see [its validation/performance contract](PERFORMANCE.md#shared-bsp-index-validation).
 
 JSON streams through a bounded buffer with a 64 MiB ceiling. Exhaustion is an
 error, not a truncated successful report. Output must end in `.json` and cannot

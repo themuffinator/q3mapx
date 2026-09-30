@@ -5,6 +5,55 @@ unless explicitly described as microbenchmarks. Windows x64, GCC 15.2.0 release,
 i7-13700H, 20 logical CPUs; no global fast-math or LTO. Synthetic maps contain no
 commercial assets. Results describe these workloads, not every map or machine.
 
+## Shared BSP index validation
+
+Surfaces may share all or part of the same stored triangle-index array while
+using different local vertex counts. The previous validator walked every index
+for every referencing surface. A modest file could therefore force billions of
+repeated checks before any recovery/evidence work budget applied.
+
+The validator now keeps direct scans for small slices and ordinary disjoint work.
+Repeated long scans trigger a blocked maximum tree over the immutable source.
+Negative values remain invalid, and unused values outside the requested slice
+do not cause rejection. Queries retain each surface's own vertex limit and return
+the first offending reference, preserving surface order and existing diagnostics.
+The cache stores two unsigned maxima per 64 source indices, rounded to the final
+block: approximately 3.125% extra index storage when needed, none for direct scans.
+
+On the generated 20,000-surface/120,000-index stress fixture (2.4 billion implied
+references), the complete `-info` command measured **0.8392 → 0.0167 seconds**
+median, **50.3× faster**. One warmup and five measured runs alternated execution
+order, with identical native statistics and preserved input. This is an adversarial
+range-sharing workload, not evidence of a 50× compiler or ordinary map-loading
+speedup. The [raw observations](benchmarks/index-validation-win-x64.json) include
+source/executable hashes, arguments and timing spread.
+
+Four private native-map comparisons show small, inconsistent timing changes:
+
+| Map | Previous median | Current median |
+| --- | ---: | ---: |
+| Jedi Academy `t3_stamp` | 26.47 ms | 27.25 ms |
+| Allied Assault `m1l1` | 20.39 ms | 19.34 ms |
+| F.A.K.K.2 `towncenter_good` | 23.19 ms | 21.73 ms |
+| Quake III IHV `tim_dm1` | 13.29 ms | 13.52 ms |
+
+These samples demonstrate native compatibility and do not establish a general
+loading speedup. [Native results](benchmarks/index-validation-native-win-x64.json)
+retain observations and identities without proprietary geometry. No binaries
+changed during measurement and no other task-controlled tests/builds ran alongside
+these timing samples. Reproduce with:
+
+```sh
+python benchmarks/index_validation.py --baseline /path/to/previous/q3mapx --compiler build/release/bin/q3mapx --work-dir build/index-validation-benchmark
+```
+
+Add `--map /path/to/map.bsp --game PROFILE` for a private native copy. The command
+measures startup, native load/validation and statistics printing; it does not bake
+lighting or evaluate MAP reconstruction. Deterministic unit checks separately
+bound source-value visits and storage on varied overlapping slices. Both those
+checks and native error/output regressions are recorded in the
+[validation evidence](validation/index-validation.json).
+
 ## Indexed minimaps
 
 The inherited sampler inspected every opaque brush at every sample. q3mapx builds

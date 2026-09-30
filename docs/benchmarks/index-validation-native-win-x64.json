@@ -1,0 +1,534 @@
+{
+  "schema_version": 1,
+  "scope": "Four private native maps; small inconsistent timing differences do not demonstrate a general speedup",
+  "results": [
+    {
+      "schema_version": 1,
+      "kind": "whole_command_native_index_validation",
+      "timestamp_utc": "2026-09-30T06:49:09.584024+00:00",
+      "fixture": "private_native_map",
+      "game": "ja",
+      "counts": null,
+      "platform": "Windows-10-10.0.26200-SP0",
+      "processor": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+      "logical_cpus": 20,
+      "input_bytes": 12754764,
+      "input_sha256": "886680f55a494d9accd5fcd7de70b952962e8d8741169dedf15f3a5f91e62101",
+      "compiler_sha256": {
+        "baseline": "5a084b175eb1ee396480958e1953d96ed0ce8caf066172e07cd8a8fa6d645d85",
+        "q3mapx": "249788673a42d3878c985c6204d14c3a3d9dd6ae9b55f322afff8c90f619a8f6"
+      },
+      "arguments": [
+        "-game",
+        "ja",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\index-validation-native\\ja",
+        "-fs_homepath",
+        "E:\\Repositories\\q3mapx\\build\\index-validation-native\\ja\\home",
+        "-threads",
+        "1",
+        "-info",
+        "E:\\Repositories\\q3mapx\\build\\index-validation-native\\ja\\input.bsp"
+      ],
+      "samples": [
+        {
+          "implementation": "baseline",
+          "iteration": 0,
+          "warmup": true,
+          "seconds": 0.04545159998815507
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 0,
+          "warmup": true,
+          "seconds": 0.0311564999865368
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 1,
+          "warmup": false,
+          "seconds": 0.02612529997713864
+        },
+        {
+          "implementation": "baseline",
+          "iteration": 1,
+          "warmup": false,
+          "seconds": 0.026244000007864088
+        },
+        {
+          "implementation": "baseline",
+          "iteration": 2,
+          "warmup": false,
+          "seconds": 0.027253300009761006
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 2,
+          "warmup": false,
+          "seconds": 0.026388600002974272
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 3,
+          "warmup": false,
+          "seconds": 0.0281667000381276
+        },
+        {
+          "implementation": "baseline",
+          "iteration": 3,
+          "warmup": false,
+          "seconds": 0.026167400006670505
+        },
+        {
+          "implementation": "baseline",
+          "iteration": 4,
+          "warmup": false,
+          "seconds": 0.026473499950952828
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 4,
+          "warmup": false,
+          "seconds": 0.027457599993795156
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 5,
+          "warmup": false,
+          "seconds": 0.027250600047409534
+        },
+        {
+          "implementation": "baseline",
+          "iteration": 5,
+          "warmup": false,
+          "seconds": 0.0270617000060156
+        }
+      ],
+      "summaries": [
+        {
+          "implementation": "baseline",
+          "seconds": [
+            0.026244000007864088,
+            0.027253300009761006,
+            0.026167400006670505,
+            0.026473499950952828,
+            0.0270617000060156
+          ],
+          "median_seconds": 0.026473499950952828
+        },
+        {
+          "implementation": "q3mapx",
+          "seconds": [
+            0.02612529997713864,
+            0.026388600002974272,
+            0.0281667000381276,
+            0.027457599993795156,
+            0.027250600047409534
+          ],
+          "median_seconds": 0.027250600047409534
+        }
+      ],
+      "median_speedup": 0.9714831932102509,
+      "native_statistics_identical": true,
+      "input_unchanged": true,
+      "source_archive": "assets0.pk3",
+      "source_map": "maps/t3_stamp.bsp"
+    },
+    {
+      "schema_version": 1,
+      "kind": "whole_command_native_index_validation",
+      "timestamp_utc": "2026-09-30T06:49:10.031488+00:00",
+      "fixture": "private_native_map",
+      "game": "mohaa",
+      "counts": null,
+      "platform": "Windows-10-10.0.26200-SP0",
+      "processor": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+      "logical_cpus": 20,
+      "input_bytes": 7354304,
+      "input_sha256": "38ab956dd4dcd89b0068ceca4c24bd46bc6142415a0491d59850d361de87f514",
+      "compiler_sha256": {
+        "baseline": "5a084b175eb1ee396480958e1953d96ed0ce8caf066172e07cd8a8fa6d645d85",
+        "q3mapx": "249788673a42d3878c985c6204d14c3a3d9dd6ae9b55f322afff8c90f619a8f6"
+      },
+      "arguments": [
+        "-game",
+        "mohaa",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\index-validation-native\\mohaa",
+        "-fs_homepath",
+        "E:\\Repositories\\q3mapx\\build\\index-validation-native\\mohaa\\home",
+        "-threads",
+        "1",
+        "-info",
+        "E:\\Repositories\\q3mapx\\build\\index-validation-native\\mohaa\\input.bsp"
+      ],
+      "samples": [
+        {
+          "implementation": "baseline",
+          "iteration": 0,
+          "warmup": true,
+          "seconds": 0.04567239998141304
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 0,
+          "warmup": true,
+          "seconds": 0.028463799972087145
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 1,
+          "warmup": false,
+          "seconds": 0.020400700042955577
+        },
+        {
+          "implementation": "baseline",
+          "iteration": 1,
+          "warmup": false,
+          "seconds": 0.021962400001939386
+        },
+        {
+          "implementation": "baseline",
+          "iteration": 2,
+          "warmup": false,
+          "seconds": 0.02074089995585382
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 2,
+          "warmup": false,
+          "seconds": 0.019328200025483966
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 3,
+          "warmup": false,
+          "seconds": 0.021084099949803203
+        },
+        {
+          "implementation": "baseline",
+          "iteration": 3,
+          "warmup": false,
+          "seconds": 0.019861599954310805
+        },
+        {
+          "implementation": "baseline",
+          "iteration": 4,
+          "warmup": false,
+          "seconds": 0.020166600006632507
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 4,
+          "warmup": false,
+          "seconds": 0.019338599988259375
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 5,
+          "warmup": false,
+          "seconds": 0.01924309995956719
+        },
+        {
+          "implementation": "baseline",
+          "iteration": 5,
+          "warmup": false,
+          "seconds": 0.020390500023495406
+        }
+      ],
+      "summaries": [
+        {
+          "implementation": "baseline",
+          "seconds": [
+            0.021962400001939386,
+            0.02074089995585382,
+            0.019861599954310805,
+            0.020166600006632507,
+            0.020390500023495406
+          ],
+          "median_seconds": 0.020390500023495406
+        },
+        {
+          "implementation": "q3mapx",
+          "seconds": [
+            0.020400700042955577,
+            0.019328200025483966,
+            0.021084099949803203,
+            0.019338599988259375,
+            0.01924309995956719
+          ],
+          "median_seconds": 0.019338599988259375
+        }
+      ],
+      "median_speedup": 1.05439380492252,
+      "native_statistics_identical": true,
+      "input_unchanged": true,
+      "source_archive": "Pak5.pk3",
+      "source_map": "maps/m1l1.bsp"
+    },
+    {
+      "schema_version": 1,
+      "kind": "whole_command_native_index_validation",
+      "timestamp_utc": "2026-09-30T06:49:10.534742+00:00",
+      "fixture": "private_native_map",
+      "game": "fakk2",
+      "counts": null,
+      "platform": "Windows-10-10.0.26200-SP0",
+      "processor": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+      "logical_cpus": 20,
+      "input_bytes": 7238828,
+      "input_sha256": "92f15b2cb9b1d73266dff366499030eb476df93dfbec1d04ee65ffef34259624",
+      "compiler_sha256": {
+        "baseline": "5a084b175eb1ee396480958e1953d96ed0ce8caf066172e07cd8a8fa6d645d85",
+        "q3mapx": "249788673a42d3878c985c6204d14c3a3d9dd6ae9b55f322afff8c90f619a8f6"
+      },
+      "arguments": [
+        "-game",
+        "fakk2",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\index-validation-native\\fakk2",
+        "-fs_homepath",
+        "E:\\Repositories\\q3mapx\\build\\index-validation-native\\fakk2\\home",
+        "-threads",
+        "1",
+        "-info",
+        "E:\\Repositories\\q3mapx\\build\\index-validation-native\\fakk2\\input.bsp"
+      ],
+      "samples": [
+        {
+          "implementation": "baseline",
+          "iteration": 0,
+          "warmup": true,
+          "seconds": 0.05061750003369525
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 0,
+          "warmup": true,
+          "seconds": 0.025608500000089407
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 1,
+          "warmup": false,
+          "seconds": 0.020565000013448298
+        },
+        {
+          "implementation": "baseline",
+          "iteration": 1,
+          "warmup": false,
+          "seconds": 0.021047999965958297
+        },
+        {
+          "implementation": "baseline",
+          "iteration": 2,
+          "warmup": false,
+          "seconds": 0.02736239996738732
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 2,
+          "warmup": false,
+          "seconds": 0.021971400012262166
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 3,
+          "warmup": false,
+          "seconds": 0.021727400016970932
+        },
+        {
+          "implementation": "baseline",
+          "iteration": 3,
+          "warmup": false,
+          "seconds": 0.0234004000085406
+        },
+        {
+          "implementation": "baseline",
+          "iteration": 4,
+          "warmup": false,
+          "seconds": 0.023194099951069802
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 4,
+          "warmup": false,
+          "seconds": 0.0214772000326775
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 5,
+          "warmup": false,
+          "seconds": 0.02187569998204708
+        },
+        {
+          "implementation": "baseline",
+          "iteration": 5,
+          "warmup": false,
+          "seconds": 0.021717900002840906
+        }
+      ],
+      "summaries": [
+        {
+          "implementation": "baseline",
+          "seconds": [
+            0.021047999965958297,
+            0.02736239996738732,
+            0.0234004000085406,
+            0.023194099951069802,
+            0.021717900002840906
+          ],
+          "median_seconds": 0.023194099951069802
+        },
+        {
+          "implementation": "q3mapx",
+          "seconds": [
+            0.020565000013448298,
+            0.021971400012262166,
+            0.021727400016970932,
+            0.0214772000326775,
+            0.02187569998204708
+          ],
+          "median_seconds": 0.021727400016970932
+        }
+      ],
+      "median_speedup": 1.0675046224101021,
+      "native_statistics_identical": true,
+      "input_unchanged": true,
+      "source_archive": "pak0.pk3",
+      "source_map": "maps/towncenter_good.bsp"
+    },
+    {
+      "schema_version": 1,
+      "kind": "whole_command_native_index_validation",
+      "timestamp_utc": "2026-09-30T06:49:10.879799+00:00",
+      "fixture": "private_native_map",
+      "game": "q3-ihv",
+      "counts": null,
+      "platform": "Windows-10-10.0.26200-SP0",
+      "processor": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+      "logical_cpus": 20,
+      "input_bytes": 618916,
+      "input_sha256": "40621dfd4037116ba3feb7816913f799320a57111c530e2319143706f0b1c2e2",
+      "compiler_sha256": {
+        "baseline": "5a084b175eb1ee396480958e1953d96ed0ce8caf066172e07cd8a8fa6d645d85",
+        "q3mapx": "249788673a42d3878c985c6204d14c3a3d9dd6ae9b55f322afff8c90f619a8f6"
+      },
+      "arguments": [
+        "-game",
+        "q3-ihv",
+        "-fs_basepath",
+        "E:\\Repositories\\q3mapx\\build\\index-validation-native\\q3-ihv",
+        "-fs_homepath",
+        "E:\\Repositories\\q3mapx\\build\\index-validation-native\\q3-ihv\\home",
+        "-threads",
+        "1",
+        "-info",
+        "E:\\Repositories\\q3mapx\\build\\index-validation-native\\q3-ihv\\input.bsp"
+      ],
+      "samples": [
+        {
+          "implementation": "baseline",
+          "iteration": 0,
+          "warmup": true,
+          "seconds": 0.03401579998899251
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 0,
+          "warmup": true,
+          "seconds": 0.021760999981779605
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 1,
+          "warmup": false,
+          "seconds": 0.012956199992913753
+        },
+        {
+          "implementation": "baseline",
+          "iteration": 1,
+          "warmup": false,
+          "seconds": 0.013111499953083694
+        },
+        {
+          "implementation": "baseline",
+          "iteration": 2,
+          "warmup": false,
+          "seconds": 0.014611199963837862
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 2,
+          "warmup": false,
+          "seconds": 0.014421500032767653
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 3,
+          "warmup": false,
+          "seconds": 0.013516300008632243
+        },
+        {
+          "implementation": "baseline",
+          "iteration": 3,
+          "warmup": false,
+          "seconds": 0.020268899970687926
+        },
+        {
+          "implementation": "baseline",
+          "iteration": 4,
+          "warmup": false,
+          "seconds": 0.013285399996675551
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 4,
+          "warmup": false,
+          "seconds": 0.014639400003943592
+        },
+        {
+          "implementation": "q3mapx",
+          "iteration": 5,
+          "warmup": false,
+          "seconds": 0.01295970001956448
+        },
+        {
+          "implementation": "baseline",
+          "iteration": 5,
+          "warmup": false,
+          "seconds": 0.01270909997401759
+        }
+      ],
+      "summaries": [
+        {
+          "implementation": "baseline",
+          "seconds": [
+            0.013111499953083694,
+            0.014611199963837862,
+            0.020268899970687926,
+            0.013285399996675551,
+            0.01270909997401759
+          ],
+          "median_seconds": 0.013285399996675551
+        },
+        {
+          "implementation": "q3mapx",
+          "seconds": [
+            0.012956199992913753,
+            0.014421500032767653,
+            0.013516300008632243,
+            0.014639400003943592,
+            0.01295970001956448
+          ],
+          "median_seconds": 0.013516300008632243
+        }
+      ],
+      "median_speedup": 0.9829169216568716,
+      "native_statistics_identical": true,
+      "input_unchanged": true,
+      "source_archive": null,
+      "source_map": "tim_dm1.bsp"
+    }
+  ]
+}

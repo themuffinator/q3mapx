@@ -1068,3 +1068,42 @@ pushed the previous task commits to `origin/main`. The working agreement now kee
 development on `main`, with a commit and push after each validated round. The
 packaged 0.3.0 archive remains unchanged; this task updates development source and
 locally tested binaries. The broad continuing-development goal remains active.
+
+## 2026-09-30 — Bound shared-index validation work
+
+Closed the repeated index-span scanning gap identified during evidence-report
+development. A reusable `IndexRangeValidator` preserves the per-surface relative
+vertex limit and first failing reference, while switching repeated long scans to
+a compact block-maximum tree. Small/disjoint spans retain direct checks without
+cache allocation. Unused invalid values remain permitted; negative indices and
+large values used by a stricter surface still fail, including with `-force`.
+
+The native-loader cases pass both before and after the change, confirming the
+same acceptance and diagnostic behavior. Exhaustive boundary slices and seeded
+random overlaps independently compare first failures. A stress test with varying
+starting offsets checks 20,000 overlapping ranges with 1,414,304 source-value visits and
+30,008 bytes of scratch instead of expanding billions of references. The bound
+is checked directly, not inferred solely from a fast machine's elapsed time.
+
+Whole-command comparison on a generated 20,000-surface/120,000-index input gives
+0.8392 versus 0.0167 seconds median (50.3× for this range-sharing stress case),
+including startup, validation and statistics printing. Five measured alternating
+runs follow warmup. Four private native maps retain identical statistics and
+unchanged source bytes; their small, inconsistent timing differences do not
+support a general native-loading speedup. The [performance guide](PERFORMANCE.md)
+links the complete observations and identities. Private inputs/logs remain in
+`build/index-validation-*`; build/test logs are in `.agents/tmp/continuation`.
+
+Windows and Linux release each pass thirteen relevant regression groups
+(9.61/47.85 seconds); Linux ASan/UBSan passes eight (189.62 seconds, with the
+existing documented CLI leak setting). The final helper also checks size-overflow
+arguments. [Validation evidence](validation/index-validation.json) records the
+34 strict/forced native-loader cases on all builds, the independent work/storage
+contract, executable/source identities and before-change compatibility checks.
+
+Separate review found an unchecked copy into a fixed 1,024-byte path buffer in
+the older `-info` command. That path-handling issue remains a follow-up; it is
+outside the index-range change and is not hidden by this task's successful tests.
+Workbench hardware-query bounds/supersession also remain open. No external code
+or dependency was introduced. The 0.3.0 packaged archive stays unchanged; the
+continuing goal and inference/optimization roadmap remain active.

@@ -13,6 +13,11 @@
 namespace workbench {
 static constexpr qsizetype maxCatalogBytes = 1024 * 1024;
 static void invalid() { throw std::runtime_error("Compiler returned an invalid game catalog"); }
+static void stop(QProcess* process) {
+    process->closeReadChannel(QProcess::StandardOutput);
+    process->closeReadChannel(QProcess::StandardError);
+    process->kill();
+}
 
 QVector<GameProfile> parseGameCatalog(const QByteArray& bytes) {
     if (bytes.size() > maxCatalogBytes) invalid();
@@ -80,23 +85,30 @@ const GameProfile* GameCatalog::find(const QString& name) const {
 
 void GameCatalog::refresh(const QString& compiler, int timeoutMs) {
     const auto generation = ++generation_;
-    if (pending_) pending_->kill();
-    loading_ = true; error_.clear(); profiles_.clear(); emit changed();
-    struct Reply { QByteArray bytes; QString failure; };
+    if (pending_) stop(pending_);
+    loading_ = true; error_.clear(); profiles_.clear();
+    struct Reply { QByteArray bytes; qint64 total=0; QString failure; };
     auto reply = std::make_shared<Reply>();
     auto* process = new QProcess(this);
     pending_ = process;
     const auto collect = [process, reply] {
-        reply->bytes += process->readAllStandardOutput();
-        process->readAllStandardError();
-        if (reply->bytes.size() > maxCatalogBytes) {
-            reply->bytes.truncate(maxCatalogBytes);
-            reply->failure = "Compiler game catalog exceeds 1 MiB";
-            process->kill();
+        if (!reply->failure.isEmpty()) return;
+        for (const auto channel : {QProcess::StandardOutput,QProcess::StandardError}) {
+            process->setReadChannel(channel);
+            const auto bytes=process->read(maxCatalogBytes-reply->total+1);
+            reply->total+=bytes.size();
+            if (channel==QProcess::StandardOutput) reply->bytes+=bytes;
+            if (reply->total>maxCatalogBytes) {
+                reply->failure="Compiler game catalog exceeds 1 MiB (stdout and stderr combined)";
+                stop(process); return;
+            }
         }
     };
     connect(process, &QProcess::readyReadStandardOutput, this, collect);
-    connect(process, &QProcess::readyReadStandardError, this, [process] { process->readAllStandardError(); });
+    connect(process, &QProcess::readyReadStandardError, this, collect);
+    connect(process, &QProcess::started, this, [this,process,generation] {
+        if (generation!=generation_) stop(process);
+    });
     connect(process, &QProcess::finished, this, [this, process, generation, reply, collect](int code, QProcess::ExitStatus status) {
         collect();
         if (generation == generation_) {
@@ -111,7 +123,8 @@ void GameCatalog::refresh(const QString& compiler, int timeoutMs) {
         }
         process->deleteLater();
     });
-    connect(process, &QProcess::errorOccurred, this, [this, process, generation](QProcess::ProcessError error) {
+    connect(process, &QProcess::errorOccurred, this, [this, process, generation, reply](QProcess::ProcessError error) {
+        if (error==QProcess::ReadError) { reply->failure="Cannot read compiler game catalog"; stop(process); }
         if (error != QProcess::FailedToStart) return;
         if (generation == generation_) {
             loading_ = false; error_ = process->errorString(); pending_ = nullptr; emit changed();
@@ -120,9 +133,11 @@ void GameCatalog::refresh(const QString& compiler, int timeoutMs) {
     });
     QTimer::singleShot(qBound(1, timeoutMs, 60000), process, [process, reply] {
         if (process->state() != QProcess::NotRunning) {
-            reply->failure = "Compiler game catalog query timed out"; process->kill();
+            if (reply->failure.isEmpty()) reply->failure = "Compiler game catalog query timed out";
+            stop(process);
         }
     });
     process->start(compiler, {"-games"});
+    emit changed();
 }
 } // namespace workbench

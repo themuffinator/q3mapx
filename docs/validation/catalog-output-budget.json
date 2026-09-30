@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-30T07:26:05.0004666Z",
+  "scope": "Combined stdout/stderr accounting for workbench game catalogs",
+  "base_revision": "73a9006647df39c54625883edfb102e6e7d36737",
+  "source_sha256": {
+    "client": "d59a6736d3de03c75d97e2f3c7419d0fc42a12f3efb888ea23a2c99bab657883",
+    "test": "20549250db283634c8336729784850cfb8bc6ea9009876876ba36efa87e43971"
+  },
+  "combined_output_bytes": 1048576,
+  "exact_limit_accepted": true,
+  "one_extra_stderr_byte_rejected": true,
+  "overflow_cases": [
+    "stdout",
+    "valid JSON then large stderr",
+    "mixed streams",
+    "one byte over combined boundary"
+  ],
+  "lifecycle_checks": [
+    "failed-start supersession",
+    "slow query supersession",
+    "abandoned child termination",
+    "timeout",
+    "recovery after errors"
+  ],
+  "platforms": [
+    {
+      "build": "release",
+      "groups_passed": 4,
+      "seconds": 4.26,
+      "test_binary_sha256": "4af21baa8d2a7647c1ca2d9d29a97a4a84ece00b29071e5da529647bfbb94b64"
+    },
+    {
+      "build": "linux-release",
+      "groups_passed": 4,
+      "seconds": 7.45,
+      "test_binary_sha256": "d01a4ab75528d84ac7b3d6d3e6c8d859f85fc827abca75f69d2e98d893e95a87"
+    }
+  ],
+  "groups": [
+    "game_catalog",
+    "workbench",
+    "workbench_window",
+    "workbench_preview"
+  ],
+  "logs": ".agents/tmp/continuation/catalog-*.log",
+  "compiler_and_packaged_release_changed": false,
+  "unrelated_new_issues": []
+}

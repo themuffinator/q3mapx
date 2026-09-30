@@ -8,6 +8,10 @@
 #include <QProcess>
 #include <QTimer>
 #include <iostream>
+#ifdef Q_OS_WIN
+#include <fcntl.h>
+#include <io.h>
+#endif
 
 static void require(bool condition, const char* message) {
     if (!condition) { std::cerr << message << '\n'; std::exit(1); }
@@ -19,12 +23,26 @@ static void finish(workbench::GameCatalog& catalog) {
     if (catalog.loading()) loop.exec();
     require(!catalog.loading(), "Catalog query did not finish");
 }
+static QByteArray example() {
+    return QJsonDocument(QJsonObject{{"schema_version",1},{"profiles",QJsonArray{
+        QJsonObject{{"id","fixture"},{"title","Synthetic catalog"},{"base_directory","baseq3"},{"shader_directory","scripts"},
+            {"bsp_ident","IBSP"},{"bsp_version",46},{"native_write",true},{"aliases",QJsonArray()},{"workflows",QJsonArray{"build"}}}}}}).toJson();
+}
 int main(int argc, char** argv) {
     QCoreApplication app(argc, argv);
     if (app.arguments().contains("-games")) {
+#ifdef Q_OS_WIN
+        _setmode(_fileno(stdout),_O_BINARY); _setmode(_fileno(stderr),_O_BINARY);
+#endif
         const auto mode = qEnvironmentVariable("Q3MAPX_TEST_CATALOG_MODE");
         if (mode == "slow") { QTimer::singleShot(30000, &app, &QCoreApplication::quit); return app.exec(); }
         if (mode == "large") std::cout << std::string(2 * 1024 * 1024, 'x');
+        else if (mode == "stderr") { std::cout << example().constData() << std::flush; std::cerr << std::string(2*1024*1024,'x'); }
+        else if (mode == "mixed") { std::cout << example().constData() << std::string(600*1024,' ') << std::flush; std::cerr << std::string(600*1024,'x'); }
+        else if (mode == "boundary" || mode == "over-boundary" || mode == "valid") {
+            const auto bytes=example(); std::cout << bytes.constData() << std::flush;
+            if (mode != "valid") std::cerr << std::string(1024*1024-bytes.size()+(mode=="over-boundary"?1:0),'x');
+        }
         else std::cout << "{bad json";
         return 0;
     }
@@ -44,14 +62,28 @@ int main(int argc, char** argv) {
             "MOHAA advertised a brush-only minimap that omits terrain");
     catalog.refresh("missing-q3mapx-executable"); catalog.refresh(argv[1]); finish(catalog);
     require(catalog.error().isEmpty() && catalog.find("quake3"), "Stale query replaced current catalog");
-    for (const auto& mode : {"invalid", "large", "slow"}) {
+    for (const auto& mode : {"invalid", "large", "stderr", "mixed", "over-boundary", "slow"}) {
         qputenv("Q3MAPX_TEST_CATALOG_MODE", mode);
         catalog.refresh(QCoreApplication::applicationFilePath(), QString(mode) == "slow" ? 100 : 10000);
         finish(catalog);
         require(!catalog.error().isEmpty() && catalog.profiles().isEmpty(), "Bad or stalled query published a catalog");
-        if (QString(mode) == "large") require(catalog.error().contains("1 MiB"), "Oversized response was not bounded");
+        if (QStringList{"large","stderr","mixed","over-boundary"}.contains(mode)) require(catalog.error().contains("1 MiB"), "Combined output budget was not enforced");
         if (QString(mode) == "slow") require(catalog.error().contains("timed out"), "Stalled query was not terminated");
     }
+    for (const auto& mode : {"valid","boundary"}) {
+        qputenv("Q3MAPX_TEST_CATALOG_MODE",mode);
+        catalog.refresh(QCoreApplication::applicationFilePath()); finish(catalog);
+        require(catalog.error().isEmpty() && catalog.find("fixture"),"Valid catalog within the combined budget was rejected");
+    }
+    qputenv("Q3MAPX_TEST_CATALOG_MODE","slow"); catalog.refresh(QCoreApplication::applicationFilePath());
+    qputenv("Q3MAPX_TEST_CATALOG_MODE","valid"); catalog.refresh(QCoreApplication::applicationFilePath()); finish(catalog);
+    require(catalog.error().isEmpty() && catalog.find("fixture"),"Superseded child changed the current catalog");
+    QEventLoop drain; QTimer probe;
+    QObject::connect(&probe,&QTimer::timeout,&drain,[&] {
+        for(auto* child:catalog.findChildren<QProcess*>()) if(child->state()!=QProcess::NotRunning) return;
+        drain.quit();
+    }); probe.start(10); QTimer::singleShot(3000,&drain,&QEventLoop::quit); drain.exec();
+    for(auto* child:catalog.findChildren<QProcess*>()) require(child->state()==QProcess::NotRunning,"Superseded catalog process left running");
     qunsetenv("Q3MAPX_TEST_CATALOG_MODE");
     QProcess query; query.start(argv[1], {"-games"}); require(query.waitForFinished(15000), "Catalog parse fixture failed");
     const auto original = QJsonDocument::fromJson(query.readAllStandardOutput()).object();
@@ -73,5 +105,5 @@ int main(int argc, char** argv) {
     }
     catalog.refresh(argv[1]); finish(catalog);
     require(catalog.error().isEmpty() && catalog.find("ja"), "Catalog did not recover after failed queries");
-    std::cout << "Compiler catalog, aliases, stale queries, response bounds, timeout and malformed metadata passed\n";
+    std::cout << "Compiler catalog, aliases, stale queries, combined output boundaries, timeout and malformed metadata passed\n";
 }

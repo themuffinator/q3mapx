@@ -26,7 +26,8 @@ Visibility-only jobs require a matching `.prt` beside their source BSP.
 The game list comes from the selected compiler's `-games` catalog. It includes
 the compiler's complete set of profiles, accepts their aliases, and shows the
 native format and default asset folder. **Refresh** queries a replaced compiler
-again. Queries run in the background with bounded output and a timeout; starting
+again. Queries run in the background with a 1 MiB combined stdout/stderr limit
+and a ten-second timeout; starting
 a workflow waits for discovery and rejects unsupported profile/workflow pairs.
 An older compiler without a catalog still permits a manually entered profile,
 with its discovery failure shown beside the selection.
@@ -98,7 +99,8 @@ Automated tests run the real compiler through the Qt queue, including complete
 builds, recovery, OBJ/ASE exports, minimaps, paths with spaces, failed process starts, dependency
 skipping and cancellation. An offscreen window test also discovers the compiler's
 profiles and invokes its build action directly, without input injection. Catalog
-tests exercise malformed replies, output limits, timeouts and stale responses.
+tests exercise malformed replies, exact combined-output boundaries, overflow on
+either stream, timeouts, stale responses and cleanup of superseded child processes.
 The window test also checks recovery-only mesh capabilities and curve-detail
 command construction, and directly renders the quality controls without input
 events. Mesh export limitations are in the [recovery guide](DECOMPILATION.md).

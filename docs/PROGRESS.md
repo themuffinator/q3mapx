@@ -1166,3 +1166,22 @@ counting it against a combined output budget. Its retained stdout has a size
 guard and it has a deadline, but combined stream accounting remains a follow-up
 in the plan. Decompiler inference and intelligent VIS/geometry optimization also
 remain active roadmap work; this GUI task does not implement those algorithms.
+
+## 2026-09-30 — Account for both game-catalog output streams
+
+Closed the hardware round's separate discovery follow-up. The game-catalog
+client now counts stdout and stderr against one 1 MiB budget, reads only the
+remaining allowance plus an overflow-detection byte, and stops retaining output
+after failure. Stderr remains excluded from JSON parsing. A superseded child
+is also stopped if it completes startup later; timeout/read-error paths use the
+same channel shutdown, without replacing an earlier overflow diagnostic.
+
+Eight synthetic query modes cover ordinary/malformed replies, large stdout,
+valid JSON followed by excessive stderr, mixed-stream overflow, the exact
+combined limit, one byte over it and a stalled process. Real catalog/profile
+checks, aliases, supersession, terminated abandoned children and recovery after
+failure also pass. Four affected workbench groups pass on Windows (4.26 seconds)
+and Linux; [the validation record](validation/catalog-output-budget.json) includes
+the Linux time, source/binary hashes and local log paths. No compiler stage or
+packaged archive changed. No additional unrelated issue was found in this fix;
+the remaining recovery/inference and optimization roadmap remains active.

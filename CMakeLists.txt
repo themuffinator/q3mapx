@@ -177,6 +177,10 @@ if(BUILD_TESTING)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/lighting_curves.py --compiler $<TARGET_FILE:q3mapx>
         --work-dir ${CMAKE_BINARY_DIR}/tests/lighting-curves)
     set_tests_properties(lighting_curves PROPERTIES TIMEOUT 600)
+    add_test(NAME light_probes COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/light_probes.py --compiler $<TARGET_FILE:q3mapx>
+        --work-dir ${CMAKE_BINARY_DIR}/tests/light-probes)
+    set_tests_properties(light_probes PROPERTIES TIMEOUT 600)
     add_executable(ftx_test tests/ftx.cpp)
     target_include_directories(ftx_test PRIVATE libs)
     add_test(NAME ftx COMMAND ftx_test)

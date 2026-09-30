@@ -588,6 +588,42 @@ outputs, logs and `results.json`. Qualification is recorded in
 validate stored tensor geometry associations, not the original bake rays,
 runtime LOD, decoded irradiance or source-light localization.
 
+## Direct lighting probes
+
+`light_probes` drives the native CLI using generated IBSP, Raven RBSP and Qfusion
+FBSP scenes. Independent point/spot equations check colored, negative, linear,
+styled and half-Lambert responses, with a 2e-4 absolute RGB-component tolerance.
+One/four-worker reports must agree exactly. Supplied known light parameters restore
+the direct field after stripping a retained light; this verifies forward
+equivalence and does not test inverse localization.
+
+```sh
+ctest --test-dir build/release -R '^light_probes$' -V
+python tests/light_probes.py --compiler build/release/bin/q3mapx --work-dir build/release/tests/light-probes
+python tests/lighting.py --compiler build/release/bin/q3mapx --reference /path/to/preceding/q3mapx --work-dir build/release/tests/light-probes-reference
+```
+
+Use `.exe` on Windows and the matching build directory on Linux/ASan/UBSan.
+The probe matrix has a 600-second timeout. It covers sun/emitter provenance,
+backsplash suppression, proposed suns, alpha/filter image mutations and the
+`-notrace` control. Poisoned original MAP/SRF files and a generated-shader sentinel
+check that the diagnostic uses BSP data and preserves existing files. Invalid
+JSON/numbers, unsupported flags, input/report aliases, source/sample limits and
+worker response overflow must retain previous outputs. Native integer spellings
+must agree with compiler parsing; decimal/exponent forms in integer keys fail.
+Fixtures, requests, reports, logs and `results.json` remain under the selected
+build's `tests/light-probes/`.
+
+The separate material suite compares ordinary bake vertices, surfaces, lightmaps
+and grids against the preceding executable, across adaptive, bounce, deluxe,
+supersampled, random, dirt and flood modes. It also checks dense-grid and varied
+worker counts. These comparisons guard the shared lighting setup changes; direct
+probes deliberately omit complete bake effects. See [the contract](LIGHT-PROBES.md)
+and [recorded evidence](validation/light-probes.json). Trace-node exhaustion,
+every scene/source/serialization ceiling and complete missing-asset provenance
+still need dedicated qualification. No editor or renderer is launched by these
+tests.
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

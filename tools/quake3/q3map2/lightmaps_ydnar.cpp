@@ -911,7 +911,7 @@ struct CompareSurfaceInfo
    this depends on yDrawVerts being allocated
  */
 
-void SetupSurfaceLightmaps(){
+void SetupSurfaceLightmaps(bool allocateLightmaps){
 	int i, j, k;
 	const int numBSPDrawSurfaces = bspDrawSurfaces.size();
 
@@ -1039,6 +1039,15 @@ void SetupSurfaceLightmaps(){
 		}
 	}
 
+	// Recovery probes need the same material/cluster geometry, but never allocate
+	// or repack a bake atlas or output sidecars. Surface-emitter construction
+	// reads the zero-initialized first-pass radiosity vertex buffers.
+	if (!allocateLightmaps) {
+		for (k=0;k<MAX_LIGHTMAPS;++k)
+			radVertexLuxels[k]=safe_calloc(bspDrawVerts.size()*sizeof(*radVertexLuxels[k]));
+		free(sortSurfaces);
+		return;
+	}
 	/* sort the surfaces info list */
 	std::ranges::sort( Span( sortSurfaces, numBSPDrawSurfaces ), CompareSurfaceInfo() );
 

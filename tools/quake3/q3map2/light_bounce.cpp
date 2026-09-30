@@ -30,6 +30,7 @@
 
 /* dependencies */
 #include "q3map2.h"
+#include "light_probes.h"
 
 namespace {
 struct alignas(64) RadResult {
@@ -48,6 +49,7 @@ void CountDiffuseLight( int& global, int RadResult::*member ){
 	else ++global; // Initial surface emitters are created on the submitting thread.
 }
 light_t& NewDiffuseLight(){
+	q3mapx::checkProbeSourceBudget();
 	return ( currentRadResult ? currentRadResult->lights : lights ).emplace_front();
 }
 }

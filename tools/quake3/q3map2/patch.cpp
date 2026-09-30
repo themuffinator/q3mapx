@@ -94,6 +94,15 @@ static void ExpandLongestCurve( float *longestCurve, const Vector3& a, const Vec
 
 
 
+float PatchLongestCurve(mesh_view_t mesh){
+	float length=0;
+	for(int j=0;j+2<mesh.width;j+=2) for(int i=0;i+2<mesh.height;i+=2) {
+		ExpandLongestCurve(&length,mesh[i][j].xyz,mesh[i][j+1].xyz,mesh[i][j+2].xyz);
+		ExpandLongestCurve(&length,mesh[i][j].xyz,mesh[i+1][j].xyz,mesh[i+2][j].xyz);
+	}
+	return length;
+}
+
 /*
    ExpandMaxIterations() - ydnar
    determines how many iterations a quadratic curve needs to be subdivided with to fit the specified error

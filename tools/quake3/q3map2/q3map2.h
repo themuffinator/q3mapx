@@ -1168,6 +1168,7 @@ struct LightFlags : BitFlags<std::uint32_t, LightFlags>
 /* ydnar: new light struct with flags */
 struct light_t
 {
+	int sourceEntity = -1, sourceSurface = -1; // Provenance for read-only recovery probes.
 	ELightType type;
 	LightFlags flags;                   /* ydnar: condensed all the booleans into one flags int */
 	const shaderInfo_t  *si;
@@ -1592,6 +1593,7 @@ void                        RotateMesh( mesh_t& m );
 void                        InvertMesh( mesh_t& m );
 mesh_t                      SubdivideMesh( const mesh_view_t in, float maxError, float minLength );
 int                         IterationsForCurve( float len, int subdivisions );
+float                       PatchLongestCurve(mesh_view_t mesh);
 mesh_t                      SubdivideMesh2( const mesh_view_t in, int iterations );
 mesh_t                      RemoveLinearMeshColumnsRows( const mesh_t& in );
 mesh_t                      TessellatedMesh( const mesh_view_t in, int iterations );
@@ -1854,7 +1856,7 @@ void                        ExportLightmaps();
 int                         ExportLightmapsMain( Args& args );
 int                         ImportLightmapsMain( Args& args );
 
-void                        SetupSurfaceLightmaps();
+void                        SetupSurfaceLightmaps(bool allocateLightmaps = true);
 void                        StitchSurfaceLightmaps();
 void                        StoreSurfaceLightmaps( bool fastAllocate, bool storeForReal );
 

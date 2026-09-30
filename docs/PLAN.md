@@ -295,6 +295,11 @@ limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md
   footprints. Preserve stored controls and distinguish their normal field from
   geometric normals; neither is asserted to recover the original bake or runtime
   tessellation. Alternate-root review and broader bake/renderer qualification remain.
+- [x] Add a read-only direct-light CPU reference using real compiler source
+  creation, attenuation and material tracing, with proposed point/spot/sun lights,
+  per-source/style provenance, bounded jobs and protected input/report files.
+  [Direct lighting probes](LIGHT-PROBES.md) now provide this prerequisite;
+  byte-transfer calibration, complete bake effects and inverse fitting remain open.
 - [ ] Infer stripped entity lights from baked lightmaps, vertex/grid and available
   directional lighting. Explain sky/sun, surface emitters, ambient and indirect
   contributions before fitting residual point/spot lights; account for bake settings.

@@ -2525,3 +2525,76 @@ Previously documented parser-sign/include-line findings, compiler warnings, VIS
 discrepancies, raw-sidecar publication and intermittent Windows process delays
 remain outside this round. Intelligent compiler work and the M11 Radiant
 RGB/alpha painting and per-surface density/preview plan remain active.
+
+## 2026-09-30 — Direct CPU lighting reference for recovery
+
+Added `-light -probes` with a versioned JSON request/report. It evaluates supplied
+world-space positions/normals using actual compiler light creation, envelope
+setup, attenuation and material tracing. Retained entities, proposed point/spot/sun
+lights, surface emitters, backsplash and sky sources retain separate provenance;
+responses and totals remain separated by light style. Proposed spotlight targets
+exist only in memory and avoid surviving target names. This is a forward reference
+for future recovery, not a light-position fitter or entity exporter.
+
+The diagnostic reads no original MAP or SRF, deletes no generated shader, skips
+atlas/grid baking and preserves BSP/request files. Surface initialization retains
+the zeroed radiosity buffers required by emitter construction, while avoiding raw
+atlas allocation. Patch lengths use the existing compiler metric over stored
+controls. Native signature, ownership, entity pose/numeric and conservative setup
+checks run before evaluation. Source generation, pair work, retained responses,
+serialization and active sample jobs have explicit bounds. Reports use the checked
+staging writer and verify source/request hashes before publication.
+
+Final review repaired a probe-validation mismatch: reading integer entity values
+as doubles could accept `1e2` or `1.0` even though the native integer reader gives
+them different meanings. Integer parsing now rejects those spellings while
+retaining valid leading-zero and plus-sign forms. Proposed floating-point values
+use round-trip precision, preventing small nonzero intensities from becoming the
+native zero/default-light value.
+
+The final synthetic matrix passes 26 reports and 45 preserved-output failures on
+Windows Release, Linux Release and Linux ASan/UBSan. Independent point/spot/linear/
+negative/half-Lambert equations give a maximum absolute RGB-component error of
+4.52e-5, within the 2e-4 test tolerance. One/four-worker reports agree, and all 26
+source/sample/settings/ambient objects agree across the three builds. Sun-only,
+emitter-only and mixed scenes verify source attribution, backsplash control,
+proposed suns and actual alpha/filter image sensitivity. Poisoned MAP/SRF files,
+generated-shader sentinels, malformed requests, native integer fields, input/report
+aliases, pair limits and worker response overflow verify output preservation.
+
+The preceding executable was checked against the prior validation record before
+use. Twenty-eight ordinary bakes across seven modes preserve exact vertices,
+surfaces, lightmaps and grids between that executable and the final compiler at
+one/four workers, with and without sample culling. The same material harness also
+passes dense-grid and 1/4/20/70-worker controls.
+
+All 74 Windows CTest groups pass. Linux passes 73 of 74, skipping unavailable GPU
+`area_factors`. All ten selected ASan/UBSan groups pass with the established
+lifetime-leak exclusion. These broad suites precede the final integer-validation
+correction; three focused groups pass on each final binary, and the reference
+bake matrix was rerun on the final Windows executable. The 83 retained probe logs
+per platform contain no address/undefined-behavior sanitizer diagnostics.
+
+See [the command contract](LIGHT-PROBES.md),
+[reproduction instructions](DEVELOPMENT.md#direct-lighting-probes) and
+[validation evidence](validation/light-probes.json). Logs, the preceding executable
+and the evidence generator remain in `.agents/tmp/continuation/light-probes/`;
+requests, generated BSPs, reports and command logs remain under each build's
+`tests/light-probes/`. Earlier policy-blocked cleanup targets were not retried.
+No editor, renderer, input automation, GPU timing or portable archive refresh was
+performed, and no new external code was incorporated.
+
+The report explicitly separates zero contributions from unknown clusters or
+trace-node exhaustion. Supplied normals/current assets, missing original surface
+extras, unmodelled bake effects and incomplete asset provenance limit its use.
+The trace-node exhaustion branch and every resource ceiling still need dedicated
+fixtures. Encoding calibration, inverse point/spot fitting and inferred target
+links remain open. M11 retains patch RGB/alpha painting in Radiant without
+`alphaMod` brushes, and per-surface lightmap density controls with live previews;
+the README now links directly to that authoring plan.
+
+No new unrelated defect was reproduced. Existing parser-sign/include-line
+findings, compiler warnings (including `UnsortedSet` layout and an untouched
+meta-surface initialization warning), VIS discrepancies, raw-sidecar publication
+and intermittent Windows process delays remain outside this round. Intelligent
+compiler optimization, light inference and Radiant integration remain active.

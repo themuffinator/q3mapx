@@ -30,6 +30,9 @@ without the original PRT, with explicit enclosure and numerical limits.
 Use `-lighting` for [bounded baked-lighting observations](docs/LIGHTING-EVIDENCE.md)
 with stored colors/styles, curved-patch inverses, constant-UV primitive footprints
 and explicit mapping uncertainty; source-light fitting remains planned.
+Use [`-light -probes`](docs/LIGHT-PROBES.md) to evaluate explicit points and
+proposed lights with the compiler's direct CPU model, separating retained lights,
+surface emitters and sun/sky without writing source or bake outputs.
 Optional [detail and group inference](docs/DECOMPILATION.md#group-inference-policy)
 can now export cell-supported detail flags and surface-supported `func_group`
 assemblies, with bounded work, rebuild-order protection and explicit uncertainty.
@@ -103,6 +106,8 @@ native validation of 242 installed-map entries without distributing game assets.
 - [Asset-independent BSP inspection](docs/BSP-INSPECTION.md)
 - [BSP geometry, regional costs and visibility evidence](docs/BSP-EVIDENCE.md)
 - [Baked lighting observations and source-recovery limits](docs/LIGHTING-EVIDENCE.md)
+- [Direct lighting probes and proposed-light evaluation](docs/LIGHT-PROBES.md)
+- [Planned Radiant patch RGB/alpha painting and surface density previews](docs/PLAN.md#m11--radiant-painting-and-per-surface-lighting-controls)
 - [VIS modes, merge repairs and compact working data](docs/VIS.md)
 - [Measured performance and backend options](docs/PERFORMANCE.md)
 - [Installation, packaging and known limits](docs/RELEASE.md)

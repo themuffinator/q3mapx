@@ -155,10 +155,18 @@ The first extraction slice is implemented as `-bsp-evidence -lighting`, with
 bounded jobs, native style/color provenance, conservative geometry associations
 and grid-layout checks. Curved patches use bounded tensor UV inversion;
 constant-UV primitives retain correlated texel footprints and representative
-geometry. It deliberately retains stored encoded bytes. Transfer-function
-calibration, deluxe/external channels and source explanations remain open before
-inverse fitting can be qualified. Curve boundary/LOD uncertainty and repeated
-constant-region support must carry through into any fitting weights.
+geometry. It deliberately retains stored encoded bytes. Curve boundary/LOD
+uncertainty and repeated constant-region support must carry through into any
+fitting weights.
+
+A first direct CPU forward reference is now available through
+[`-light -probes`](LIGHT-PROBES.md). It evaluates explicit points/normals with the
+compiler's own retained/proposed lights, shader emitters, sun/sky, attenuation and
+material traces, and separates source/style responses. It reads no original MAP
+or SRF and writes no source geometry or entities. Supplied proposals are hypotheses;
+the mode does not generate candidates or infer spotlight targets. Transfer-function
+calibration, deluxe/external channels, bounce and other bake effects remain open
+before source explanations and inverse fitting can be qualified.
 
 1. Extract world-space lighting samples from lightmaps, vertex lighting and the
    lightgrid; use directional/deluxe channels and separate styles when available.

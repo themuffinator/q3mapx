@@ -33,6 +33,7 @@
 #include "lighting_jobs.h"
 #include "lighting_math.h"
 #include "light_gpu.h"
+#include "light_probes.h"
 #include "bspfile_rbsp.h"
 #include <set>
 
@@ -94,6 +95,7 @@ static void CreateSunLight( sun_t& sun ){
 
 		/* create a light */
 		numSunLights++;
+		q3mapx::checkProbeSourceBudget();
 		light_t& light = lights.emplace_front();
 
 		/* initialize the light */
@@ -344,9 +346,11 @@ static void CreateEntityLights(){
 
 		/* create a light */
 		numPointLights++;
+		q3mapx::checkProbeSourceBudget();
 		light_t& light = lights.emplace_front();
 
 		/* handle spawnflags */
+		light.sourceEntity = int(i);
 		const int spawnflags = e.intForKey( "spawnflags" );
 
 		LightFlags flags;
@@ -535,7 +539,9 @@ static void CreateEntityLights(){
 					lights.pop_front();
 
 					/* make a sun light */
+					const auto previous = lights.begin();
 					CreateSunLight( sun );
+					for (auto it=lights.begin(); it!=previous; ++it) it->sourceEntity=int(i);
 
 					/* skip the rest of this love story */
 					continue;
@@ -554,6 +560,7 @@ static void CreateEntityLights(){
 		for ( int j = 1; j < numSamples; ++j )
 		{
 			/* create a light */
+			q3mapx::checkProbeSourceBudget();
 			light_t& light2 = lights.emplace_front( light );
 
 			/* add to counts */
@@ -588,6 +595,12 @@ static void CreateSurfaceLights(){
 	/* walk the list of surfaces */
 	for ( size_t i = 0; i < bspDrawSurfaces.size(); ++i )
 	{
+		// Every light prepended by this surface (including sky and backsplash)
+		// retains its origin even when envelopes later reorder or cull lights.
+		struct Provenance {
+			std::list<light_t>::iterator previous; int surface;
+			~Provenance(){ for(auto it=lights.begin();it!=previous;++it) it->sourceSurface=surface; }
+		} provenance{lights.begin(),int(i)};
 		/* get surface and other bits */
 		const bspDrawSurface_t& ds = bspDrawSurfaces[ i ];
 		const surfaceInfo_t& info = surfaceInfos[ i ];
@@ -638,6 +651,7 @@ static void CreateSurfaceLights(){
 		/* autosprite shaders become point lights */
 		if ( si.autosprite ) {
 			/* create a light */
+			q3mapx::checkProbeSourceBudget();
 			light_t& light = lights.emplace_front();
 
 			/* set it up */
@@ -1901,7 +1915,7 @@ static void WriteBSPFileAfterLight( const char *bspFileName ){
    does what it says...
  */
 
-static void LightWorld( bool fastAllocate, bool bounceStore ){
+static void LightWorld( bool fastAllocate, bool bounceStore, q3mapx::LightProbes* probes = nullptr ){
 	Vector3 color;
 	float f;
 	int b, bt;
@@ -1949,8 +1963,10 @@ static void LightWorld( bool fastAllocate, bool bounceStore ){
 	}
 
 	/* determine the number of grid points */
-	Sys_Printf( "--- SetupGrid ---\n" );
-	SetupGrid( ambientColor );
+	if (!probes) {
+		Sys_Printf( "--- SetupGrid ---\n" );
+		SetupGrid( ambientColor );
+	}
 
 	/* create world lights */
 	Sys_FPrintf( SYS_VRB, "--- CreateLights ---\n" );
@@ -1960,6 +1976,13 @@ static void LightWorld( bool fastAllocate, bool bounceStore ){
 	Sys_Printf( "%9d spotlights\n", numSpotLights );
 	Sys_Printf( "%9d diffuse (area) lights\n", numDiffuseLights );
 	Sys_Printf( "%9d sun/sky lights\n", numSunLights );
+	if (probes) {
+		probes->checkLights();
+		const size_t generated=lights.size();
+		SetupEnvelopes(false,fast);
+		probes->run(ambientColor,generated);
+		return;
+	}
 
 	/* calculate lightgrid */
 	if ( !noGridLighting ) {
@@ -2119,7 +2142,7 @@ static void LightWorld( bool fastAllocate, bool bounceStore ){
    main routine for light processing
  */
 
-int LightMain( Args& args ){
+int LightMain( Args& args ) try {
 	float f;
 	int lightmapMergeSize = 0;
 	bool lightSamplesInsist = false;
@@ -2221,6 +2244,7 @@ int LightMain( Args& args ){
 
 	/* process commandline arguments */
 	const char *fileName = args.takeBack();
+	auto probes=q3mapx::LightProbes::parse(args,fileName);
 	const auto argsToInject = args.getVector();
 	{
 		/* lightsource scaling */
@@ -2919,26 +2943,27 @@ int LightMain( Args& args ){
 	SetDefaultSampleSize( sampleSize );
 
 	/* ydnar: handle shaders */
-	BeginMapShaderFile( source );
+	if (!probes) BeginMapShaderFile( source );
 	LoadShaderInfo();
 
 	/* note loading */
 	Sys_Printf( "Loading %s\n", source );
 
 	/* ydnar: load surface file */
-	LoadSurfaceExtraFile( source );
+	if (!probes) LoadSurfaceExtraFile( source );
 
 	/* load bsp file */
 	LoadBSPFile( source );
 
 	/* parse bsp entities */
 	ParseEntities();
+	if (probes) probes->prepare();
 
 	/* inject command line parameters */
-	InjectCommandLine( "-light", argsToInject );
+	if (!probes) InjectCommandLine( "-light", argsToInject );
 
 	/* load map file */
-	if ( !entities[ 0 ].boolForKey( "_keepLights" ) ) {
+	if ( !probes && !entities[ 0 ].boolForKey( "_keepLights" ) ) {
 		char *mapFileName = ExpandArg( fileName );
 		if ( !path_extension_is( fileName, "reg" ) ) /* not .reg */
 			path_set_extension( mapFileName, ".map" );
@@ -2951,12 +2976,16 @@ int LightMain( Args& args ){
 
 	/* ydnar: set up optimization */
 	SetupBrushes();
-	SetupDirt();
-	SetupFloodLight();
-	SetupSurfaceLightmaps();
+	if (!probes) { SetupDirt(); SetupFloodLight(); }
+	SetupSurfaceLightmaps(!probes);
+	if (probes) probes->prepareSurfaces();
 
 	/* initialize the surface facet tracing */
 	SetupTraceNodes();
+	if (probes) {
+		LightWorld(fastAllocate,bounceStore,probes.get());
+		return 0;
+	}
 
 	/* light the world */
 	q3mapx::beginLightingGpu();
@@ -2971,3 +3000,4 @@ int LightMain( Args& args ){
 	/* return to sender */
 	return 0;
 }
+catch(const std::exception& error) { Sys_FPrintf(SYS_ERR,"Light: %s\n",error.what()); return 1; }

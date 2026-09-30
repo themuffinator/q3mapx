@@ -1,0 +1,906 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-30T21:40:41.794330+00:00",
+  "base_revision": "3015b284f2ea20c13e55b1ec7a69604fa20013e2",
+  "scope": "Read-only direct CPU forward responses at supplied points, with source/style attribution and optional supplied lights; no source-light inference or MAP export",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "381d59ac8d5b2404952c9c3f427c81c7e1019726aaeeaa3bcd42b6f5459fe1f3",
+    "tools/quake3/q3map2/light_probes.cpp": "be23863ccaddc8835f35d045446df0f1c57d4d9a81cae18721f973b5a38afa79",
+    "tools/quake3/q3map2/light_probes.h": "52dbec515e47f286a2458df8482ec9f4a089c1641d01713b1496a54fbc41787f",
+    "tools/quake3/q3map2/light.cpp": "a3d07de368682f14ee3c11951fde8029d0c6ebb9d6dc6d2e584750f2193780df",
+    "tools/quake3/q3map2/light_bounce.cpp": "3ccc87e1b931a47f21325e6b4f174b7a10d4c8a7ad616ffcf3edf2926f5463b0",
+    "tools/quake3/q3map2/lightmaps_ydnar.cpp": "895d7264a33aa694aab7089e139305c84757a04a17d5d8f17e8b63d11f9ecf9e",
+    "tools/quake3/q3map2/patch.cpp": "3d60d55682ea3f7c4dfe4a30664eaa0573fefde9742d5f9d78eff6d23dded10a",
+    "tools/quake3/q3map2/q3map2.h": "bac3b42fed404233a1ee1de320218f8add6a15ec59a576de36e62332ee6b15c0",
+    "tools/quake3/q3map2/help.cpp": "3d5cef9fc176883253f478131346999cdb9cfd8254e93701f213281bb8ee82f5",
+    "tests/light_probes.py": "4c8e6184fee9e46f119e6a81a7b4e8351bcc58ed7ba314eaa5a837a41fa67de4",
+    "tests/lighting.py": "c549759cfd1daa5ec2cc17e90b682623a9e17a90199c8af706de4ade994515c4",
+    "tests/fixtures.py": "5cc300117041bc22a719451f9915bca17cc5af10094521408538b850284436c7",
+    "tests/integration.py": "3bb8e703e9e898a4c079f6a52321941aeb54876a7eac7804b8e1069c1541dfb3",
+    "tests/lighting_evidence.py": "e01a13f036e2328fd42e6c6aacab390200a43583487f1ce4ea8bdcc635db08e5"
+  },
+  "fixture_provenance": "First-party closed rooms with independent point/spot falloff equations, generated material textures, and native IBSP/RBSP/FBSP. Restored-light cases supply known parameters and test forward equivalence only.",
+  "platforms": {
+    "windows": {
+      "compiler": {
+        "path": "build/release/bin/q3mapx.exe",
+        "sha256": "1c23177a825e1bde87f6f8ba005839c4dab850e4ec195e16cfc81dc6ad9081e7"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/light-probes/build-windows-checked.log",
+        "sha256": "918d0ce0631ad66c3ca1ac06f0dc7ba28c9b21094c37b974c33b37084f85d659"
+      },
+      "broad_suite_before_final_integer_validation": {
+        "path": ".agents/tmp/continuation/light-probes/ctest-windows.log",
+        "sha256": "dcf467b9c9e7b1631da73807dad8822580580826b5d56793f0c6df6374b0b90b",
+        "groups": 74,
+        "passed": 74,
+        "skipped": [],
+        "tests": [
+          "workbench",
+          "patch_input",
+          "vis_passage_clipping",
+          "recovery_order",
+          "brush_input",
+          "uv_recovery",
+          "recovery_groups",
+          "lighting_curves",
+          "vis_merge",
+          "vis_reproducible",
+          "script_input",
+          "brush_cells",
+          "lighting_evidence",
+          "recovery_classification",
+          "cell_adjacency",
+          "lighting_gpu",
+          "meta_order",
+          "uv_output",
+          "game_profiles",
+          "light_probes",
+          "bsp_inspect",
+          "planar_reduction_native",
+          "gpu_columns",
+          "portal_evidence",
+          "planar_reduction_oracle",
+          "vis_passage_storage",
+          "geometry_optimize",
+          "workbench_devices",
+          "workbench_window",
+          "bsp_evidence",
+          "index_validation_cli",
+          "portal_validation",
+          "native_early",
+          "bsp_analyze",
+          "native_fakk",
+          "lighting_materials",
+          "mesh_export",
+          "binary_outputs",
+          "area_factors",
+          "raven_compat",
+          "cli_options",
+          "bezier_uv",
+          "workbench_inspector",
+          "uv_fit_oracle",
+          "export_outputs",
+          "bsp_validation",
+          "recovery_outputs",
+          "native_mohaa",
+          "vis_clip",
+          "lightgrid_cli",
+          "uv_fit",
+          "lightgrid",
+          "minimap",
+          "planar_reduction",
+          "game_catalog",
+          "portal_graph",
+          "ftx",
+          "recovery_group_order",
+          "index_validation",
+          "cell_graph",
+          "compiler_pipeline",
+          "vis_mask",
+          "terrain",
+          "columns",
+          "quake3_materials",
+          "lighting_math",
+          "decompile_recovery",
+          "atomic_file",
+          "workbench_preview",
+          "cli_help",
+          "job_pool",
+          "decompile_math",
+          "area_factors_disabled",
+          "cli_games"
+        ]
+      },
+      "final_focused_suite": {
+        "path": ".agents/tmp/continuation/light-probes/ctest-windows-checked.log",
+        "sha256": "d6e6ebec36a37ded4c4d85784cd898123c7048344af86a87da8e3da77ded79ac",
+        "groups": 3,
+        "passed": 3,
+        "skipped": [],
+        "tests": [
+          "bsp_validation",
+          "light_probes",
+          "lighting_materials"
+        ]
+      },
+      "probe_results": {
+        "path": "build/release/tests/light-probes/results.json",
+        "sha256": "dd7cd83dbb2d907fcf47159844af10c62809d5260174a04c01a469226f392a8f",
+        "reports": 26,
+        "cases": [
+          {
+            "case": "quake3-1",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "quake3-4",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "quake3-restored",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "quake3-tiny-proposal",
+            "sources": 1,
+            "responses": 0
+          },
+          {
+            "case": "quake3-half-lambert",
+            "sources": 4,
+            "responses": 48
+          },
+          {
+            "case": "quake3-integer-spelling",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "ja-1",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "ja-4",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "ja-restored",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "ja-tiny-proposal",
+            "sources": 1,
+            "responses": 0
+          },
+          {
+            "case": "ja-half-lambert",
+            "sources": 4,
+            "responses": 48
+          },
+          {
+            "case": "ja-integer-spelling",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "qfusion-1",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "qfusion-4",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "qfusion-restored",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "qfusion-tiny-proposal",
+            "sources": 1,
+            "responses": 0
+          },
+          {
+            "case": "qfusion-half-lambert",
+            "sources": 4,
+            "responses": 48
+          },
+          {
+            "case": "qfusion-integer-spelling",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "sun-baseline",
+            "sources": 1,
+            "responses": 16
+          },
+          {
+            "case": "emitter-baseline",
+            "sources": 22,
+            "responses": 398
+          },
+          {
+            "case": "emitter-no-backsplash",
+            "sources": 12,
+            "responses": 266
+          },
+          {
+            "case": "mixed-baseline",
+            "sources": 24,
+            "responses": 459
+          },
+          {
+            "case": "mixed-unshadowed",
+            "sources": 24,
+            "responses": 600
+          },
+          {
+            "case": "mixed-changed-fence",
+            "sources": 24,
+            "responses": 476
+          },
+          {
+            "case": "mixed-changed-filter",
+            "sources": 24,
+            "responses": 459
+          },
+          {
+            "case": "mixed-proposed-sun",
+            "sources": 25,
+            "responses": 499
+          }
+        ],
+        "output_preservation_cases": [
+          "quake3-unknown-field",
+          "quake3-duplicate",
+          "quake3-nul",
+          "quake3-empty",
+          "quake3-normal",
+          "quake3-surface",
+          "quake3-underflow",
+          "quake3-sun-target",
+          "quake3-unsupported-options",
+          "quake3-pair-limit",
+          "quake3-response-limit",
+          "quake3-report-request",
+          "quake3-report-bsp",
+          "quake3-native-_samples",
+          "quake3-native-style",
+          "ja-unknown-field",
+          "ja-duplicate",
+          "ja-nul",
+          "ja-empty",
+          "ja-normal",
+          "ja-surface",
+          "ja-underflow",
+          "ja-sun-target",
+          "ja-unsupported-options",
+          "ja-pair-limit",
+          "ja-response-limit",
+          "ja-report-request",
+          "ja-report-bsp",
+          "ja-native-_samples",
+          "ja-native-style",
+          "qfusion-unknown-field",
+          "qfusion-duplicate",
+          "qfusion-nul",
+          "qfusion-empty",
+          "qfusion-normal",
+          "qfusion-surface",
+          "qfusion-underflow",
+          "qfusion-sun-target",
+          "qfusion-unsupported-options",
+          "qfusion-pair-limit",
+          "qfusion-response-limit",
+          "qfusion-report-request",
+          "qfusion-report-bsp",
+          "qfusion-native-_samples",
+          "qfusion-native-style"
+        ],
+        "max_absolute_component_error": 4.51300131771859e-05,
+        "absolute_component_tolerance": 0.0002
+      },
+      "probe_logs_scanned_for_sanitizer_diagnostics": 83,
+      "sanitizer_diagnostics": []
+    },
+    "linux": {
+      "compiler": {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "1308928a41d97c0bf0642c4854b2143445ab99fb06a954ea3640118f0c2c780c"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/light-probes/build-linux-checked.log",
+        "sha256": "62322a0cdc4dfd740bd1414453e40da6714f0b65bbecfc33b7e99fdf25ff0581"
+      },
+      "broad_suite_before_final_integer_validation": {
+        "path": ".agents/tmp/continuation/light-probes/ctest-linux.log",
+        "sha256": "7b88cbc58add49e06a4fc5c3d49ac1205ef8e22c8fb035c549952f227541f871",
+        "groups": 74,
+        "passed": 73,
+        "skipped": [
+          "area_factors"
+        ],
+        "tests": [
+          "workbench",
+          "vis_passage_clipping",
+          "patch_input",
+          "script_input",
+          "brush_input",
+          "recovery_groups",
+          "meta_order",
+          "brush_cells",
+          "uv_recovery",
+          "recovery_order",
+          "game_profiles",
+          "lighting_evidence",
+          "lighting_curves",
+          "vis_merge",
+          "cell_adjacency",
+          "recovery_classification",
+          "portal_evidence",
+          "uv_output",
+          "lighting_materials",
+          "native_fakk",
+          "geometry_optimize",
+          "bsp_evidence",
+          "bsp_validation",
+          "vis_reproducible",
+          "binary_outputs",
+          "bsp_inspect",
+          "portal_validation",
+          "native_early",
+          "index_validation_cli",
+          "planar_reduction_native",
+          "gpu_columns",
+          "mesh_export",
+          "vis_passage_storage",
+          "raven_compat",
+          "cli_options",
+          "bsp_analyze",
+          "recovery_outputs",
+          "minimap",
+          "native_mohaa",
+          "export_outputs",
+          "lighting_gpu",
+          "planar_reduction_oracle",
+          "lightgrid_cli",
+          "workbench_window",
+          "workbench_inspector",
+          "workbench_devices",
+          "decompile_recovery",
+          "game_catalog",
+          "compiler_pipeline",
+          "bezier_uv",
+          "uv_fit_oracle",
+          "atomic_file",
+          "lightgrid",
+          "recovery_group_order",
+          "vis_clip",
+          "columns",
+          "index_validation",
+          "planar_reduction",
+          "job_pool",
+          "area_factors_disabled",
+          "cli_help",
+          "cli_games",
+          "lighting_math",
+          "vis_mask",
+          "portal_graph",
+          "workbench_preview",
+          "quake3_materials",
+          "ftx",
+          "terrain",
+          "cell_graph",
+          "uv_fit",
+          "decompile_math",
+          "area_factors",
+          "light_probes"
+        ]
+      },
+      "final_focused_suite": {
+        "path": ".agents/tmp/continuation/light-probes/ctest-linux-checked.log",
+        "sha256": "b4fc2ce95e81f6933bc1afd6c14dcaa0faf0113e6605c5b5cc12a368d9848a77",
+        "groups": 3,
+        "passed": 3,
+        "skipped": [],
+        "tests": [
+          "bsp_validation",
+          "lighting_materials",
+          "light_probes"
+        ]
+      },
+      "probe_results": {
+        "path": "build/linux-release/tests/light-probes/results.json",
+        "sha256": "11028fad4ea6d62a6e38c7303a4a0e70fdf36fd0f056495f51889e85d1a8693c",
+        "reports": 26,
+        "cases": [
+          {
+            "case": "quake3-1",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "quake3-4",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "quake3-restored",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "quake3-tiny-proposal",
+            "sources": 1,
+            "responses": 0
+          },
+          {
+            "case": "quake3-half-lambert",
+            "sources": 4,
+            "responses": 48
+          },
+          {
+            "case": "quake3-integer-spelling",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "ja-1",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "ja-4",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "ja-restored",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "ja-tiny-proposal",
+            "sources": 1,
+            "responses": 0
+          },
+          {
+            "case": "ja-half-lambert",
+            "sources": 4,
+            "responses": 48
+          },
+          {
+            "case": "ja-integer-spelling",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "qfusion-1",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "qfusion-4",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "qfusion-restored",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "qfusion-tiny-proposal",
+            "sources": 1,
+            "responses": 0
+          },
+          {
+            "case": "qfusion-half-lambert",
+            "sources": 4,
+            "responses": 48
+          },
+          {
+            "case": "qfusion-integer-spelling",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "sun-baseline",
+            "sources": 1,
+            "responses": 16
+          },
+          {
+            "case": "emitter-baseline",
+            "sources": 22,
+            "responses": 398
+          },
+          {
+            "case": "emitter-no-backsplash",
+            "sources": 12,
+            "responses": 266
+          },
+          {
+            "case": "mixed-baseline",
+            "sources": 24,
+            "responses": 459
+          },
+          {
+            "case": "mixed-unshadowed",
+            "sources": 24,
+            "responses": 600
+          },
+          {
+            "case": "mixed-changed-fence",
+            "sources": 24,
+            "responses": 476
+          },
+          {
+            "case": "mixed-changed-filter",
+            "sources": 24,
+            "responses": 459
+          },
+          {
+            "case": "mixed-proposed-sun",
+            "sources": 25,
+            "responses": 499
+          }
+        ],
+        "output_preservation_cases": [
+          "quake3-unknown-field",
+          "quake3-duplicate",
+          "quake3-nul",
+          "quake3-empty",
+          "quake3-normal",
+          "quake3-surface",
+          "quake3-underflow",
+          "quake3-sun-target",
+          "quake3-unsupported-options",
+          "quake3-pair-limit",
+          "quake3-response-limit",
+          "quake3-report-request",
+          "quake3-report-bsp",
+          "quake3-native-_samples",
+          "quake3-native-style",
+          "ja-unknown-field",
+          "ja-duplicate",
+          "ja-nul",
+          "ja-empty",
+          "ja-normal",
+          "ja-surface",
+          "ja-underflow",
+          "ja-sun-target",
+          "ja-unsupported-options",
+          "ja-pair-limit",
+          "ja-response-limit",
+          "ja-report-request",
+          "ja-report-bsp",
+          "ja-native-_samples",
+          "ja-native-style",
+          "qfusion-unknown-field",
+          "qfusion-duplicate",
+          "qfusion-nul",
+          "qfusion-empty",
+          "qfusion-normal",
+          "qfusion-surface",
+          "qfusion-underflow",
+          "qfusion-sun-target",
+          "qfusion-unsupported-options",
+          "qfusion-pair-limit",
+          "qfusion-response-limit",
+          "qfusion-report-request",
+          "qfusion-report-bsp",
+          "qfusion-native-_samples",
+          "qfusion-native-style"
+        ],
+        "max_absolute_component_error": 4.51300131771859e-05,
+        "absolute_component_tolerance": 0.0002
+      },
+      "probe_logs_scanned_for_sanitizer_diagnostics": 83,
+      "sanitizer_diagnostics": []
+    },
+    "sanitized": {
+      "compiler": {
+        "path": "build/linux-sanitized/bin/q3mapx",
+        "sha256": "623f7708bef604e08c11e909a870cb865d9bbd41cfee499c34d98954d3c4e0f8"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/light-probes/build-sanitized-checked.log",
+        "sha256": "62322a0cdc4dfd740bd1414453e40da6714f0b65bbecfc33b7e99fdf25ff0581"
+      },
+      "broad_suite_before_final_integer_validation": {
+        "path": ".agents/tmp/continuation/light-probes/ctest-sanitized.log",
+        "sha256": "942d15f43fdc19e8329548878df34fa42c8e7d75c8af674d7d045c8d676f9b26",
+        "groups": 10,
+        "passed": 10,
+        "skipped": [],
+        "tests": [
+          "bsp_validation",
+          "lightgrid",
+          "compiler_pipeline",
+          "lightgrid_cli",
+          "lighting_math",
+          "job_pool",
+          "lighting_evidence",
+          "light_probes",
+          "lighting_curves",
+          "lighting_materials"
+        ]
+      },
+      "final_focused_suite": {
+        "path": ".agents/tmp/continuation/light-probes/ctest-sanitized-checked.log",
+        "sha256": "fe495487f0363c4e0fd8efb7d26e1f6de51265147f59568c24348b6ef7f74b4f",
+        "groups": 3,
+        "passed": 3,
+        "skipped": [],
+        "tests": [
+          "bsp_validation",
+          "light_probes",
+          "lighting_materials"
+        ]
+      },
+      "probe_results": {
+        "path": "build/linux-sanitized/tests/light-probes/results.json",
+        "sha256": "11028fad4ea6d62a6e38c7303a4a0e70fdf36fd0f056495f51889e85d1a8693c",
+        "reports": 26,
+        "cases": [
+          {
+            "case": "quake3-1",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "quake3-4",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "quake3-restored",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "quake3-tiny-proposal",
+            "sources": 1,
+            "responses": 0
+          },
+          {
+            "case": "quake3-half-lambert",
+            "sources": 4,
+            "responses": 48
+          },
+          {
+            "case": "quake3-integer-spelling",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "ja-1",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "ja-4",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "ja-restored",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "ja-tiny-proposal",
+            "sources": 1,
+            "responses": 0
+          },
+          {
+            "case": "ja-half-lambert",
+            "sources": 4,
+            "responses": 48
+          },
+          {
+            "case": "ja-integer-spelling",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "qfusion-1",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "qfusion-4",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "qfusion-restored",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "qfusion-tiny-proposal",
+            "sources": 1,
+            "responses": 0
+          },
+          {
+            "case": "qfusion-half-lambert",
+            "sources": 4,
+            "responses": 48
+          },
+          {
+            "case": "qfusion-integer-spelling",
+            "sources": 5,
+            "responses": 63
+          },
+          {
+            "case": "sun-baseline",
+            "sources": 1,
+            "responses": 16
+          },
+          {
+            "case": "emitter-baseline",
+            "sources": 22,
+            "responses": 398
+          },
+          {
+            "case": "emitter-no-backsplash",
+            "sources": 12,
+            "responses": 266
+          },
+          {
+            "case": "mixed-baseline",
+            "sources": 24,
+            "responses": 459
+          },
+          {
+            "case": "mixed-unshadowed",
+            "sources": 24,
+            "responses": 600
+          },
+          {
+            "case": "mixed-changed-fence",
+            "sources": 24,
+            "responses": 476
+          },
+          {
+            "case": "mixed-changed-filter",
+            "sources": 24,
+            "responses": 459
+          },
+          {
+            "case": "mixed-proposed-sun",
+            "sources": 25,
+            "responses": 499
+          }
+        ],
+        "output_preservation_cases": [
+          "quake3-unknown-field",
+          "quake3-duplicate",
+          "quake3-nul",
+          "quake3-empty",
+          "quake3-normal",
+          "quake3-surface",
+          "quake3-underflow",
+          "quake3-sun-target",
+          "quake3-unsupported-options",
+          "quake3-pair-limit",
+          "quake3-response-limit",
+          "quake3-report-request",
+          "quake3-report-bsp",
+          "quake3-native-_samples",
+          "quake3-native-style",
+          "ja-unknown-field",
+          "ja-duplicate",
+          "ja-nul",
+          "ja-empty",
+          "ja-normal",
+          "ja-surface",
+          "ja-underflow",
+          "ja-sun-target",
+          "ja-unsupported-options",
+          "ja-pair-limit",
+          "ja-response-limit",
+          "ja-report-request",
+          "ja-report-bsp",
+          "ja-native-_samples",
+          "ja-native-style",
+          "qfusion-unknown-field",
+          "qfusion-duplicate",
+          "qfusion-nul",
+          "qfusion-empty",
+          "qfusion-normal",
+          "qfusion-surface",
+          "qfusion-underflow",
+          "qfusion-sun-target",
+          "qfusion-unsupported-options",
+          "qfusion-pair-limit",
+          "qfusion-response-limit",
+          "qfusion-report-request",
+          "qfusion-report-bsp",
+          "qfusion-native-_samples",
+          "qfusion-native-style"
+        ],
+        "max_absolute_component_error": 4.51300131771859e-05,
+        "absolute_component_tolerance": 0.0002
+      },
+      "probe_logs_scanned_for_sanitizer_diagnostics": 83,
+      "sanitizer_diagnostics": []
+    }
+  },
+  "case_source_response_counts_identical_across_platforms": true,
+  "cross_platform_response_objects": {
+    "compared": 26,
+    "exactly_equal": 26,
+    "fields": [
+      "sources",
+      "samples",
+      "settings",
+      "world_ambient",
+      "world_minlight"
+    ],
+    "qualification": "Input identities and material filenames differ by generated workspace. Each platform independently satisfies numerical tolerances; exact floating-point equality is observed, not a portable promise."
+  },
+  "normal_bake_reference_parity": {
+    "reference": {
+      "path": ".agents/tmp/continuation/light-probes/reference/q3mapx.exe",
+      "sha256": "a788e4d2749cd536211ede08d09b5e8a2c44fac6a09d39706dbfc948b9f72603"
+    },
+    "reference_validation": "docs/validation/lighting-curves.json",
+    "reference_revision": "3015b284f2ea20c13e55b1ec7a69604fa20013e2",
+    "report": {
+      "path": ".agents/tmp/continuation/light-probes/reference-parity/lighting-report.json",
+      "sha256": "adc6555edd2ac5ccc422286edc702d375d61bb8f6cb0fe12f25468860e787809"
+    },
+    "completion_log": {
+      "path": ".agents/tmp/continuation/light-probes/reference-parity.log",
+      "sha256": "df3bb581c4390be846ce316d15cb57e22efbaa3d9d9aaf5d1a66f188a04bc75e"
+    },
+    "bakes": 28,
+    "modes": [
+      "adaptive",
+      "bounce",
+      "deluxe",
+      "dirt",
+      "flood",
+      "random",
+      "supersampled"
+    ],
+    "runs_per_mode": [
+      "preceding compiler / 1 worker",
+      "current / 1 worker",
+      "current / 4 workers",
+      "current / 4 workers / disabled sample culling"
+    ],
+    "exact_lumps": [
+      "vertices",
+      "surfaces",
+      "lightmaps",
+      "lightgrid"
+    ],
+    "additional_checks": "The same completed harness checks alpha/filter material mutations, disabled shadows, a dense grid, and current 1/4/20/70-worker parity."
+  },
+  "limits": [
+    "Full Windows/Linux Release suites and ten selected sanitizer groups precede the final integer-property validation correction. Three focused groups on every final binary and normal-bake reference parity include that correction.",
+    "ASan lifetime-leak detection remains disabled; address and undefined-behavior diagnostics remain active.",
+    "Linux area_factors is skipped without an available GPU. This direct forward diagnostic uses the CPU and makes no performance claim.",
+    "Responses evaluate supplied points/normals with current assets and compiler defaults. Original MAP/SRF, bake normals/nudges/tessellation and asset identity are not reconstructed.",
+    "Ambient/minimum light remain separate. Bounce, dirt, floodlight, filtering, supersampling, final clamping and output encoding are omitted; stored bytes cannot be compared directly to these responses.",
+    "The fixed trace-node exhaustion branch and every scene/source/serialization ceiling lack dedicated fixtures. Pair counts are not ray-step or time guarantees.",
+    "Material fields record available shader text and resolved/default images, not complete asset hashes or missing-lightimage provenance.",
+    "No missing-light localization, spotlight-target inference, GUI workflow, editor/renderer/input automation or portable archive refresh was performed.",
+    "M11 Radiant patch RGB/alpha painting without alphaMod brushes and per-surface lightmap density with preview remain explicit planned features.",
+    "Previously documented parser-sign/include-line findings, compiler warnings, VIS discrepancies, raw-sidecar publication and intermittent Windows process delays remain outside this round."
+  ]
+}

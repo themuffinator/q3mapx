@@ -163,6 +163,9 @@ static void HelpLight()
 {
 	const std::vector<HelpOption> options = {
 		{ "-light [options] <filename.map>", "Switch that enters this stage" },
+		{ "-probes <request.json> <filename.bsp>", "Read-only direct-light reference mode: world-space samples and optional proposed lights; retained BSP sources, surface emitters and skies are attributed separately. No MAP/SRF read or bake output" },
+		{ "-probe-report <result.json>", "Atomic probe report (default <bsp>.light-probes.json); conditional linear contributions, not inferred lights or decoded lightmaps" },
+		{ "-probe-max-pairs <1..20000000>", "Limit source/sample tests in probe mode (default 5000000); 10000 samples, 256 proposals and 100000 nonzero responses maximum" },
 		{ "-approx <N>", "Vertex light approximation tolerance (never use in conjunction with deluxemapping)" },
 		{ "-areascale <F>, -area <F>", "Scaling factor for area lights (surfacelight)" },
 		{ "-backsplash <Fscale Fdistance>", "scale area lights backsplash fraction + set distance globally; (distance < -900 to omit distance setting); default = 1 23; real area lights have no backsplash (scale = 0); q3map_backsplash shader keyword overrides this setting" },

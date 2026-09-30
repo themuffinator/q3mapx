@@ -94,6 +94,7 @@ native validation of 242 installed-map entries without distributing game assets.
 - [BSP decompilation design](docs/DECOMPILATION.md)
 - [Detail/group inference and the light/recreation roadmap](docs/RECOVERY-INFERENCE.md)
 - [Planned intelligent VIS and geometry optimization](docs/COMPILER-OPTIMIZATION.md)
+- [Exact planar reduction core and remaining renderer gates](docs/PLANAR-REDUCTION.md)
 - [Upstream provenance and credits](docs/UPSTREAM.md)
 - [Completed tasks and known issues](docs/PROGRESS.md)
 

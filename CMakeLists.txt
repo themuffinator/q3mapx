@@ -36,7 +36,8 @@ find_package(Threads REQUIRED)
 add_library(q3mapx_jobs STATIC libs/q3mapx/job_pool.cpp)
 target_include_directories(q3mapx_jobs PUBLIC libs)
 target_link_libraries(q3mapx_jobs PUBLIC Threads::Threads)
-add_library(q3mapx_io STATIC libs/q3mapx/atomic_file.cpp libs/q3mapx/portal_graph.cpp libs/q3mapx/cell_graph.cpp)
+add_library(q3mapx_io STATIC libs/q3mapx/atomic_file.cpp libs/q3mapx/portal_graph.cpp
+    libs/q3mapx/cell_graph.cpp libs/q3mapx/exact_predicates.cpp libs/q3mapx/planar_reduction.cpp)
 target_include_directories(q3mapx_io PUBLIC libs)
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/libs/q3mapx/columns.cl Q3MAPX_COLUMN_KERNEL)
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS libs/q3mapx/columns.cl)
@@ -285,6 +286,19 @@ if(BUILD_TESTING)
     target_link_libraries(cell_graph_test PRIVATE q3mapx_io)
     add_test(NAME cell_graph COMMAND cell_graph_test)
     set_tests_properties(cell_graph PROPERTIES TIMEOUT 60)
+    add_executable(planar_reduction_test tests/planar_reduction.cpp)
+    target_link_libraries(planar_reduction_test PRIVATE q3mapx_io)
+    add_test(NAME planar_reduction COMMAND planar_reduction_test)
+    set_tests_properties(planar_reduction PROPERTIES TIMEOUT 180)
+    add_test(NAME planar_reduction_oracle COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/planar_reduction.py
+        --unit $<TARGET_FILE:planar_reduction_test> --work-dir ${CMAKE_BINARY_DIR}/tests/planar-reduction)
+    set_tests_properties(planar_reduction_oracle PROPERTIES TIMEOUT 240)
+    add_test(NAME planar_reduction_native COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/planar_reduction_native.py
+        --compiler $<TARGET_FILE:q3mapx> --unit $<TARGET_FILE:planar_reduction_test>
+        --work-dir ${CMAKE_BINARY_DIR}/tests/planar-reduction-native)
+    set_tests_properties(planar_reduction_native PROPERTIES TIMEOUT 180)
     add_test(NAME cell_adjacency COMMAND ${Python3_EXECUTABLE}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/cell_adjacency.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/cell-adjacency)

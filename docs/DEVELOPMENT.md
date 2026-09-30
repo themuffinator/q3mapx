@@ -391,6 +391,16 @@ only the unused timestamp. `atomic_file` also checks 64-bit positions, invalid
 operations and a real read-only stream error. See [output safety](OUTPUT-SAFETY.md)
 for the covered writers and failure guarantees.
 
+## Planar reduction validation
+
+The `planar_reduction`, `planar_reduction_oracle` and `planar_reduction_native`
+groups validate the geometry core, rational arithmetic/mesh parity and read-only
+candidates on generated compiled grids respectively. Build `planar_reduction_test`
+and `q3mapx`, then run `ctest --test-dir build/release -R '^planar_reduction' -V`.
+Use the matching Linux build directory for Release or ASan/UBSan. Reports stay in
+`build/<preset>/tests/planar-reduction*`. These tests do not establish runtime
+shader eligibility or validate a BSP rewrite; see [the core guide](PLANAR-REDUCTION.md).
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

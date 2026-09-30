@@ -341,8 +341,16 @@ correctness checks; screenshot/ray samples alone do not establish safety.
 
 Separate compiler workstream; see [compiler optimization design](COMPILER-OPTIMIZATION.md).
 
+- [x] Implement a bounded, deterministic planar vertex-removal core with exact
+  topology/interpolant predicates, replayable edits and independent rational
+  oracles; measure read-only candidates on compiled, baked synthetic grids.
+  See [core contract and evidence](PLANAR-REDUCTION.md). This prerequisite is not
+  an enabled compiler/GUI optimizer or a claim of renderer equivalence.
 - [ ] Analyze regional triangle costs and safe reduction opportunities relative
   to existing meta-surface processing; preserve source-to-output provenance.
+- [ ] Add native adapters and conservative renderer/material eligibility, including
+  dynamic-light, fog, deformation and vertex-color quantization constraints.
+  Compare pre-LIGHT and post-LIGHT application before choosing the initial pass.
 - [ ] Remove proven redundant geometry and retriangulate compatible planar regions
   while preserving coverage, interpolation, materials, lightmaps, seams and normals.
 - [ ] Investigate redundant patch tessellation with correct LOD/stitching, retaining

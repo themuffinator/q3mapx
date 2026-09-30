@@ -112,6 +112,15 @@ cases instead of enabling a speculative transformation for every game profile.
 
 ## Intelligent triangle-count optimization
 
+The [exact planar reduction core](PLANAR-REDUCTION.md) now removes compatible
+interior fan vertices with bounded effort, stable edit history and independent
+rational checks. A generated compiled grid offers 512 → 146 mathematical
+candidates with ambient lighting but only 512 → 496 with a point-light bake.
+These are read-only measurements. Native publication, material/profile eligibility,
+renderer comparison and CLI/workbench controls remain open; no compiler option
+currently applies this reduction. The renderer audit also finds dynamic-light
+behavior that cannot be certified from affine BSP attributes alone.
+
 ### Preservation contract
 
 Reduce rendered triangles without changing visual presentation. Keep this separate
@@ -144,7 +153,9 @@ Skip unsupported material behavior unless equivalence can be demonstrated.
    spans, preserving shared-edge stitching and profile-specific runtime LOD. Leave
    curved silhouettes or deformed surfaces alone when fewer triangles cannot meet
    the preservation contract. Surface representation changes need their own tests.
-5. Evaluate a BSP-stage pass before lightmap allocation first. A later BSP-file
+5. Compare a BSP-stage pass before lightmap allocation with post-LIGHT application:
+   the measured point-light control demonstrates that pre-bake affine fields do
+   not establish equivalent final vertex lighting. A later BSP-file
    optimizer must also preserve baked lightmap interpolation and every cross-lump
    reference, obey native writer capabilities, and pass a separate validation gate.
    Do not expose a rewrite mode for recovery-only profiles.

@@ -1843,3 +1843,74 @@ Useful probes, reference executable, scripts and logs stay under
 and reports stay in their build test directories. No external code/dependency was
 added, no game/input/capture automation was used, and the packaged 0.3.0 archive
 remains unchanged.
+
+## 2026-09-30 — Exact planar triangle-reduction foundation
+
+Implemented an immutable, bounded reduction core for M10. It removes interior
+vertices of simple, exactly planar fans only when all 29 supplied interpolants
+are exactly affine. Deterministic candidate ordering and ear clipping preserve
+coverage, winding and every boundary subdivision, including collinear T-junction
+endpoints. Degenerate/nonmanifold input neighborhoods and self-crossing rings
+remain protected; new diagonals are also checked against existing external edges.
+Every accepted edit has stable face-history IDs for independent replay. Work,
+input size, ring size and history capacities are explicit. Exhausted hard limits
+throw without mutating input or publishing partial work.
+
+The new first-party binary32 predicates use homogeneous determinants, exact
+two-float products, fused multiplication residuals and error-free sum expansions.
+They cover the finite float range without coordinate-subtraction cancellation,
+check the required arithmetic environment and reject nonfinite input/fast-math
+configurations supported by the compiler guards. This mathematical contract does
+not establish shader or finite-precision GPU rasterization equivalence. Neither
+the compiler nor workbench invokes the core yet; there is no new reduction switch
+or optimized BSP writer in this round.
+
+Twenty flat/sloped grids in both windings reach their boundary-preserving minimum,
+with 1,364 interior removals and 4,212 coverage/interpolation checks. Independent
+Python rational elimination agrees on 4,136 determinant signs. Thirty-two mesh
+oracles cover holes, reversed winding, skew, slope, broad dyadic scales and
+one-ULP seams, adding 607 exact interpolation samples. Unit controls cover history
+replay, unsupported rounding, malformed data, exact/exhausted limits, concave and
+self-crossing fans, duplicate/nonmanifold faces and external-diagonal conflicts.
+
+Original generated OBJ models establish opportunity beyond existing meta
+processing: the compiled 512-triangle grid is split into six native surfaces;
+read-only core analysis retains their boundaries and finds 146 candidate triangles.
+The uniform-ambient bake still permits 146, while the point-light bake retains
+496 to preserve the non-affine baked colors. These are mathematical candidate
+counts, not enabled optimizations or measured runtime savings. The native IBSP46
+controls add 276 rational interpolation samples and verify that analysis leaves
+the complete BSP unchanged. Other native adapters remain planned.
+
+Windows Release, Linux Release and ASan/UBSan pass all three new groups plus
+compiler-pipeline, portal-graph and cell-graph regressions: six groups per build,
+in 4.02, 7.38 and 32.21 seconds respectively. These are test durations. The
+rational-oracle reports agree exactly after excluding binary identity. Native
+summary multisets also agree, including work/rejection counters and local output
+index hashes, after excluding platform-dependent surface IDs. Native compiler
+surface ordering and input/BSP bytes differ; no cross-platform compiler-byte
+determinism is claimed. Sanitizers use the established process-lifetime leak
+exclusion with address and undefined-behavior checks active.
+
+A read-only audit of the reference Quake III renderer found a material eligibility
+constraint: projected dynamic-light color is piecewise and quantized at vertices.
+Moreover, specialized stage iterators do not perform the generic iterator's
+`SURF_NODLIGHT` check, so that flag alone cannot approve retriangulation. This is
+an external renderer finding, not repaired here. Fog/deformation/texture-generation,
+vertex-color quantization, alpha/blending, remapping and other renderer profiles
+also need explicit eligibility checks. The plan now compares pre-LIGHT with
+post-LIGHT application because the native point-light control demonstrates the
+importance of final baked fields. Native publication, GUI/CLI controls, renderer
+validation and the remaining VIS/decompiler/GPU work stay open.
+
+See [the core guide](PLANAR-REDUCTION.md) and [validation record](validation/planar-reduction.json)
+for contracts, source/binary identities and exact evidence. Useful build/test logs
+and the evidence-recording helper remain under `.agents/tmp/continuation/planar-reduction-*`
+and `.agents/tmp/continuation/record-planar-reduction.py`; generated test inputs and
+reports stay in `build/<preset>/tests/planar-reduction*`. No external code or
+dependency was incorporated, and no game, input or capture automation was used.
+No new build warnings arose in this incremental round. Existing VIS baseline-
+inclusion failures, raw sidecar writers, intermittent Windows delays, conservative
+recursive portal clipping and inherited compiler warnings remain recorded.
+Previously policy-blocked cleanup targets were not retried; the packaged 0.3.0
+archive remains unchanged.

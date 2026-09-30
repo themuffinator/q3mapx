@@ -1,0 +1,752 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-30T15:23:46.657574+00:00",
+  "base_revision": "24f3fa975f58414936a5ce3a309a522bcde8066c",
+  "scope": "Exact planar interior-vertex reduction library, independent rational oracles and read-only IBSP candidate measurements",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "7c543e7fd28fd1a25830ee0b80c090ed519b0b32e0397abeb175dc6ee736da02",
+    "libs/q3mapx/exact_predicates.h": "b3057de729d25cbd8293d8879bb4e859491d8494710e3ccf73ce70c8dab514d3",
+    "libs/q3mapx/exact_predicates.cpp": "fbe9485daacfdd35688035a28309375a404ac0527bb56bdb9301da60e4a14415",
+    "libs/q3mapx/planar_reduction.h": "b61be2d34e8500b5d1c9e7cb7bbb484db40e78667d9eabbeff177889dda3dda1",
+    "libs/q3mapx/planar_reduction.cpp": "21be57b29f8fab5429d8b739f20254ff297b07486fbfe73ebbf74eeef8f1e17f",
+    "tests/planar_reduction.cpp": "cc610873d99c99634ba7ad2a72ce677ea0145fa9535a1b455a7525962f921d08",
+    "tests/planar_reduction.py": "c0f83e11af32c7ef963c3ca8b794deeab1cd28be11222702387f409012f8fd6e",
+    "tests/planar_reduction_native.py": "0745131051632ec569d46bfdc06e7fd8ad9e41bb4cf69bb7a7eadcbbd0fd8697",
+    "tests/fixtures.py": "5cc300117041bc22a719451f9915bca17cc5af10094521408538b850284436c7",
+    "tests/integration.py": "3bb8e703e9e898a4c079f6a52321941aeb54876a7eac7804b8e1069c1541dfb3"
+  },
+  "platforms": {
+    "win": {
+      "compiler": {
+        "path": "build/release/bin/q3mapx.exe",
+        "sha256": "b03885c2a830b49619fa3948df9c8c5502c5eb89222e026c01e9cd8c9cc2fcb4"
+      },
+      "unit": {
+        "path": "build/release/bin/planar_reduction_test.exe",
+        "sha256": "fb1f54d577f2fd5a38b2957710672a4caa561d1505c9c38f9b2c43dafa9b1046"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/planar-reduction-build-final-win.log",
+        "sha256": "ec0aed17e2ff1297cbeceafbae47b7bcf783d9fe0b1d7bb43022ae0f64feb7e4"
+      },
+      "test_log": {
+        "path": ".agents/tmp/continuation/planar-reduction-tests-final-win.log",
+        "sha256": "9288ec4498b9b2cda3184e09e803ec367efa71d1f5ef5a9a667a8e65ad0d418f"
+      },
+      "passed_groups": [
+        {
+          "name": "compiler_pipeline",
+          "seconds": 0.65
+        },
+        {
+          "name": "portal_graph",
+          "seconds": 0.04
+        },
+        {
+          "name": "cell_graph",
+          "seconds": 0.03
+        },
+        {
+          "name": "planar_reduction",
+          "seconds": 0.04
+        },
+        {
+          "name": "planar_reduction_oracle",
+          "seconds": 1.7
+        },
+        {
+          "name": "planar_reduction_native",
+          "seconds": 1.55
+        }
+      ],
+      "total_test_seconds": 4.02,
+      "command": "ctest --test-dir build/release -R \"^(planar_reduction.*|cell_graph|portal_graph|compiler_pipeline)$\" --output-on-failure -V",
+      "oracle_report": {
+        "path": "build/release/tests/planar-reduction/validation.json",
+        "sha256": "96f60e0731f1e505e32d8a6535aa24cdc518a1fa79ca11996d3cc64be5ff836d"
+      },
+      "native_report": {
+        "path": "build/release/tests/planar-reduction-native/validation.json",
+        "sha256": "5b153af401dd0c949ebee94633b8779f5d3f26afc470afd71d275751e6bf2147"
+      },
+      "native_fixtures": [
+        {
+          "lighting": "ambient",
+          "source_sha256": "acd6d1c820bdb230cc97dc45cbd8a10b98e236f391cec1b6ab518def3f939418",
+          "before_light": {
+            "grid_input_triangles": 512,
+            "grid_output_triangles": 146,
+            "samples": 69,
+            "bsp_sha256": "347438741eba6d1e2f2bb0ac4dd8f1e536c30a23b0fe7479392cd484a0650837"
+          },
+          "after_light": {
+            "grid_input_triangles": 512,
+            "grid_output_triangles": 146,
+            "samples": 69,
+            "bsp_sha256": "ac6e9fd90593f3780c1d54080c6f049f0c22d81d96c7e7883f3b47d64ac77b6e"
+          }
+        },
+        {
+          "lighting": "point",
+          "source_sha256": "90f7b02ec6b7d263386b8e53d20343b20bc4b0fea4163e0d1faf779264345f4c",
+          "before_light": {
+            "grid_input_triangles": 512,
+            "grid_output_triangles": 146,
+            "samples": 69,
+            "bsp_sha256": "dc966de5c05d6d9e52ba3d530836f1335fff8e5408940d4d32cf53b712c8ebbd"
+          },
+          "after_light": {
+            "grid_input_triangles": 512,
+            "grid_output_triangles": 496,
+            "samples": 69,
+            "bsp_sha256": "9bfbea578d19e8791e196cab0dc863588754f52397ca9253a63c25b4d6ee5d49"
+          }
+        }
+      ]
+    },
+    "linux": {
+      "compiler": {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "50e884e394d10e146a91c986763f603aad4ef3d06e980a665e208cec3e8bf1bc"
+      },
+      "unit": {
+        "path": "build/linux-release/bin/planar_reduction_test",
+        "sha256": "aaa034de6a959f0f6ed84348dba4f7dcbfff744469c15eca0cf78efb640f8906"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/planar-reduction-build-final-linux.log",
+        "sha256": "7ae81a26260cd1bcb7b0d573c7768da50c5ae45b5704ef8ad179bb63f728e264"
+      },
+      "test_log": {
+        "path": ".agents/tmp/continuation/planar-reduction-tests-final-linux.log",
+        "sha256": "820f8d3cbc0db77196881c9622d4138e69e655f926685798513f35b3cedebc2d"
+      },
+      "passed_groups": [
+        {
+          "name": "compiler_pipeline",
+          "seconds": 3.77
+        },
+        {
+          "name": "portal_graph",
+          "seconds": 0.02
+        },
+        {
+          "name": "cell_graph",
+          "seconds": 0.01
+        },
+        {
+          "name": "planar_reduction",
+          "seconds": 0.03
+        },
+        {
+          "name": "planar_reduction_oracle",
+          "seconds": 1.09
+        },
+        {
+          "name": "planar_reduction_native",
+          "seconds": 2.28
+        }
+      ],
+      "total_test_seconds": 7.38,
+      "command": "ctest --test-dir build/linux-release -R \"^(planar_reduction.*|cell_graph|portal_graph|compiler_pipeline)$\" --output-on-failure -V",
+      "oracle_report": {
+        "path": "build/linux-release/tests/planar-reduction/validation.json",
+        "sha256": "473d2bcaee0bea0dc7f779c169ee15c0b80d1c26d10678c618b0e62b113a0dcc"
+      },
+      "native_report": {
+        "path": "build/linux-release/tests/planar-reduction-native/validation.json",
+        "sha256": "76312d9d2386eba8245786e6312b216bb7637ee704315cb4c3e986c6b1149c68"
+      },
+      "native_fixtures": [
+        {
+          "lighting": "ambient",
+          "source_sha256": "a8abe5cc1c73bfccc1116937469a7121b5285128baa9809b4e160e5db7e2200e",
+          "before_light": {
+            "grid_input_triangles": 512,
+            "grid_output_triangles": 146,
+            "samples": 69,
+            "bsp_sha256": "9daf0b5bdd64026cd8e1978d757301a3174e39e90f84ab7aa6b91026f25efc39"
+          },
+          "after_light": {
+            "grid_input_triangles": 512,
+            "grid_output_triangles": 146,
+            "samples": 69,
+            "bsp_sha256": "5e06fe686c55439d4d6d324652ceef90ef797eeaae586d7471231115e60fa25f"
+          }
+        },
+        {
+          "lighting": "point",
+          "source_sha256": "8c83cd84b33f9c379c47aa4c0b30efc3038b054689735949c60287edaa7e3120",
+          "before_light": {
+            "grid_input_triangles": 512,
+            "grid_output_triangles": 146,
+            "samples": 69,
+            "bsp_sha256": "d52481124e72d207893ab1234f30be80ea7c0bb630c85f93ae069afa2fd36eed"
+          },
+          "after_light": {
+            "grid_input_triangles": 512,
+            "grid_output_triangles": 496,
+            "samples": 69,
+            "bsp_sha256": "db29ab1d76f5b68cc026a931f8295c080989035390c257246ed9c2aa5ff36990"
+          }
+        }
+      ]
+    },
+    "sanitized": {
+      "compiler": {
+        "path": "build/linux-sanitized/bin/q3mapx",
+        "sha256": "70239bc1c6bc8c6859af17ffedac85518c621a91e2603da98cbc2e847e152d8c"
+      },
+      "unit": {
+        "path": "build/linux-sanitized/bin/planar_reduction_test",
+        "sha256": "c36b1440a60387238882f994b5ffc43d2307652b43f5d115e1ff24506856027a"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/planar-reduction-build-final-sanitized.log",
+        "sha256": "37b6995f4801b20af9600ae67c4906060f0e8f014d51edd5d80364b5fc74d409"
+      },
+      "test_log": {
+        "path": ".agents/tmp/continuation/planar-reduction-tests-final-sanitized.log",
+        "sha256": "1b36002f3d03457bc06ea4e627c6a4c10cb8fc2d308426e8ac3aa847fff59171"
+      },
+      "passed_groups": [
+        {
+          "name": "compiler_pipeline",
+          "seconds": 21.54
+        },
+        {
+          "name": "portal_graph",
+          "seconds": 0.24
+        },
+        {
+          "name": "cell_graph",
+          "seconds": 0.36
+        },
+        {
+          "name": "planar_reduction",
+          "seconds": 0.73
+        },
+        {
+          "name": "planar_reduction_oracle",
+          "seconds": 1.76
+        },
+        {
+          "name": "planar_reduction_native",
+          "seconds": 7.32
+        }
+      ],
+      "total_test_seconds": 32.21,
+      "command": "ctest --test-dir build/linux-sanitized -R \"^(planar_reduction.*|cell_graph|portal_graph|compiler_pipeline)$\" --output-on-failure -V",
+      "oracle_report": {
+        "path": "build/linux-sanitized/tests/planar-reduction/validation.json",
+        "sha256": "a5a2e67d123333d6074b8956fce74514dbcd637c998fe88dd359a3d5b04a4304"
+      },
+      "native_report": {
+        "path": "build/linux-sanitized/tests/planar-reduction-native/validation.json",
+        "sha256": "4e9f06cbd0e6f41720545073a54e283f36bbf7216ab014fe13f5a160cee4b699"
+      },
+      "native_fixtures": [
+        {
+          "lighting": "ambient",
+          "source_sha256": "a8abe5cc1c73bfccc1116937469a7121b5285128baa9809b4e160e5db7e2200e",
+          "before_light": {
+            "grid_input_triangles": 512,
+            "grid_output_triangles": 146,
+            "samples": 69,
+            "bsp_sha256": "caaec7956100c65179ae1b6c20a5b9d211fb50f998bf10cca375c9d6533ca441"
+          },
+          "after_light": {
+            "grid_input_triangles": 512,
+            "grid_output_triangles": 146,
+            "samples": 69,
+            "bsp_sha256": "44ed94afeaac113ebcc8f2a0d4281a841e010ebcce6d166e663195b7e60862d9"
+          }
+        },
+        {
+          "lighting": "point",
+          "source_sha256": "8c83cd84b33f9c379c47aa4c0b30efc3038b054689735949c60287edaa7e3120",
+          "before_light": {
+            "grid_input_triangles": 512,
+            "grid_output_triangles": 146,
+            "samples": 69,
+            "bsp_sha256": "2805aef1a2adfd8286ade972758a2901b075a8cd81588459d354591f3e174dfc"
+          },
+          "after_light": {
+            "grid_input_triangles": 512,
+            "grid_output_triangles": 496,
+            "samples": 69,
+            "bsp_sha256": "72927bcd602995612120d2b747bd2d1d9f7d124b99b8ca74cd83874a290d1b8e"
+          }
+        }
+      ]
+    }
+  },
+  "cross_platform": {
+    "exact_oracle_reports_equal_excluding_binary_identity": true,
+    "native_candidate_summary_multisets_equal_excluding_platform_surface_ids": true,
+    "native_comparison_scope": "Counts, work/rejection counters, per-surface local output-index hashes, shaders and fog/type agree as multisets. Compiled surface order/IDs, full input payloads, line endings and BSP identities differ; no compiler cross-platform byte identity is asserted.",
+    "rational_oracle_digest": "2d3d9681dec25de61d007953bf60b15d4d643a35fd32c775a7b8708b2d7c6074",
+    "native_candidate_digest": "622c97793f39d9f1204e9d6d0452a26ef507c184a42e696b29d519430a3f4ad2"
+  },
+  "unit_evidence": {
+    "regular_grid_cases": 20,
+    "interior_vertices_removed": 1364,
+    "coverage_interpolation_samples": 4212,
+    "controls": [
+      "winding",
+      "flat/sloped",
+      "edit replay",
+      "one-ULP fields",
+      "nonfinite inputs",
+      "non-nearest rounding",
+      "work/history/input/ring limits",
+      "nonmanifold edges",
+      "concave fan",
+      "self-crossing fan",
+      "existing external diagonals"
+    ]
+  },
+  "rational_evidence": {
+    "schema_version": 1,
+    "result": "passed",
+    "predicates": {
+      "cases": 4136,
+      "signs": {
+        "-1": 1579,
+        "0": 1000,
+        "1": 1557
+      },
+      "input_sha256": "b45b2e2eb0b1bb50857bac3a9912d1126983adc646b76259d6dacd74239d587e",
+      "oracle_sha256": "2cf92d84b473a0a1c96e6585fefd50468495b423ca621a9112b1d891ba208f21"
+    },
+    "meshes": [
+      {
+        "vertices": 16,
+        "triangles_before": 16,
+        "triangles_after": 16,
+        "interior_vertices_removed": 0,
+        "work_units": 912,
+        "hole": true,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      },
+      {
+        "vertices": 25,
+        "triangles_before": 32,
+        "triangles_after": 14,
+        "interior_vertices_removed": 9,
+        "work_units": 75778,
+        "hole": false,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      },
+      {
+        "vertices": 36,
+        "triangles_before": 50,
+        "triangles_after": 30,
+        "interior_vertices_removed": 10,
+        "work_units": 176192,
+        "hole": false,
+        "one_ulp_field_discontinuity": true,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 11
+      },
+      {
+        "vertices": 49,
+        "triangles_before": 70,
+        "triangles_after": 28,
+        "interior_vertices_removed": 21,
+        "work_units": 149518,
+        "hole": true,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      },
+      {
+        "vertices": 16,
+        "triangles_before": 18,
+        "triangles_after": 10,
+        "interior_vertices_removed": 4,
+        "work_units": 29751,
+        "hole": false,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      },
+      {
+        "vertices": 25,
+        "triangles_before": 32,
+        "triangles_after": 14,
+        "interior_vertices_removed": 9,
+        "work_units": 73090,
+        "hole": false,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      },
+      {
+        "vertices": 36,
+        "triangles_before": 48,
+        "triangles_after": 32,
+        "interior_vertices_removed": 8,
+        "work_units": 114760,
+        "hole": true,
+        "one_ulp_field_discontinuity": true,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 5
+      },
+      {
+        "vertices": 49,
+        "triangles_before": 72,
+        "triangles_after": 22,
+        "interior_vertices_removed": 25,
+        "work_units": 194681,
+        "hole": false,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      },
+      {
+        "vertices": 16,
+        "triangles_before": 18,
+        "triangles_after": 10,
+        "interior_vertices_removed": 4,
+        "work_units": 34545,
+        "hole": false,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      },
+      {
+        "vertices": 25,
+        "triangles_before": 30,
+        "triangles_after": 20,
+        "interior_vertices_removed": 5,
+        "work_units": 44229,
+        "hole": true,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      },
+      {
+        "vertices": 36,
+        "triangles_before": 50,
+        "triangles_after": 32,
+        "interior_vertices_removed": 9,
+        "work_units": 151039,
+        "hole": false,
+        "one_ulp_field_discontinuity": true,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 10
+      },
+      {
+        "vertices": 49,
+        "triangles_before": 72,
+        "triangles_after": 22,
+        "interior_vertices_removed": 25,
+        "work_units": 188345,
+        "hole": false,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      },
+      {
+        "vertices": 16,
+        "triangles_before": 16,
+        "triangles_after": 16,
+        "interior_vertices_removed": 0,
+        "work_units": 912,
+        "hole": true,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      },
+      {
+        "vertices": 25,
+        "triangles_before": 32,
+        "triangles_after": 14,
+        "interior_vertices_removed": 9,
+        "work_units": 70679,
+        "hole": false,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      },
+      {
+        "vertices": 36,
+        "triangles_before": 50,
+        "triangles_after": 30,
+        "interior_vertices_removed": 10,
+        "work_units": 169168,
+        "hole": false,
+        "one_ulp_field_discontinuity": true,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 10
+      },
+      {
+        "vertices": 49,
+        "triangles_before": 70,
+        "triangles_after": 28,
+        "interior_vertices_removed": 21,
+        "work_units": 186009,
+        "hole": true,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      },
+      {
+        "vertices": 16,
+        "triangles_before": 18,
+        "triangles_after": 10,
+        "interior_vertices_removed": 4,
+        "work_units": 29866,
+        "hole": false,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      },
+      {
+        "vertices": 25,
+        "triangles_before": 32,
+        "triangles_after": 14,
+        "interior_vertices_removed": 9,
+        "work_units": 78325,
+        "hole": false,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      },
+      {
+        "vertices": 36,
+        "triangles_before": 48,
+        "triangles_after": 32,
+        "interior_vertices_removed": 8,
+        "work_units": 115114,
+        "hole": true,
+        "one_ulp_field_discontinuity": true,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 5
+      },
+      {
+        "vertices": 49,
+        "triangles_before": 72,
+        "triangles_after": 22,
+        "interior_vertices_removed": 25,
+        "work_units": 228990,
+        "hole": false,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      },
+      {
+        "vertices": 16,
+        "triangles_before": 18,
+        "triangles_after": 10,
+        "interior_vertices_removed": 4,
+        "work_units": 24962,
+        "hole": false,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      },
+      {
+        "vertices": 25,
+        "triangles_before": 30,
+        "triangles_after": 20,
+        "interior_vertices_removed": 5,
+        "work_units": 44709,
+        "hole": true,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      },
+      {
+        "vertices": 36,
+        "triangles_before": 50,
+        "triangles_after": 32,
+        "interior_vertices_removed": 9,
+        "work_units": 167742,
+        "hole": false,
+        "one_ulp_field_discontinuity": true,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 11
+      },
+      {
+        "vertices": 49,
+        "triangles_before": 72,
+        "triangles_after": 22,
+        "interior_vertices_removed": 25,
+        "work_units": 206463,
+        "hole": false,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      },
+      {
+        "vertices": 16,
+        "triangles_before": 16,
+        "triangles_after": 16,
+        "interior_vertices_removed": 0,
+        "work_units": 912,
+        "hole": true,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      },
+      {
+        "vertices": 25,
+        "triangles_before": 32,
+        "triangles_after": 14,
+        "interior_vertices_removed": 9,
+        "work_units": 78094,
+        "hole": false,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      },
+      {
+        "vertices": 36,
+        "triangles_before": 50,
+        "triangles_after": 30,
+        "interior_vertices_removed": 10,
+        "work_units": 170213,
+        "hole": false,
+        "one_ulp_field_discontinuity": true,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 12
+      },
+      {
+        "vertices": 49,
+        "triangles_before": 70,
+        "triangles_after": 28,
+        "interior_vertices_removed": 21,
+        "work_units": 173145,
+        "hole": true,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      },
+      {
+        "vertices": 16,
+        "triangles_before": 18,
+        "triangles_after": 10,
+        "interior_vertices_removed": 4,
+        "work_units": 34433,
+        "hole": false,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      },
+      {
+        "vertices": 25,
+        "triangles_before": 32,
+        "triangles_after": 14,
+        "interior_vertices_removed": 9,
+        "work_units": 78680,
+        "hole": false,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      },
+      {
+        "vertices": 36,
+        "triangles_before": 48,
+        "triangles_after": 34,
+        "interior_vertices_removed": 7,
+        "work_units": 108266,
+        "hole": true,
+        "one_ulp_field_discontinuity": true,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 6
+      },
+      {
+        "vertices": 49,
+        "triangles_before": 72,
+        "triangles_after": 22,
+        "interior_vertices_removed": 25,
+        "work_units": 205089,
+        "hole": false,
+        "one_ulp_field_discontinuity": false,
+        "topology_rejections": 0,
+        "planarity_rejections": 0,
+        "attribute_rejections": 0
+      }
+    ],
+    "exact_rational_coverage_interpolation_samples": 607,
+    "mesh_input_sha256": "f9c6a4b6a822b37bf445ac7cdd9ec8bb6a24e3cb245f300507b502339a60505e",
+    "scope": "Mathematical mesh core only; no runtime material, renderer, BSP publication or visual-equivalence certification"
+  },
+  "renderer_source_audit": [
+    {
+      "local_path": "E:\\_SOURCE\\_CODE\\Quake-III-Arena-master\\code\\renderer\\tr_shade.c",
+      "sha256": "07d536bb865b8697ce6def7efa11da85ddcf4d8390e0dd1ae57494741d081160",
+      "locations": {
+        "dynamic_light_piecewise_color": 545,
+        "generic_nodlight_check": 1092,
+        "vertex_lit_dynamic_light_call": 1180,
+        "lightmapped_dynamic_light_call": 1285
+      },
+      "upstream_url": "https://github.com/id-Software/Quake-III-Arena/blob/master/code/renderer/tr_shade.c",
+      "use": "Read-only source audit; no external code incorporated"
+    },
+    {
+      "local_path": "E:\\_SOURCE\\_CODE\\Quake-III-Arena-master\\code\\renderer\\tr_shader.c",
+      "sha256": "8cdd1cc6de30b42d5caa12d78decff49d8c140f21697c9d885bfb3f10f31f7c8",
+      "locations": {
+        "stage_iterator_selection": 1623
+      },
+      "upstream_url": "https://github.com/id-Software/Quake-III-Arena/blob/master/code/renderer/tr_shader.c",
+      "use": "Read-only source audit; no external code incorporated"
+    },
+    {
+      "local_path": "E:\\_SOURCE\\_CODE\\Quake-III-Arena-master\\code\\renderer\\tr_shade_calc.c",
+      "sha256": "b27c228e65b9bd36b9387083c397c71b1735e1587c824311cfe481e1b2885660",
+      "locations": {
+        "vertex_derived_color_fog_texture_functions": 1
+      },
+      "upstream_url": "https://github.com/id-Software/Quake-III-Arena/blob/master/code/renderer/tr_shade_calc.c",
+      "use": "Read-only source audit; no external code incorporated"
+    }
+  ],
+  "limits": [
+    "No compiler/GUI reduction option or native rewrite",
+    "No game render validation, speedup, frame-time or memory claim",
+    "Exact affine real-valued fields do not certify runtime shader or GPU pixel equivalence",
+    "Point-light baked attributes restrict native candidate reduction",
+    "Only generated IBSP46 native fixtures; other format adapters remain planned",
+    "ASan/UBSan uses established detect_leaks=0 for inherited process-lifetime allocations"
+  ]
+}

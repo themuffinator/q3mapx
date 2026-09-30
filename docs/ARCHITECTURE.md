@@ -106,6 +106,17 @@ brush reversals during parsing and group collapse, while preserving translucent
 order. Reports distinguish this mechanical ordering contract from unproven
 original grouping, compile parameters and rebuilt presentation.
 
+## Planar reduction boundary
+
+The first triangle-reduction transformation is isolated in
+`libs/q3mapx/planar_reduction.*`, with binary32 exact determinant signs in
+`exact_predicates.*`. It consumes immutable geometry/32-field vertices and returns
+ordered faces plus replayable edits under explicit work/storage bounds. Native
+format adapters and renderer/material eligibility are separate planned layers.
+It is linked into the shared support library for testing but is not invoked by
+the compiler or workbench. See [its contract](PLANAR-REDUCTION.md) before using the
+core: exact affine-field preservation alone does not approve a runtime rewrite.
+
 ## Decisions recorded at project start
 
 | Decision | Rationale |

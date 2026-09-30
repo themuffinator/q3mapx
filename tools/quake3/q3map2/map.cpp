@@ -970,15 +970,18 @@ static void ParseRawBrush( bool onlyLights ){
 	}
 
 	/* parse sides */
-	while ( GetToken( true ) && !strEqual( token, "}" ) )
+	for ( ;; )
 	{
+		if ( !GetToken( true ) ) {
+			Error( "Incomplete MAP brush (entity %d, primitive %d) at line %d in %s: expected closing brace",
+			       buildBrush.entityNum, buildBrush.brushNum, scriptline, g_loadedScriptLocation.c_str() );
+		}
+		if ( TokenIs( "}" ) ) break;
 		/* ttimo : bp: here we may have to jump over brush epairs (only used in editor) */
-		if ( g_brushType == EBrushType::Bp ) {
-			while ( !strEqual( token, "(" ) )
-			{
-				GetToken( false );
-				GetToken( true );
-			}
+		if ( g_brushType == EBrushType::Bp && !TokenIs( "(" ) ) {
+			std::list<epair_t> dummy;
+			ParseEPair( dummy );
+			continue;
 		}
 		UnGetToken();
 
@@ -1105,8 +1108,6 @@ static void ParseRawBrush( bool onlyLights ){
 
 	/* bp */
 	if ( g_brushType == EBrushType::Bp ) {
-		UnGetToken();
-		MatchToken( "}" );
 		MatchToken( "}" );
 	}
 }
@@ -1164,6 +1165,10 @@ static bool RemoveDuplicateBrushPlanes( brush_t& b ){
  */
 
 static void ParseBrush( bool onlyLights, bool noCollapseGroups, entity_t& mapEnt, int mapPrimitiveNum ){
+	/* also identify failures encountered while reading the brush */
+	buildBrush.entityNum = mapEnt.mapEntityNum;
+	buildBrush.brushNum = mapPrimitiveNum;
+
 	/* parse the brush out of the map */
 	ParseRawBrush( onlyLights );
 
@@ -1171,10 +1176,6 @@ static void ParseBrush( bool onlyLights, bool noCollapseGroups, entity_t& mapEnt
 	if ( onlyLights ) {
 		return;
 	}
-
-	/* set map entity and brush numbering */
-	buildBrush.entityNum = mapEnt.mapEntityNum;
-	buildBrush.brushNum = mapPrimitiveNum;
 
 	/* if there are mirrored planes, the entire brush is invalid */
 	if ( !RemoveDuplicateBrushPlanes( buildBrush ) ) {
@@ -1527,11 +1528,9 @@ static bool ParseMapEntity( bool onlyLights, bool noCollapseGroups, int mapEntit
 	}
 
 	/* conformance check */
-	if ( !strEqual( token, "{" ) ) {
-		Sys_Warning( "ParseEntity: { not found, found %s on line %d - last entity was at: <%4.2f, %4.2f, %4.2f>...\n"
-		             "Continuing to process map, but resulting BSP may be invalid.\n",
-		             token, scriptline, entities.back().origin[ 0 ], entities.back().origin[ 1 ], entities.back().origin[ 2 ] );
-		return false;
+	if ( !TokenIs( "{" ) ) {
+		Error( "Invalid MAP entity %d at line %d in %s: expected '{', got '%s'",
+		       mapEntityNum, scriptline, g_loadedScriptLocation.c_str(), token );
 	}
 
 	/* setup */
@@ -1546,42 +1545,46 @@ static bool ParseMapEntity( bool onlyLights, bool noCollapseGroups, int mapEntit
 	{
 		/* get initial token */
 		if ( !GetToken( true ) ) {
-			Sys_Warning( "ParseEntity: EOF without closing brace\n"
-			             "Continuing to process map, but resulting BSP may be invalid.\n" );
-			return false;
+			Error( "Incomplete MAP entity %d at line %d in %s: expected closing brace",
+			       mapEntityNum, scriptline, g_loadedScriptLocation.c_str() );
 		}
 
-		if ( strEqual( token, "}" ) ) {
+		if ( TokenIs( "}" ) ) {
 			break;
 		}
 
-		if ( strEqual( token, "{" ) ) {
+		if ( TokenIs( "{" ) ) {
 			/* parse a brush or patch */
 			if ( !GetToken( true ) ) {
-				break;
+				Error( "Incomplete MAP primitive %d in entity %d at line %d in %s",
+				       mapPrimitiveNum, mapEntityNum, scriptline, g_loadedScriptLocation.c_str() );
 			}
 
 			/* check */
-			if ( strEqual( token, "patchDef2" ) ) {
+			if ( TokenIs( "patchDef2" ) ) {
 				++c_patches;
 				ParsePatch( onlyLights, mapEnt, mapPrimitiveNum );
 			}
-			else if ( strEqual( token, "terrainDef" ) ) {
+			else if ( TokenIs( "terrainDef" ) ) {
 				//% ParseTerrain();
-				Sys_Warning( "Terrain entity parsing not supported in this build.\n" ); /* ydnar */
+				Error( "MAP terrainDef parsing not supported at line %d in %s", scriptline, g_loadedScriptLocation.c_str() );
 			}
-			else if ( strEqual( token, "brushDef" ) ) {
+			else if ( TokenIs( "brushDef" ) ) {
 				if ( g_brushType == EBrushType::Undefined ) {
 					Sys_FPrintf( SYS_VRB, "detected brushType = BRUSH PRIMITIVES\n" );
 					g_brushType = EBrushType::Bp;
 				}
 				ParseBrush( onlyLights, noCollapseGroups, mapEnt, mapPrimitiveNum );
 			}
-			else
+			else if ( TokenIs( "(" ) )
 			{
 				/* AP or 220 */
 				UnGetToken(); // (
 				ParseBrush( onlyLights, noCollapseGroups, mapEnt, mapPrimitiveNum );
+			}
+			else {
+				Error( "Invalid MAP primitive %d in entity %d at line %d in %s: unexpected '%s'",
+				       mapPrimitiveNum, mapEntityNum, scriptline, g_loadedScriptLocation.c_str(), token );
 			}
 			++mapPrimitiveNum;
 		}
@@ -1594,6 +1597,9 @@ static bool ParseMapEntity( bool onlyLights, bool noCollapseGroups, int mapEntit
 
 	/* ydnar: get classname */
 	const char *classname = mapEnt.classname();
+	if ( mapEntityNum == 0 && !striEqual( classname, "worldspawn" ) ) {
+		Error( "Invalid MAP: first entity must be worldspawn at line %d in %s", scriptline, g_loadedScriptLocation.c_str() );
+	}
 
 	/* ydnar: only lights? */
 	if ( onlyLights && !striEqualPrefix( classname, "light" ) ) {
@@ -1696,7 +1702,8 @@ void LoadMapFile( const char *filename, bool onlyLights, bool noCollapseGroups )
 
 	/* parse the map file */
 	int mapEntityNum = 0; /* track .map file entities numbering */
-	while ( ParseMapEntity( onlyLights, noCollapseGroups, mapEntityNum++ ) ){};
+	while ( ParseMapEntity( onlyLights, noCollapseGroups, mapEntityNum ) ) ++mapEntityNum;
+	if ( mapEntityNum == 0 ) Error( "Invalid MAP: no worldspawn entity in %s", filename );
 
 	/* light loading */
 	if ( onlyLights ) {

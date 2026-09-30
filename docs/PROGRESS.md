@@ -2131,3 +2131,64 @@ includes have no explicit depth budget. These remain separate planned work.
 Inherited `UnsortedSet`, patch aggregate and intentional clone-brush allocation
 warnings remain, along with the previously documented VIS, raw-sidecar and
 Windows-delay issues. The broader inference/optimization workstreams remain active.
+
+## 2026-09-30 — Entity structure and bounded script includes
+
+Repaired invalid world/entity access on empty MAP input and on an unexpected
+first token. Both paths produced UBSan diagnostics in the preceding executable;
+bounded before/after probes retain that evidence. A missing final entity brace,
+missing value followed by a brace and missing include could previously complete
+a BSP build. They now fail normally during source loading. MAP input requires an
+initial worldspawn, and source entity counting also detects an empty file when
+LIGHT is loading source entities onto an existing BSP.
+
+Brush EOF and brush-primitive metadata no longer rely on unchecked token reads.
+Shared delimiter matching checks EOF and distinguishes unquoted syntax from
+quoted data. Literal `{`, `}` and `$include` keys/values now survive MAP compilation
+and native BSP decompilation. BSP entity text uses the memory-reader policy, which
+cannot expand file includes. Empty memory buffers avoid null-source copy calls.
+Unsupported source `terrainDef` and unknown primitive types fail explicitly;
+native MOHAA terrain recovery remains supported.
+
+Replaced recursive include dispatch and recursive returns with one iterative
+loop. Each top-level file load permits at most 64 active files, 1,024 total file
+loads and 256 MiB of cumulative bytes, including the root and repeated includes.
+The VFS checks the remaining byte budget before loading loose or packed data.
+Missing requested includes fail instead of silently omitting content. Cycles and
+shallow repeated includes consume the same limits. Quoted include filenames,
+fragments and the existing game-relative VFS lookup remain supported. Parent
+locations are restored after a child ends, and failed loads report the requesting
+parent's line/location rather than combining that line with the child's filename.
+
+The new `script_input` group passes on Windows Release, Linux Release and Linux
+ASan/UBSan: 24 valid native-source cases and 145 rejected inputs/modes per platform.
+The 21 cases supported by the preceding Windows compiler match all stored BSP
+lumps exactly; the remaining three exercise repaired literal-token handling and
+brush metadata. Both Release platforms also agree on every valid-case lump.
+The matrix covers Quake/brush-primitive/Valve 220 syntax in IBSP/RBSP, loose/packed
+includes, fragments, shader includes, exact depth/file-count boundaries, repeated
+byte budgets, malformed native entity data and source/output preservation across
+BSP, entity-only, LIGHT, MAP/OBJ conversion, region and editor-temporary inputs.
+
+The existing 64-group Windows suite passes in addition to the reference matrix.
+The full 65-group Linux sweep passes 64 and skips the unavailable GPU
+`area_factors` group. Nine relevant groups pass under ASan/UBSan, including the
+new matrix, patch inputs, native readers, complete compile/lighting pipelines and
+checked binary publication. Established process-lifetime leak exclusions remain
+unchanged. Final review added an empty BSP entity-lump case and a precise parent
+location assertion for byte-budget failures; all final builds/checks include them.
+
+See [input behavior and limits](MAP-INPUT.md), [test instructions](DEVELOPMENT.md#script-and-entity-input-validation)
+and [validation evidence](validation/script-input.json). The before/after probes,
+preceding Windows executable, intermediate/final logs and evidence generator stay
+in `.agents/tmp/continuation/script-input/`; generated cases and detailed reports
+stay under each build's `tests/script-input/`. No performance claim or refreshed
+portable archive is made. Earlier policy-blocked cleanup targets were not retried.
+
+Remaining source-parser work includes permissive brush numeric/texture parsing,
+optional-token lookahead that compares line numbers across files, and line
+accounting inside multiline quoted tokens. The last two were identified in source
+review and remain outside this round's fixture claims. Existing `UnsortedSet`
+layout, patch aggregate and clone-brush lifetime warnings remain, alongside the
+previously documented VIS, raw-sidecar and intermittent Windows-delay issues.
+Broader light inference and automatic VIS/geometry work remain active.

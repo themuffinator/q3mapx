@@ -1,0 +1,485 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-30T17:58:38.718487+00:00",
+  "base_revision": "84a71c2610d01155c36f4c5fba6440ec17434c03",
+  "scope": "Strict MAP/entity structure, bounded iterative includes, literal tokens and BSP entity include isolation",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "86b92f59ba06fa8065a3b562200f76bcc37b9c47f63d4264c67ace269eb489c5",
+    "tools/quake3/common/scriplib.cpp": "e7a90762717020f989d0e0f8c49a0e724a6561699b16750e9ac0636c728740db",
+    "tools/quake3/common/scriplib.h": "92cf1cc6467e9be2152c3bb24d5b2e7c38836ddc3566363dbd3e520badbfbe69",
+    "tools/quake3/q3map2/map.cpp": "68ff7cd74ce28809d48e91f88f4ae253eb0dc8c13a8eb06e62dafcf1fdb7e126",
+    "tools/quake3/q3map2/bspfile_abstract.cpp": "e95666ae8cbf18a620f96136204091a46f8651ddda8b4fbc70ca732b954191d9",
+    "tools/quake3/q3map2/patch.cpp": "6097820a31713b4ff531ab87898d4dabb0a65c3f1e3753071c25579f986c863b",
+    "tests/script_input.py": "8c102aaf4843322a4b655fc09f92f44d0706faa3efaf0f612d4f2dd798c35d69"
+  },
+  "windows_reference": {
+    "path": ".agents/tmp/continuation/script-input/q3mapx-before.exe",
+    "sha256": "b6ec5745fa3b2aaf0704f8fcc97b7a79e7ac0b5ec88a36608376dc807e10a48b"
+  },
+  "preceding_sanitized_reference": {
+    "compiler_sha256": "46b38b1f5ebbe2e1fcaece8c477cf18bb6a9714acfa92c99be8d1680eb37ef08",
+    "cases": [
+      {
+        "case": "empty",
+        "exit": 1,
+        "sanitizer": true,
+        "log": "empty.log"
+      },
+      {
+        "case": "first-word",
+        "exit": 1,
+        "sanitizer": true,
+        "log": "first-word.log"
+      },
+      {
+        "case": "missing-entity-close",
+        "exit": 0,
+        "sanitizer": false,
+        "log": "missing-entity-close.log"
+      },
+      {
+        "case": "missing-include",
+        "exit": 0,
+        "sanitizer": false,
+        "log": "missing-include.log"
+      },
+      {
+        "case": "missing-value",
+        "exit": 0,
+        "sanitizer": false,
+        "log": "missing-value.log"
+      },
+      {
+        "case": "quoted-include",
+        "exit": 1,
+        "sanitizer": false,
+        "log": "quoted-include.log"
+      }
+    ]
+  },
+  "after_sanitized_probes": {
+    "compiler_sha256": "861ed044a89ca55f6610250b2feb3b9824449e68e84af95ac581e08b2507d55c",
+    "cases": [
+      {
+        "case": "empty",
+        "exit": 1,
+        "sanitizer": false,
+        "log": "empty.log"
+      },
+      {
+        "case": "first-word",
+        "exit": 1,
+        "sanitizer": false,
+        "log": "first-word.log"
+      },
+      {
+        "case": "missing-entity-close",
+        "exit": 1,
+        "sanitizer": false,
+        "log": "missing-entity-close.log"
+      },
+      {
+        "case": "missing-include",
+        "exit": 1,
+        "sanitizer": false,
+        "log": "missing-include.log"
+      },
+      {
+        "case": "missing-value",
+        "exit": 1,
+        "sanitizer": false,
+        "log": "missing-value.log"
+      },
+      {
+        "case": "quoted-include",
+        "exit": 0,
+        "sanitizer": false,
+        "log": "quoted-include.log"
+      }
+    ]
+  },
+  "platforms": {
+    "windows": {
+      "compiler": {
+        "path": "build/release/bin/q3mapx.exe",
+        "sha256": "bfa786b3fceee01232e6077b84c76e519a0741e039c6cf3f0f3367f3454bfe46"
+      },
+      "script_input_report": {
+        "path": "build/release/tests/script-input/validation.json",
+        "sha256": "1e4885691536af712e3db1025c2914771c0bc3f21d5709c1f75fdca02b28110d"
+      },
+      "valid_cases": 24,
+      "rejected_cases": 145,
+      "reference_valid_case_comparisons": 21,
+      "valid_case_lump_digests": {
+        "quake3-map": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "quake3-map-include": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "quake3-map_bp": "ca65f5ce294c7538008ad611c70fdd7cf85ab2f269d233159d522ecac6144d8c",
+        "quake3-map_bp-include": "ca65f5ce294c7538008ad611c70fdd7cf85ab2f269d233159d522ecac6144d8c",
+        "quake3-map_220": "b6ec39ad313860d81d731b8a22f06eb420285d7ef94e0ede17eaccefe039fd49",
+        "quake3-map_220-include": "b6ec39ad313860d81d731b8a22f06eb420285d7ef94e0ede17eaccefe039fd49",
+        "ja-map": "b6d3a67e2e9e96fbb7604f05c7cd02d77d389ed208ec809fa0481326fbfe9203",
+        "ja-map-include": "b6d3a67e2e9e96fbb7604f05c7cd02d77d389ed208ec809fa0481326fbfe9203",
+        "ja-map_bp": "ff233ef9b5b65f7869fc10c99c5c4b4296dd25e66eef5c19333b8a80a703df9c",
+        "ja-map_bp-include": "ff233ef9b5b65f7869fc10c99c5c4b4296dd25e66eef5c19333b8a80a703df9c",
+        "ja-map_220": "0d920e04e2eea6dd3e007622851270a46be25de994c41dea091410fcb5329ae1",
+        "ja-map_220-include": "0d920e04e2eea6dd3e007622851270a46be25de994c41dea091410fcb5329ae1",
+        "plain-control": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "quoted-path": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "packed": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "depth-boundary": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "shallow-boundary": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "comment-boundary": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "return-at-eof": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "fragment": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "shader-include": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "quake3-literal-keys-values": "21f78a8bac359c9ea5f826483761a02e10ae4540751a9a284faf948c22966add",
+        "ja-literal-keys-values": "8d82949d8126bb29421a38e67e9a2f8353c0ca15aefe470464784b236c1422c0",
+        "brush-metadata": "ca65f5ce294c7538008ad611c70fdd7cf85ab2f269d233159d522ecac6144d8c"
+      },
+      "bsp_include_expansion_disabled": true,
+      "previous_outputs_preserved": true,
+      "parent_locations_restored": true,
+      "ctest": {
+        "path": ".agents/tmp/continuation/script-input/suite-win.log",
+        "sha256": "88ca5ce92ce876afb801ca2989cd0baba67dc1b182fff1166bafbbbee8bbca7f",
+        "cases": 64,
+        "failures": 0,
+        "skipped": [],
+        "tests": [
+          "workbench",
+          "patch_input",
+          "recovery_order",
+          "vis_passage_clipping",
+          "recovery_groups",
+          "vis_merge",
+          "cell_adjacency",
+          "recovery_classification",
+          "brush_cells",
+          "meta_order",
+          "game_profiles",
+          "gpu_columns",
+          "planar_reduction_native",
+          "vis_reproducible",
+          "lighting_gpu",
+          "portal_evidence",
+          "vis_passage_storage",
+          "bsp_inspect",
+          "workbench_devices",
+          "index_validation_cli",
+          "planar_reduction_oracle",
+          "bsp_evidence",
+          "geometry_optimize",
+          "binary_outputs",
+          "bsp_analyze",
+          "portal_validation",
+          "area_factors",
+          "raven_compat",
+          "native_early",
+          "native_fakk",
+          "lighting_materials",
+          "mesh_export",
+          "export_outputs",
+          "workbench_inspector",
+          "recovery_outputs",
+          "cli_options",
+          "bsp_validation",
+          "vis_clip",
+          "lightgrid_cli",
+          "native_mohaa",
+          "minimap",
+          "lightgrid",
+          "index_validation",
+          "ftx",
+          "portal_graph",
+          "game_catalog",
+          "recovery_group_order",
+          "compiler_pipeline",
+          "cell_graph",
+          "planar_reduction",
+          "terrain",
+          "vis_mask",
+          "columns",
+          "lighting_math",
+          "decompile_recovery",
+          "workbench_preview",
+          "quake3_materials",
+          "atomic_file",
+          "cli_help",
+          "job_pool",
+          "area_factors_disabled",
+          "decompile_math",
+          "cli_games",
+          "workbench_window"
+        ]
+      }
+    },
+    "linux": {
+      "compiler": {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "56312875bf79afe96ebd95199ca6604708287edb92b8f0348743f2b4a8d89d49"
+      },
+      "script_input_report": {
+        "path": "build/linux-release/tests/script-input/validation.json",
+        "sha256": "c4ea279972406480079bacedd288a7a2e21d5b89c618d32c3433ca6568aaec06"
+      },
+      "valid_cases": 24,
+      "rejected_cases": 145,
+      "reference_valid_case_comparisons": 0,
+      "valid_case_lump_digests": {
+        "quake3-map": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "quake3-map-include": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "quake3-map_bp": "ca65f5ce294c7538008ad611c70fdd7cf85ab2f269d233159d522ecac6144d8c",
+        "quake3-map_bp-include": "ca65f5ce294c7538008ad611c70fdd7cf85ab2f269d233159d522ecac6144d8c",
+        "quake3-map_220": "b6ec39ad313860d81d731b8a22f06eb420285d7ef94e0ede17eaccefe039fd49",
+        "quake3-map_220-include": "b6ec39ad313860d81d731b8a22f06eb420285d7ef94e0ede17eaccefe039fd49",
+        "ja-map": "b6d3a67e2e9e96fbb7604f05c7cd02d77d389ed208ec809fa0481326fbfe9203",
+        "ja-map-include": "b6d3a67e2e9e96fbb7604f05c7cd02d77d389ed208ec809fa0481326fbfe9203",
+        "ja-map_bp": "ff233ef9b5b65f7869fc10c99c5c4b4296dd25e66eef5c19333b8a80a703df9c",
+        "ja-map_bp-include": "ff233ef9b5b65f7869fc10c99c5c4b4296dd25e66eef5c19333b8a80a703df9c",
+        "ja-map_220": "0d920e04e2eea6dd3e007622851270a46be25de994c41dea091410fcb5329ae1",
+        "ja-map_220-include": "0d920e04e2eea6dd3e007622851270a46be25de994c41dea091410fcb5329ae1",
+        "plain-control": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "quoted-path": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "packed": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "depth-boundary": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "shallow-boundary": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "comment-boundary": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "return-at-eof": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "fragment": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "shader-include": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "quake3-literal-keys-values": "21f78a8bac359c9ea5f826483761a02e10ae4540751a9a284faf948c22966add",
+        "ja-literal-keys-values": "8d82949d8126bb29421a38e67e9a2f8353c0ca15aefe470464784b236c1422c0",
+        "brush-metadata": "ca65f5ce294c7538008ad611c70fdd7cf85ab2f269d233159d522ecac6144d8c"
+      },
+      "bsp_include_expansion_disabled": true,
+      "previous_outputs_preserved": true,
+      "parent_locations_restored": true,
+      "ctest": {
+        "path": ".agents/tmp/continuation/script-input/suite-linux.log",
+        "sha256": "194a1e1fdf1fe4808a8c0a28a692730d162a3881525ee7cf4455ce4c430adee2",
+        "cases": 65,
+        "failures": 0,
+        "skipped": [
+          "area_factors"
+        ],
+        "tests": [
+          "workbench",
+          "meta_order",
+          "vis_passage_clipping",
+          "patch_input",
+          "recovery_groups",
+          "script_input",
+          "cell_adjacency",
+          "brush_cells",
+          "vis_merge",
+          "recovery_order",
+          "game_profiles",
+          "recovery_classification",
+          "bsp_evidence",
+          "portal_evidence",
+          "vis_reproducible",
+          "native_fakk",
+          "bsp_validation",
+          "portal_validation",
+          "geometry_optimize",
+          "lighting_materials",
+          "index_validation_cli",
+          "binary_outputs",
+          "planar_reduction_native",
+          "bsp_inspect",
+          "native_early",
+          "vis_passage_storage",
+          "mesh_export",
+          "gpu_columns",
+          "bsp_analyze",
+          "raven_compat",
+          "export_outputs",
+          "cli_options",
+          "recovery_outputs",
+          "minimap",
+          "planar_reduction_oracle",
+          "lighting_gpu",
+          "native_mohaa",
+          "lightgrid_cli",
+          "workbench_window",
+          "workbench_inspector",
+          "decompile_recovery",
+          "workbench_devices",
+          "lightgrid",
+          "compiler_pipeline",
+          "recovery_group_order",
+          "vis_clip",
+          "atomic_file",
+          "index_validation",
+          "planar_reduction",
+          "portal_graph",
+          "columns",
+          "job_pool",
+          "vis_mask",
+          "cli_help",
+          "lighting_math",
+          "cell_graph",
+          "game_catalog",
+          "cli_games",
+          "workbench_preview",
+          "ftx",
+          "area_factors_disabled",
+          "quake3_materials",
+          "terrain",
+          "decompile_math",
+          "area_factors"
+        ]
+      }
+    },
+    "sanitized": {
+      "compiler": {
+        "path": "build/linux-sanitized/bin/q3mapx",
+        "sha256": "861ed044a89ca55f6610250b2feb3b9824449e68e84af95ac581e08b2507d55c"
+      },
+      "script_input_report": {
+        "path": "build/linux-sanitized/tests/script-input/validation.json",
+        "sha256": "fe6ab7513388cfb143240d284b9014c10a4b922a71b3e428eeec83a47d785efd"
+      },
+      "valid_cases": 24,
+      "rejected_cases": 145,
+      "reference_valid_case_comparisons": 0,
+      "valid_case_lump_digests": {
+        "quake3-map": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "quake3-map-include": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "quake3-map_bp": "ca65f5ce294c7538008ad611c70fdd7cf85ab2f269d233159d522ecac6144d8c",
+        "quake3-map_bp-include": "ca65f5ce294c7538008ad611c70fdd7cf85ab2f269d233159d522ecac6144d8c",
+        "quake3-map_220": "b6ec39ad313860d81d731b8a22f06eb420285d7ef94e0ede17eaccefe039fd49",
+        "quake3-map_220-include": "b6ec39ad313860d81d731b8a22f06eb420285d7ef94e0ede17eaccefe039fd49",
+        "ja-map": "b6d3a67e2e9e96fbb7604f05c7cd02d77d389ed208ec809fa0481326fbfe9203",
+        "ja-map-include": "b6d3a67e2e9e96fbb7604f05c7cd02d77d389ed208ec809fa0481326fbfe9203",
+        "ja-map_bp": "ff233ef9b5b65f7869fc10c99c5c4b4296dd25e66eef5c19333b8a80a703df9c",
+        "ja-map_bp-include": "ff233ef9b5b65f7869fc10c99c5c4b4296dd25e66eef5c19333b8a80a703df9c",
+        "ja-map_220": "0d920e04e2eea6dd3e007622851270a46be25de994c41dea091410fcb5329ae1",
+        "ja-map_220-include": "0d920e04e2eea6dd3e007622851270a46be25de994c41dea091410fcb5329ae1",
+        "plain-control": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "quoted-path": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "packed": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "depth-boundary": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "shallow-boundary": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "comment-boundary": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "return-at-eof": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "fragment": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "shader-include": "44474dec454a970068ebb2efc654a2e97e3213b49514132765a54a2cdbb961f2",
+        "quake3-literal-keys-values": "21f78a8bac359c9ea5f826483761a02e10ae4540751a9a284faf948c22966add",
+        "ja-literal-keys-values": "8d82949d8126bb29421a38e67e9a2f8353c0ca15aefe470464784b236c1422c0",
+        "brush-metadata": "ca65f5ce294c7538008ad611c70fdd7cf85ab2f269d233159d522ecac6144d8c"
+      },
+      "bsp_include_expansion_disabled": true,
+      "previous_outputs_preserved": true,
+      "parent_locations_restored": true,
+      "ctest": {
+        "path": ".agents/tmp/continuation/script-input/suite-sanitized.log",
+        "sha256": "596eb2fc2ef382bc727dedfe95c8be80746afb989e495e30f0ae1334e3c318b1",
+        "cases": 9,
+        "failures": 0,
+        "skipped": [],
+        "tests": [
+          "script_input",
+          "patch_input",
+          "binary_outputs",
+          "bsp_validation",
+          "native_fakk",
+          "native_early",
+          "native_mohaa",
+          "compiler_pipeline",
+          "lighting_materials"
+        ]
+      }
+    }
+  },
+  "before-sanitized_logs": [
+    {
+      "path": ".agents/tmp/continuation/script-input/before-sanitized/empty.log",
+      "sha256": "11e8fa288f0110bfb8484e5bc0584b9377a69f49384f33608e98ce76a50d93fa"
+    },
+    {
+      "path": ".agents/tmp/continuation/script-input/before-sanitized/first-word.log",
+      "sha256": "45658e3a184069636f29a796a26d15fcdb163912a96a79ad786c35e8eaa38519"
+    },
+    {
+      "path": ".agents/tmp/continuation/script-input/before-sanitized/missing-entity-close.log",
+      "sha256": "a5b207594052b90acd0c914ea58b6c166bc7e58db2f575da7389f2b03f72569a"
+    },
+    {
+      "path": ".agents/tmp/continuation/script-input/before-sanitized/missing-include.log",
+      "sha256": "bc788cb4853af63a06f21a64428dc4cc79d8a06674c34eed4241655f71156819"
+    },
+    {
+      "path": ".agents/tmp/continuation/script-input/before-sanitized/missing-value.log",
+      "sha256": "dfad6c377d0c10628b7685cd161d47ac5d52461c4a64d8b22b488a0fc4a298a4"
+    },
+    {
+      "path": ".agents/tmp/continuation/script-input/before-sanitized/quoted-include.log",
+      "sha256": "bb4a0a62a9784674d2583c32dff2c35a888c98c2ccd99c8a2e7c3e9ccd23af41"
+    }
+  ],
+  "after-sanitized_logs": [
+    {
+      "path": ".agents/tmp/continuation/script-input/after-sanitized/empty.log",
+      "sha256": "0ab35f8f4c49b1269f8377d98e209519e5b2a4eb181bffcfec88c770e3a4a654"
+    },
+    {
+      "path": ".agents/tmp/continuation/script-input/after-sanitized/first-word.log",
+      "sha256": "ad7bc124b43d9ad963829b4a74087e82740d1a9359f22d1ff827248b6ac6c758"
+    },
+    {
+      "path": ".agents/tmp/continuation/script-input/after-sanitized/missing-entity-close.log",
+      "sha256": "4c1941d42ebcd246fa164f4b6b6a4cdd0c13240a461fb62f868a973046d8f441"
+    },
+    {
+      "path": ".agents/tmp/continuation/script-input/after-sanitized/missing-include.log",
+      "sha256": "8fd67f04296f16933a3cb7108d63c5da8d9cec4d4d5093f3a96d9724de7c7957"
+    },
+    {
+      "path": ".agents/tmp/continuation/script-input/after-sanitized/missing-value.log",
+      "sha256": "1fb60cc152cc27e385ebe71b21f575cebec91e6530c770fd43be0c7044065726"
+    },
+    {
+      "path": ".agents/tmp/continuation/script-input/after-sanitized/quoted-include.log",
+      "sha256": "9814138bf79c41d2fd02be616f3cccdab92d4723ec7e7136426803021b573327"
+    }
+  ],
+  "release_platform_lump_comparison": {
+    "matching_cases": [
+      "quake3-map",
+      "quake3-map-include",
+      "quake3-map_bp",
+      "quake3-map_bp-include",
+      "quake3-map_220",
+      "quake3-map_220-include",
+      "ja-map",
+      "ja-map-include",
+      "ja-map_bp",
+      "ja-map_bp-include",
+      "ja-map_220",
+      "ja-map_220-include",
+      "plain-control",
+      "quoted-path",
+      "packed",
+      "depth-boundary",
+      "shallow-boundary",
+      "comment-boundary",
+      "return-at-eof",
+      "fragment",
+      "shader-include",
+      "quake3-literal-keys-values",
+      "ja-literal-keys-values",
+      "brush-metadata"
+    ],
+    "differing_lumps": {}
+  },
+  "limits": [
+    "Generated fixtures; not all authored MAP files or script consumers are covered.",
+    "Brush numeric matrices and texture parameters still use permissive legacy parsing.",
+    "No new performance, renderer equivalence, general MAP sandbox or portable package claim.",
+    "Linux area_factors is skipped when no GPU backend is available.",
+    "ASan leak detection retains the established process-lifetime exclusions.",
+    "Known raw-sidecar, VIS and intermittent Windows delay issues remain open."
+  ]
+}

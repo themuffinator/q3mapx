@@ -368,6 +368,9 @@ inline StringRange StripTrailing( const char *string ){
  */
 
 void ParseEPair( std::list<epair_t>& epairs ){
+	if ( TokenIs( "{" ) || TokenIs( "}" ) ) {
+		Error( "Expected entity key at line %d in %s, got '%s'", scriptline, g_loadedScriptLocation.c_str(), token );
+	}
 	/* handle key */
 	/* strip trailing spaces that sometimes get accidentally added in the editor */
 	epair_t ep;
@@ -375,6 +378,9 @@ void ParseEPair( std::list<epair_t>& epairs ){
 
 	/* handle value */
 	GetToken( false );
+	if ( TokenIs( "{" ) || TokenIs( "}" ) ) {
+		Error( "Missing value for entity key '%s' at line %d in %s", ep.key.c_str(), scriptline, g_loadedScriptLocation.c_str() );
+	}
 	ep.value = StripTrailing( token );
 
 	if( !ep.key.empty() && !ep.value.empty() )
@@ -393,7 +399,7 @@ static bool ParseEntity(){
 	if ( !GetToken( true ) ) {
 		return false;
 	}
-	if ( !strEqual( token, "{" ) ) {
+	if ( !TokenIs( "{" ) ) {
 		Error( "ParseEntity: { not found" );
 	}
 
@@ -406,7 +412,7 @@ static bool ParseEntity(){
 		if ( !GetToken( true ) ) {
 			Error( "ParseEntity: EOF without closing brace" );
 		}
-		if ( strEqual( token, "}" ) ) {
+		if ( TokenIs( "}" ) ) {
 			break;
 		}
 		ParseEPair( e.epairs );

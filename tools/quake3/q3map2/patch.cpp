@@ -213,7 +213,7 @@ struct PatchReader
 	}
 	void match( const char *expected ) const {
 		next( true, expected );
-		if ( !strEqual( token, expected ) ) fail( expected );
+		if ( !TokenIs( expected ) ) fail( expected );
 	}
 	double number( const char *field ) const {
 		next( false, field );
@@ -315,7 +315,7 @@ void ParsePatch( bool onlyLights, entity_t& mapEnt, int mapPrimitiveNum ){
 
 	// if brush primitives format, we may have some epairs to ignore here
 	reader.next( true, "closing brace or patch metadata" );
-	if ( !strEqual( token, "}" ) && ( g_brushType == EBrushType::Bp || g_brushType == EBrushType::Undefined ) ) {
+	if ( !TokenIs( "}" ) && ( g_brushType == EBrushType::Bp || g_brushType == EBrushType::Undefined ) ) {
 		std::list<epair_t> dummy;
 		ParseEPair( dummy );
 	}

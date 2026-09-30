@@ -54,8 +54,8 @@ See [decompilation options and limits](docs/DECOMPILATION.md). The traditional
   explicit backend selection, deterministic random samples and automatic fallback.
 - BSP/PRT range, reference and geometry checks; strict numeric options; atomic BSP
   replacement and safer diagnostics.
-- [MAP patch validation](docs/MAP-INPUT.md) before allocation, bounded script tokens
-  and preservation of previous geometry sidecars on patch parse errors.
+- [MAP patch and entity validation](docs/MAP-INPUT.md), bounded iterative script
+  includes and preservation of previous geometry sidecars on source parse errors.
 - Indexed Raven lightgrid packing, bounded BSP inspection and a shared CLI/GUI
   catalog of 25 profiles: 19 native writers and six recovery-only readers.
 - Decompilation with improved texture matching and UV reconstruction, preserved

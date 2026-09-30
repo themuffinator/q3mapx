@@ -200,8 +200,13 @@ not a redefinition of the overall goal around the existing release:
   on parse failure. Malformed-source tests also exposed and repaired quoted-EOF
   reads, token-terminator writes and quoted-NUL bypasses in the shared tokenizer.
   See [MAP patch checks](MAP-INPUT.md) for accepted inputs and validation limits.
-- [ ] Extend the source-parser audit to brush matrices, outer entity syntax and
-  recursive includes. Strict patch parsing does not make every MAP reader strict.
+- [x] Reject empty/incomplete MAP entities and brush structures, preserve quoted
+  entity data, bound iterative include expansion and disable includes in BSP
+  entity text. Validate native syntax, include limits and previous-output safety;
+  see [MAP and script checks](MAP-INPUT.md).
+- [ ] Extend the source-parser audit to brush numeric matrices and texture
+  parameters, optional-token lookahead across includes and multiline quoted-token
+  line accounting. Strict structure/patch parsing does not make every reader strict.
 - [ ] Profile larger recovery workloads and address measured costs with geometry,
   UV/material and worker-count parity evidence before claiming speedups.
   Initial whole-command comparisons now cover a dense generated room and private

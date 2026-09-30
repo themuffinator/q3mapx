@@ -31,12 +31,18 @@ extern int scriptline;
 /// \param[in] index -1: \p filename is absolute path
 /// \param[in] index >= 0: \p filename is relative path in VSF, Nth occurrence of file
 /// \return true on success
+/// File scripts have per-document depth/file/byte budgets; see docs/MAP-INPUT.md.
 bool LoadScriptFile( const char *filename, int index = 0, bool verbose = true );
+/// Parse data without expanding file include directives (used for BSP entities).
 void ParseFromMemory( const char *buffer, size_t size );
 
 /// \param[in] crossline true: write next token to \c token or return false on EOF
 /// \param[in] crossline false: find next token on the current line or emit \c Error
 bool GetToken( bool crossline );
+
+/// Match the current unquoted token, so quoted delimiters remain entity data.
+/// Quote state is preserved by UnGetToken().
+bool TokenIs( const char *match );
 
 /// \brief Signals that the current token was not used, and should be reported for the next \c GetToken().
 /// Only may be used once between the \c GetToken() calls.

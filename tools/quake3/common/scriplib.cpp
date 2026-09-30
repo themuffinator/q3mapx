@@ -27,9 +27,9 @@
 #include "qpathops.h"
 #include "scriplib.h"
 #include "stream/stringstream.h"
+#include "stream/textstream.h"
 #include "vfs.h"
 #include <list>
-#include <cerrno>
 
 /*
    =============================================================================
@@ -42,14 +42,16 @@
 struct script_t
 {
 	const CopiedString filename;
+	const CopiedString location;
 	const MemBuffer buffer;
 	const char *it, *end;
 	int line;
 	script_t( const char *filename, MemBuffer&& buffer_ ) :
 		filename( filename ),
+		location( g_loadedScriptLocation.c_str() ),
 		buffer( std::move( buffer_ ) ),
 		it( buffer.data() ),
-		end( it + buffer_.size() ),
+		end( it + buffer.size() ),
 		line( 1 )
 	{}
 	script_t( script_t&& ) noexcept = delete;
@@ -60,6 +62,22 @@ std::list<script_t> scriptstack;
 int scriptline;
 char token[MAXTOKEN];
 bool tokenready;                     // only true if UnGetToken was just called
+static bool tokenQuoted;
+static bool scriptIncludesAllowed;
+static size_t scriptFilesLoaded, scriptBytesLoaded;
+// Per top-level document, including the root. Repeated shallow includes consume
+// the file/byte budgets too; a depth limit alone cannot bound their expansion.
+static constexpr size_t MAX_SCRIPT_DEPTH = 64;
+static constexpr size_t MAX_SCRIPT_FILES = 1024;
+static constexpr size_t MAX_SCRIPT_BYTES = 256 * 1024 * 1024;
+
+bool TokenIs( const char *match ){
+	return !tokenQuoted && strEqual( token, match );
+}
+
+[[noreturn]] static void IncompleteScriptLine(){
+	Error( "Line %i is incomplete\nFile location be: %s\n", scriptline, g_loadedScriptLocation.c_str() );
+}
 
 /*
    ==============
@@ -67,7 +85,12 @@ bool tokenready;                     // only true if UnGetToken was just called
    ==============
  */
 static bool AddScriptToStack( const char *filename, int index, bool verbose ){
-	if ( MemBuffer buffer = vfsLoadFile( filename, index, true ) ) {
+	if ( scriptstack.size() >= MAX_SCRIPT_DEPTH || scriptFilesLoaded >= MAX_SCRIPT_FILES ) {
+		Error( "Script include limit exceeded at line %d in %s (maximum %zu active files, %zu total files)",
+		       scriptline, g_loadedScriptLocation.c_str(), MAX_SCRIPT_DEPTH, MAX_SCRIPT_FILES );
+	}
+	const size_t remaining = MAX_SCRIPT_BYTES - scriptBytesLoaded;
+	if ( MemBuffer buffer = vfsLoadFile( filename, index, true, remaining ) ) {
 		if( verbose ){
 			if ( index > 0 )
 				Sys_Printf( "entering %s (%d)\n", filename, index + 1 );
@@ -75,16 +98,16 @@ static bool AddScriptToStack( const char *filename, int index, bool verbose ){
 				Sys_Printf( "entering %s\n", filename );
 		}
 
+		scriptBytesLoaded += buffer.size();
+		++scriptFilesLoaded;
 		scriptstack.emplace_back( filename, std::move( buffer ) );
 		scriptline = 1;
 		return true;
 	}
 	else
 	{
-		if( index >= 0 )
-			Sys_FPrintf( SYS_WRN, "Script file %s was not found\n", filename );
-		else
-			Sys_FPrintf( SYS_WRN, "Script file %s was not found: %s\n", filename, strerror( errno ) );
+		Sys_FPrintf( SYS_WRN, "Script file %s could not be loaded (missing, unreadable or exceeds the %zu-byte remaining script budget)\n",
+		             filename, remaining );
 
 		return false;
 	}
@@ -99,6 +122,9 @@ static bool AddScriptToStack( const char *filename, int index, bool verbose ){
 bool LoadScriptFile( const char *filename, int index /* = 0 */, bool verbose /* = true */ ){
 	scriptstack.clear();
 	tokenready = false;
+	tokenQuoted = false;
+	scriptIncludesAllowed = true;
+	scriptFilesLoaded = scriptBytesLoaded = 0;
 	return AddScriptToStack( filename, index, verbose );
 }
 
@@ -110,8 +136,12 @@ bool LoadScriptFile( const char *filename, int index /* = 0 */, bool verbose /* 
 void ParseFromMemory( const char *buffer, size_t size ){
 	scriptstack.clear();
 	tokenready = false;
+	tokenQuoted = false;
+	// BSP entity text is data, never a request to load files from the game VFS.
+	scriptIncludesAllowed = false;
+	g_loadedScriptLocation( "memory buffer" );
 	MemBuffer bu( size );
-	memcpy( bu.data(), buffer, size );
+	if ( size != 0 ) memcpy( bu.data(), buffer, size );
 	scriptstack.emplace_back( "memory buffer", std::move( bu ) );
 	scriptline = 1;
 }
@@ -137,45 +167,14 @@ void UnGetToken(){
 }
 
 
-static bool EndOfScript( bool crossline ){
-	if ( !crossline ) {
-		Error( "Line %i is incomplete\nFile location be: %s\n", scriptline, g_loadedScriptLocation.c_str() );
-	}
-
-	scriptstack.pop_back();
-
-	if ( scriptstack.empty() ) {
-		return false;
-	}
-	else{
-		scriptline = scriptstack.back().line;
-		Sys_Printf( "returning to %s\n", scriptstack.back().filename.c_str() );
-		return GetToken( crossline );
-	}
-}
-
 /*
    ==============
    GetToken
    ==============
  */
-bool GetToken( bool crossline ){
-	/* ydnar: dummy testing */
-	if ( scriptstack.empty() ) {
-		return false;
-	}
-
-	if ( tokenready ) {                       // is a token already waiting?
-		tokenready = false;
-		return true;
-	}
-
-	script_t& script = scriptstack.back();
-
-	if ( script.it >= script.end ) {
-		return EndOfScript( crossline );
-	}
-
+// Read only the current buffer. Include expansion and returning to parents are
+// handled iteratively by GetToken, including chains of empty include files.
+static bool ReadScriptToken( script_t& script, bool crossline ){
 //
 // skip space
 //
@@ -184,7 +183,7 @@ skipspace:
 	{
 		if ( *script.it++ == '\n' ) {
 			if ( !crossline ) {
-				Error( "Line %i is incomplete\nFile location be: %s\n", scriptline, g_loadedScriptLocation.c_str() );
+				IncompleteScriptLine();
 			}
 			script.line++;
 			scriptline = script.line;
@@ -192,18 +191,18 @@ skipspace:
 	}
 
 	if ( script.it >= script.end ) {
-		return EndOfScript( crossline );
+		return false;
 	}
 
 	// ; # // comments
 	if ( *script.it == ';' || *script.it == '#'
 	     || ( script.it[0] == '/' && script.it[1] == '/' ) ) {
 		if ( !crossline ) {
-			Error( "Line %i is incomplete\nFile location be: %s\n", scriptline, g_loadedScriptLocation.c_str() );
+			IncompleteScriptLine();
 		}
 		while ( *script.it++ != '\n' )
 			if ( script.it >= script.end ) {
-				return EndOfScript( crossline );
+				return false;
 			}
 		script.line++;
 		scriptline = script.line;
@@ -221,7 +220,7 @@ skipspace:
 			if ( script.it[0] == '*' && script.it[1] == '/' ) break;
 			if ( *script.it == '\n' ) {
 				if ( !crossline ) {
-					Error( "Line %i is incomplete\nFile location be: %s\n", scriptline, g_loadedScriptLocation.c_str() );
+					IncompleteScriptLine();
 				}
 				script.line++;
 				scriptline = script.line;
@@ -236,8 +235,9 @@ skipspace:
 // copy token
 //
 	char *token_p = token;
+	tokenQuoted = *script.it == '"';
 
-	if ( *script.it == '"' ) {
+	if ( tokenQuoted ) {
 		// quoted token
 		script.it++;
 		while ( script.it < script.end && *script.it != '"' )
@@ -268,13 +268,39 @@ skipspace:
 
 	*token_p = 0;
 
-	if ( strEqual( token, "$include" ) ) {
-		GetToken( false );
-		AddScriptToStack( token, 0, true );
-		return GetToken( crossline );
-	}
-
 	return true;
+}
+
+bool GetToken( bool crossline ){
+	if ( tokenready ) {
+		tokenready = false;
+		return true;
+	}
+	for ( ;; ) {
+		if ( scriptstack.empty() ) {
+			if ( !crossline ) IncompleteScriptLine();
+			token[0] = '\0';
+			tokenQuoted = false;
+			return false;
+		}
+		script_t& script = scriptstack.back();
+		if ( !ReadScriptToken( script, crossline ) ) {
+			if ( !crossline ) IncompleteScriptLine();
+			scriptstack.pop_back();
+			if ( !scriptstack.empty() ) {
+				scriptline = scriptstack.back().line;
+				g_loadedScriptLocation( scriptstack.back().location.c_str() );
+				Sys_Printf( "returning to %s\n", scriptstack.back().filename.c_str() );
+			}
+			continue;
+		}
+		if ( !scriptIncludesAllowed || !TokenIs( "$include" ) ) return true;
+		// A filename is a single token on this line, not another directive.
+		if ( !ReadScriptToken( script, false ) ) IncompleteScriptLine();
+		if ( token[0] == '\0' || !AddScriptToStack( token, 0, true ) ) {
+			Error( "Cannot include '%s' at line %d in %s", token, script.line, script.location.c_str() );
+		}
+	}
 }
 
 
@@ -310,9 +336,7 @@ bool TokenAvailable() {
 
 
 void MatchToken( const char *match ) {
-	GetToken( true );
-
-	if ( !strEqual( token, match ) ) {
+	if ( !GetToken( true ) || !TokenIs( match ) ) {
 		Error( "MatchToken( \"%s\" ) failed at line %i in file %s", match, scriptline, g_loadedScriptLocation.c_str() );
 	}
 }

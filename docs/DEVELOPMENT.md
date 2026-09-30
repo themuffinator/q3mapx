@@ -451,6 +451,27 @@ the preceding unsafe parser. Failed inputs must exit normally with diagnostics
 and preserve existing files. Reports and individual command logs remain in the
 test directory. See [accepted input and limits](MAP-INPUT.md).
 
+## Script and entity input validation
+
+`script_input` exercises the real CLI with Quake, brush-primitive and Valve 220
+MAPs in IBSP/RBSP profiles; loose/packed includes, fragments and shader includes;
+and literal entity values through native BSP decompilation. Invalid cases cover
+entity/brush truncation, missing values, include limits/cycles, and BSP entity
+directives. Failures must preserve source and previous outputs and have neither
+sanitizer diagnostics nor allocation-failure fallbacks.
+
+```sh
+ctest --test-dir build/release -R '^script_input$' -V
+python tests/script_input.py --compiler build/release/bin/q3mapx --reference /path/to/preceding/q3mapx --work-dir build/release/tests/script-input
+```
+
+Use `.exe` on Windows and the matching build directory for Linux/sanitizers.
+The optional reference runs only the valid syntax that the preceding parser
+supported, with exact stored-lump comparison. It never receives cyclic/oversized
+input. Native reports and command logs remain in `tests/script-input/` beneath
+the selected build; this group has its own generated game VFS and needs no assets.
+See [input behavior and limits](MAP-INPUT.md).
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

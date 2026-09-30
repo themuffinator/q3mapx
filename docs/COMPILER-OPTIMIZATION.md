@@ -15,6 +15,12 @@ Matched poor-detail/manual-detail workloads compare default, merge, mergeportals
 and hint modes. These are safer and more compact existing solver paths; they do
 not yet select regional transformations or enforce a runtime visibility budget.
 
+Passage construction now skips empty flood intersections, iterates only surviving
+candidates and stores compact word spans in per-portal blocks. This reduces work
+and retained storage with the same graph and clipping results. An isolation probe
+still finds baseline-inclusion differences with leaf merging alone; omitting the
+polygon merge is insufficient to validate automatic topology changes.
+
 The [BSP evidence command](BSP-EVIDENCE.md) reports regional subdivision and
 reference costs, local brush-plane associations and stored PVS statistics.
 With an explicit matching PRT, [portal diagnostics](PORTAL-ANALYSIS.md) now add

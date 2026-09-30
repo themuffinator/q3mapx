@@ -1,0 +1,930 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-30T13:20:21.430247+00:00",
+  "base_revision": "e2965d0fd4597399bd1d6a1bad46f350db32f541",
+  "scope": "Exact fixed-order VIS passage representation and candidate-work reduction, with retained-storage, capacity and output comparisons",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "1db4e160de787fdf248b90a92a6047f7427e7c85533f7958134e17f4504f7e89",
+    "libs/q3mapx/vis_mask.h": "e24f60d6498cece35a0bc8e8d70c7d58bbcf5d9c8e9e43fb98ba7fc399c49d99",
+    "tools/quake3/q3map2/vis.h": "233fca5dd6976a4e7f93554e592d237aa7e098f560af39f67f26caab0caf7ddb",
+    "tools/quake3/q3map2/vis.cpp": "9899a556f54aabf6aaf9c0f4b0ddb7e1779192a98635894f861402fe8977b774",
+    "tools/quake3/q3map2/visflow.h": "871b35c1cb34026727b4d537a5760cf53262d3bb79ce1be3964967564f42c653",
+    "tools/quake3/q3map2/visflow.cpp": "b6224e62d654a57e692140b6671dd7359e36f585ab3237556900f87ba7df1e36",
+    "tests/vis_mask.cpp": "72376876a6e2a2ae7bfcc800625889aad4f13cc20ac2e474cf11e278d697c1fa",
+    "tests/vis_merge.py": "25e550a3a3860476c15c9fa82842a6a2ce0ff64037185f91b16499d98acd1782",
+    "tests/vis_passage_storage.py": "c798218834f489bf6298596435db4cc840f7aff84bd903db1593bdf49ede0401",
+    "tests/vis_reproducible.py": "a0d15074abc268f43a2ed0c69070f4946f73417f34dab08ed6d5b9e6cbb18475",
+    "tests/portal_evidence.py": "1ca3333a8f498d71ee0ba2836ecb517f670d74addbfab71a4bd0c3dfea95261e",
+    "tests/portal_validation.py": "5f41a2c316f2d9abe6b87d26218e1d211b287ef8659314f18e7e75e7a272da81",
+    "tests/integration.py": "3bb8e703e9e898a4c079f6a52321941aeb54876a7eac7804b8e1069c1541dfb3",
+    "tests/fixtures.py": "5cc300117041bc22a719451f9915bca17cc5af10094521408538b850284436c7",
+    "tests/vis_fixtures.py": "536d1767fd7781ff9fb9da78d44b7418aa424bf8e3ad1d968de785fc93d9626d",
+    "benchmarks/vis_passages.py": "9bf445e7746029e7c91b6d4c074645ca07a1e594bb934ecfc3e1614be46cca83"
+  },
+  "platforms": {
+    "windows": {
+      "toolchain": "MSYS2 GCC 15.2.0, x64 Release",
+      "final_compiler": {
+        "path": "build/release/bin/q3mapx.exe",
+        "sha256": "05fb19cdb1873f91733ea0487151627c0d4f42d247d08c5ee6d77c91bb53bd49"
+      },
+      "initial_ctest": {
+        "path": ".agents/tmp/continuation/passage-spans-tests-win.log",
+        "sha256": "ae475562d58bc968b361a2bf0437c1b06235b988a41c27baf963742532e720b1",
+        "groups": [
+          {
+            "name": "compiler_pipeline",
+            "seconds": 1.11
+          },
+          {
+            "name": "portal_validation",
+            "seconds": 3.12
+          },
+          {
+            "name": "vis_mask",
+            "seconds": 0.2
+          },
+          {
+            "name": "portal_evidence",
+            "seconds": 2.49
+          },
+          {
+            "name": "vis_reproducible",
+            "seconds": 32.01
+          }
+        ],
+        "total_seconds": 38.97
+      },
+      "final_unit_capacity_ctest": {
+        "path": ".agents/tmp/continuation/passage-spans-capacity-win-ctest.log",
+        "sha256": "54e712b7c905e567906b98a79bf5b1d69bf6eb1824ecdec9cfa87a9df5cec0f4",
+        "groups": [
+          {
+            "name": "vis_mask",
+            "seconds": 0.04
+          },
+          {
+            "name": "vis_passage_storage",
+            "seconds": 1.17
+          }
+        ],
+        "total_seconds": 1.25
+      },
+      "capacity_controls": {
+        "path": "build/release/tests/vis-passage-storage/validation.json",
+        "sha256": "68d6526876c6b8c7a9b513581b45eb18ea535e5a2790b241b0fa92b808e698a8",
+        "controls": [
+          {
+            "case": "max-degree-empty",
+            "options": [],
+            "workers": 1,
+            "storage": {
+              "retained_bytes": 8396800,
+              "dense_bytes": 285491200,
+              "empty_masks": 1049600,
+              "blocks": 2048,
+              "passages": 1049600,
+              "candidate_visits": 0,
+              "dense_visits": 2149580800
+            },
+            "visibility_sha256": "ca5cb32285b83d0a194d1a5b1b0b59a411367f076a5be71cfff37e6ede533a14"
+          },
+          {
+            "case": "max-degree-empty",
+            "options": [],
+            "workers": 4,
+            "storage": {
+              "retained_bytes": 8396800,
+              "dense_bytes": 285491200,
+              "empty_masks": 1049600,
+              "blocks": 2048,
+              "passages": 1049600,
+              "candidate_visits": 0,
+              "dense_visits": 2149580800
+            },
+            "visibility_sha256": "ca5cb32285b83d0a194d1a5b1b0b59a411367f076a5be71cfff37e6ede533a14"
+          },
+          {
+            "case": "max-degree-empty",
+            "options": [
+              "-passageOnly"
+            ],
+            "workers": 1,
+            "storage": {
+              "retained_bytes": 8396800,
+              "dense_bytes": 285491200,
+              "empty_masks": 1049600,
+              "blocks": 2048,
+              "passages": 1049600,
+              "candidate_visits": 0,
+              "dense_visits": 2149580800
+            },
+            "visibility_sha256": "ca5cb32285b83d0a194d1a5b1b0b59a411367f076a5be71cfff37e6ede533a14"
+          },
+          {
+            "case": "max-degree-empty",
+            "options": [
+              "-passageOnly"
+            ],
+            "workers": 4,
+            "storage": {
+              "retained_bytes": 8396800,
+              "dense_bytes": 285491200,
+              "empty_masks": 1049600,
+              "blocks": 2048,
+              "passages": 1049600,
+              "candidate_visits": 0,
+              "dense_visits": 2149580800
+            },
+            "visibility_sha256": "ca5cb32285b83d0a194d1a5b1b0b59a411367f076a5be71cfff37e6ede533a14"
+          },
+          {
+            "case": "wide-spans",
+            "options": [],
+            "workers": 1,
+            "storage": {
+              "retained_bytes": 10224,
+              "dense_bytes": 29008,
+              "empty_masks": 262,
+              "blocks": 260,
+              "passages": 518,
+              "candidate_visits": 16512,
+              "dense_visits": 134680
+            },
+            "visibility_sha256": "7864db658360b8468642f1defc857523aca4695018d1a546818b67b4778e68c4"
+          },
+          {
+            "case": "wide-spans",
+            "options": [],
+            "workers": 4,
+            "storage": {
+              "retained_bytes": 10224,
+              "dense_bytes": 29008,
+              "empty_masks": 262,
+              "blocks": 260,
+              "passages": 518,
+              "candidate_visits": 16512,
+              "dense_visits": 134680
+            },
+            "visibility_sha256": "7864db658360b8468642f1defc857523aca4695018d1a546818b67b4778e68c4"
+          },
+          {
+            "case": "wide-spans",
+            "options": [
+              "-passageOnly"
+            ],
+            "workers": 1,
+            "storage": {
+              "retained_bytes": 10224,
+              "dense_bytes": 29008,
+              "empty_masks": 262,
+              "blocks": 260,
+              "passages": 518,
+              "candidate_visits": 16512,
+              "dense_visits": 134680
+            },
+            "visibility_sha256": "7864db658360b8468642f1defc857523aca4695018d1a546818b67b4778e68c4"
+          },
+          {
+            "case": "wide-spans",
+            "options": [
+              "-passageOnly"
+            ],
+            "workers": 4,
+            "storage": {
+              "retained_bytes": 10224,
+              "dense_bytes": 29008,
+              "empty_masks": 262,
+              "blocks": 260,
+              "passages": 518,
+              "candidate_visits": 16512,
+              "dense_visits": 134680
+            },
+            "visibility_sha256": "7864db658360b8468642f1defc857523aca4695018d1a546818b67b4778e68c4"
+          }
+        ]
+      },
+      "unit_mask_round_trips_and_intersections": 8400,
+      "vis_matrix": {
+        "path": "build/release/tests/vis-merge/report.json",
+        "sha256": "c3ffbafd919b3eb2018d6644a9c22255c8993b94bfccdc52dcd8af758f424a34",
+        "groups": {
+          "graph_checks": {
+            "count": 31,
+            "semantic_sha256": "b6ae0f66408655274d80a472d49f9ec61bbe4c163a1317ebd3eff3238b1814a6",
+            "all_reference_byte_parity": true
+          },
+          "map_checks": {
+            "count": 120,
+            "semantic_sha256": "7442ddfb6aff2a01a966c99884b0a315826f85d6aaac96d6a6038eecec1ee14d",
+            "all_reference_byte_parity": true
+          }
+        },
+        "publication_failure_preserves_bsp_and_prt": true,
+        "publication_failure_cleans_staging": true,
+        "successful_retry_consumes_prt": true,
+        "reference_compiler": {
+          "path": ".agents/tmp/continuation/smart-vis-baseline/q3mapx.exe",
+          "sha256": "07625f8abf88b1b4cd0dbb98f6cdcabe4d21a9dafec0fe4911b0925c049b9e83"
+        },
+        "log": {
+          "path": ".agents/tmp/continuation/passage-spans-vis-parity-win-final.log",
+          "sha256": "b86b21d2209a8c2d61d5a6d15b6e293a2b405e2481f4aee09fc3cc9afa2071ea"
+        }
+      },
+      "initial_ctest_compiler_sha256": "d191d46f819e047afc62bb9055f3c2f8893401a738353df8e672b5f5d4251c26",
+      "phase_note": "Only whitespace cleanup in visflow.cpp and added test/documentation files followed the initial matrix/timing builds. Final unit/capacity tests use the final compiler above."
+    },
+    "linux": {
+      "toolchain": "Ubuntu 24.04 WSL, GCC 13.3.0, x64 Release",
+      "final_compiler": {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "c8a1350d6986e07029bc44d44d303b07dc4165497b07cb1fcc339dc10a8baba4"
+      },
+      "initial_ctest": {
+        "path": ".agents/tmp/continuation/passage-spans-tests-linux.log",
+        "sha256": "ebe0a3b4a337fc3ed8e238a91a90ea1073014846f545bcdd29dedce70f4895e1",
+        "groups": [
+          {
+            "name": "compiler_pipeline",
+            "seconds": 5.43
+          },
+          {
+            "name": "portal_validation",
+            "seconds": 9.05
+          },
+          {
+            "name": "vis_mask",
+            "seconds": 0.04
+          },
+          {
+            "name": "portal_evidence",
+            "seconds": 26.04
+          },
+          {
+            "name": "vis_reproducible",
+            "seconds": 17.25
+          }
+        ],
+        "total_seconds": 58.02
+      },
+      "final_unit_capacity_ctest": {
+        "path": ".agents/tmp/continuation/passage-spans-capacity-linux-ctest.log",
+        "sha256": "df04a382c5e26bffd7e371d38e49ddaf020269b2090743d2466e535a2e31852a",
+        "groups": [
+          {
+            "name": "vis_mask",
+            "seconds": 0.01
+          },
+          {
+            "name": "vis_passage_storage",
+            "seconds": 1.54
+          }
+        ],
+        "total_seconds": 1.59
+      },
+      "capacity_controls": {
+        "path": "build/linux-release/tests/vis-passage-storage/validation.json",
+        "sha256": "91da30d0f50595aa1869815bfa63196de3758f57453500b2dcb04a3a46e9c3a8",
+        "controls": [
+          {
+            "case": "max-degree-empty",
+            "options": [],
+            "workers": 1,
+            "storage": {
+              "retained_bytes": 8396800,
+              "dense_bytes": 285491200,
+              "empty_masks": 1049600,
+              "blocks": 2048,
+              "passages": 1049600,
+              "candidate_visits": 0,
+              "dense_visits": 2149580800
+            },
+            "visibility_sha256": "ca5cb32285b83d0a194d1a5b1b0b59a411367f076a5be71cfff37e6ede533a14"
+          },
+          {
+            "case": "max-degree-empty",
+            "options": [],
+            "workers": 4,
+            "storage": {
+              "retained_bytes": 8396800,
+              "dense_bytes": 285491200,
+              "empty_masks": 1049600,
+              "blocks": 2048,
+              "passages": 1049600,
+              "candidate_visits": 0,
+              "dense_visits": 2149580800
+            },
+            "visibility_sha256": "ca5cb32285b83d0a194d1a5b1b0b59a411367f076a5be71cfff37e6ede533a14"
+          },
+          {
+            "case": "max-degree-empty",
+            "options": [
+              "-passageOnly"
+            ],
+            "workers": 1,
+            "storage": {
+              "retained_bytes": 8396800,
+              "dense_bytes": 285491200,
+              "empty_masks": 1049600,
+              "blocks": 2048,
+              "passages": 1049600,
+              "candidate_visits": 0,
+              "dense_visits": 2149580800
+            },
+            "visibility_sha256": "ca5cb32285b83d0a194d1a5b1b0b59a411367f076a5be71cfff37e6ede533a14"
+          },
+          {
+            "case": "max-degree-empty",
+            "options": [
+              "-passageOnly"
+            ],
+            "workers": 4,
+            "storage": {
+              "retained_bytes": 8396800,
+              "dense_bytes": 285491200,
+              "empty_masks": 1049600,
+              "blocks": 2048,
+              "passages": 1049600,
+              "candidate_visits": 0,
+              "dense_visits": 2149580800
+            },
+            "visibility_sha256": "ca5cb32285b83d0a194d1a5b1b0b59a411367f076a5be71cfff37e6ede533a14"
+          },
+          {
+            "case": "wide-spans",
+            "options": [],
+            "workers": 1,
+            "storage": {
+              "retained_bytes": 10224,
+              "dense_bytes": 29008,
+              "empty_masks": 262,
+              "blocks": 260,
+              "passages": 518,
+              "candidate_visits": 16512,
+              "dense_visits": 134680
+            },
+            "visibility_sha256": "7864db658360b8468642f1defc857523aca4695018d1a546818b67b4778e68c4"
+          },
+          {
+            "case": "wide-spans",
+            "options": [],
+            "workers": 4,
+            "storage": {
+              "retained_bytes": 10224,
+              "dense_bytes": 29008,
+              "empty_masks": 262,
+              "blocks": 260,
+              "passages": 518,
+              "candidate_visits": 16512,
+              "dense_visits": 134680
+            },
+            "visibility_sha256": "7864db658360b8468642f1defc857523aca4695018d1a546818b67b4778e68c4"
+          },
+          {
+            "case": "wide-spans",
+            "options": [
+              "-passageOnly"
+            ],
+            "workers": 1,
+            "storage": {
+              "retained_bytes": 10224,
+              "dense_bytes": 29008,
+              "empty_masks": 262,
+              "blocks": 260,
+              "passages": 518,
+              "candidate_visits": 16512,
+              "dense_visits": 134680
+            },
+            "visibility_sha256": "7864db658360b8468642f1defc857523aca4695018d1a546818b67b4778e68c4"
+          },
+          {
+            "case": "wide-spans",
+            "options": [
+              "-passageOnly"
+            ],
+            "workers": 4,
+            "storage": {
+              "retained_bytes": 10224,
+              "dense_bytes": 29008,
+              "empty_masks": 262,
+              "blocks": 260,
+              "passages": 518,
+              "candidate_visits": 16512,
+              "dense_visits": 134680
+            },
+            "visibility_sha256": "7864db658360b8468642f1defc857523aca4695018d1a546818b67b4778e68c4"
+          }
+        ]
+      },
+      "unit_mask_round_trips_and_intersections": 8400,
+      "vis_matrix": {
+        "path": "build/linux-release/tests/vis-merge/report.json",
+        "sha256": "0fa58613dbc4542d1110a580a4b64a59648b33de94c763dd35f7dff46f555d99",
+        "groups": {
+          "graph_checks": {
+            "count": 31,
+            "semantic_sha256": "b6ae0f66408655274d80a472d49f9ec61bbe4c163a1317ebd3eff3238b1814a6",
+            "all_reference_byte_parity": true
+          },
+          "map_checks": {
+            "count": 120,
+            "semantic_sha256": "7442ddfb6aff2a01a966c99884b0a315826f85d6aaac96d6a6038eecec1ee14d",
+            "all_reference_byte_parity": true
+          }
+        },
+        "publication_failure_preserves_bsp_and_prt": true,
+        "publication_failure_cleans_staging": true,
+        "successful_retry_consumes_prt": true,
+        "reference_compiler": {
+          "path": ".agents/tmp/continuation/smart-vis-baseline/q3mapx-linux",
+          "sha256": "e138cbac814882879aff830faafdcd231b8637bde5b51d5ad2989858227cd652"
+        },
+        "log": {
+          "path": ".agents/tmp/continuation/passage-spans-vis-parity-linux.log",
+          "sha256": "84bb4ac74a1a65d7baf2c6979fa18cd9682134e22545dfcf9a764b94ae1012a6"
+        }
+      },
+      "initial_ctest_compiler_sha256": "c8a1350d6986e07029bc44d44d303b07dc4165497b07cb1fcc339dc10a8baba4",
+      "phase_note": "Only whitespace cleanup in visflow.cpp and added test/documentation files followed the initial matrix/timing builds. Final unit/capacity tests use the final compiler above."
+    },
+    "sanitized": {
+      "toolchain": "Ubuntu 24.04 WSL, GCC 13.3.0, ASan/UBSan",
+      "final_compiler": {
+        "path": "build/linux-sanitized/bin/q3mapx",
+        "sha256": "27a12035939c6e7854e0fefb237d36e35050d317ed5aaf0fe9df6b3c61e373c4"
+      },
+      "initial_ctest": {
+        "path": ".agents/tmp/continuation/passage-spans-tests-sanitized.log",
+        "sha256": "4d9df780d1a30cfe6bc6fc531dde28e7dec6ac3ff470947405ae9fb8e2ef054b",
+        "groups": [
+          {
+            "name": "compiler_pipeline",
+            "seconds": 16.17
+          },
+          {
+            "name": "portal_validation",
+            "seconds": 36.18
+          },
+          {
+            "name": "vis_mask",
+            "seconds": 0.21
+          },
+          {
+            "name": "portal_evidence",
+            "seconds": 51.5
+          },
+          {
+            "name": "vis_merge",
+            "seconds": 140.41
+          }
+        ],
+        "total_seconds": 244.56
+      },
+      "final_unit_capacity_ctest": {
+        "path": ".agents/tmp/continuation/passage-spans-capacity-sanitized-ctest.log",
+        "sha256": "27f730d4f4f44f16620ce429921937e857fbe51c6c9da25b5a782a97a7bc824b",
+        "groups": [
+          {
+            "name": "vis_mask",
+            "seconds": 0.2
+          },
+          {
+            "name": "vis_passage_storage",
+            "seconds": 12.73
+          }
+        ],
+        "total_seconds": 13.02
+      },
+      "capacity_controls": {
+        "path": "build/linux-sanitized/tests/vis-passage-storage/validation.json",
+        "sha256": "7d8cf5dc0420c9d5f0c5794382eae21a8da5eb0ced188a4829db0b3fdaa09230",
+        "controls": [
+          {
+            "case": "max-degree-empty",
+            "options": [],
+            "workers": 1,
+            "storage": {
+              "retained_bytes": 8396800,
+              "dense_bytes": 285491200,
+              "empty_masks": 1049600,
+              "blocks": 2048,
+              "passages": 1049600,
+              "candidate_visits": 0,
+              "dense_visits": 2149580800
+            },
+            "visibility_sha256": "ca5cb32285b83d0a194d1a5b1b0b59a411367f076a5be71cfff37e6ede533a14"
+          },
+          {
+            "case": "max-degree-empty",
+            "options": [],
+            "workers": 4,
+            "storage": {
+              "retained_bytes": 8396800,
+              "dense_bytes": 285491200,
+              "empty_masks": 1049600,
+              "blocks": 2048,
+              "passages": 1049600,
+              "candidate_visits": 0,
+              "dense_visits": 2149580800
+            },
+            "visibility_sha256": "ca5cb32285b83d0a194d1a5b1b0b59a411367f076a5be71cfff37e6ede533a14"
+          },
+          {
+            "case": "max-degree-empty",
+            "options": [
+              "-passageOnly"
+            ],
+            "workers": 1,
+            "storage": {
+              "retained_bytes": 8396800,
+              "dense_bytes": 285491200,
+              "empty_masks": 1049600,
+              "blocks": 2048,
+              "passages": 1049600,
+              "candidate_visits": 0,
+              "dense_visits": 2149580800
+            },
+            "visibility_sha256": "ca5cb32285b83d0a194d1a5b1b0b59a411367f076a5be71cfff37e6ede533a14"
+          },
+          {
+            "case": "max-degree-empty",
+            "options": [
+              "-passageOnly"
+            ],
+            "workers": 4,
+            "storage": {
+              "retained_bytes": 8396800,
+              "dense_bytes": 285491200,
+              "empty_masks": 1049600,
+              "blocks": 2048,
+              "passages": 1049600,
+              "candidate_visits": 0,
+              "dense_visits": 2149580800
+            },
+            "visibility_sha256": "ca5cb32285b83d0a194d1a5b1b0b59a411367f076a5be71cfff37e6ede533a14"
+          },
+          {
+            "case": "wide-spans",
+            "options": [],
+            "workers": 1,
+            "storage": {
+              "retained_bytes": 10224,
+              "dense_bytes": 29008,
+              "empty_masks": 262,
+              "blocks": 260,
+              "passages": 518,
+              "candidate_visits": 16512,
+              "dense_visits": 134680
+            },
+            "visibility_sha256": "7864db658360b8468642f1defc857523aca4695018d1a546818b67b4778e68c4"
+          },
+          {
+            "case": "wide-spans",
+            "options": [],
+            "workers": 4,
+            "storage": {
+              "retained_bytes": 10224,
+              "dense_bytes": 29008,
+              "empty_masks": 262,
+              "blocks": 260,
+              "passages": 518,
+              "candidate_visits": 16512,
+              "dense_visits": 134680
+            },
+            "visibility_sha256": "7864db658360b8468642f1defc857523aca4695018d1a546818b67b4778e68c4"
+          },
+          {
+            "case": "wide-spans",
+            "options": [
+              "-passageOnly"
+            ],
+            "workers": 1,
+            "storage": {
+              "retained_bytes": 10224,
+              "dense_bytes": 29008,
+              "empty_masks": 262,
+              "blocks": 260,
+              "passages": 518,
+              "candidate_visits": 16512,
+              "dense_visits": 134680
+            },
+            "visibility_sha256": "7864db658360b8468642f1defc857523aca4695018d1a546818b67b4778e68c4"
+          },
+          {
+            "case": "wide-spans",
+            "options": [
+              "-passageOnly"
+            ],
+            "workers": 4,
+            "storage": {
+              "retained_bytes": 10224,
+              "dense_bytes": 29008,
+              "empty_masks": 262,
+              "blocks": 260,
+              "passages": 518,
+              "candidate_visits": 16512,
+              "dense_visits": 134680
+            },
+            "visibility_sha256": "7864db658360b8468642f1defc857523aca4695018d1a546818b67b4778e68c4"
+          }
+        ]
+      },
+      "unit_mask_round_trips_and_intersections": 8400,
+      "vis_matrix": {
+        "path": "build/linux-sanitized/tests/vis-merge/report.json",
+        "sha256": "237fbd359970f0eed5ec6452c3e8585eeb67de317c155deaa0c5b82a764374dc",
+        "groups": {
+          "graph_checks": {
+            "count": 31,
+            "semantic_sha256": "b6ae0f66408655274d80a472d49f9ec61bbe4c163a1317ebd3eff3238b1814a6"
+          },
+          "map_checks": {
+            "count": 120,
+            "semantic_sha256": "7442ddfb6aff2a01a966c99884b0a315826f85d6aaac96d6a6038eecec1ee14d"
+          }
+        },
+        "publication_failure_preserves_bsp_and_prt": true,
+        "publication_failure_cleans_staging": true,
+        "successful_retry_consumes_prt": true
+      },
+      "sanitizer_environment": {
+        "ASAN_OPTIONS": "detect_leaks=0:abort_on_error=1",
+        "UBSAN_OPTIONS": "print_stacktrace=1"
+      },
+      "leak_exclusion": "Inherited process-lifetime allocations only; address/undefined-behavior checks remain enabled.",
+      "initial_ctest_compiler_sha256": "27a12035939c6e7854e0fefb237d36e35050d317ed5aaf0fe9df6b3c61e373c4",
+      "phase_note": "Only whitespace cleanup in visflow.cpp and added test/documentation files followed the initial matrix/timing builds. Final unit/capacity tests use the final compiler above."
+    }
+  },
+  "benchmark": {
+    "path": "docs/benchmarks/vis-passages-win-x64.json",
+    "sha256": "605ba454c08df3e2bf60542809c562ac345c77309a08a708368c58ea3eeb1b1f",
+    "configurations": 16,
+    "vis_commands": 192,
+    "warmup_runs_per_implementation_configuration": 1,
+    "measured_runs_per_implementation_configuration": 5,
+    "compilers": {
+      "dense": {
+        "path": "E:\\Repositories\\q3mapx\\.agents\\tmp\\continuation\\smart-vis-baseline\\q3mapx.exe",
+        "sha256": "07625f8abf88b1b4cd0dbb98f6cdcabe4d21a9dafec0fe4911b0925c049b9e83"
+      },
+      "packed": {
+        "path": "E:\\Repositories\\q3mapx\\build\\release\\bin\\q3mapx.exe",
+        "sha256": "d191d46f819e047afc62bb9055f3c2f8893401a738353df8e672b5f5d4251c26"
+      }
+    },
+    "visibility_byte_parity": true,
+    "notes": [
+      "Whole-command and named-pass timings are separate; retained requested bytes are not peak RSS.",
+      "Timed binary precedes whitespace-only cleanup; its identity and every raw sample remain in the benchmark.",
+      "Some four-worker whole-command medians are slower; no general speedup is claimed."
+    ]
+  },
+  "merge_gate_probe": {
+    "path": ".agents/tmp/continuation/smart-vis-probe/merge-isolation.json",
+    "sha256": "a727941879094c831cd949c3fd3a761c8d225f3c12b89ed45a973ff96c9a3451",
+    "base_revision": "e2965d0fd4597399bd1d6a1bad46f350db32f541",
+    "temporary_source_change": "Bypass MergeLeafPortals in VisMain when Q3MAPX_VIS_LEAVES_ONLY is set; removed before implementation.",
+    "observations": [
+      {
+        "grid": 5,
+        "solver": [],
+        "mode": "default",
+        "added": 0,
+        "missing": 0
+      },
+      {
+        "grid": 5,
+        "solver": [],
+        "mode": "merge",
+        "added": 0,
+        "missing": 2
+      },
+      {
+        "grid": 5,
+        "solver": [],
+        "mode": "leaves",
+        "added": 0,
+        "missing": 2
+      },
+      {
+        "grid": 5,
+        "solver": [
+          "-nopassage"
+        ],
+        "mode": "default",
+        "added": 0,
+        "missing": 0
+      },
+      {
+        "grid": 5,
+        "solver": [
+          "-nopassage"
+        ],
+        "mode": "merge",
+        "added": 0,
+        "missing": 1
+      },
+      {
+        "grid": 5,
+        "solver": [
+          "-nopassage"
+        ],
+        "mode": "leaves",
+        "added": 0,
+        "missing": 1
+      },
+      {
+        "grid": 5,
+        "solver": [
+          "-passageOnly"
+        ],
+        "mode": "default",
+        "added": 0,
+        "missing": 0
+      },
+      {
+        "grid": 5,
+        "solver": [
+          "-passageOnly"
+        ],
+        "mode": "merge",
+        "added": 0,
+        "missing": 0
+      },
+      {
+        "grid": 5,
+        "solver": [
+          "-passageOnly"
+        ],
+        "mode": "leaves",
+        "added": 0,
+        "missing": 0
+      },
+      {
+        "grid": 5,
+        "solver": [
+          "-fast"
+        ],
+        "mode": "default",
+        "added": 0,
+        "missing": 0
+      },
+      {
+        "grid": 5,
+        "solver": [
+          "-fast"
+        ],
+        "mode": "merge",
+        "added": 0,
+        "missing": 8
+      },
+      {
+        "grid": 5,
+        "solver": [
+          "-fast"
+        ],
+        "mode": "leaves",
+        "added": 0,
+        "missing": 8
+      },
+      {
+        "grid": 9,
+        "solver": [],
+        "mode": "default",
+        "added": 0,
+        "missing": 0
+      },
+      {
+        "grid": 9,
+        "solver": [],
+        "mode": "merge",
+        "added": 84,
+        "missing": 27
+      },
+      {
+        "grid": 9,
+        "solver": [],
+        "mode": "leaves",
+        "added": 83,
+        "missing": 20
+      },
+      {
+        "grid": 9,
+        "solver": [
+          "-nopassage"
+        ],
+        "mode": "default",
+        "added": 0,
+        "missing": 0
+      },
+      {
+        "grid": 9,
+        "solver": [
+          "-nopassage"
+        ],
+        "mode": "merge",
+        "added": 94,
+        "missing": 25
+      },
+      {
+        "grid": 9,
+        "solver": [
+          "-nopassage"
+        ],
+        "mode": "leaves",
+        "added": 99,
+        "missing": 3
+      },
+      {
+        "grid": 9,
+        "solver": [
+          "-passageOnly"
+        ],
+        "mode": "default",
+        "added": 0,
+        "missing": 0
+      },
+      {
+        "grid": 9,
+        "solver": [
+          "-passageOnly"
+        ],
+        "mode": "merge",
+        "added": 27,
+        "missing": 2
+      },
+      {
+        "grid": 9,
+        "solver": [
+          "-passageOnly"
+        ],
+        "mode": "leaves",
+        "added": 27,
+        "missing": 2
+      },
+      {
+        "grid": 9,
+        "solver": [
+          "-fast"
+        ],
+        "mode": "default",
+        "added": 0,
+        "missing": 0
+      },
+      {
+        "grid": 9,
+        "solver": [
+          "-fast"
+        ],
+        "mode": "merge",
+        "added": 22,
+        "missing": 4
+      },
+      {
+        "grid": 9,
+        "solver": [
+          "-fast"
+        ],
+        "mode": "leaves",
+        "added": 22,
+        "missing": 4
+      }
+    ],
+    "conclusion": "Leaf-only merging still omits baseline bits. This does not identify which set is geometrically exact; omitting polygon merging alone is insufficient for baseline inclusion."
+  },
+  "cross_platform_checks": {
+    "graph_cases": 31,
+    "map_cases": 120,
+    "capacity_cases": 8,
+    "platforms": [
+      "windows",
+      "linux",
+      "sanitized"
+    ],
+    "graph_storage_visibility_and_capacity_semantics_equal": true
+  },
+  "limitations": [
+    "Reference-byte equality is for fixed reproducible order; ordinary publication scheduling retains its existing variability.",
+    "Initial per-portal allocation reserves a dense upper bound; shrinking is optional on allocation failure. Retained counters exclude allocator metadata, temporary reservation and other VIS state.",
+    "Graph-only stress fixtures are not spatial matches to their carrier BSP.",
+    "Geometry clipping and topology choices are unchanged; the inherited 24-point passage scratch truncation and merge baseline-inclusion issue are not repaired here.",
+    "These measurements do not complete automatic regional portalling or geometry optimization."
+  ],
+  "unrelated_findings": [
+    "Passage clipping truncates windings above the inherited 24-point fixed scratch capacity when clipping is needed; separate correctness audit added to PLAN.",
+    "Existing raw sidecar writers and intermittent Windows process delays remain open.",
+    "Inherited UnsortedSet layout warnings appear in the builds."
+  ],
+  "retained_evidence": ".agents/tmp/continuation/{passage-spans-*,smart-vis-*} and build/*/tests/{vis-merge,vis-passage-storage}",
+  "no_external_code_added": true,
+  "packaged_0_3_0_unchanged": true,
+  "cache_cleanup": {
+    "target": "E:/Repositories/q3mapx/tests/__pycache__",
+    "outcome": "Automatic approval review rejected cleanup; files left untouched",
+    "reported_reason": "blocked by policy",
+    "observed_pyc_files": 24,
+    "deletion_retried": false
+  }
+}

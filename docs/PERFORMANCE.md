@@ -287,3 +287,56 @@ geometric boundaries. Report unexpected parity failures with the input/options.
 Lighting defaults to CPU. Its [experimental GPU area-factor implementation](GPU-LIGHTING.md)
 retains material tracing on CPU. Complete-bake measurements, rather than kernel
 throughput, determine whether GPU selection is useful for a given workload.
+
+## Passage construction and retained storage
+
+Both passage solvers now enumerate the intersection of preliminary flood masks,
+skip separator construction for empty intersections and store trimmed word spans
+in one block per source portal. Recursive flow explicitly clears omitted words
+in reused scratch. These are representation/work reductions, with the same
+graph, clipping order, solver choice and visibility bytes.
+
+On the structural grid=9 fixture (220 clusters, 718 undirected portals), retained
+requested passage storage changes as follows:
+
+| Graph | Dense bytes | Packed bytes | Reduction | Dense portal visits | Candidate visits |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Default | 3,004,400 | 1,284,000 | 57.3% | 21,571,592 | 2,386,961 |
+| Existing `-merge` | 3,330,816 | 1,311,152 | 60.6% | 23,385,104 | 2,463,959 |
+
+The default case holds 15,022 passage descriptors, including 3,029 empty masks,
+in 1,436 blocks. The merged case holds 17,348 descriptors in 1,348 blocks. These
+are retained requested bytes, excluding allocator overhead and other compiler
+data. A concurrently building portal initially reserves its dense upper bound,
+then shrinks the block; this is **not** a peak-RSS measurement. All passage blocks
+are released after flow, before leaf-row assembly and BSP output.
+
+Five alternating whole-command measurements follow one warmup on Windows x64,
+against the preceding `e2965d0` executable. Every output matches its reference and
+worker-count counterpart; these checks do not equate different solver/merge modes.
+
+| Graph/solver | Workers | Dense median (s) | Packed median (s) |
+| --- | ---: | ---: | ---: |
+| Default/full | 1 | 2.3900 | 2.3654 |
+| Default/full | 4 | 0.7169 | 0.7125 |
+| Default/passage-only | 1 | 0.2932 | 0.2427 |
+| Default/passage-only | 4 | 0.1204 | 0.1306 |
+| Merge/full | 1 | 2.0438 | 2.0131 |
+| Merge/full | 4 | 0.6239 | 0.6270 |
+| Merge/passage-only | 1 | 0.2437 | 0.2053 |
+| Merge/passage-only | 4 | 0.1077 | 0.1126 |
+
+Single-worker passage-only improves by 17.2% without merging and 15.8% with
+merging on this fixture. Full-flow changes are small; four-worker passage-only
+whole-command samples are slower despite lower measured construction time.
+There is no general speedup claim. For default/full at one worker, median
+`CreatePassages` time with setup falls 0.09434→0.07005 seconds, while the roughly
+2.17-second geometric flow dominates. Tiny manually detailed controls are mostly
+startup/scheduling noise and are retained in the [raw measurements](benchmarks/vis-passages-win-x64.json).
+
+Reproduce with `benchmarks/vis_passages.py --compiler /path/to/current/q3mapx
+--reference /path/to/e2965d0/q3mapx --work-dir build/passage-benchmark`. Use the
+same toolchain, options, hardware and input generation for both binaries.
+The report includes hashes, all samples, pass profiles, storage and candidate
+counts. This does not validate automatic topology changes: the separate
+baseline-inclusion failures of existing merge modes remain open.

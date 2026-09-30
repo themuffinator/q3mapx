@@ -307,6 +307,19 @@ pass `--grid N` to the Python harness for a larger generated control. These are
 diagnostic checks, not validation of an automatic structural transformation.
 See [regional diagnostics](PORTAL-ANALYSIS.md).
 
+`vis_mask` checks 8,400 seeded packed/dense round trips and intersections, covering
+empty/single-word masks, sparse/dense spans, word boundaries and the maximum
+2,048-word mask. Poisoned reused output and guard words check zeroing and bounds.
+The real `vis_merge` matrix additionally verifies passage storage/candidate
+accounting, empty masks, allocation bounds and absence of passage construction
+from the two solvers that do not use it.
+
+`vis_passage_storage` exercises a 1,024-degree star (1,049,600 empty passage
+descriptors) and a 130-opening straight chain crossing several mask words.
+Independent PVS expectations, full/passage-only and one/four-worker parity,
+native-lump/PRT preservation and storage counts cover eight controls. These are
+synthetic graph fixtures on a native carrier, not spatially matched maps.
+
 `vis_merge` exercises hint/sky directions, parallel openings, far-plane culling,
 convex/concave/folded joins, winding and leaf capacity boundaries, complete
 contraction and self-edge rejection. Real publication failures must preserve the
@@ -319,9 +332,11 @@ The graph-only fixtures intentionally isolate PRT contracts and are not claimed
 spatial matches to their carrier BSP. All real-map checks retain non-entity,
 non-VIS lumps and require worker-independent visibility bytes.
 
-Pass `--reference /path/to/uncompressed/q3mapx` to require exact VIS bytes against
-a compiler with the same merge repairs and original bitset layout. The round
-retains that executable and its source identity under `.agents/tmp/continuation`.
+Pass `--reference /path/to/preceding/q3mapx` to require exact VIS bytes against
+a compiler with the same merge repairs. The passage-storage round retains its
+preceding `e2965d0` executables under `.agents/tmp/continuation/smart-vis-baseline`.
+For the earlier live-bitset compaction comparison, use the original unpacked
+layout reference; that round retains its executable and source identity locally.
 The [reference patch](../benchmarks/references/vis-uncompressed-at-7aaa22b.patch)
 recreates its source from `7aaa22b` in a separate test checkout. It intentionally
 predates the PRT cleanup-order fix; comparisons keep the PRT in both executables.
@@ -330,6 +345,14 @@ legacy executable, records whole-process medians, requested passage storage and
 per-cluster visible surface/triangle distributions. Existing merge-mode PVS
 differences are recorded separately from required compaction parity; this is not
 a renderer benchmark or validation of the planned intelligent transformation.
+
+`benchmarks/vis_passages.py` compares the preceding dense passage layout with the
+current implementation using alternating whole-command runs, warmup, all-cluster
+VIS-byte parity and retained-storage counters. Its default matrix covers full
+and passage-only solvers, ordinary/merged graphs, poor/manual-detail fixtures and
+one/four workers. Per-pass times are separate from complete-command times;
+retained passage bytes are separate from temporary reservations and process peak
+memory. Use `--grid`, `--workers` and `--repeat` to select other measurement cases.
 
 `binary_outputs` checks native IBSP/RBSP publication and shared profile saves
 against real Windows sharing locks and POSIX file-size limits. Empty, ordinary

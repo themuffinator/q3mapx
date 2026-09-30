@@ -27,6 +27,7 @@ int                         CountBits( const byte *bits, int numbits );
 void                        PassageFlow( int portalnum );
 void                        CreatePassages( int portalnum );
 void                        PassageMemory();
+void                        FreePassages();
 void                        BasePortalVis( int portalnum );
 void                        BetterPortalVis( int portalnum );
 void                        PortalFlow( int portalnum );

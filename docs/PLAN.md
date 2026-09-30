@@ -284,6 +284,13 @@ Separate compiler workstream; see [compiler optimization design](COMPILER-OPTIMI
   and compact live working bits while retaining deterministic job order. Compare
   the repaired uncompressed solver and default/merge/hint modes on matched
   structural/manual-detail inputs. This does not complete the intelligent pass.
+- [x] Reduce passage construction work and retained storage without changing
+  graph/solver results: intersect flood bounds before geometric tests, skip empty
+  candidate sets, pack word spans into one block per source portal and free them
+  after flow. Compare exact VIS bytes with the preceding dense implementation.
+- [ ] Audit passage clipping above 24 winding points. The inherited scratch
+  fallback truncates the winding before clipping; add large-portal controls and
+  repair this independently of representation-only parity work.
 - [ ] Diagnose regional over-portalling, inefficient splits and poor detail usage,
   attributing costs to source geometry and comparing current merge/hint options.
   `-bsp-evidence` now ranks subtree subdivision/reference costs for investigation;
@@ -293,6 +300,9 @@ Separate compiler workstream; see [compiler optimization design](COMPILER-OPTIMI
   Independent graph/shape/PVS oracles and matched source-detail controls cover
   these diagnostics. Proven portal causality, validated inefficiency decisions,
   workbench overlays and automatic rectification remain open.
+  An isolation probe confirms that disabling polygon merging alone does not
+  remove the baseline-inclusion failures; leaf merging needs its own correctness
+  argument and validation gate before automatic selection.
 - [ ] Add a VIS-only option for conservative graph simplification with correct
   cluster mapping and bounded increases in runtime visibility work.
 - [ ] Add a coordinated full-build option that examines regional structure and

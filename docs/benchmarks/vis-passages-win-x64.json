@@ -1,0 +1,3871 @@
+{
+  "schema_version": 1,
+  "kind": "whole_process_vis_passage_storage",
+  "recorded_utc": "2026-09-30T13:01:27.740010+00:00",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+  "logical_cpus": 20,
+  "grid": 9,
+  "warmup_runs": 1,
+  "measured_runs": 5,
+  "compilers": {
+    "dense": {
+      "path": "E:\\Repositories\\q3mapx\\.agents\\tmp\\continuation\\smart-vis-baseline\\q3mapx.exe",
+      "sha256": "07625f8abf88b1b4cd0dbb98f6cdcabe4d21a9dafec0fe4911b0925c049b9e83"
+    },
+    "packed": {
+      "path": "E:\\Repositories\\q3mapx\\build\\release\\bin\\q3mapx.exe",
+      "sha256": "d191d46f819e047afc62bb9055f3c2f8893401a738353df8e672b5f5d4251c26"
+    }
+  },
+  "fixtures": [
+    {
+      "detail": false,
+      "map_sha256": "ff246a01b2f3e2123cf53f143aa41c0312531935c71d6b73de76cbb392a43651",
+      "bsp_sha256": "b691c5df9d80e6264755e1e71debb2aadafae693b02d024b38cb8b6ca0fec208",
+      "prt_sha256": "bb6a5f9bfcce7225d66837fcc12aa98f63556e50a47c1093b6bfb6eff28e8b54",
+      "counts": {
+        "shaders": 1,
+        "planes": 144,
+        "nodes": 430,
+        "leaves": 433,
+        "models": 2,
+        "brushes": 88,
+        "sides": 528,
+        "vertices": 1668,
+        "indices": 12,
+        "surfaces": 417
+      }
+    },
+    {
+      "detail": true,
+      "map_sha256": "ce07d8d3b7b32575c4447eb1c5170782d02d804e264985be289dbdbf4889829d",
+      "bsp_sha256": "a9e17281c9174757e4f1e55a5a22654d97ecba53e019aab3f2a3dac12df1bf80",
+      "prt_sha256": "3b21df5aa8ddc7cea98f0d83ab74a36d77fd170a9ee8047befb9e7c045cccf15",
+      "counts": {
+        "shaders": 1,
+        "planes": 144,
+        "nodes": 19,
+        "leaves": 22,
+        "models": 2,
+        "brushes": 88,
+        "sides": 528,
+        "vertices": 1668,
+        "indices": 12,
+        "surfaces": 417
+      }
+    }
+  ],
+  "records": [
+    {
+      "detail": false,
+      "options": [],
+      "workers": 1,
+      "visibility_sha256": "c389e6bd6180bbe86342ba3c4e1955a9f648e2a17037d10bdec7038248ca6590",
+      "reference_and_worker_byte_parity": true,
+      "implementations": {
+        "dense": {
+          "seconds": [
+            2.3799152999999933,
+            2.3520226999535225,
+            2.4267204999923706,
+            2.413116000010632,
+            2.389964299974963
+          ],
+          "profiles": [
+            {
+              "path": "structural\\False-False-1-1-dense.json",
+              "sha256": "37292962836d721a12bb7d8b1d273a1c88affc89c6af4ad9bd9bf2dedb4a485b",
+              "total_seconds": 2.3073277,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0200205,
+                  "seconds_with_setup": 0.0200271
+                },
+                "CreatePassages": {
+                  "seconds": 0.0943405,
+                  "seconds_with_setup": 0.0943412
+                },
+                "PassagePortalFlow": {
+                  "seconds": 2.155141,
+                  "seconds_with_setup": 2.1551881
+                }
+              }
+            },
+            {
+              "path": "structural\\False-False-1-2-dense.json",
+              "sha256": "824a8ae64106d71cf093b936aaf17c4acf768258b5224327c148cb38c11bb06b",
+              "total_seconds": 2.3196907,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0219835,
+                  "seconds_with_setup": 0.0219966
+                },
+                "CreatePassages": {
+                  "seconds": 0.0932744,
+                  "seconds_with_setup": 0.093275
+                },
+                "PassagePortalFlow": {
+                  "seconds": 2.176574,
+                  "seconds_with_setup": 2.1766222
+                }
+              }
+            },
+            {
+              "path": "structural\\False-False-1-3-dense.json",
+              "sha256": "4e79194ef2532c1adc97618f080af244140e9f781225cdcd13df43f7f418f309",
+              "total_seconds": 2.3474896,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0251884,
+                  "seconds_with_setup": 0.025204
+                },
+                "CreatePassages": {
+                  "seconds": 0.1015695,
+                  "seconds_with_setup": 0.1015704
+                },
+                "PassagePortalFlow": {
+                  "seconds": 2.1794073999999997,
+                  "seconds_with_setup": 2.1794549
+                }
+              }
+            },
+            {
+              "path": "structural\\False-False-1-4-dense.json",
+              "sha256": "2a0559fcc0a62e17e4a17d6a28e03c18da1d921ff2cc9ed2cc7a2387b32673e3",
+              "total_seconds": 2.353539,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0293342,
+                  "seconds_with_setup": 0.0293492
+                },
+                "CreatePassages": {
+                  "seconds": 0.0918945,
+                  "seconds_with_setup": 0.0918951
+                },
+                "PassagePortalFlow": {
+                  "seconds": 2.164496,
+                  "seconds_with_setup": 2.1645403
+                }
+              }
+            },
+            {
+              "path": "structural\\False-False-1-5-dense.json",
+              "sha256": "bfa57d63d9b5165841d66109b756ccf00b8ab448613d4c0a7cf779933bfcf930",
+              "total_seconds": 2.3173343,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0218383,
+                  "seconds_with_setup": 0.0218453
+                },
+                "CreatePassages": {
+                  "seconds": 0.0953023,
+                  "seconds_with_setup": 0.0953029
+                },
+                "PassagePortalFlow": {
+                  "seconds": 2.1634898000000002,
+                  "seconds_with_setup": 2.1635342
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 3004400,
+            "passages": 15022
+          },
+          "median_seconds": 2.389964299974963
+        },
+        "packed": {
+          "seconds": [
+            2.387225899961777,
+            2.4145171000272967,
+            2.3359634000225924,
+            2.3654040999826975,
+            2.363414100022055
+          ],
+          "profiles": [
+            {
+              "path": "structural\\False-False-1-1-packed.json",
+              "sha256": "eb464c85d468700be03731c63bc33fdc4ecb81c93c3c80ddf3875de6054995d6",
+              "total_seconds": 2.3169993,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0251647,
+                  "seconds_with_setup": 0.0251776
+                },
+                "CreatePassages": {
+                  "seconds": 0.070051,
+                  "seconds_with_setup": 0.0700515
+                },
+                "PassagePortalFlow": {
+                  "seconds": 2.1733441,
+                  "seconds_with_setup": 2.173387
+                }
+              }
+            },
+            {
+              "path": "structural\\False-False-1-2-packed.json",
+              "sha256": "5d12b1b7fdb96bff4be374632db8902717db0b273b186b8635027bf0f7fc7f5e",
+              "total_seconds": 2.3289931,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0236151,
+                  "seconds_with_setup": 0.0236442
+                },
+                "CreatePassages": {
+                  "seconds": 0.0716005,
+                  "seconds_with_setup": 0.071601
+                },
+                "PassagePortalFlow": {
+                  "seconds": 2.1554265000000004,
+                  "seconds_with_setup": 2.1554721
+                }
+              }
+            },
+            {
+              "path": "structural\\False-False-1-3-packed.json",
+              "sha256": "6bfd23ad281ea60c830fe001395ba01fd04b5ba562d6011a0700cc9ad0e7e7b4",
+              "total_seconds": 2.2903442,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0216663,
+                  "seconds_with_setup": 0.021678
+                },
+                "CreatePassages": {
+                  "seconds": 0.0700094,
+                  "seconds_with_setup": 0.0700099
+                },
+                "PassagePortalFlow": {
+                  "seconds": 2.1604358,
+                  "seconds_with_setup": 2.1604838
+                }
+              }
+            },
+            {
+              "path": "structural\\False-False-1-4-packed.json",
+              "sha256": "2a8b77e2a84c4bfdc23157a38a65b0a18804a0c78ea972906a01a36536ad11e0",
+              "total_seconds": 2.3317617,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0210094,
+                  "seconds_with_setup": 0.0210146
+                },
+                "CreatePassages": {
+                  "seconds": 0.0711843,
+                  "seconds_with_setup": 0.0711846
+                },
+                "PassagePortalFlow": {
+                  "seconds": 2.1880218,
+                  "seconds_with_setup": 2.1880655
+                }
+              }
+            },
+            {
+              "path": "structural\\False-False-1-5-packed.json",
+              "sha256": "1ba77773b959c5ab9734dbdbbbaba25cb1d854d3a8bc80bd913a096836ddd8d8",
+              "total_seconds": 2.3167973,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0220812,
+                  "seconds_with_setup": 0.0220961
+                },
+                "CreatePassages": {
+                  "seconds": 0.0700195,
+                  "seconds_with_setup": 0.0700198
+                },
+                "PassagePortalFlow": {
+                  "seconds": 2.1693995,
+                  "seconds_with_setup": 2.1694383
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 1284000,
+            "passages": 15022,
+            "dense_equivalent_bytes": 3004400,
+            "empty_masks": 3029,
+            "retained_blocks": 1436,
+            "candidate_visits": 2386961,
+            "dense_visits": 21571592
+          },
+          "median_seconds": 2.3654040999826975
+        }
+      }
+    },
+    {
+      "detail": false,
+      "options": [],
+      "workers": 4,
+      "visibility_sha256": "c389e6bd6180bbe86342ba3c4e1955a9f648e2a17037d10bdec7038248ca6590",
+      "reference_and_worker_byte_parity": true,
+      "implementations": {
+        "dense": {
+          "seconds": [
+            0.7168943000142463,
+            0.6846516000223346,
+            0.6517950999550521,
+            0.7230415999656543,
+            0.7466224000090733
+          ],
+          "profiles": [
+            {
+              "path": "structural\\False-False-4-1-dense.json",
+              "sha256": "97bc6bf65011aca69884c7edd0dfa84385ecf7bd95062d3c9cb19e598ee8e2dc",
+              "total_seconds": 0.6663871,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0101102,
+                  "seconds_with_setup": 0.0103841
+                },
+                "CreatePassages": {
+                  "seconds": 0.0245898,
+                  "seconds_with_setup": 0.0245903
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.5844803,
+                  "seconds_with_setup": 0.5845254999999999
+                }
+              }
+            },
+            {
+              "path": "structural\\False-False-4-2-dense.json",
+              "sha256": "873388c4d6524d6a28242b2af018d1c72225376a2fa1365b822d669fb948d718",
+              "total_seconds": 0.6395862,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0055852,
+                  "seconds_with_setup": 0.0056721
+                },
+                "CreatePassages": {
+                  "seconds": 0.024346,
+                  "seconds_with_setup": 0.0243466
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.5819998000000001,
+                  "seconds_with_setup": 0.5820396
+                }
+              }
+            },
+            {
+              "path": "structural\\False-False-4-3-dense.json",
+              "sha256": "b133c162adf26eefda71a4594be3e169ea76a996dd231ab81440f2e24b704945",
+              "total_seconds": 0.632266,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0077325,
+                  "seconds_with_setup": 0.0078315
+                },
+                "CreatePassages": {
+                  "seconds": 0.0240742,
+                  "seconds_with_setup": 0.0240746
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.5781696000000001,
+                  "seconds_with_setup": 0.5782278
+                }
+              }
+            },
+            {
+              "path": "structural\\False-False-4-4-dense.json",
+              "sha256": "181ddd8ba7b9be2c585d1a36bdd1a50f25b94188dce5db48985e33f1136f9745",
+              "total_seconds": 0.6589203,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0156172,
+                  "seconds_with_setup": 0.015937
+                },
+                "CreatePassages": {
+                  "seconds": 0.0248902,
+                  "seconds_with_setup": 0.0248907
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.5758568000000001,
+                  "seconds_with_setup": 0.5758966999999999
+                }
+              }
+            },
+            {
+              "path": "structural\\False-False-4-5-dense.json",
+              "sha256": "1aacb6827f38a6a0c6e7ba8271a3d5ed2619832c0d63b21be11dbb64e0657140",
+              "total_seconds": 0.669298,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0135482,
+                  "seconds_with_setup": 0.0138175
+                },
+                "CreatePassages": {
+                  "seconds": 0.0298179,
+                  "seconds_with_setup": 0.0298189
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.5863558,
+                  "seconds_with_setup": 0.5864054999999999
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 3004400,
+            "passages": 15022
+          },
+          "median_seconds": 0.7168943000142463
+        },
+        "packed": {
+          "seconds": [
+            0.6794982000137679,
+            0.7196002000127919,
+            0.712468900019303,
+            0.7205407000146806,
+            0.6772240999853238
+          ],
+          "profiles": [
+            {
+              "path": "structural\\False-False-4-1-packed.json",
+              "sha256": "21e56574f451c8504b605f7be1451abfa52e344a309b0f74b3865134be6dcd1e",
+              "total_seconds": 0.6396261,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0078162,
+                  "seconds_with_setup": 0.0079546
+                },
+                "CreatePassages": {
+                  "seconds": 0.0195399,
+                  "seconds_with_setup": 0.0195406
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.5851406,
+                  "seconds_with_setup": 0.5851802
+                }
+              }
+            },
+            {
+              "path": "structural\\False-False-4-2-packed.json",
+              "sha256": "70b0ec29c8fb6c68f8c50ac6ca1dd1bfcd34b0555403a13ccf3734a2b42e570b",
+              "total_seconds": 0.6567916,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0065049,
+                  "seconds_with_setup": 0.0065842
+                },
+                "CreatePassages": {
+                  "seconds": 0.0186409,
+                  "seconds_with_setup": 0.0186413
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.5854907,
+                  "seconds_with_setup": 0.5855249
+                }
+              }
+            },
+            {
+              "path": "structural\\False-False-4-3-packed.json",
+              "sha256": "2252a9397e1183d3b2b9eb9b19751017c757c63e88de0361721ab310ba7c5c5c",
+              "total_seconds": 0.6521204,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0118818,
+                  "seconds_with_setup": 0.0121492
+                },
+                "CreatePassages": {
+                  "seconds": 0.0188095,
+                  "seconds_with_setup": 0.0188098
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.5845144,
+                  "seconds_with_setup": 0.5845425999999999
+                }
+              }
+            },
+            {
+              "path": "structural\\False-False-4-4-packed.json",
+              "sha256": "b53bf1bdd0a585a8354c412120f0bd30e7702e9ec89efa0b70b628a3d5e179b4",
+              "total_seconds": 0.6777488,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0115984,
+                  "seconds_with_setup": 0.0116788
+                },
+                "CreatePassages": {
+                  "seconds": 0.0187092,
+                  "seconds_with_setup": 0.0187098
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.6229028,
+                  "seconds_with_setup": 0.6229597000000001
+                }
+              }
+            },
+            {
+              "path": "structural\\False-False-4-5-packed.json",
+              "sha256": "82c3d330492e680664581e7067aada9411f9dc4ba76b8578643feb443bf7950e",
+              "total_seconds": 0.6550189,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0073216,
+                  "seconds_with_setup": 0.0074962
+                },
+                "CreatePassages": {
+                  "seconds": 0.0185374,
+                  "seconds_with_setup": 0.0185377
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.5852808999999999,
+                  "seconds_with_setup": 0.5853174
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 1284000,
+            "passages": 15022,
+            "dense_equivalent_bytes": 3004400,
+            "empty_masks": 3029,
+            "retained_blocks": 1436,
+            "candidate_visits": 2386961,
+            "dense_visits": 21571592
+          },
+          "median_seconds": 0.712468900019303
+        }
+      }
+    },
+    {
+      "detail": false,
+      "options": [
+        "-passageOnly"
+      ],
+      "workers": 1,
+      "visibility_sha256": "42471e5cc884fcc97d1daaf8297dba455c2f5f4bed8c43821dbf4cbfc4d6938f",
+      "reference_and_worker_byte_parity": true,
+      "implementations": {
+        "dense": {
+          "seconds": [
+            0.23662049998529255,
+            0.29317039996385574,
+            0.2963459999882616,
+            0.2992970999912359,
+            0.2915048000286333
+          ],
+          "profiles": [
+            {
+              "path": "structural\\False-True-1-1-dense.json",
+              "sha256": "cbc1bf85422978d071d6fd0e40ef924f1ae1c5239b8226ebfa344695f481ff37",
+              "total_seconds": 0.1964574,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0198484,
+                  "seconds_with_setup": 0.0198542
+                },
+                "CreatePassages": {
+                  "seconds": 0.0932421,
+                  "seconds_with_setup": 0.0932425
+                },
+                "PassageFlow": {
+                  "seconds": 0.0636901,
+                  "seconds_with_setup": 0.0636947
+                }
+              }
+            },
+            {
+              "path": "structural\\False-True-1-2-dense.json",
+              "sha256": "dc363513a7d1470582cafdc2c6e77f4922c89dda029cfe1b1881fb7e29e9a196",
+              "total_seconds": 0.2364686,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0243013,
+                  "seconds_with_setup": 0.0243171
+                },
+                "CreatePassages": {
+                  "seconds": 0.095519,
+                  "seconds_with_setup": 0.0955196
+                },
+                "PassageFlow": {
+                  "seconds": 0.07004729999999999,
+                  "seconds_with_setup": 0.0700567
+                }
+              }
+            },
+            {
+              "path": "structural\\False-True-1-3-dense.json",
+              "sha256": "ff6801c034f7b16171035cefad308ac14214ef1e172be3a1a0207b5f092094d8",
+              "total_seconds": 0.2089691,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0245777,
+                  "seconds_with_setup": 0.0245865
+                },
+                "CreatePassages": {
+                  "seconds": 0.0939103,
+                  "seconds_with_setup": 0.093911
+                },
+                "PassageFlow": {
+                  "seconds": 0.06491580000000001,
+                  "seconds_with_setup": 0.0649208
+                }
+              }
+            },
+            {
+              "path": "structural\\False-True-1-4-dense.json",
+              "sha256": "4710bc3b90b236d28f6d1e46a22bace8fb9fd1d494b87b9779f52f7f97986e9c",
+              "total_seconds": 0.2361831,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0238635,
+                  "seconds_with_setup": 0.023869
+                },
+                "CreatePassages": {
+                  "seconds": 0.0931545,
+                  "seconds_with_setup": 0.0931552
+                },
+                "PassageFlow": {
+                  "seconds": 0.0662687,
+                  "seconds_with_setup": 0.0662727
+                }
+              }
+            },
+            {
+              "path": "structural\\False-True-1-5-dense.json",
+              "sha256": "301628f8406f4cb7a539aca447dc27379f702fdf015fd1838140586557ba6845",
+              "total_seconds": 0.2157394,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.024682,
+                  "seconds_with_setup": 0.0246867
+                },
+                "CreatePassages": {
+                  "seconds": 0.0917819,
+                  "seconds_with_setup": 0.0917826
+                },
+                "PassageFlow": {
+                  "seconds": 0.0662596,
+                  "seconds_with_setup": 0.06626340000000001
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 3004400,
+            "passages": 15022
+          },
+          "median_seconds": 0.29317039996385574
+        },
+        "packed": {
+          "seconds": [
+            0.24160170002141967,
+            0.22891599999275059,
+            0.24272259999997914,
+            0.29809280001791194,
+            0.25843190000159666
+          ],
+          "profiles": [
+            {
+              "path": "structural\\False-True-1-1-packed.json",
+              "sha256": "5b92595625bed70f5b6c6833889f7b92e3495982d950ce0ea840d1b80c7007d0",
+              "total_seconds": 0.1846193,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0190532,
+                  "seconds_with_setup": 0.0190568
+                },
+                "CreatePassages": {
+                  "seconds": 0.0706926,
+                  "seconds_with_setup": 0.070693
+                },
+                "PassageFlow": {
+                  "seconds": 0.0646232,
+                  "seconds_with_setup": 0.0646272
+                }
+              }
+            },
+            {
+              "path": "structural\\False-True-1-2-packed.json",
+              "sha256": "06b538106fd3c73e4f1fc2a8d0b59a9bfeb3be08ea901a75a1f41b927bf56420",
+              "total_seconds": 0.1957218,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0236852,
+                  "seconds_with_setup": 0.0237015
+                },
+                "CreatePassages": {
+                  "seconds": 0.0711401,
+                  "seconds_with_setup": 0.0711407
+                },
+                "PassageFlow": {
+                  "seconds": 0.0645332,
+                  "seconds_with_setup": 0.06453690000000001
+                }
+              }
+            },
+            {
+              "path": "structural\\False-True-1-3-packed.json",
+              "sha256": "7a32095743a691ab60fca30a98fb66b99cf070c6f9a75a22c14c561489fb63d5",
+              "total_seconds": 0.192482,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0234049,
+                  "seconds_with_setup": 0.0234157
+                },
+                "CreatePassages": {
+                  "seconds": 0.072043,
+                  "seconds_with_setup": 0.0720433
+                },
+                "PassageFlow": {
+                  "seconds": 0.0638897,
+                  "seconds_with_setup": 0.06389460000000001
+                }
+              }
+            },
+            {
+              "path": "structural\\False-True-1-4-packed.json",
+              "sha256": "2dd289de92d06cf6830811b10ccd9823b7d2fa2cfed87801fd43c4ebab844110",
+              "total_seconds": 0.2156711,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0265387,
+                  "seconds_with_setup": 0.0265562
+                },
+                "CreatePassages": {
+                  "seconds": 0.0722246,
+                  "seconds_with_setup": 0.0722253
+                },
+                "PassageFlow": {
+                  "seconds": 0.06422059999999999,
+                  "seconds_with_setup": 0.0642259
+                }
+              }
+            },
+            {
+              "path": "structural\\False-True-1-5-packed.json",
+              "sha256": "4b656a5c2129620884b4909e3438b5177e197575c55a06f57a460c474a988022",
+              "total_seconds": 0.192758,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0186567,
+                  "seconds_with_setup": 0.0186647
+                },
+                "CreatePassages": {
+                  "seconds": 0.0706598,
+                  "seconds_with_setup": 0.0706604
+                },
+                "PassageFlow": {
+                  "seconds": 0.0655153,
+                  "seconds_with_setup": 0.06552020000000001
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 1284000,
+            "passages": 15022,
+            "dense_equivalent_bytes": 3004400,
+            "empty_masks": 3029,
+            "retained_blocks": 1436,
+            "candidate_visits": 2386961,
+            "dense_visits": 21571592
+          },
+          "median_seconds": 0.24272259999997914
+        }
+      }
+    },
+    {
+      "detail": false,
+      "options": [
+        "-passageOnly"
+      ],
+      "workers": 4,
+      "visibility_sha256": "42471e5cc884fcc97d1daaf8297dba455c2f5f4bed8c43821dbf4cbfc4d6938f",
+      "reference_and_worker_byte_parity": true,
+      "implementations": {
+        "dense": {
+          "seconds": [
+            0.13224389997776598,
+            0.10023169999476522,
+            0.12042609998025,
+            0.1685867999913171,
+            0.11123889998998493
+          ],
+          "profiles": [
+            {
+              "path": "structural\\False-True-4-1-dense.json",
+              "sha256": "43a43e7adaba6a9313c0c0aa36f35b71cc505e3bde777aeeb47aed562a17c4ae",
+              "total_seconds": 0.0959888,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0119882,
+                  "seconds_with_setup": 0.0120731
+                },
+                "CreatePassages": {
+                  "seconds": 0.0322481,
+                  "seconds_with_setup": 0.0322487
+                },
+                "PassageFlow": {
+                  "seconds": 0.023951000000000004,
+                  "seconds_with_setup": 0.0239614
+                }
+              }
+            },
+            {
+              "path": "structural\\False-True-4-2-dense.json",
+              "sha256": "5a6a84fc4ea4ac16427fd9b4b5682013b378904cd46938d27e6b2c53789d7cbd",
+              "total_seconds": 0.0727992,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0057824,
+                  "seconds_with_setup": 0.005869
+                },
+                "CreatePassages": {
+                  "seconds": 0.0242299,
+                  "seconds_with_setup": 0.0242306
+                },
+                "PassageFlow": {
+                  "seconds": 0.022241300000000002,
+                  "seconds_with_setup": 0.022248399999999998
+                }
+              }
+            },
+            {
+              "path": "structural\\False-True-4-3-dense.json",
+              "sha256": "3ad48490e5b2a377a03a9f5f515e9b3dcc63de9ccc3e35184ef170fcf53cfccc",
+              "total_seconds": 0.0851057,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0080773,
+                  "seconds_with_setup": 0.0082424
+                },
+                "CreatePassages": {
+                  "seconds": 0.0242691,
+                  "seconds_with_setup": 0.0242695
+                },
+                "PassageFlow": {
+                  "seconds": 0.022704599999999995,
+                  "seconds_with_setup": 0.022712099999999995
+                }
+              }
+            },
+            {
+              "path": "structural\\False-True-4-4-dense.json",
+              "sha256": "ddb89419e0ebb093168a3c5d010e535e8ac837274e25b218d4e08ea93382991e",
+              "total_seconds": 0.0983644,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0113999,
+                  "seconds_with_setup": 0.011619
+                },
+                "CreatePassages": {
+                  "seconds": 0.0246893,
+                  "seconds_with_setup": 0.0246898
+                },
+                "PassageFlow": {
+                  "seconds": 0.0219479,
+                  "seconds_with_setup": 0.021956299999999998
+                }
+              }
+            },
+            {
+              "path": "structural\\False-True-4-5-dense.json",
+              "sha256": "6d8fea7f8415494cb4e2fe38154b596508ee01af712f083a61610b83c320f4ba",
+              "total_seconds": 0.0815301,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0076637,
+                  "seconds_with_setup": 0.0078164
+                },
+                "CreatePassages": {
+                  "seconds": 0.0241444,
+                  "seconds_with_setup": 0.0241448
+                },
+                "PassageFlow": {
+                  "seconds": 0.0219106,
+                  "seconds_with_setup": 0.021919099999999997
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 3004400,
+            "passages": 15022
+          },
+          "median_seconds": 0.12042609998025
+        },
+        "packed": {
+          "seconds": [
+            0.13058110000565648,
+            0.10174849996110424,
+            0.16952380002476275,
+            0.11534090002533048,
+            0.15648410003632307
+          ],
+          "profiles": [
+            {
+              "path": "structural\\False-True-4-1-packed.json",
+              "sha256": "7dd8912503d9b93e285def5cb5f4e06c680b0e4489a2089b0c9a83487bc9957e",
+              "total_seconds": 0.0964035,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0104715,
+                  "seconds_with_setup": 0.0106348
+                },
+                "CreatePassages": {
+                  "seconds": 0.0371336,
+                  "seconds_with_setup": 0.0371344
+                },
+                "PassageFlow": {
+                  "seconds": 0.023344400000000005,
+                  "seconds_with_setup": 0.0233535
+                }
+              }
+            },
+            {
+              "path": "structural\\False-True-4-2-packed.json",
+              "sha256": "672e4d7b93486965bbba1a4800b8c90eb8f9a9c43838ac04129706af78f10950",
+              "total_seconds": 0.0711922,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.00815,
+                  "seconds_with_setup": 0.0083182
+                },
+                "CreatePassages": {
+                  "seconds": 0.01846,
+                  "seconds_with_setup": 0.0184604
+                },
+                "PassageFlow": {
+                  "seconds": 0.0218982,
+                  "seconds_with_setup": 0.021904800000000002
+                }
+              }
+            },
+            {
+              "path": "structural\\False-True-4-3-packed.json",
+              "sha256": "4674efd0f026192a987753a7da604a71275b143373b0556811f126a38e165e18",
+              "total_seconds": 0.0925131,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0135968,
+                  "seconds_with_setup": 0.0138698
+                },
+                "CreatePassages": {
+                  "seconds": 0.01897,
+                  "seconds_with_setup": 0.0189707
+                },
+                "PassageFlow": {
+                  "seconds": 0.0219583,
+                  "seconds_with_setup": 0.0219685
+                }
+              }
+            },
+            {
+              "path": "structural\\False-True-4-4-packed.json",
+              "sha256": "22ef16c35b6b9f03e95a2fb035cb6146e3336a35cb74f649d2f678590b0fa6e9",
+              "total_seconds": 0.0762924,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.007694,
+                  "seconds_with_setup": 0.0079428
+                },
+                "CreatePassages": {
+                  "seconds": 0.018831,
+                  "seconds_with_setup": 0.0188315
+                },
+                "PassageFlow": {
+                  "seconds": 0.022112200000000002,
+                  "seconds_with_setup": 0.022119899999999998
+                }
+              }
+            },
+            {
+              "path": "structural\\False-True-4-5-packed.json",
+              "sha256": "15a536e6011cd9b9761f0ef5b441344d8fa6538aa36a778e18520e9738d540d8",
+              "total_seconds": 0.1045035,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0119388,
+                  "seconds_with_setup": 0.0122745
+                },
+                "CreatePassages": {
+                  "seconds": 0.0184018,
+                  "seconds_with_setup": 0.0184021
+                },
+                "PassageFlow": {
+                  "seconds": 0.022092600000000004,
+                  "seconds_with_setup": 0.022099200000000003
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 1284000,
+            "passages": 15022,
+            "dense_equivalent_bytes": 3004400,
+            "empty_masks": 3029,
+            "retained_blocks": 1436,
+            "candidate_visits": 2386961,
+            "dense_visits": 21571592
+          },
+          "median_seconds": 0.13058110000565648
+        }
+      }
+    },
+    {
+      "detail": false,
+      "options": [
+        "-merge"
+      ],
+      "workers": 1,
+      "visibility_sha256": "1443615cf69a9d3d45f7c1f8df3a38e8abf171df0f2d461a722f99785c48dfbd",
+      "reference_and_worker_byte_parity": true,
+      "implementations": {
+        "dense": {
+          "seconds": [
+            2.009790099982638,
+            2.0474546999903396,
+            2.0438065999769606,
+            2.073113700025715,
+            2.0075175000238232
+          ],
+          "profiles": [
+            {
+              "path": "structural\\True-False-1-1-dense.json",
+              "sha256": "b411a9f8e31508adfcfc1208d80fc9c6b5e54f54ba51db91b6aecec14afd5f59",
+              "total_seconds": 1.9688336,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0169793,
+                  "seconds_with_setup": 0.0169849
+                },
+                "CreatePassages": {
+                  "seconds": 0.0984034,
+                  "seconds_with_setup": 0.0984039
+                },
+                "PassagePortalFlow": {
+                  "seconds": 1.832311,
+                  "seconds_with_setup": 1.8323520000000002
+                }
+              }
+            },
+            {
+              "path": "structural\\True-False-1-2-dense.json",
+              "sha256": "5826cb8ebd610cd0912812a15b9426a8bced5a76575aca0957704ce951fcb851",
+              "total_seconds": 2.0050153,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0200086,
+                  "seconds_with_setup": 0.0200188
+                },
+                "CreatePassages": {
+                  "seconds": 0.0960831,
+                  "seconds_with_setup": 0.0960836
+                },
+                "PassagePortalFlow": {
+                  "seconds": 1.8528012999999999,
+                  "seconds_with_setup": 1.8528504000000001
+                }
+              }
+            },
+            {
+              "path": "structural\\True-False-1-3-dense.json",
+              "sha256": "43031205dec33295ab3fc557afaa21f6739b9d95fee1508df2f8f5a5e8d603b0",
+              "total_seconds": 1.9876366,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0213381,
+                  "seconds_with_setup": 0.0213511
+                },
+                "CreatePassages": {
+                  "seconds": 0.0945427,
+                  "seconds_with_setup": 0.0945434
+                },
+                "PassagePortalFlow": {
+                  "seconds": 1.8353681,
+                  "seconds_with_setup": 1.8354092
+                }
+              }
+            },
+            {
+              "path": "structural\\True-False-1-4-dense.json",
+              "sha256": "3df446a21ba48a9eb3c19a70899c5c740d605f5d27e189bc899e10ff0e113065",
+              "total_seconds": 2.0025105,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0213606,
+                  "seconds_with_setup": 0.0213779
+                },
+                "CreatePassages": {
+                  "seconds": 0.0951863,
+                  "seconds_with_setup": 0.0951871
+                },
+                "PassagePortalFlow": {
+                  "seconds": 1.8428019999999998,
+                  "seconds_with_setup": 1.8428460000000002
+                }
+              }
+            },
+            {
+              "path": "structural\\True-False-1-5-dense.json",
+              "sha256": "0c1389e4a6c379e21007cda8a393bddc9d248e91aae4430f859479ec8f7bacd5",
+              "total_seconds": 1.9687544,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0170815,
+                  "seconds_with_setup": 0.0170871
+                },
+                "CreatePassages": {
+                  "seconds": 0.0972714,
+                  "seconds_with_setup": 0.0972721
+                },
+                "PassagePortalFlow": {
+                  "seconds": 1.8264399,
+                  "seconds_with_setup": 1.8264805000000004
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 3330816,
+            "passages": 17348
+          },
+          "median_seconds": 2.0438065999769606
+        },
+        "packed": {
+          "seconds": [
+            2.0460982999647968,
+            2.024555599957239,
+            1.9919686000212096,
+            1.985715699964203,
+            2.0130701000452973
+          ],
+          "profiles": [
+            {
+              "path": "structural\\True-False-1-1-packed.json",
+              "sha256": "f4eaef661472505333c9b722fc766b126dcfcdc51ed170f3416a0fdc1c560b5d",
+              "total_seconds": 1.9712481,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.020339,
+                  "seconds_with_setup": 0.02035
+                },
+                "CreatePassages": {
+                  "seconds": 0.0712349,
+                  "seconds_with_setup": 0.0712356
+                },
+                "PassagePortalFlow": {
+                  "seconds": 1.8216603000000005,
+                  "seconds_with_setup": 1.8217012
+                }
+              }
+            },
+            {
+              "path": "structural\\True-False-1-2-packed.json",
+              "sha256": "f9d93f227fa8526ec4d5a62bc52b7d0efcc2e55748b22b61aae45786f007a972",
+              "total_seconds": 1.9720743,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0197806,
+                  "seconds_with_setup": 0.0197899
+                },
+                "CreatePassages": {
+                  "seconds": 0.0746131,
+                  "seconds_with_setup": 0.0746136
+                },
+                "PassagePortalFlow": {
+                  "seconds": 1.8420097000000002,
+                  "seconds_with_setup": 1.8420623000000003
+                }
+              }
+            },
+            {
+              "path": "structural\\True-False-1-3-packed.json",
+              "sha256": "721c62e73cb9053e1408bac0b1303fdb0af5b668d5a83cc3121797e9a5cb425e",
+              "total_seconds": 1.9649495,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0208747,
+                  "seconds_with_setup": 0.0208847
+                },
+                "CreatePassages": {
+                  "seconds": 0.0714655,
+                  "seconds_with_setup": 0.0714661
+                },
+                "PassagePortalFlow": {
+                  "seconds": 1.8352350999999998,
+                  "seconds_with_setup": 1.8352774000000003
+                }
+              }
+            },
+            {
+              "path": "structural\\True-False-1-4-packed.json",
+              "sha256": "9ae441f5947febbc45a010281d7c341865dc951fb44257c0a4a8ed02349b65b5",
+              "total_seconds": 1.96154,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0209269,
+                  "seconds_with_setup": 0.0209367
+                },
+                "CreatePassages": {
+                  "seconds": 0.071563,
+                  "seconds_with_setup": 0.0715633
+                },
+                "PassagePortalFlow": {
+                  "seconds": 1.835752,
+                  "seconds_with_setup": 1.8357946000000003
+                }
+              }
+            },
+            {
+              "path": "structural\\True-False-1-5-packed.json",
+              "sha256": "8beabceb1b1f66dc6d02bbb3f62cf7d063d07209628b14ad9e43c2a475cda2a4",
+              "total_seconds": 1.9751168,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0192083,
+                  "seconds_with_setup": 0.0192216
+                },
+                "CreatePassages": {
+                  "seconds": 0.0711413,
+                  "seconds_with_setup": 0.0711417
+                },
+                "PassagePortalFlow": {
+                  "seconds": 1.8354364,
+                  "seconds_with_setup": 1.8354803000000002
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 1311152,
+            "passages": 17348,
+            "dense_equivalent_bytes": 3330816,
+            "empty_masks": 4808,
+            "retained_blocks": 1348,
+            "candidate_visits": 2463959,
+            "dense_visits": 23385104
+          },
+          "median_seconds": 2.0130701000452973
+        }
+      }
+    },
+    {
+      "detail": false,
+      "options": [
+        "-merge"
+      ],
+      "workers": 4,
+      "visibility_sha256": "1443615cf69a9d3d45f7c1f8df3a38e8abf171df0f2d461a722f99785c48dfbd",
+      "reference_and_worker_byte_parity": true,
+      "implementations": {
+        "dense": {
+          "seconds": [
+            0.6238960000337102,
+            0.5781698999926448,
+            0.6339875000412576,
+            0.6442153000389226,
+            0.5785798999713734
+          ],
+          "profiles": [
+            {
+              "path": "structural\\True-False-4-1-dense.json",
+              "sha256": "841e00610b296cc0677a7b8a7809c7c4541df60c4c32fff38eda2579ccbc1f4b",
+              "total_seconds": 0.5766481,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0141972,
+                  "seconds_with_setup": 0.0144162
+                },
+                "CreatePassages": {
+                  "seconds": 0.0249584,
+                  "seconds_with_setup": 0.0249589
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.48979759999999994,
+                  "seconds_with_setup": 0.48984120000000003
+                }
+              }
+            },
+            {
+              "path": "structural\\True-False-4-2-dense.json",
+              "sha256": "f99785c73f2a1b66603a2afad813efeb47b6018f33dd541ecf17b99808de07be",
+              "total_seconds": 0.5425927,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0052307,
+                  "seconds_with_setup": 0.0053049
+                },
+                "CreatePassages": {
+                  "seconds": 0.0253636,
+                  "seconds_with_setup": 0.025364
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.48929670000000003,
+                  "seconds_with_setup": 0.48933869999999996
+                }
+              }
+            },
+            {
+              "path": "structural\\True-False-4-3-dense.json",
+              "sha256": "e2f6469305955b65fba9fb38554eea0348558086f51453b485f60f1ecf162004",
+              "total_seconds": 0.5743265,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0145852,
+                  "seconds_with_setup": 0.0147565
+                },
+                "CreatePassages": {
+                  "seconds": 0.0372717,
+                  "seconds_with_setup": 0.0372725
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.4904292,
+                  "seconds_with_setup": 0.4904853
+                }
+              }
+            },
+            {
+              "path": "structural\\True-False-4-4-dense.json",
+              "sha256": "801f3b82e0ab25587ba5c0007d2f1f011dc1e8323c21cf8ad75a9d325adbbf43",
+              "total_seconds": 0.5803716,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0096593,
+                  "seconds_with_setup": 0.009956
+                },
+                "CreatePassages": {
+                  "seconds": 0.0249269,
+                  "seconds_with_setup": 0.0249272
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.4856771,
+                  "seconds_with_setup": 0.48570499999999994
+                }
+              }
+            },
+            {
+              "path": "structural\\True-False-4-5-dense.json",
+              "sha256": "b4a49d6de27a9cfd4837d8d4feaf5d3c705d4abcc39f81b025a2867b978cabae",
+              "total_seconds": 0.5398398,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0062545,
+                  "seconds_with_setup": 0.0064157
+                },
+                "CreatePassages": {
+                  "seconds": 0.0260538,
+                  "seconds_with_setup": 0.0260542
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.49276269999999994,
+                  "seconds_with_setup": 0.4928095
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 3330816,
+            "passages": 17348
+          },
+          "median_seconds": 0.6238960000337102
+        },
+        "packed": {
+          "seconds": [
+            0.5841979999677278,
+            0.6143868999788538,
+            0.6269832000252791,
+            0.640258300001733,
+            0.6416398999863304
+          ],
+          "profiles": [
+            {
+              "path": "structural\\True-False-4-1-packed.json",
+              "sha256": "ddcf2c7a051e3a4954673cc877c6d1ed01f1948e3e677c8f93e8dca8161cafcf",
+              "total_seconds": 0.5384358,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0063863,
+                  "seconds_with_setup": 0.0064599
+                },
+                "CreatePassages": {
+                  "seconds": 0.0189478,
+                  "seconds_with_setup": 0.0189483
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.48812989999999995,
+                  "seconds_with_setup": 0.48816039999999994
+                }
+              }
+            },
+            {
+              "path": "structural\\True-False-4-2-packed.json",
+              "sha256": "c9c21a1cbcd3c88b110349077ae0a9e1d3577bc8d49f70b783af38a3d75c225e",
+              "total_seconds": 0.5656055,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0086633,
+                  "seconds_with_setup": 0.0088442
+                },
+                "CreatePassages": {
+                  "seconds": 0.0193595,
+                  "seconds_with_setup": 0.0193598
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.4884570000000001,
+                  "seconds_with_setup": 0.4884983
+                }
+              }
+            },
+            {
+              "path": "structural\\True-False-4-3-packed.json",
+              "sha256": "5db0747753c67b5a00c146503bab384fcb45224ab1d1295c3833ab0f12cbfd5a",
+              "total_seconds": 0.5648342,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0093437,
+                  "seconds_with_setup": 0.0095659
+                },
+                "CreatePassages": {
+                  "seconds": 0.0189679,
+                  "seconds_with_setup": 0.0189683
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.4906334,
+                  "seconds_with_setup": 0.49067299999999997
+                }
+              }
+            },
+            {
+              "path": "structural\\True-False-4-4-packed.json",
+              "sha256": "f591d4927b4f8a8b065bb74b1300bed0c8b5f6f47a254ea30eacffbeeaf145bf",
+              "total_seconds": 0.5799862,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0176875,
+                  "seconds_with_setup": 0.017893
+                },
+                "CreatePassages": {
+                  "seconds": 0.0300832,
+                  "seconds_with_setup": 0.0300839
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.5058839,
+                  "seconds_with_setup": 0.505933
+                }
+              }
+            },
+            {
+              "path": "structural\\True-False-4-5-packed.json",
+              "sha256": "7b966af155ef736d8506a0802241a1ee089b7e7e3657253a1b26469a0e357961",
+              "total_seconds": 0.5766848,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0103565,
+                  "seconds_with_setup": 0.0104852
+                },
+                "CreatePassages": {
+                  "seconds": 0.0188682,
+                  "seconds_with_setup": 0.0188686
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.49281549999999996,
+                  "seconds_with_setup": 0.4928608
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 1311152,
+            "passages": 17348,
+            "dense_equivalent_bytes": 3330816,
+            "empty_masks": 4808,
+            "retained_blocks": 1348,
+            "candidate_visits": 2463959,
+            "dense_visits": 23385104
+          },
+          "median_seconds": 0.6269832000252791
+        }
+      }
+    },
+    {
+      "detail": false,
+      "options": [
+        "-merge",
+        "-passageOnly"
+      ],
+      "workers": 1,
+      "visibility_sha256": "a9d4378468189a7f7695c5eb64cb8c581b0c4e7b43c9911f064003c396068f14",
+      "reference_and_worker_byte_parity": true,
+      "implementations": {
+        "dense": {
+          "seconds": [
+            0.21353259996976703,
+            0.21368210000218824,
+            0.2613314000191167,
+            0.28998980001779273,
+            0.24370639998232946
+          ],
+          "profiles": [
+            {
+              "path": "structural\\True-True-1-1-dense.json",
+              "sha256": "7f26fab54d30b64401e6f3cf2e4446c839f07e4cb051ad9c070378534813ab3a",
+              "total_seconds": 0.1912883,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0158383,
+                  "seconds_with_setup": 0.0158454
+                },
+                "CreatePassages": {
+                  "seconds": 0.0946493,
+                  "seconds_with_setup": 0.0946499
+                },
+                "PassageFlow": {
+                  "seconds": 0.0591395,
+                  "seconds_with_setup": 0.0591447
+                }
+              }
+            },
+            {
+              "path": "structural\\True-True-1-2-dense.json",
+              "sha256": "c25fb1673111b62aad5e03ad5629f1f1265ab4e89cbef17bb79d11dbe1ac4666",
+              "total_seconds": 0.1932631,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.017004,
+                  "seconds_with_setup": 0.0170099
+                },
+                "CreatePassages": {
+                  "seconds": 0.0956906,
+                  "seconds_with_setup": 0.0956913
+                },
+                "PassageFlow": {
+                  "seconds": 0.0597867,
+                  "seconds_with_setup": 0.05979020000000001
+                }
+              }
+            },
+            {
+              "path": "structural\\True-True-1-3-dense.json",
+              "sha256": "7f53a2a5f06d23b31047dd9cfe67aad53fe362e0839d44244438b15573ccfd16",
+              "total_seconds": 0.2209471,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0207803,
+                  "seconds_with_setup": 0.0207876
+                },
+                "CreatePassages": {
+                  "seconds": 0.094741,
+                  "seconds_with_setup": 0.0947416
+                },
+                "PassageFlow": {
+                  "seconds": 0.061272999999999994,
+                  "seconds_with_setup": 0.0612787
+                }
+              }
+            },
+            {
+              "path": "structural\\True-True-1-4-dense.json",
+              "sha256": "b7c851235e715e384113165c31919c4f124b70e0fdf5ce3865bd81d95d9dd7ab",
+              "total_seconds": 0.2367014,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0188175,
+                  "seconds_with_setup": 0.0188328
+                },
+                "CreatePassages": {
+                  "seconds": 0.096467,
+                  "seconds_with_setup": 0.0964676
+                },
+                "PassageFlow": {
+                  "seconds": 0.0614631,
+                  "seconds_with_setup": 0.061468999999999996
+                }
+              }
+            },
+            {
+              "path": "structural\\True-True-1-5-dense.json",
+              "sha256": "b78d278192f0f97bf129dcf301a188b0cab38940bd38ba815ba197253594b58f",
+              "total_seconds": 0.2093557,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0152376,
+                  "seconds_with_setup": 0.0152438
+                },
+                "CreatePassages": {
+                  "seconds": 0.095085,
+                  "seconds_with_setup": 0.0950858
+                },
+                "PassageFlow": {
+                  "seconds": 0.0611512,
+                  "seconds_with_setup": 0.0611553
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 3330816,
+            "passages": 17348
+          },
+          "median_seconds": 0.24370639998232946
+        },
+        "packed": {
+          "seconds": [
+            0.20015109999803826,
+            0.2386631999979727,
+            0.21267989999614656,
+            0.2052698999759741,
+            0.1978629000368528
+          ],
+          "profiles": [
+            {
+              "path": "structural\\True-True-1-1-packed.json",
+              "sha256": "852cda678a6cedcc9b37f17a8248ce847dfe9a2e7a9d2ea19ca531ea749914d0",
+              "total_seconds": 0.1679501,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0155334,
+                  "seconds_with_setup": 0.0155391
+                },
+                "CreatePassages": {
+                  "seconds": 0.0702795,
+                  "seconds_with_setup": 0.0702803
+                },
+                "PassageFlow": {
+                  "seconds": 0.0563752,
+                  "seconds_with_setup": 0.056380200000000005
+                }
+              }
+            },
+            {
+              "path": "structural\\True-True-1-2-packed.json",
+              "sha256": "5ea350fa60b67223f798e001b7c9c5ebafe70cd9917e2a8a74c87b5808b34fd9",
+              "total_seconds": 0.1754302,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.01921,
+                  "seconds_with_setup": 0.019218
+                },
+                "CreatePassages": {
+                  "seconds": 0.070994,
+                  "seconds_with_setup": 0.0709945
+                },
+                "PassageFlow": {
+                  "seconds": 0.055137699999999984,
+                  "seconds_with_setup": 0.05514159999999999
+                }
+              }
+            },
+            {
+              "path": "structural\\True-True-1-3-packed.json",
+              "sha256": "9d1999ad3a37a76a89d1f3594b7d839d4031b637bb28625abed6ed39ea82b10f",
+              "total_seconds": 0.1731134,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0187746,
+                  "seconds_with_setup": 0.0187836
+                },
+                "CreatePassages": {
+                  "seconds": 0.0713333,
+                  "seconds_with_setup": 0.0713338
+                },
+                "PassageFlow": {
+                  "seconds": 0.055330599999999994,
+                  "seconds_with_setup": 0.0553342
+                }
+              }
+            },
+            {
+              "path": "structural\\True-True-1-4-packed.json",
+              "sha256": "fd829c8bc595d43936e5769e5fcdb1905e1303b33e1f2871b3d8319d5a20c9eb",
+              "total_seconds": 0.174399,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0183593,
+                  "seconds_with_setup": 0.0183661
+                },
+                "CreatePassages": {
+                  "seconds": 0.0729078,
+                  "seconds_with_setup": 0.0729083
+                },
+                "PassageFlow": {
+                  "seconds": 0.05676540000000001,
+                  "seconds_with_setup": 0.05677
+                }
+              }
+            },
+            {
+              "path": "structural\\True-True-1-5-packed.json",
+              "sha256": "45cba2f02cd019be7cbd553234cfac7281d5b26f56cb83f0de8c0a9558883b82",
+              "total_seconds": 0.1718344,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0155439,
+                  "seconds_with_setup": 0.0155494
+                },
+                "CreatePassages": {
+                  "seconds": 0.0719926,
+                  "seconds_with_setup": 0.0719932
+                },
+                "PassageFlow": {
+                  "seconds": 0.0559646,
+                  "seconds_with_setup": 0.05596880000000001
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 1311152,
+            "passages": 17348,
+            "dense_equivalent_bytes": 3330816,
+            "empty_masks": 4808,
+            "retained_blocks": 1348,
+            "candidate_visits": 2463959,
+            "dense_visits": 23385104
+          },
+          "median_seconds": 0.2052698999759741
+        }
+      }
+    },
+    {
+      "detail": false,
+      "options": [
+        "-merge",
+        "-passageOnly"
+      ],
+      "workers": 4,
+      "visibility_sha256": "a9d4378468189a7f7695c5eb64cb8c581b0c4e7b43c9911f064003c396068f14",
+      "reference_and_worker_byte_parity": true,
+      "implementations": {
+        "dense": {
+          "seconds": [
+            0.10772309999447316,
+            0.1264276999863796,
+            0.11178490001475438,
+            0.08882509998511523,
+            0.09794920001877472
+          ],
+          "profiles": [
+            {
+              "path": "structural\\True-True-4-1-dense.json",
+              "sha256": "673ba36159bfcc56628a62b52506c95cc8028d77b36d34fcbe8984f947b96dc7",
+              "total_seconds": 0.0784515,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0068679,
+                  "seconds_with_setup": 0.0070183
+                },
+                "CreatePassages": {
+                  "seconds": 0.0249185,
+                  "seconds_with_setup": 0.0249191
+                },
+                "PassageFlow": {
+                  "seconds": 0.0200958,
+                  "seconds_with_setup": 0.020104300000000002
+                }
+              }
+            },
+            {
+              "path": "structural\\True-True-4-2-dense.json",
+              "sha256": "2fe89035b10493fe1b1730da540126dc27ba71a877ff47e805f7d9ab284db5c2",
+              "total_seconds": 0.0824952,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0061173,
+                  "seconds_with_setup": 0.0062011
+                },
+                "CreatePassages": {
+                  "seconds": 0.025222,
+                  "seconds_with_setup": 0.0252226
+                },
+                "PassageFlow": {
+                  "seconds": 0.019510200000000002,
+                  "seconds_with_setup": 0.0195177
+                }
+              }
+            },
+            {
+              "path": "structural\\True-True-4-3-dense.json",
+              "sha256": "04ec24bb295d8058d86f13f0f5334cd790aa04f8082930476e0315a849524add",
+              "total_seconds": 0.0740665,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0058775,
+                  "seconds_with_setup": 0.0059788
+                },
+                "CreatePassages": {
+                  "seconds": 0.0262948,
+                  "seconds_with_setup": 0.0262953
+                },
+                "PassageFlow": {
+                  "seconds": 0.0200232,
+                  "seconds_with_setup": 0.020031900000000002
+                }
+              }
+            },
+            {
+              "path": "structural\\True-True-4-4-dense.json",
+              "sha256": "55e41f62e23f709c49930fb8ee8dc57ba6666f19bd7d5f448dda986b1475e77f",
+              "total_seconds": 0.0676472,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.005095,
+                  "seconds_with_setup": 0.0051805
+                },
+                "CreatePassages": {
+                  "seconds": 0.0254314,
+                  "seconds_with_setup": 0.0254319
+                },
+                "PassageFlow": {
+                  "seconds": 0.019202300000000002,
+                  "seconds_with_setup": 0.0192083
+                }
+              }
+            },
+            {
+              "path": "structural\\True-True-4-5-dense.json",
+              "sha256": "f85df01fcd38042695a2c74b1f699e1b0e93359e95556d69317ef695261e63e7",
+              "total_seconds": 0.0743054,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0073679,
+                  "seconds_with_setup": 0.0075448
+                },
+                "CreatePassages": {
+                  "seconds": 0.025009,
+                  "seconds_with_setup": 0.0250095
+                },
+                "PassageFlow": {
+                  "seconds": 0.020264900000000002,
+                  "seconds_with_setup": 0.020272199999999997
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 3330816,
+            "passages": 17348
+          },
+          "median_seconds": 0.10772309999447316
+        },
+        "packed": {
+          "seconds": [
+            0.11262410000199452,
+            0.1364668000023812,
+            0.15304549998836592,
+            0.09887729998445138,
+            0.08764819998759776
+          ],
+          "profiles": [
+            {
+              "path": "structural\\True-True-4-1-packed.json",
+              "sha256": "14f4b62d711cbb59b25d0f624b7d953edd9e36c8af7cac84b09ca4b798425fb9",
+              "total_seconds": 0.0740167,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0077586,
+                  "seconds_with_setup": 0.0079271
+                },
+                "CreatePassages": {
+                  "seconds": 0.0188896,
+                  "seconds_with_setup": 0.0188899
+                },
+                "PassageFlow": {
+                  "seconds": 0.0190536,
+                  "seconds_with_setup": 0.0190603
+                }
+              }
+            },
+            {
+              "path": "structural\\True-True-4-2-packed.json",
+              "sha256": "f97e011e80115b67d5f9100197c090b2ddeca1655242920e0fb73b38fd7f52a6",
+              "total_seconds": 0.0701376,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0064467,
+                  "seconds_with_setup": 0.0065858
+                },
+                "CreatePassages": {
+                  "seconds": 0.01869,
+                  "seconds_with_setup": 0.0186905
+                },
+                "PassageFlow": {
+                  "seconds": 0.0193281,
+                  "seconds_with_setup": 0.0193364
+                }
+              }
+            },
+            {
+              "path": "structural\\True-True-4-3-packed.json",
+              "sha256": "ba6b48795cb9c3d53eb2fdf066ef5b280e6c7e69263381ff9d39fda1c3c281f5",
+              "total_seconds": 0.0920929,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0114339,
+                  "seconds_with_setup": 0.011678
+                },
+                "CreatePassages": {
+                  "seconds": 0.0188274,
+                  "seconds_with_setup": 0.0188277
+                },
+                "PassageFlow": {
+                  "seconds": 0.0191649,
+                  "seconds_with_setup": 0.0191729
+                }
+              }
+            },
+            {
+              "path": "structural\\True-True-4-4-packed.json",
+              "sha256": "985189d2789371e68dcb0d619dbe83118fda4046e8bbee6982e1a43ecaafd2eb",
+              "total_seconds": 0.0636423,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0060722,
+                  "seconds_with_setup": 0.0061728
+                },
+                "CreatePassages": {
+                  "seconds": 0.0185763,
+                  "seconds_with_setup": 0.0185767
+                },
+                "PassageFlow": {
+                  "seconds": 0.018457800000000003,
+                  "seconds_with_setup": 0.0184629
+                }
+              }
+            },
+            {
+              "path": "structural\\True-True-4-5-packed.json",
+              "sha256": "a286c6332be34436196788f11cb479ecdd190f14ab84d8ceff3e08b358434dae",
+              "total_seconds": 0.0692722,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0113937,
+                  "seconds_with_setup": 0.0115466
+                },
+                "CreatePassages": {
+                  "seconds": 0.0184652,
+                  "seconds_with_setup": 0.0184657
+                },
+                "PassageFlow": {
+                  "seconds": 0.0185651,
+                  "seconds_with_setup": 0.018572799999999997
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 1311152,
+            "passages": 17348,
+            "dense_equivalent_bytes": 3330816,
+            "empty_masks": 4808,
+            "retained_blocks": 1348,
+            "candidate_visits": 2463959,
+            "dense_visits": 23385104
+          },
+          "median_seconds": 0.11262410000199452
+        }
+      }
+    },
+    {
+      "detail": true,
+      "options": [],
+      "workers": 1,
+      "visibility_sha256": "6668b47c8fe6800739b30af8504ee645cf16fa5bb48fa8efb5a10ca2b51e363c",
+      "reference_and_worker_byte_parity": true,
+      "implementations": {
+        "dense": {
+          "seconds": [
+            0.06195810000644997,
+            0.05787469999631867,
+            0.102705400029663,
+            0.057268999982625246,
+            0.06677390000550076
+          ],
+          "profiles": [
+            {
+              "path": "detail\\False-False-1-1-dense.json",
+              "sha256": "04a73846c6477cba17463034e13b449243e8786c930523053508802ac882f651",
+              "total_seconds": 0.0211193,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0001599,
+                  "seconds_with_setup": 0.0001717
+                },
+                "CreatePassages": {
+                  "seconds": 7.4e-05,
+                  "seconds_with_setup": 7.45e-05
+                },
+                "PassagePortalFlow": {
+                  "seconds": 9.47e-05,
+                  "seconds_with_setup": 9.53e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\False-False-1-2-dense.json",
+              "sha256": "68bfd4ec980413d3c09f82550be130fcfefe3a0d235c3c94af32d330f438aa3f",
+              "total_seconds": 0.0239063,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0001678,
+                  "seconds_with_setup": 0.00018
+                },
+                "CreatePassages": {
+                  "seconds": 7.25e-05,
+                  "seconds_with_setup": 7.29e-05
+                },
+                "PassagePortalFlow": {
+                  "seconds": 8.77e-05,
+                  "seconds_with_setup": 8.83e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\False-False-1-3-dense.json",
+              "sha256": "f3d7a0cdc4e85c03e7ca9ebf0d38d5eeb93b4f793a1830501a9ce2e1d9a37126",
+              "total_seconds": 0.0555875,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0001506,
+                  "seconds_with_setup": 0.0001635
+                },
+                "CreatePassages": {
+                  "seconds": 7.3e-05,
+                  "seconds_with_setup": 7.36e-05
+                },
+                "PassagePortalFlow": {
+                  "seconds": 7.6e-05,
+                  "seconds_with_setup": 7.66e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\False-False-1-4-dense.json",
+              "sha256": "032b1b680404ecca65a047a2efb40bc062ac83f128b4cc01c8ccc2eb89257725",
+              "total_seconds": 0.0226104,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0001506,
+                  "seconds_with_setup": 0.0001605
+                },
+                "CreatePassages": {
+                  "seconds": 6.81e-05,
+                  "seconds_with_setup": 6.87e-05
+                },
+                "PassagePortalFlow": {
+                  "seconds": 7.18e-05,
+                  "seconds_with_setup": 7.23e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\False-False-1-5-dense.json",
+              "sha256": "ec48a0b2dc4ad2736d53696ba3f267d91c8d42aece1286a8348732139bee68d7",
+              "total_seconds": 0.0204054,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 5.88e-05,
+                  "seconds_with_setup": 6.28e-05
+                },
+                "CreatePassages": {
+                  "seconds": 2.38e-05,
+                  "seconds_with_setup": 2.4e-05
+                },
+                "PassagePortalFlow": {
+                  "seconds": 2.97e-05,
+                  "seconds_with_setup": 2.98e-05
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 384,
+            "passages": 16
+          },
+          "median_seconds": 0.06195810000644997
+        },
+        "packed": {
+          "seconds": [
+            0.049323400016874075,
+            0.057827599986921996,
+            0.10282239998923615,
+            0.12571330001810566,
+            0.07058340002549812
+          ],
+          "profiles": [
+            {
+              "path": "detail\\False-False-1-1-packed.json",
+              "sha256": "c7532d29e4a8e515a9f91e456c60464f42319ebad118a25d22c0158c715e069a",
+              "total_seconds": 0.0282333,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 8.63e-05,
+                  "seconds_with_setup": 9.16e-05
+                },
+                "CreatePassages": {
+                  "seconds": 3.98e-05,
+                  "seconds_with_setup": 4.01e-05
+                },
+                "PassagePortalFlow": {
+                  "seconds": 3.66e-05,
+                  "seconds_with_setup": 3.7e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\False-False-1-2-packed.json",
+              "sha256": "cd5d8fc05950ecae1e6b6b61b6e2a5d39d62fd66bb0aa96a4ab613fe8a9cba55",
+              "total_seconds": 0.0128489,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 7.15e-05,
+                  "seconds_with_setup": 7.45e-05
+                },
+                "CreatePassages": {
+                  "seconds": 2.27e-05,
+                  "seconds_with_setup": 2.29e-05
+                },
+                "PassagePortalFlow": {
+                  "seconds": 2.45e-05,
+                  "seconds_with_setup": 2.46e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\False-False-1-3-packed.json",
+              "sha256": "27a94acb1aadfc83d22fc0bf9d6d02494c3ce67102151a719818d0baf4d716d7",
+              "total_seconds": 0.0426886,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0005116,
+                  "seconds_with_setup": 0.0005287
+                },
+                "CreatePassages": {
+                  "seconds": 0.0001787,
+                  "seconds_with_setup": 0.0001799
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.0004015,
+                  "seconds_with_setup": 0.0004042
+                }
+              }
+            },
+            {
+              "path": "detail\\False-False-1-4-packed.json",
+              "sha256": "65e3a45b09ec96c1abfe68c7f08d2a5797e9652dc3f9610e0c4323fbbd60a4c3",
+              "total_seconds": 0.0369682,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0002714,
+                  "seconds_with_setup": 0.0002865
+                },
+                "CreatePassages": {
+                  "seconds": 0.0001109,
+                  "seconds_with_setup": 0.0001119
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.0001111,
+                  "seconds_with_setup": 0.0001119
+                }
+              }
+            },
+            {
+              "path": "detail\\False-False-1-5-packed.json",
+              "sha256": "11c0618003b4f4c3ff280b10286ffe3b5e0569b6aff422f724291ae56fcce8ca",
+              "total_seconds": 0.0298067,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0002465,
+                  "seconds_with_setup": 0.000258
+                },
+                "CreatePassages": {
+                  "seconds": 9.32e-05,
+                  "seconds_with_setup": 9.38e-05
+                },
+                "PassagePortalFlow": {
+                  "seconds": 9.87e-05,
+                  "seconds_with_setup": 9.95e-05
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 128,
+            "passages": 16,
+            "dense_equivalent_bytes": 384,
+            "empty_masks": 16,
+            "retained_blocks": 8,
+            "candidate_visits": 0,
+            "dense_visits": 128
+          },
+          "median_seconds": 0.07058340002549812
+        }
+      }
+    },
+    {
+      "detail": true,
+      "options": [],
+      "workers": 4,
+      "visibility_sha256": "6668b47c8fe6800739b30af8504ee645cf16fa5bb48fa8efb5a10ca2b51e363c",
+      "reference_and_worker_byte_parity": true,
+      "implementations": {
+        "dense": {
+          "seconds": [
+            0.09540540003217757,
+            0.08096430002478883,
+            0.08665040001505986,
+            0.09205700003076345,
+            0.07444799999939278
+          ],
+          "profiles": [
+            {
+              "path": "detail\\False-False-4-1-dense.json",
+              "sha256": "f3b6591ad8632e72bbf61dfa06f4609e4f98e03e763bf19dc85ac46ffe5193eb",
+              "total_seconds": 0.0265111,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0008253,
+                  "seconds_with_setup": 0.0011064
+                },
+                "CreatePassages": {
+                  "seconds": 0.000283,
+                  "seconds_with_setup": 0.0002851
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.0003738,
+                  "seconds_with_setup": 0.0003758
+                }
+              }
+            },
+            {
+              "path": "detail\\False-False-4-2-dense.json",
+              "sha256": "9b23fd3b87c8f4ff9ea3ef8e9e750e06fdb03b5eccfaf1cf01c922ed3a28abd2",
+              "total_seconds": 0.0207023,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0004881,
+                  "seconds_with_setup": 0.0006409
+                },
+                "CreatePassages": {
+                  "seconds": 0.0001527,
+                  "seconds_with_setup": 0.0001533
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.0002172,
+                  "seconds_with_setup": 0.0002186
+                }
+              }
+            },
+            {
+              "path": "detail\\False-False-4-3-dense.json",
+              "sha256": "1059d060f6353a65920b15c1175debae53f4725469b253c10cd164e1bac9d881",
+              "total_seconds": 0.0310172,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0012947,
+                  "seconds_with_setup": 0.0013744
+                },
+                "CreatePassages": {
+                  "seconds": 6.16e-05,
+                  "seconds_with_setup": 6.2e-05
+                },
+                "PassagePortalFlow": {
+                  "seconds": 5.06e-05,
+                  "seconds_with_setup": 5.08e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\False-False-4-4-dense.json",
+              "sha256": "fbce09c577d600dea9db64b198c387376bb3cf9f606c594cd045408cb1788ae5",
+              "total_seconds": 0.0369374,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.001916,
+                  "seconds_with_setup": 0.0023243
+                },
+                "CreatePassages": {
+                  "seconds": 0.0003833,
+                  "seconds_with_setup": 0.000385
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.0006671,
+                  "seconds_with_setup": 0.0006735
+                }
+              }
+            },
+            {
+              "path": "detail\\False-False-4-5-dense.json",
+              "sha256": "15f7dc19952a6bd4239a5852b177a11c64c76e57c4fc6c955e6dfe752d97b948",
+              "total_seconds": 0.0186324,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0005669,
+                  "seconds_with_setup": 0.0007044
+                },
+                "CreatePassages": {
+                  "seconds": 0.0001418,
+                  "seconds_with_setup": 0.0001423
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.0001419,
+                  "seconds_with_setup": 0.0001442
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 384,
+            "passages": 16
+          },
+          "median_seconds": 0.08665040001505986
+        },
+        "packed": {
+          "seconds": [
+            0.13736330001847818,
+            0.1027281999704428,
+            0.05434379994403571,
+            0.055186000012326986,
+            0.11689200002001598
+          ],
+          "profiles": [
+            {
+              "path": "detail\\False-False-4-1-packed.json",
+              "sha256": "6a65996885bfa2e52488bfa4adf507eb91868feda3f39491fc30ce9c7d5eca73",
+              "total_seconds": 0.031591,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0020415,
+                  "seconds_with_setup": 0.0023882
+                },
+                "CreatePassages": {
+                  "seconds": 0.0006065,
+                  "seconds_with_setup": 0.0006094
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.0005104,
+                  "seconds_with_setup": 0.0005164
+                }
+              }
+            },
+            {
+              "path": "detail\\False-False-4-2-packed.json",
+              "sha256": "ff921243e19f5fcf349e8a4c4483736b42875aa95846b6a2e1595d2470cf1bf1",
+              "total_seconds": 0.0452415,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0013011,
+                  "seconds_with_setup": 0.0020273
+                },
+                "CreatePassages": {
+                  "seconds": 0.0008597,
+                  "seconds_with_setup": 0.0008624
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.000733,
+                  "seconds_with_setup": 0.0007381
+                }
+              }
+            },
+            {
+              "path": "detail\\False-False-4-3-packed.json",
+              "sha256": "2fe4841c278265198e08bf45f656b6e8b75bd8606f7c0d1c220c98ec519c5868",
+              "total_seconds": 0.0304082,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0009251,
+                  "seconds_with_setup": 0.0012204
+                },
+                "CreatePassages": {
+                  "seconds": 0.0004785,
+                  "seconds_with_setup": 0.0004802
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.0004297,
+                  "seconds_with_setup": 0.0004344
+                }
+              }
+            },
+            {
+              "path": "detail\\False-False-4-4-packed.json",
+              "sha256": "e6242d78552c91cb8434826427e4bb7148f877d623b91657cd2ef0153c6360c0",
+              "total_seconds": 0.0154683,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0013425,
+                  "seconds_with_setup": 0.0014131
+                },
+                "CreatePassages": {
+                  "seconds": 7.88e-05,
+                  "seconds_with_setup": 7.91e-05
+                },
+                "PassagePortalFlow": {
+                  "seconds": 9.36e-05,
+                  "seconds_with_setup": 9.48e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\False-False-4-5-packed.json",
+              "sha256": "1ebda9c64bd7b8e58317e125ff50e279e2abb1abebe68f9060f518959dfd4164",
+              "total_seconds": 0.0569354,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0019971,
+                  "seconds_with_setup": 0.0026465
+                },
+                "CreatePassages": {
+                  "seconds": 0.0009195,
+                  "seconds_with_setup": 0.0009222
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.0008225,
+                  "seconds_with_setup": 0.0008266
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 128,
+            "passages": 16,
+            "dense_equivalent_bytes": 384,
+            "empty_masks": 16,
+            "retained_blocks": 8,
+            "candidate_visits": 0,
+            "dense_visits": 128
+          },
+          "median_seconds": 0.1027281999704428
+        }
+      }
+    },
+    {
+      "detail": true,
+      "options": [
+        "-passageOnly"
+      ],
+      "workers": 1,
+      "visibility_sha256": "6668b47c8fe6800739b30af8504ee645cf16fa5bb48fa8efb5a10ca2b51e363c",
+      "reference_and_worker_byte_parity": true,
+      "implementations": {
+        "dense": {
+          "seconds": [
+            0.09413729998050258,
+            0.04452340002171695,
+            0.04857320000883192,
+            0.049837299971841276,
+            0.04751609999220818
+          ],
+          "profiles": [
+            {
+              "path": "detail\\False-True-1-1-dense.json",
+              "sha256": "7fb6b1aa698c320c816008511a0d1bd08cdcb7d5106aa3eb89b0ed4c0759c8d6",
+              "total_seconds": 0.024366,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 5.35e-05,
+                  "seconds_with_setup": 5.9e-05
+                },
+                "CreatePassages": {
+                  "seconds": 3.72e-05,
+                  "seconds_with_setup": 3.76e-05
+                },
+                "PassageFlow": {
+                  "seconds": 2.44e-05,
+                  "seconds_with_setup": 2.46e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\False-True-1-2-dense.json",
+              "sha256": "625a46da9ef4e6c7bb612ab9b43f3a691bf1bcdb70f22b8661ad1c709a682478",
+              "total_seconds": 0.0266342,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0001041,
+                  "seconds_with_setup": 0.0001158
+                },
+                "CreatePassages": {
+                  "seconds": 7.75e-05,
+                  "seconds_with_setup": 7.82e-05
+                },
+                "PassageFlow": {
+                  "seconds": 4.99e-05,
+                  "seconds_with_setup": 5.02e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\False-True-1-3-dense.json",
+              "sha256": "2d32f58456d4c252ac5cf9c3e4d8e1555d2b8c5e5e7dee7c5ebc1a4a73a125a1",
+              "total_seconds": 0.0249956,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 6.55e-05,
+                  "seconds_with_setup": 7.19e-05
+                },
+                "CreatePassages": {
+                  "seconds": 3.93e-05,
+                  "seconds_with_setup": 3.96e-05
+                },
+                "PassageFlow": {
+                  "seconds": 2.88e-05,
+                  "seconds_with_setup": 2.91e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\False-True-1-4-dense.json",
+              "sha256": "db0634b11c96916895bd400b65195b10d9ea976b5c57d1074bd473b435b6d017",
+              "total_seconds": 0.0191012,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 6.29e-05,
+                  "seconds_with_setup": 6.88e-05
+                },
+                "CreatePassages": {
+                  "seconds": 5.2e-05,
+                  "seconds_with_setup": 5.24e-05
+                },
+                "PassageFlow": {
+                  "seconds": 3.13e-05,
+                  "seconds_with_setup": 3.15e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\False-True-1-5-dense.json",
+              "sha256": "b1bd2bd049093fbcc01e0c8ddf663a54a31ff0bbe541f4b27c342235e46bc8c2",
+              "total_seconds": 0.0213101,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 5.47e-05,
+                  "seconds_with_setup": 6.04e-05
+                },
+                "CreatePassages": {
+                  "seconds": 3.5e-05,
+                  "seconds_with_setup": 3.53e-05
+                },
+                "PassageFlow": {
+                  "seconds": 2.37e-05,
+                  "seconds_with_setup": 2.39e-05
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 384,
+            "passages": 16
+          },
+          "median_seconds": 0.04857320000883192
+        },
+        "packed": {
+          "seconds": [
+            0.054655499989166856,
+            0.07202729996060953,
+            0.03621220000786707,
+            0.05820010002935305,
+            0.06062980002025142
+          ],
+          "profiles": [
+            {
+              "path": "detail\\False-True-1-1-packed.json",
+              "sha256": "48f1ea998a3c0674e1b172a774e6c99a3e41905e391f9cbd1249ddf21f206d71",
+              "total_seconds": 0.0269391,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0001168,
+                  "seconds_with_setup": 0.0001234
+                },
+                "CreatePassages": {
+                  "seconds": 5.37e-05,
+                  "seconds_with_setup": 5.41e-05
+                },
+                "PassageFlow": {
+                  "seconds": 2.32e-05,
+                  "seconds_with_setup": 2.35e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\False-True-1-2-packed.json",
+              "sha256": "292e55734f85427c4c12ad4c4ce5fa8b3434aa1fd97ae66384d8e983c94eaae3",
+              "total_seconds": 0.0215706,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0001832,
+                  "seconds_with_setup": 0.0001937
+                },
+                "CreatePassages": {
+                  "seconds": 8.21e-05,
+                  "seconds_with_setup": 8.26e-05
+                },
+                "PassageFlow": {
+                  "seconds": 3.6e-05,
+                  "seconds_with_setup": 3.65e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\False-True-1-3-packed.json",
+              "sha256": "75de7d1f089ae77f9f581667a6d4a8039251aadbbb6812c5c78db6864eb2fbfa",
+              "total_seconds": 0.0192845,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 6.48e-05,
+                  "seconds_with_setup": 6.8e-05
+                },
+                "CreatePassages": {
+                  "seconds": 2.34e-05,
+                  "seconds_with_setup": 2.36e-05
+                },
+                "PassageFlow": {
+                  "seconds": 1.26e-05,
+                  "seconds_with_setup": 1.27e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\False-True-1-4-packed.json",
+              "sha256": "661eb77dc02ec4a874258132070b000b65b764055547367ffca9e29619027a5a",
+              "total_seconds": 0.0195002,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0001231,
+                  "seconds_with_setup": 0.0001304
+                },
+                "CreatePassages": {
+                  "seconds": 6.27e-05,
+                  "seconds_with_setup": 6.32e-05
+                },
+                "PassageFlow": {
+                  "seconds": 2.61e-05,
+                  "seconds_with_setup": 2.64e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\False-True-1-5-packed.json",
+              "sha256": "b00c6a8158d4cf4a5fc9c00c39ee672d8e10ef5422713d6d465a51f4d1403a0e",
+              "total_seconds": 0.0213465,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 7.07e-05,
+                  "seconds_with_setup": 7.44e-05
+                },
+                "CreatePassages": {
+                  "seconds": 2.81e-05,
+                  "seconds_with_setup": 2.83e-05
+                },
+                "PassageFlow": {
+                  "seconds": 1.45e-05,
+                  "seconds_with_setup": 1.46e-05
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 128,
+            "passages": 16,
+            "dense_equivalent_bytes": 384,
+            "empty_masks": 16,
+            "retained_blocks": 8,
+            "candidate_visits": 0,
+            "dense_visits": 128
+          },
+          "median_seconds": 0.05820010002935305
+        }
+      }
+    },
+    {
+      "detail": true,
+      "options": [
+        "-passageOnly"
+      ],
+      "workers": 4,
+      "visibility_sha256": "6668b47c8fe6800739b30af8504ee645cf16fa5bb48fa8efb5a10ca2b51e363c",
+      "reference_and_worker_byte_parity": true,
+      "implementations": {
+        "dense": {
+          "seconds": [
+            0.09749459999147803,
+            0.07437489996664226,
+            0.06422900001052767,
+            0.08232210000278428,
+            0.136236899998039
+          ],
+          "profiles": [
+            {
+              "path": "detail\\False-True-4-1-dense.json",
+              "sha256": "d77e50304d93963ef05ba89d717988ff82459fb4151be49df801752edcc641db",
+              "total_seconds": 0.048145,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0034442,
+                  "seconds_with_setup": 0.003832
+                },
+                "CreatePassages": {
+                  "seconds": 0.0006654,
+                  "seconds_with_setup": 0.000669
+                },
+                "PassageFlow": {
+                  "seconds": 0.0002156,
+                  "seconds_with_setup": 0.0002167
+                }
+              }
+            },
+            {
+              "path": "detail\\False-True-4-2-dense.json",
+              "sha256": "8b44935811d8594cfb8ad3eb1ace40da90095b07bd25e1700d435545f10b6051",
+              "total_seconds": 0.0517508,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.00127,
+                  "seconds_with_setup": 0.0017925
+                },
+                "CreatePassages": {
+                  "seconds": 0.0005513,
+                  "seconds_with_setup": 0.000554
+                },
+                "PassageFlow": {
+                  "seconds": 0.0003829,
+                  "seconds_with_setup": 0.0003852
+                }
+              }
+            },
+            {
+              "path": "detail\\False-True-4-3-dense.json",
+              "sha256": "6aad9abe587f70dbe0386adf412d4c9911474fcd3f85538f5f62dcdeeb1a8a83",
+              "total_seconds": 0.0289769,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0009973,
+                  "seconds_with_setup": 0.0012157
+                },
+                "CreatePassages": {
+                  "seconds": 0.00016,
+                  "seconds_with_setup": 0.0001612
+                },
+                "PassageFlow": {
+                  "seconds": 0.0002294,
+                  "seconds_with_setup": 0.0002305
+                }
+              }
+            },
+            {
+              "path": "detail\\False-True-4-4-dense.json",
+              "sha256": "f203b92f5da89aa47b56b5acefbf872b4760e00d1fcc6d2693e8c5ccd58288e2",
+              "total_seconds": 0.0301113,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0015886,
+                  "seconds_with_setup": 0.0018339
+                },
+                "CreatePassages": {
+                  "seconds": 0.000384,
+                  "seconds_with_setup": 0.0003855
+                },
+                "PassageFlow": {
+                  "seconds": 0.0003297,
+                  "seconds_with_setup": 0.0003312
+                }
+              }
+            },
+            {
+              "path": "detail\\False-True-4-5-dense.json",
+              "sha256": "bdc3f58f79ff7a1103281140b13f4616ac7a67811ea94498a19c32dba032fb84",
+              "total_seconds": 0.0493,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0022066,
+                  "seconds_with_setup": 0.0026986
+                },
+                "CreatePassages": {
+                  "seconds": 0.0005139,
+                  "seconds_with_setup": 0.000516
+                },
+                "PassageFlow": {
+                  "seconds": 0.0003822,
+                  "seconds_with_setup": 0.0003859
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 384,
+            "passages": 16
+          },
+          "median_seconds": 0.08232210000278428
+        },
+        "packed": {
+          "seconds": [
+            0.08991919999243692,
+            0.10076820000540465,
+            0.04916080000111833,
+            0.0782245000009425,
+            0.05774959997506812
+          ],
+          "profiles": [
+            {
+              "path": "detail\\False-True-4-1-packed.json",
+              "sha256": "05f91015a1a1c95287933d6a5b86c8ba1f0773fdb62e185b3b1f723364e11c83",
+              "total_seconds": 0.0322655,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0013166,
+                  "seconds_with_setup": 0.001643
+                },
+                "CreatePassages": {
+                  "seconds": 0.0003572,
+                  "seconds_with_setup": 0.0003588
+                },
+                "PassageFlow": {
+                  "seconds": 0.0001794,
+                  "seconds_with_setup": 0.0001821
+                }
+              }
+            },
+            {
+              "path": "detail\\False-True-4-2-packed.json",
+              "sha256": "b868e2345d74d0af76631ea2b42b6618eb3a4972a23f681d43007e6289bf7667",
+              "total_seconds": 0.0410048,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.000538,
+                  "seconds_with_setup": 0.0007479
+                },
+                "CreatePassages": {
+                  "seconds": 0.0002839,
+                  "seconds_with_setup": 0.0002851
+                },
+                "PassageFlow": {
+                  "seconds": 0.0001559,
+                  "seconds_with_setup": 0.0001569
+                }
+              }
+            },
+            {
+              "path": "detail\\False-True-4-3-packed.json",
+              "sha256": "25282bf668e7fef01122ddc95585ae2233718fe4e3fe3ec5b97ba048023f7fca",
+              "total_seconds": 0.0290691,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0003528,
+                  "seconds_with_setup": 0.0005474
+                },
+                "CreatePassages": {
+                  "seconds": 0.0002577,
+                  "seconds_with_setup": 0.0002585
+                },
+                "PassageFlow": {
+                  "seconds": 0.0001199,
+                  "seconds_with_setup": 0.0001207
+                }
+              }
+            },
+            {
+              "path": "detail\\False-True-4-4-packed.json",
+              "sha256": "08bbb04f2592415a067dd6583744cbcaf15588bbc2c6a0e90c194e09d87f9553",
+              "total_seconds": 0.0320752,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0014204,
+                  "seconds_with_setup": 0.0017021
+                },
+                "CreatePassages": {
+                  "seconds": 0.0002357,
+                  "seconds_with_setup": 0.0002366
+                },
+                "PassageFlow": {
+                  "seconds": 0.0002685,
+                  "seconds_with_setup": 0.0002698
+                }
+              }
+            },
+            {
+              "path": "detail\\False-True-4-5-packed.json",
+              "sha256": "23555843dcdf0a9e56574a6acedbab5ce4451b0169dd2705526d70f412e701e8",
+              "total_seconds": 0.0149377,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0002333,
+                  "seconds_with_setup": 0.0003078
+                },
+                "CreatePassages": {
+                  "seconds": 8.39e-05,
+                  "seconds_with_setup": 8.42e-05
+                },
+                "PassageFlow": {
+                  "seconds": 2.96e-05,
+                  "seconds_with_setup": 2.98e-05
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 128,
+            "passages": 16,
+            "dense_equivalent_bytes": 384,
+            "empty_masks": 16,
+            "retained_blocks": 8,
+            "candidate_visits": 0,
+            "dense_visits": 128
+          },
+          "median_seconds": 0.0782245000009425
+        }
+      }
+    },
+    {
+      "detail": true,
+      "options": [
+        "-merge"
+      ],
+      "workers": 1,
+      "visibility_sha256": "6668b47c8fe6800739b30af8504ee645cf16fa5bb48fa8efb5a10ca2b51e363c",
+      "reference_and_worker_byte_parity": true,
+      "implementations": {
+        "dense": {
+          "seconds": [
+            0.06662659998983145,
+            0.06448719999752939,
+            0.044422000006306916,
+            0.0898410000372678,
+            0.07601650001015514
+          ],
+          "profiles": [
+            {
+              "path": "detail\\True-False-1-1-dense.json",
+              "sha256": "196557d239bd2df12567629f16942b2c907a4a4f56b523499efdfb1e3d0f9d23",
+              "total_seconds": 0.0221144,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 8.22e-05,
+                  "seconds_with_setup": 9.25e-05
+                },
+                "CreatePassages": {
+                  "seconds": 2.34e-05,
+                  "seconds_with_setup": 2.4e-05
+                },
+                "PassagePortalFlow": {
+                  "seconds": 2.89e-05,
+                  "seconds_with_setup": 2.93e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\True-False-1-2-dense.json",
+              "sha256": "c76215eb3d18ffe806ba19c5e213228fbdcc9bdf4fa8aecd104a0cb63175938f",
+              "total_seconds": 0.0253571,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0001094,
+                  "seconds_with_setup": 0.0001238
+                },
+                "CreatePassages": {
+                  "seconds": 3.85e-05,
+                  "seconds_with_setup": 3.92e-05
+                },
+                "PassagePortalFlow": {
+                  "seconds": 3.19e-05,
+                  "seconds_with_setup": 3.26e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\True-False-1-3-dense.json",
+              "sha256": "a540675e1c4248bbe870a2a461596b459568217e4115aff94c4958e807b96521",
+              "total_seconds": 0.0209986,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 6.09e-05,
+                  "seconds_with_setup": 7.03e-05
+                },
+                "CreatePassages": {
+                  "seconds": 1.36e-05,
+                  "seconds_with_setup": 1.4e-05
+                },
+                "PassagePortalFlow": {
+                  "seconds": 2.05e-05,
+                  "seconds_with_setup": 2.08e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\True-False-1-4-dense.json",
+              "sha256": "d44aafa8dc522906e38bcc0148281bce3c541be6b4c9a8d3cdebffdeaa6d2324",
+              "total_seconds": 0.0328607,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0001204,
+                  "seconds_with_setup": 0.0001358
+                },
+                "CreatePassages": {
+                  "seconds": 3.3e-05,
+                  "seconds_with_setup": 3.37e-05
+                },
+                "PassagePortalFlow": {
+                  "seconds": 3.68e-05,
+                  "seconds_with_setup": 3.76e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\True-False-1-5-dense.json",
+              "sha256": "a8716d7ee985c5373a8d97a1a337d3507b9dc8c45f44a201d77367739e1e3106",
+              "total_seconds": 0.0314453,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0001387,
+                  "seconds_with_setup": 0.000157
+                },
+                "CreatePassages": {
+                  "seconds": 4.3e-05,
+                  "seconds_with_setup": 4.37e-05
+                },
+                "PassagePortalFlow": {
+                  "seconds": 3.79e-05,
+                  "seconds_with_setup": 3.87e-05
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 0,
+            "passages": 0
+          },
+          "median_seconds": 0.06662659998983145
+        },
+        "packed": {
+          "seconds": [
+            0.06330999999772757,
+            0.06097880000015721,
+            0.044767400017008185,
+            0.15315700002247468,
+            0.08903460000874475
+          ],
+          "profiles": [
+            {
+              "path": "detail\\True-False-1-1-packed.json",
+              "sha256": "db3dc3982d00b99e2073375cc1bae8813b20b786a4e1335909aa80636c69697f",
+              "total_seconds": 0.0320035,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0001295,
+                  "seconds_with_setup": 0.0001435
+                },
+                "CreatePassages": {
+                  "seconds": 0.0001015,
+                  "seconds_with_setup": 0.0001023
+                },
+                "PassagePortalFlow": {
+                  "seconds": 1e-05,
+                  "seconds_with_setup": 1.09e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\True-False-1-2-packed.json",
+              "sha256": "730382af04978370f75b176acb30b6e0a148c9c9c49dfedc64bc01a49ed04f31",
+              "total_seconds": 0.0204885,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 7.05e-05,
+                  "seconds_with_setup": 7.92e-05
+                },
+                "CreatePassages": {
+                  "seconds": 5.09e-05,
+                  "seconds_with_setup": 5.13e-05
+                },
+                "PassagePortalFlow": {
+                  "seconds": 5.2e-06,
+                  "seconds_with_setup": 5.7e-06
+                }
+              }
+            },
+            {
+              "path": "detail\\True-False-1-3-packed.json",
+              "sha256": "813295af2b15712a7c4b2ca19e3160d34ad29dfe20b2d73f1bbde48301743c4b",
+              "total_seconds": 0.017228,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 3.56e-05,
+                  "seconds_with_setup": 3.88e-05
+                },
+                "CreatePassages": {
+                  "seconds": 2.46e-05,
+                  "seconds_with_setup": 2.47e-05
+                },
+                "PassagePortalFlow": {
+                  "seconds": 2.8e-06,
+                  "seconds_with_setup": 3e-06
+                }
+              }
+            },
+            {
+              "path": "detail\\True-False-1-4-packed.json",
+              "sha256": "2bcf14dfb468135059761c080601ddf467db8eccef92262f935fe91b8272252a",
+              "total_seconds": 0.0629098,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0001769,
+                  "seconds_with_setup": 0.0001949
+                },
+                "CreatePassages": {
+                  "seconds": 0.0001411,
+                  "seconds_with_setup": 0.000142
+                },
+                "PassagePortalFlow": {
+                  "seconds": 1.24e-05,
+                  "seconds_with_setup": 1.36e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\True-False-1-5-packed.json",
+              "sha256": "5614365252d736698f37a258630b898d7e5b2421a06a18b69057dd0c71a79353",
+              "total_seconds": 0.0227437,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 9.31e-05,
+                  "seconds_with_setup": 0.0001024
+                },
+                "CreatePassages": {
+                  "seconds": 7e-05,
+                  "seconds_with_setup": 7.05e-05
+                },
+                "PassagePortalFlow": {
+                  "seconds": 6.6e-06,
+                  "seconds_with_setup": 7.3e-06
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 0,
+            "passages": 0,
+            "dense_equivalent_bytes": 0,
+            "empty_masks": 0,
+            "retained_blocks": 0,
+            "candidate_visits": 0,
+            "dense_visits": 0
+          },
+          "median_seconds": 0.06330999999772757
+        }
+      }
+    },
+    {
+      "detail": true,
+      "options": [
+        "-merge"
+      ],
+      "workers": 4,
+      "visibility_sha256": "6668b47c8fe6800739b30af8504ee645cf16fa5bb48fa8efb5a10ca2b51e363c",
+      "reference_and_worker_byte_parity": true,
+      "implementations": {
+        "dense": {
+          "seconds": [
+            0.06597230001352727,
+            0.11252149997744709,
+            0.15579879999859259,
+            0.0853040000074543,
+            0.06901490001473576
+          ],
+          "profiles": [
+            {
+              "path": "detail\\True-False-4-1-dense.json",
+              "sha256": "05cb99908299d254d41a0e3b1b67f20f8e2339f7929fc1204ee28889d9ff97b2",
+              "total_seconds": 0.0224756,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0021467,
+                  "seconds_with_setup": 0.0023022
+                },
+                "CreatePassages": {
+                  "seconds": 8.24e-05,
+                  "seconds_with_setup": 8.29e-05
+                },
+                "PassagePortalFlow": {
+                  "seconds": 7.31e-05,
+                  "seconds_with_setup": 7.38e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\True-False-4-2-dense.json",
+              "sha256": "60bf53a444b2cb748d09c084fcaa73b006dbf4e1aa28431ac2ffec809ddef984",
+              "total_seconds": 0.0418788,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0018668,
+                  "seconds_with_setup": 0.0022393
+                },
+                "CreatePassages": {
+                  "seconds": 0.0002714,
+                  "seconds_with_setup": 0.0002738
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.0002369,
+                  "seconds_with_setup": 0.0002424
+                }
+              }
+            },
+            {
+              "path": "detail\\True-False-4-3-dense.json",
+              "sha256": "e5e254641df0c4981fd45dd66b625daf4abf7db1d625b223c9b93838652ef5f7",
+              "total_seconds": 0.0448707,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0016298,
+                  "seconds_with_setup": 0.002069
+                },
+                "CreatePassages": {
+                  "seconds": 0.0003451,
+                  "seconds_with_setup": 0.0003472
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.0002596,
+                  "seconds_with_setup": 0.0002664
+                }
+              }
+            },
+            {
+              "path": "detail\\True-False-4-4-dense.json",
+              "sha256": "d3fa04c68269cca87ba84692a22b559d334a553843e56f0e27e480a4bb178840",
+              "total_seconds": 0.0280407,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0007806,
+                  "seconds_with_setup": 0.0011628
+                },
+                "CreatePassages": {
+                  "seconds": 0.0002011,
+                  "seconds_with_setup": 0.0002025
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.0001774,
+                  "seconds_with_setup": 0.0001817
+                }
+              }
+            },
+            {
+              "path": "detail\\True-False-4-5-dense.json",
+              "sha256": "2bc8842192956d10b44d724fcb4a6aa5923d3470319a0b236493f148fa62e2a5",
+              "total_seconds": 0.0222619,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0007858,
+                  "seconds_with_setup": 0.0009307
+                },
+                "CreatePassages": {
+                  "seconds": 0.0001194,
+                  "seconds_with_setup": 0.00012
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.0001415,
+                  "seconds_with_setup": 0.0001434
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 0,
+            "passages": 0
+          },
+          "median_seconds": 0.0853040000074543
+        },
+        "packed": {
+          "seconds": [
+            0.06748039997182786,
+            0.0921492000343278,
+            0.04582419997313991,
+            0.06622899998910725,
+            0.08183250000001863
+          ],
+          "profiles": [
+            {
+              "path": "detail\\True-False-4-1-packed.json",
+              "sha256": "2d1452142407901c16c0643efe9962997f9be59cfbd148a5815a3287a4748759",
+              "total_seconds": 0.0217773,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0004495,
+                  "seconds_with_setup": 0.0005262
+                },
+                "CreatePassages": {
+                  "seconds": 7.59e-05,
+                  "seconds_with_setup": 7.62e-05
+                },
+                "PassagePortalFlow": {
+                  "seconds": 2.58e-05,
+                  "seconds_with_setup": 2.63e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\True-False-4-2-packed.json",
+              "sha256": "f7ea3417e7b09a2577e64ce1cd958b01360b91376d6c6b3afe6382a33944cc88",
+              "total_seconds": 0.0307525,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0009988,
+                  "seconds_with_setup": 0.0013764
+                },
+                "CreatePassages": {
+                  "seconds": 0.0003865,
+                  "seconds_with_setup": 0.0003878
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.0001618,
+                  "seconds_with_setup": 0.0001688
+                }
+              }
+            },
+            {
+              "path": "detail\\True-False-4-3-packed.json",
+              "sha256": "3b648d86f60b540ee070ca0cbe86a29ea774a28b0e68b2e7002788a44b717e24",
+              "total_seconds": 0.0146008,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0002305,
+                  "seconds_with_setup": 0.0003119
+                },
+                "CreatePassages": {
+                  "seconds": 5.16e-05,
+                  "seconds_with_setup": 5.18e-05
+                },
+                "PassagePortalFlow": {
+                  "seconds": 1.73e-05,
+                  "seconds_with_setup": 1.75e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\True-False-4-4-packed.json",
+              "sha256": "700c36793677c59568d1544c156d3dd9dc719080d78dbe9652363f09fc7d1d5a",
+              "total_seconds": 0.0299905,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0008728,
+                  "seconds_with_setup": 0.0011876
+                },
+                "CreatePassages": {
+                  "seconds": 0.0002705,
+                  "seconds_with_setup": 0.0002717
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.0001029,
+                  "seconds_with_setup": 0.0001076
+                }
+              }
+            },
+            {
+              "path": "detail\\True-False-4-5-packed.json",
+              "sha256": "5931bc456ddfb1af578211a55511fa607b92b05a5a5244dcc0fb2cbd5d376e92",
+              "total_seconds": 0.045914,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0190967,
+                  "seconds_with_setup": 0.0192563
+                },
+                "CreatePassages": {
+                  "seconds": 0.0007665,
+                  "seconds_with_setup": 0.0007686
+                },
+                "PassagePortalFlow": {
+                  "seconds": 0.0001936,
+                  "seconds_with_setup": 0.000198
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 0,
+            "passages": 0,
+            "dense_equivalent_bytes": 0,
+            "empty_masks": 0,
+            "retained_blocks": 0,
+            "candidate_visits": 0,
+            "dense_visits": 0
+          },
+          "median_seconds": 0.06748039997182786
+        }
+      }
+    },
+    {
+      "detail": true,
+      "options": [
+        "-merge",
+        "-passageOnly"
+      ],
+      "workers": 1,
+      "visibility_sha256": "6668b47c8fe6800739b30af8504ee645cf16fa5bb48fa8efb5a10ca2b51e363c",
+      "reference_and_worker_byte_parity": true,
+      "implementations": {
+        "dense": {
+          "seconds": [
+            0.08550579997245222,
+            0.11556910001672804,
+            0.0703368000104092,
+            0.06616490002488717,
+            0.10770860000047833
+          ],
+          "profiles": [
+            {
+              "path": "detail\\True-True-1-1-dense.json",
+              "sha256": "88a8277841a622679e3a634503055a2a375aaa8cd6023983f68d7685594779a8",
+              "total_seconds": 0.047296,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0001574,
+                  "seconds_with_setup": 0.0001771
+                },
+                "CreatePassages": {
+                  "seconds": 4.46e-05,
+                  "seconds_with_setup": 4.55e-05
+                },
+                "PassageFlow": {
+                  "seconds": 4.39e-05,
+                  "seconds_with_setup": 4.46e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\True-True-1-2-dense.json",
+              "sha256": "2ce887404ec6779cd9cb8e31ede5ac2febaa7f631c870f9abfcbfdccba9ea602",
+              "total_seconds": 0.0250691,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 4.67e-05,
+                  "seconds_with_setup": 5.31e-05
+                },
+                "CreatePassages": {
+                  "seconds": 1.38e-05,
+                  "seconds_with_setup": 1.4e-05
+                },
+                "PassageFlow": {
+                  "seconds": 1.38e-05,
+                  "seconds_with_setup": 1.39e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\True-True-1-3-dense.json",
+              "sha256": "8883ff6433b5cbf5a1779143e1ce1b21f094d651c852092b83b293cf175a53ad",
+              "total_seconds": 0.0268005,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0001172,
+                  "seconds_with_setup": 0.0001352
+                },
+                "CreatePassages": {
+                  "seconds": 3.51e-05,
+                  "seconds_with_setup": 3.58e-05
+                },
+                "PassageFlow": {
+                  "seconds": 3.44e-05,
+                  "seconds_with_setup": 3.5e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\True-True-1-4-dense.json",
+              "sha256": "0cd90359a676c53ed9c3b594e1fc5ab3a100d41b8130e045d57fc5edf32f6529",
+              "total_seconds": 0.0269165,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0001271,
+                  "seconds_with_setup": 0.0001456
+                },
+                "CreatePassages": {
+                  "seconds": 3.64e-05,
+                  "seconds_with_setup": 3.71e-05
+                },
+                "PassageFlow": {
+                  "seconds": 3.34e-05,
+                  "seconds_with_setup": 3.4e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\True-True-1-5-dense.json",
+              "sha256": "b58090081f3ec4e8783045e6e66a9b0e16223f8d5faf8f1cf244b223c3952814",
+              "total_seconds": 0.0295302,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0001304,
+                  "seconds_with_setup": 0.0001488
+                },
+                "CreatePassages": {
+                  "seconds": 3.8e-05,
+                  "seconds_with_setup": 3.87e-05
+                },
+                "PassageFlow": {
+                  "seconds": 3.53e-05,
+                  "seconds_with_setup": 3.6e-05
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 0,
+            "passages": 0
+          },
+          "median_seconds": 0.08550579997245222
+        },
+        "packed": {
+          "seconds": [
+            0.06727659999160096,
+            0.051351499976590276,
+            0.04968719999305904,
+            0.05908969999291003,
+            0.09069929999532178
+          ],
+          "profiles": [
+            {
+              "path": "detail\\True-True-1-1-packed.json",
+              "sha256": "ff213b35991fc7ed358cf2313fa65ace27126533d38efdcd7cea2ba67a4a6451",
+              "total_seconds": 0.021722,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 9.65e-05,
+                  "seconds_with_setup": 0.0001069
+                },
+                "CreatePassages": {
+                  "seconds": 7.64e-05,
+                  "seconds_with_setup": 7.7e-05
+                },
+                "PassageFlow": {
+                  "seconds": 1.41e-05,
+                  "seconds_with_setup": 1.45e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\True-True-1-2-packed.json",
+              "sha256": "9508b08bc526133d768a3ff96a4ebe3127b7d63d7989a6f570685e7d68717b4c",
+              "total_seconds": 0.0223209,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 2.87e-05,
+                  "seconds_with_setup": 3.18e-05
+                },
+                "CreatePassages": {
+                  "seconds": 2.02e-05,
+                  "seconds_with_setup": 2.03e-05
+                },
+                "PassageFlow": {
+                  "seconds": 2.8e-06,
+                  "seconds_with_setup": 2.9e-06
+                }
+              }
+            },
+            {
+              "path": "detail\\True-True-1-3-packed.json",
+              "sha256": "78786761ea13c9006097e8467aa4e1517ab2fd80e2534248d944812c9e58110d",
+              "total_seconds": 0.0196858,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 2.97e-05,
+                  "seconds_with_setup": 3.36e-05
+                },
+                "CreatePassages": {
+                  "seconds": 2.15e-05,
+                  "seconds_with_setup": 2.18e-05
+                },
+                "PassageFlow": {
+                  "seconds": 2.8e-06,
+                  "seconds_with_setup": 2.9e-06
+                }
+              }
+            },
+            {
+              "path": "detail\\True-True-1-4-packed.json",
+              "sha256": "bba308b4566c658d7c0eec027e37e7f9cf9a4551215b6a0f90e00a5d1080cfbd",
+              "total_seconds": 0.0266146,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0001021,
+                  "seconds_with_setup": 0.0001145
+                },
+                "CreatePassages": {
+                  "seconds": 9.69e-05,
+                  "seconds_with_setup": 9.78e-05
+                },
+                "PassageFlow": {
+                  "seconds": 9.2e-06,
+                  "seconds_with_setup": 9.6e-06
+                }
+              }
+            },
+            {
+              "path": "detail\\True-True-1-5-packed.json",
+              "sha256": "a8fc1dfffa3dbef97895ec2f10752291f26c8afb5a852a13028aad0b61b794ee",
+              "total_seconds": 0.0279138,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0001164,
+                  "seconds_with_setup": 0.0001287
+                },
+                "CreatePassages": {
+                  "seconds": 0.0001031,
+                  "seconds_with_setup": 0.000104
+                },
+                "PassageFlow": {
+                  "seconds": 1.02e-05,
+                  "seconds_with_setup": 1.06e-05
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 0,
+            "passages": 0,
+            "dense_equivalent_bytes": 0,
+            "empty_masks": 0,
+            "retained_blocks": 0,
+            "candidate_visits": 0,
+            "dense_visits": 0
+          },
+          "median_seconds": 0.05908969999291003
+        }
+      }
+    },
+    {
+      "detail": true,
+      "options": [
+        "-merge",
+        "-passageOnly"
+      ],
+      "workers": 4,
+      "visibility_sha256": "6668b47c8fe6800739b30af8504ee645cf16fa5bb48fa8efb5a10ca2b51e363c",
+      "reference_and_worker_byte_parity": true,
+      "implementations": {
+        "dense": {
+          "seconds": [
+            0.09022290003485978,
+            0.12126939999870956,
+            0.12000110000371933,
+            0.10131290002027526,
+            0.14367570000467822
+          ],
+          "profiles": [
+            {
+              "path": "detail\\True-True-4-1-dense.json",
+              "sha256": "60fb4b05e43a33902f9c7b62102d1f48c0b706902037766ac3caedc6ac202a23",
+              "total_seconds": 0.0404431,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0017958,
+                  "seconds_with_setup": 0.0021864
+                },
+                "CreatePassages": {
+                  "seconds": 0.0002354,
+                  "seconds_with_setup": 0.000237
+                },
+                "PassageFlow": {
+                  "seconds": 0.0001748,
+                  "seconds_with_setup": 0.0001761
+                }
+              }
+            },
+            {
+              "path": "detail\\True-True-4-2-dense.json",
+              "sha256": "0c31c10089776b8acb1aae19a31d19dc67ffec2d28f9a355c802720c6e5e4f5a",
+              "total_seconds": 0.0442819,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0016127,
+                  "seconds_with_setup": 0.0021672
+                },
+                "CreatePassages": {
+                  "seconds": 0.0004894,
+                  "seconds_with_setup": 0.0004927
+                },
+                "PassageFlow": {
+                  "seconds": 0.0003824,
+                  "seconds_with_setup": 0.0003852
+                }
+              }
+            },
+            {
+              "path": "detail\\True-True-4-3-dense.json",
+              "sha256": "39dcaf00206da06095b5381338ec2a42937d677cc6db479ba08d5cd6bea29ef6",
+              "total_seconds": 0.0566361,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0030056,
+                  "seconds_with_setup": 0.0034573
+                },
+                "CreatePassages": {
+                  "seconds": 0.0003577,
+                  "seconds_with_setup": 0.0003594
+                },
+                "PassageFlow": {
+                  "seconds": 0.0003784,
+                  "seconds_with_setup": 0.0003812
+                }
+              }
+            },
+            {
+              "path": "detail\\True-True-4-4-dense.json",
+              "sha256": "4d0c522e53e4d8f3f1d08ca381cbb20b2a868ce89f5ba1a5334aa72471b2ccb4",
+              "total_seconds": 0.0212542,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0005534,
+                  "seconds_with_setup": 0.0007645
+                },
+                "CreatePassages": {
+                  "seconds": 0.0001444,
+                  "seconds_with_setup": 0.0001454
+                },
+                "PassageFlow": {
+                  "seconds": 7.21e-05,
+                  "seconds_with_setup": 7.28e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\True-True-4-5-dense.json",
+              "sha256": "bbf6561fa140cf5ca00cccba685ca7d80fc8948cc3864d4dcaa91ecda136667b",
+              "total_seconds": 0.0579452,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0021962,
+                  "seconds_with_setup": 0.002716
+                },
+                "CreatePassages": {
+                  "seconds": 0.0003056,
+                  "seconds_with_setup": 0.000309
+                },
+                "PassageFlow": {
+                  "seconds": 0.0003209,
+                  "seconds_with_setup": 0.0003243
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 0,
+            "passages": 0
+          },
+          "median_seconds": 0.12000110000371933
+        },
+        "packed": {
+          "seconds": [
+            0.059163899975828826,
+            0.055836400017142296,
+            0.05604070000117645,
+            0.05916619999334216,
+            0.05910409998614341
+          ],
+          "profiles": [
+            {
+              "path": "detail\\True-True-4-1-packed.json",
+              "sha256": "06f1f0d7c7442d214f0ccb27ca84edb3f705b786128c0f0ac5a4436bb0cc52f8",
+              "total_seconds": 0.0251138,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0010116,
+                  "seconds_with_setup": 0.0011327
+                },
+                "CreatePassages": {
+                  "seconds": 0.0003207,
+                  "seconds_with_setup": 0.0003216
+                },
+                "PassageFlow": {
+                  "seconds": 4.45e-05,
+                  "seconds_with_setup": 4.51e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\True-True-4-2-packed.json",
+              "sha256": "260a4333b3607d64c74224e30ad7175f55a4824502832f7e7ebd07a4dacea94b",
+              "total_seconds": 0.0230123,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0008502,
+                  "seconds_with_setup": 0.001044
+                },
+                "CreatePassages": {
+                  "seconds": 0.0002496,
+                  "seconds_with_setup": 0.0002509
+                },
+                "PassageFlow": {
+                  "seconds": 7.23e-05,
+                  "seconds_with_setup": 7.29e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\True-True-4-3-packed.json",
+              "sha256": "dc99b9d0585fbec78bafa1fcab844739c025e67a3dbe815be7b1713816678fde",
+              "total_seconds": 0.0259653,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0003957,
+                  "seconds_with_setup": 0.0005806
+                },
+                "CreatePassages": {
+                  "seconds": 0.0001793,
+                  "seconds_with_setup": 0.00018
+                },
+                "PassageFlow": {
+                  "seconds": 4.64e-05,
+                  "seconds_with_setup": 4.68e-05
+                }
+              }
+            },
+            {
+              "path": "detail\\True-True-4-4-packed.json",
+              "sha256": "f70d1383401ed81a0442f4c4ba16f37e78092ecefbb20ec65043e2290d027bde",
+              "total_seconds": 0.0299024,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.0007691,
+                  "seconds_with_setup": 0.0013048
+                },
+                "CreatePassages": {
+                  "seconds": 0.000493,
+                  "seconds_with_setup": 0.0004945
+                },
+                "PassageFlow": {
+                  "seconds": 0.0001083,
+                  "seconds_with_setup": 0.0001096
+                }
+              }
+            },
+            {
+              "path": "detail\\True-True-4-5-packed.json",
+              "sha256": "7ea6411f545975b1d9c59e2b164e7e9c0703dc74abdd3c24b8f86e8d54166dc8",
+              "total_seconds": 0.0267445,
+              "passes": {
+                "BasePortalVis": {
+                  "seconds": 0.000764,
+                  "seconds_with_setup": 0.0010371
+                },
+                "CreatePassages": {
+                  "seconds": 0.0003789,
+                  "seconds_with_setup": 0.0003803
+                },
+                "PassageFlow": {
+                  "seconds": 9.53e-05,
+                  "seconds_with_setup": 9.62e-05
+                }
+              }
+            }
+          ],
+          "storage": {
+            "retained_requested_bytes": 0,
+            "passages": 0,
+            "dense_equivalent_bytes": 0,
+            "empty_masks": 0,
+            "retained_blocks": 0,
+            "candidate_visits": 0,
+            "dense_visits": 0
+          },
+          "median_seconds": 0.05910409998614341
+        }
+      }
+    }
+  ],
+  "notes": [
+    "Alternating preceding/current binaries, startup/input/merge/flow/output included; no LIGHT or renderer timing.",
+    "Storage counts retained requested bytes, not allocator overhead, temporary construction allocations or peak process RSS.",
+    "The packed implementation initially reserves a dense upper bound per concurrently building portal, then shrinks it.",
+    "Graph/geometry/solver choices are unchanged. Existing merge-mode differences from default are outside this parity contract."
+  ]
+}

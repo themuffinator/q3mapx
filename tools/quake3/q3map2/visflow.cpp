@@ -31,6 +31,8 @@
 /* dependencies */
 #include "q3map2.h"
 #include "vis.h"
+#include "q3mapx/vis_mask.h"
+#include <bit>
 #include <memory>
 
 // Keep large visibility/winding scratch frames off the recursive native stack.
@@ -663,8 +665,8 @@ static void RecursivePassageFlow( vportal_t *portal, threaddata_t *thread, pstac
 	vportal_t   *p;
 	leaf_t      *leaf;
 	passage_t   *passage, *nextpassage;
-	int i, j;
-	VisWord     *might, *vis, *prevmight, *cansee, *portalvis, more;
+	int i;
+	VisWord     *might, *vis, *prevmight, *portalvis, more;
 
 	leaf = &leafs[portal->leaf];
 
@@ -684,7 +686,7 @@ static void RecursivePassageFlow( vportal_t *portal, threaddata_t *thread, pstac
 		if ( p->removed ) {
 			continue;
 		}
-		nextpassage = passage->next;
+		nextpassage = passage + 1;
 		const int pnum = p->visIndex;
 
 		if ( !bit_is_enabled( prevstack->mightsee, pnum ) ) {
@@ -695,7 +697,6 @@ static void RecursivePassageFlow( vportal_t *portal, threaddata_t *thread, pstac
 		bit_enable( thread->base->portalvis, pnum );
 
 		prevmight = (VisWord *)prevstack->mightsee;
-		cansee = (VisWord *)passage->cansee;
 		might = (VisWord *)stack.mightsee;
 		if ( PortalCanPrune(p) ) {
 			portalvis = (VisWord *) p->portalvis;
@@ -703,12 +704,9 @@ static void RecursivePassageFlow( vportal_t *portal, threaddata_t *thread, pstac
 		else{
 			portalvis = (VisWord *) p->portalflood;
 		}
-		more = 0;
-		for ( j = 0; j < portalwords; ++j )
-		{
-			might[j] = prevmight[j] & cansee[j] & portalvis[j];
-			more |= might[j] & ~vis[j];
-		}
+		more = q3mapx::intersectVisMask(might,prevmight,portalvis,vis,
+			std::span(portal->passageWords + passage->wordOffset,passage->wordCount),
+			passage->firstWord,portalwords);
 
 		if ( !more ) {
 			// can't see anything new
@@ -778,8 +776,8 @@ static void RecursivePassagePortalFlow( vportal_t *portal, threaddata_t *thread,
 	leaf_t      *leaf;
 	visPlane_t backplane;
 	passage_t   *passage, *nextpassage;
-	int i, j, n;
-	VisWord     *might, *vis, *prevmight, *cansee, *portalvis, more;
+	int i, n;
+	VisWord     *might, *vis, *prevmight, *portalvis, more;
 
 //	thread->c_chains++;
 
@@ -809,14 +807,13 @@ static void RecursivePassagePortalFlow( vportal_t *portal, threaddata_t *thread,
 		if ( p->removed ) {
 			continue;
 		}
-		nextpassage = passage->next;
+		nextpassage = passage + 1;
 		const int pnum = p->visIndex;
 
 		if ( !bit_is_enabled( prevstack->mightsee, pnum ) ) {
 			continue;   // can't possibly see it
 		}
 		prevmight = (VisWord *)prevstack->mightsee;
-		cansee = (VisWord *)passage->cansee;
 		might = (VisWord *)stack.mightsee;
 		if ( PortalCanPrune(p) ) {
 			portalvis = (VisWord *) p->portalvis;
@@ -824,12 +821,9 @@ static void RecursivePassagePortalFlow( vportal_t *portal, threaddata_t *thread,
 		else{
 			portalvis = (VisWord *) p->portalflood;
 		}
-		more = 0;
-		for ( j = 0; j < portalwords; ++j )
-		{
-			might[j] = prevmight[j] & cansee[j] & portalvis[j];
-			more |= might[j] & ~vis[j];
-		}
+		more = q3mapx::intersectVisMask(might,prevmight,portalvis,vis,
+			std::span(portal->passageWords + passage->wordOffset,passage->wordCount),
+			passage->firstWord,portalwords);
 
 		if ( !more && bit_is_enabled( thread->base->portalvis, pnum ) ) { // can't see anything new
 			continue;
@@ -1233,12 +1227,12 @@ static int AddSeperators( const fixedWinding_t *source, const fixedWinding_t *pa
    ===============
  */
 void CreatePassages( int portalnum ){
-	int j, k, n, numseperators, numsee;
+	int k, n, numseperators;
 	vportal_t       *portal, *p;
-	passage_t       *passage, *lastpassage;
 	visPlane_t seperators[MAX_SEPERATORS * 2];
 	fixedWinding_t  *w;
 	fixedWinding_t in, out, *res;
+	std::array<VisWord, MAX_PORTALS / 64> candidates, cansee;
 
 
 #ifdef MREDEBUG
@@ -1252,112 +1246,147 @@ void CreatePassages( int portalnum ){
 		return;
 	}
 
-	lastpassage = nullptr;
+	for (const auto* target : Span(leafs[portal->leaf].portals,leafs[portal->leaf].numportals))
+		portal->numPassages += !target->removed;
+	if (!portal->numPassages) return;
+	// One bounded allocation per source portal. Only the compact prefix is
+	// touched; shrinking below is optional and never loses the original pointer.
+	const size_t headerBytes = size_t(portal->numPassages) * sizeof(passage_t);
+	portal->passageAllocation = headerBytes + size_t(portal->numPassages) * portalbytes;
+	portal->passages = safe_malloc(portal->passageAllocation);
+	portal->passageWords = reinterpret_cast<VisWord*>(portal->passages + portal->numPassages);
+	size_t storedWords = 0;
+	int passageIndex = 0;
 	for ( const vportal_t *target : Span( leafs[portal->leaf].portals, leafs[portal->leaf].numportals ) )
 	{
 		if ( target->removed ) {
 			continue;
 		}
 
-		passage = safe_calloc( sizeof( passage_t ) + portalbytes );
+		auto& passage = portal->passages[passageIndex++];
+		passage = { std::uint32_t(storedWords), 0, 0 };
+		VisWord any = 0;
+		for (int word=0; word<portalwords; ++word) {
+			candidates[word] = reinterpret_cast<const VisWord*>(portal->portalflood)[word]
+			                 & reinterpret_cast<const VisWord*>(target->portalflood)[word];
+			any |= candidates[word];
+			portal->passageCandidates += std::popcount(candidates[word]);
+		}
+		// Separators cannot change an empty intersection of the two flood bounds.
+		// Keep its descriptor so live target portals retain their original slots.
+		if (!any) continue;
 		numseperators = AddSeperators( portal->winding, target->winding, false, seperators, MAX_SEPERATORS * 2 );
 		numseperators += AddSeperators( target->winding, portal->winding, true, &seperators[numseperators], MAX_SEPERATORS * 2 - numseperators );
 
-		passage->next = nullptr;
-		if ( lastpassage ) {
-			lastpassage->next = passage;
-		}
-		else{
-			portal->passages = passage;
-		}
-		lastpassage = passage;
-
-		numsee = 0;
-		//create the passage->cansee
-		for ( j = 0; j < visPortalBits; ++j )
-		{
-			p = activePortals[j];
-			if ( !bit_is_enabled( target->portalflood, j ) ) {
-				continue;
-			}
-			if ( !bit_is_enabled( portal->portalflood, j ) ) {
-				continue;
-			}
-			for ( k = 0; k < numseperators; ++k )
-			{
-				//if completely at the back of the separator plane
-				if ( plane3_distance_to_point( seperators[k], p->origin ) < -p->radius + ON_EPSILON ) {
-					break;
-				}
-				w = p->winding;
-				for ( n = 0; n < w->numpoints; ++n )
+		std::fill_n(cansee.data(),portalwords,VisWord{});
+		// Visit only set candidates, in the original ascending portal order.
+		for (int word=0; word<portalwords; ++word) {
+			for (VisWord remaining=candidates[word]; remaining; remaining &= remaining-1) {
+				const int j = word*64 + std::countr_zero(remaining);
+				p = activePortals[j];
+				for ( k = 0; k < numseperators; ++k )
 				{
-					//if at the front of the separator
-					if ( plane3_distance_to_point( seperators[k], w->points[n] ) > ON_EPSILON ) {
+					//if completely at the back of the separator plane
+					if ( plane3_distance_to_point( seperators[k], p->origin ) < -p->radius + ON_EPSILON ) {
+						break;
+					}
+					w = p->winding;
+					for ( n = 0; n < w->numpoints; ++n )
+					{
+						//if at the front of the separator
+						if ( plane3_distance_to_point( seperators[k], w->points[n] ) > ON_EPSILON ) {
+							break;
+						}
+					}
+					//if no points are at the front of the separator
+					if ( n >= w->numpoints ) {
 						break;
 					}
 				}
-				//if no points are at the front of the separator
-				if ( n >= w->numpoints ) {
-					break;
+				if ( k < numseperators ) {
+					continue;
 				}
-			}
-			if ( k < numseperators ) {
-				continue;
-			}
 
-			/* explitive deleted */
+				/* explitive deleted */
 
 
-			/* ydnar: prefer correctness to stack overflow  */
-			//% memcpy( &in, p->winding, (int)((fixedWinding_t *)0)->points[p->winding->numpoints] );
-			if ( p->winding->numpoints <= MAX_POINTS_ON_FIXED_WINDING ) {
-				memcpy( &in, p->winding, offsetof_array( fixedWinding_t, points, p->winding->numpoints ) );
-			}
-			else{
-				memcpy( &in, p->winding, sizeof( fixedWinding_t ) );
-			}
-
-
-			for ( k = 0; k < numseperators; ++k )
-			{
-				/* ydnar: this is a shitty crutch */
-				//% if ( in.numpoints > MAX_POINTS_ON_FIXED_WINDING ) Sys_Printf( "[%d]", p->winding->numpoints );
-				value_minimize( in.numpoints, MAX_POINTS_ON_FIXED_WINDING );
-
-				res = PassageChopWinding( &in, &out, seperators[ k ] );
-				if ( res == &out ) {
-					memcpy( &in, &out, sizeof( fixedWinding_t ) );
+				/* ydnar: prefer correctness to stack overflow  */
+				//% memcpy( &in, p->winding, (int)((fixedWinding_t *)0)->points[p->winding->numpoints] );
+				if ( p->winding->numpoints <= MAX_POINTS_ON_FIXED_WINDING ) {
+					memcpy( &in, p->winding, offsetof_array( fixedWinding_t, points, p->winding->numpoints ) );
+				}
+				else{
+					memcpy( &in, p->winding, sizeof( fixedWinding_t ) );
 				}
 
 
-				if ( res == nullptr ) {
-					break;
+				for ( k = 0; k < numseperators; ++k )
+				{
+					/* ydnar: this is a shitty crutch */
+					//% if ( in.numpoints > MAX_POINTS_ON_FIXED_WINDING ) Sys_Printf( "[%d]", p->winding->numpoints );
+					value_minimize( in.numpoints, MAX_POINTS_ON_FIXED_WINDING );
+
+					res = PassageChopWinding( &in, &out, seperators[ k ] );
+					if ( res == &out ) {
+						memcpy( &in, &out, sizeof( fixedWinding_t ) );
+					}
+
+
+					if ( res == nullptr ) {
+						break;
+					}
 				}
+				if ( k < numseperators ) {
+					continue;
+				}
+				cansee[word] |= VisWord{1} << (j%64);
 			}
-			if ( k < numseperators ) {
-				continue;
-			}
-			bit_enable( passage->cansee, j );
-			numsee++;
+		}
+		const auto range = q3mapx::trimVisMask(std::span(cansee.data(),size_t(portalwords)));
+		passage.firstWord = std::uint16_t(range.first);
+		passage.wordCount = std::uint16_t(range.count);
+		std::copy_n(cansee.data()+range.first,range.count,portal->passageWords+storedWords);
+		storedWords += range.count;
+	}
+	const size_t usedBytes = headerBytes + storedWords * sizeof(VisWord);
+	if (usedBytes < portal->passageAllocation) {
+		if (void* compact = std::realloc(portal->passages,usedBytes)) {
+			portal->passages = static_cast<passage_t*>(compact);
+			portal->passageAllocation = usedBytes;
 		}
 	}
+	portal->passageWords = reinterpret_cast<VisWord*>(portal->passages + portal->numPassages);
 }
 
 void PassageMemory(){
-	// Count all directed portals, including when sorting puts removed ones first.
-	// A large valid graph can need more than 2 GiB: keep the estimate unsigned/wide.
-	std::vector<size_t> degree( portalclusters );
-	for ( int i = 0; i < portalclusters; ++i ) {
-		if ( leafs[i].merged >= 0 ) continue;
-		for ( const vportal_t *p : Span( leafs[i].portals, leafs[i].numportals ) )
-			degree[i] += !p->removed;
+	// Jobs have joined. Neither retained storage nor the former dense layout
+	// includes allocator overhead, temporary allocation bounds or other VIS data.
+	struct DensePassage { void* next; alignas(VisWord) byte cansee[1]; };
+	std::uint64_t passages=0, bytes=0, empty=0, candidates=0, allocations=0;
+	for (const auto* portal : activePortals) {
+		passages += portal->numPassages;
+		bytes += portal->passageAllocation;
+		allocations += portal->passages != nullptr;
+		candidates += portal->passageCandidates;
+		for (int i=0; i<portal->numPassages; ++i) empty += !portal->passages[i].wordCount;
 	}
-	size_t passages = 0;
-	for ( const vportal_t *p : activePortals ) passages += degree[p->leaf];
-	const size_t bytes = passages * ( sizeof( passage_t ) + portalbytes );
-	Sys_Printf( "%7zu average number of passages per active portal\n", visPortalBits ? passages / visPortalBits : 0 );
-	Sys_Printf( "%7zu bytes required passage memory (%zu passages)\n", bytes, passages );
+	Sys_Printf("%7llu bytes required passage memory (%llu passages)\n",(unsigned long long)bytes,(unsigned long long)passages);
+	Sys_Printf("Passage storage: %llu retained / %llu dense bytes; %llu empty masks; %llu blocks\n",
+		(unsigned long long)bytes,(unsigned long long)(passages*(sizeof(DensePassage)+portalbytes)),
+		(unsigned long long)empty,(unsigned long long)allocations);
+	Sys_Printf("Passage candidate tests: %llu / %llu dense portal visits\n",
+		(unsigned long long)candidates,(unsigned long long)(passages*visPortalBits));
+}
+
+void FreePassages(){
+	for (auto* portal : activePortals) {
+		std::free(portal->passages);
+		portal->passages = nullptr;
+		portal->passageWords = nullptr;
+		portal->numPassages = 0;
+		portal->passageAllocation = 0;
+		portal->passageCandidates = 0;
+	}
 }
 
 /*

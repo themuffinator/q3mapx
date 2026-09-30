@@ -1637,3 +1637,69 @@ reports a GCC bounds warning when inlining the pre-existing copied argument
 vector in `BSPEvidenceMain`; the relevant argument and sanitizer controls pass.
 No external code/dependency was added, no game/input/capture automation was used,
 and the packaged 0.3.0 archive remains unchanged.
+
+## 2026-09-30 — Compact passage masks and bounded candidate work
+
+Passage construction now intersects preliminary flood masks word by word, visits
+only surviving candidate bits in their original order and skips separators for
+empty intersections. Replaced per-passage linked allocations with eight-byte
+descriptors and trimmed word spans in one block per source portal. Flow clears
+omitted words in reused scratch, retains the previous clipping/solver order and
+frees passage blocks after the joined flow stage. Construction initially reserves
+the bounded dense size per active job; an unsuccessful shrink retains the valid
+original block. Logs distinguish retained requested bytes, dense equivalents,
+empty masks, retained blocks and candidate visits from peak process memory.
+
+On the structural grid=9 fixture, default passage storage falls
+3,004,400→1,284,000 bytes (57.3%); existing merged storage falls
+3,330,816→1,311,152 bytes (60.6%). The default candidate scan visits 2,386,961
+portals instead of 21,571,592 dense entries. Five alternating measurements after
+warmup cover full/passage-only, normal/merged, structural/manual-detail and one/four
+workers. Single-worker passage-only medians improve 0.2932→0.2427 seconds without
+merging and 0.2437→0.2053 with merging. Full-flow changes are small; four-worker
+passage-only complete commands are slower in this run despite faster construction.
+No general speedup or peak-memory claim is made. All 192 benchmark VIS commands
+retain reference/worker byte parity and unchanged non-entity/non-VIS lumps.
+
+The 8,400 mask controls compare packed round trips/intersections with dense
+results, poisoned scratch and boundary guards up to 2,048 words. Thirty-one graph
+and 120 real-map cases retain exact preceding-executable VIS bytes on Windows
+and Linux, with matching graph/storage/PVS results under ASan/UBSan. The extended
+matrix checks mask/block/candidate accounting and the two non-passage solvers.
+Eight additional capacity controls cover a 1,024-degree star with 1,049,600 empty
+descriptors and a 130-opening chain. Both solvers and one/four workers agree with
+independent expected PVS rows on all three builds. The empty-star control retains
+8,396,800 bytes against a 285,491,200-byte dense equivalent; it is a synthetic
+storage control, not a spatially matched map or runtime-performance claim.
+
+Five initial release CTest groups pass on Windows (38.97 seconds) and Linux
+(58.02 seconds), followed by final unit/capacity checks (1.25 and 1.59 seconds).
+Five ASan/UBSan groups, including the full VIS matrix, pass in 244.56 seconds;
+final unit/capacity checks pass in 13.02 seconds. The established process-lifetime
+leak exclusion remains; address and undefined-behavior checks are enabled.
+Only whitespace cleanup and test/documentation changes followed timing runs.
+See [performance measurements](PERFORMANCE.md#passage-construction-and-retained-storage),
+[raw benchmark](benchmarks/vis-passages-win-x64.json) and
+[validation identities/results](validation/vis-passages.json).
+
+The initial automatic-merge investigation confirmed that leaf merging alone can
+omit baseline bits: on grid=9 it omits 20 full-flow bits even with polygon merging
+disabled (the existing combined merge omits 27). This comparison does not prove
+which set is geometrically exact; it prevents treating polygon-merge exclusion
+as a sufficient baseline-inclusion gate. The temporary probe switch was removed.
+Automatic regional changes remain open, with the full requested scope retained.
+
+A separate code finding needs follow-up: passage clipping still truncates windings
+above its inherited 24-point scratch capacity. This round preserves that geometry
+path for representation parity rather than claiming to repair it. Existing raw
+sidecar writers, intermittent Windows process delays and inherited build warnings
+also remain open; these rebuilds emit `UnsortedSet` layout warnings. Useful logs,
+probe results and dense reference binaries remain under
+`.agents/tmp/continuation/{passage-spans-*,smart-vis-*}`; generated tests remain in
+the designated build directories. No external code/dependency was added, no
+game/input/capture automation was used, and the 0.3.0 archive is unchanged.
+
+Automatic approval review rejected cleanup of `tests/__pycache__`, reporting
+only “blocked by policy.” Read-only inspection found 24 generated `.pyc` files;
+the cache was left untouched and the deletion was not retried. This restriction
+does not prevent committing/pushing the verified source and documentation.

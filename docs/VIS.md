@@ -58,10 +58,31 @@ working bits, not a topology or output-format change. Original runtime cluster
 rows still include every represented member of a merged cell.
 
 The log reports original and compact bytes per bitset. Storage rounds up to
-64-bit words, so deleting a few portals need not save a whole word. Passage
-memory diagnostics count all live directions and use wide arithmetic; the
-reported allocation excludes allocator overhead and other solver/process memory.
-Visibility totals count each row's self bit once.
+64-bit words, so deleting a few portals need not save a whole word. Visibility
+totals count each row's self bit once.
+
+Passage construction now intersects the two preliminary flood bounds word by
+word and visits only their set bits, in the original order. Empty intersections
+need no separator construction. Both passage solvers use a packed contiguous
+span of nonzero-boundary words per passage; words outside the span remain zero,
+including when a recursive scratch frame is reused. One block per source portal
+holds the descriptors and mask payloads. These blocks are freed after flow joins,
+before assembling/writing BSP visibility. Clipping and fixed reproducible job
+order remain unchanged; reference comparisons require identical output bits with
+`-reproducible`. Ordinary scheduling retains its existing variability.
+
+The passage log compares **retained requested bytes** with the preceding dense
+linked-list representation and reports empty masks, retained blocks and candidate
+visits. Construction initially reserves the dense upper bound for each portal
+being built, then shrinks its block. A failed shrink keeps the original valid
+block and reports its full requested size. These figures exclude allocator
+overhead, the bounded per-job scratch, temporary reservation and other compiler
+state; they are not measured peak process memory.
+
+The inherited passage clipper still truncates windings above its 24-point scratch
+capacity when clipping is required. That separate geometry issue needs a repair
+and large-portal audit. Packing parity establishes agreement with the preceding
+solver; it is not a proof that all inherited geometric approximations are exact.
 
 The reference comparison covers all four solvers, default and three merge
 selections, and matched structural/manual-detail fixtures. Bitsets and passage

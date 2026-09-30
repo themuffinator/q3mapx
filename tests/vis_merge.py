@@ -39,6 +39,25 @@ def count(log, label):
     return int(match[1])
 
 
+def passage_storage(log, options, live, bitset_bytes):
+    match = re.search(r'Passage storage: (\d+) retained / (\d+) dense bytes; (\d+) empty masks; (\d+) blocks', log)
+    if '-fast' in options or '-nopassage' in options:
+        assert match is None
+        return None
+    assert match, 'Missing retained passage storage diagnostics'
+    retained, dense, empty, blocks = map(int, match.groups())
+    memory = re.search(r'(\d+) bytes required passage memory \((\d+) passages\)', log)
+    candidates = re.search(r'Passage candidate tests: (\d+) / (\d+) dense portal visits', log)
+    assert memory and candidates
+    passages = int(memory[2]); tested, visits = map(int, candidates.groups())
+    assert int(memory[1]) == retained and passages*8 <= retained <= dense
+    assert 0 <= empty <= passages and 0 <= blocks <= live and blocks <= passages
+    assert tested <= visits == passages*live
+    assert retained <= passages*(8+bitset_bytes)
+    return {'retained_bytes':retained, 'dense_bytes':dense, 'empty_masks':empty,
+            'blocks':blocks, 'passages':passages, 'candidate_visits':tested,'dense_visits':visits}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--compiler', type=Path, required=True)
@@ -91,6 +110,7 @@ def main():
             record['bitsets'] = dict(zip(('live', 'input', 'original_bytes', 'bytes'), map(int, compact.groups())))
             assert record['bitsets']['live'] == record['active_directions']
             assert record['bitsets']['bytes'] == ((record['active_directions'] + 63) // 64) * 8
+            record['passage_storage'] = passage_storage(log, options, record['active_directions'], record['bitsets']['bytes'])
         if args.reference:
             expected = bsp.lump(16)
             target.write_bytes(original_bytes)
@@ -272,6 +292,7 @@ def main():
                               'visible_pairs': sum(row.bit_count() for row in matrix),
                               'added_baseline_bits': sum((a & ~b).bit_count() for a, b in zip(matrix, control)),
                               'missing_baseline_bits': sum((b & ~a).bit_count() for a, b in zip(matrix, control))}
+                    record['passage_storage'] = passage_storage(log, options, live, after)
                     if args.reference:
                         target.write_bytes(original.data)
                         run(args.reference.resolve(), [*base, '-threads', workers, '-vis', '-reproducible', '-saveprt', *options, source],

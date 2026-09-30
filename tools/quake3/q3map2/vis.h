@@ -23,6 +23,7 @@
 
 #pragma once
 #include <atomic>
+#include <cstddef>
 #include <cstdint>
 #include <vector>
 
@@ -41,9 +42,12 @@ struct fixedWinding_t
 
 struct passage_t
 {
-	struct passage_t    *next;
-	alignas(VisWord) byte cansee[ 1 ];   /* all portals that can be seen through this passage */
+	std::uint32_t wordOffset;
+	std::uint16_t firstWord, wordCount; // Zero words outside this contiguous span.
 };
+static_assert(sizeof(passage_t)==8 && sizeof(passage_t)%alignof(VisWord)==0);
+static_assert(MAX_PORTALS / 64 <= UINT16_MAX);
+static_assert(std::uint64_t(MAX_PORTALS_ON_LEAF)*(MAX_PORTALS / 64) <= UINT32_MAX);
 
 
 enum class EVStatus
@@ -79,8 +83,11 @@ struct vportal_t
 	byte                *portalvis;     /* [portals], final */
 
 	int nummightsee;                    /* bit count on portalflood for sort */
-	passage_t           *passages;      /* there are just as many passages as there */
-	                                    /* are portals in the leaf this portal leads */
+	passage_t           *passages;      /* One descriptor per live destination-leaf portal. */
+	VisWord             *passageWords;  /* Stored after descriptors in one allocation. */
+	std::size_t passageAllocation;      /* Requested retained bytes, excluding allocator overhead. */
+	std::uint64_t passageCandidates;
+	int numPassages;
 };
 
 

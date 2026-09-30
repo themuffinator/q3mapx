@@ -225,11 +225,10 @@ static void CalcPortalVis(){
    ==================
  */
 static void CalcPassageVis(){
-	PassageMemory();
-
 #ifdef MREDEBUG
 	_printf( "%6d portals out of %d", 0, numportals * 2 );
 	RunThreadsOnIndividual( numportals * 2, false, CreatePassages, "CreatePassages" );
+	PassageMemory();
 	_printf( "\n" );
 	_printf( "%6d portals out of %d", 0, numportals * 2 );
 	RunPortalFlow(PassageFlow, "PassageFlow", false);
@@ -237,10 +236,12 @@ static void CalcPassageVis(){
 #else
 	Sys_Printf( "\n--- CreatePassages (%d) ---\n", numportals * 2 );
 	RunThreadsOnIndividual( numportals * 2, true, CreatePassages, "CreatePassages" );
+	PassageMemory();
 
 	Sys_Printf( "\n--- PassageFlow (%d) ---\n", numportals * 2 );
 	RunPortalFlow(PassageFlow, "PassageFlow", true);
 #endif
+	FreePassages();
 }
 
 /*
@@ -249,11 +250,10 @@ static void CalcPassageVis(){
    ==================
  */
 static void CalcPassagePortalVis(){
-	PassageMemory();
-
 #ifdef MREDEBUG
 	Sys_Printf( "%6d portals out of %d", 0, numportals * 2 );
 	RunThreadsOnIndividual( numportals * 2, false, CreatePassages, "CreatePassages" );
+	PassageMemory();
 	Sys_Printf( "\n" );
 	Sys_Printf( "%6d portals out of %d", 0, numportals * 2 );
 	RunPortalFlow(PassagePortalFlow, "PassagePortalFlow", false);
@@ -261,10 +261,12 @@ static void CalcPassagePortalVis(){
 #else
 	Sys_Printf( "\n--- CreatePassages (%d) ---\n", numportals * 2 );
 	RunThreadsOnIndividual( numportals * 2, true, CreatePassages, "CreatePassages" );
+	PassageMemory();
 
 	Sys_Printf( "\n--- PassagePortalFlow (%d) ---\n", numportals * 2 );
 	RunPortalFlow(PassagePortalFlow, "PassagePortalFlow", true);
 #endif
+	FreePassages();
 }
 
 /*

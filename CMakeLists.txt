@@ -281,6 +281,14 @@ if(BUILD_TESTING)
     add_executable(portal_graph_test tests/portal_graph.cpp)
     target_link_libraries(portal_graph_test PRIVATE q3mapx_io)
     add_test(NAME portal_graph COMMAND portal_graph_test)
+    add_executable(vis_mask_test tests/vis_mask.cpp)
+    target_include_directories(vis_mask_test PRIVATE libs)
+    add_test(NAME vis_mask COMMAND vis_mask_test)
+    set_tests_properties(vis_mask PROPERTIES TIMEOUT 30)
+    add_test(NAME vis_passage_storage COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/vis_passage_storage.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/vis-passage-storage)
+    set_tests_properties(vis_passage_storage PROPERTIES TIMEOUT 180)
     add_test(NAME portal_evidence COMMAND ${Python3_EXECUTABLE}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/portal_evidence.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/portal-evidence)

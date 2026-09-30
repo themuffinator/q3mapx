@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-30T07:05:42.9374296Z",
+  "scope": "Correct the previously recorded CLI -info path-overflow finding",
+  "compiler_revision": "942fa4b0b471adeadf5ce4755f4c98022c2e91a4",
+  "compiler_code_changed": false,
+  "result": "No reachable CLI overflow: the shared Args constructor rejects arguments longer than 1000 bytes before dispatch",
+  "guard_location": "tools/quake3/q3map2/q3map2.h: Args constructor",
+  "buffer_location": "tools/quake3/q3map2/convert_bsp.cpp: BSPInfo",
+  "source_buffer_bytes": 1024,
+  "maximum_argument_bytes": 1000,
+  "extension_bytes": 4,
+  "terminator_bytes": 1,
+  "supersedes": "docs/validation/index-validation.json remaining -info finding and the preceding PROGRESS entry",
+  "test_sha256": "a457207e46750e49788405d18e5da39c2cf8db06b13baf372f640ba7a4a86b10",
+  "platform_checks": [
+    {
+      "build": "release",
+      "compiler_sha256": "249788673a42d3878c985c6204d14c3a3d9dd6ae9b55f322afff8c90f619a8f6",
+      "regression_group": "cli_options",
+      "result": "passed",
+      "seconds": 1.07,
+      "sanitizer_settings": {},
+      "cases": [
+        {
+          "argument_bytes": 999,
+          "exit_code": 1,
+          "global_argument_guard": false,
+          "sanitizer_failure": false
+        },
+        {
+          "argument_bytes": 1000,
+          "exit_code": 1,
+          "global_argument_guard": false,
+          "sanitizer_failure": false
+        },
+        {
+          "argument_bytes": 1001,
+          "exit_code": 1,
+          "global_argument_guard": true,
+          "sanitizer_failure": false
+        },
+        {
+          "argument_bytes": 1020,
+          "exit_code": 1,
+          "global_argument_guard": true,
+          "sanitizer_failure": false
+        },
+        {
+          "argument_bytes": 2048,
+          "exit_code": 1,
+          "global_argument_guard": true,
+          "sanitizer_failure": false
+        }
+      ]
+    },
+    {
+      "build": "linux-release",
+      "compiler_sha256": "7f74af71accfe0cbd46adca45a2445a572f04ac8b92ee5e64cec129410b1b740",
+      "regression_group": "cli_options",
+      "result": "passed",
+      "seconds": 3.23,
+      "sanitizer_settings": {},
+      "cases": [
+        {
+          "argument_bytes": 999,
+          "exit_code": 1,
+          "global_argument_guard": false,
+          "sanitizer_failure": false
+        },
+        {
+          "argument_bytes": 1000,
+          "exit_code": 1,
+          "global_argument_guard": false,
+          "sanitizer_failure": false
+        },
+        {
+          "argument_bytes": 1001,
+          "exit_code": 1,
+          "global_argument_guard": true,
+          "sanitizer_failure": false
+        },
+        {
+          "argument_bytes": 1020,
+          "exit_code": 1,
+          "global_argument_guard": true,
+          "sanitizer_failure": false
+        },
+        {
+          "argument_bytes": 2048,
+          "exit_code": 1,
+          "global_argument_guard": true,
+          "sanitizer_failure": false
+        }
+      ]
+    },
+    {
+      "build": "linux-sanitized",
+      "compiler_sha256": "329dabce146301124ae678573d6d1aa74e64796326ca7421e012d525e0343f16",
+      "regression_group": "cli_options",
+      "result": "passed",
+      "seconds": 31.3,
+      "sanitizer_settings": {
+        "ASAN_OPTIONS": "detect_leaks=0:abort_on_error=1"
+      },
+      "cases": [
+        {
+          "argument_bytes": 999,
+          "exit_code": 1,
+          "global_argument_guard": false,
+          "sanitizer_failure": false
+        },
+        {
+          "argument_bytes": 1000,
+          "exit_code": 1,
+          "global_argument_guard": false,
+          "sanitizer_failure": false
+        },
+        {
+          "argument_bytes": 1001,
+          "exit_code": 1,
+          "global_argument_guard": true,
+          "sanitizer_failure": false
+        },
+        {
+          "argument_bytes": 1020,
+          "exit_code": 1,
+          "global_argument_guard": true,
+          "sanitizer_failure": false
+        },
+        {
+          "argument_bytes": 2048,
+          "exit_code": 1,
+          "global_argument_guard": true,
+          "sanitizer_failure": false
+        }
+      ]
+    }
+  ],
+  "logs": ".agents/tmp/continuation/info-path-*.log",
+  "unrelated_open_issue": "Workbench hardware query currently has unbounded output accumulation and lacks supersession guards"
+}

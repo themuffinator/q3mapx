@@ -1107,3 +1107,20 @@ outside the index-range change and is not hidden by this task's successful tests
 Workbench hardware-query bounds/supersession also remain open. No external code
 or dependency was introduced. The 0.3.0 packaged archive stays unchanged; the
 continuing goal and inference/optimization roadmap remain active.
+
+## 2026-09-30 — Correct the CLI path-overflow finding
+
+Attempted to reproduce the prior `-info` finding under ASan. The existing `Args`
+constructor rejects every command argument longer than 1,000 bytes before stage
+dispatch. `BSPInfo` receives at most that length and appends/replaces a four-byte
+extension in its 1,024-byte buffer, so the claimed CLI overflow is not reachable
+through this path. The earlier static review omitted this caller-side guard;
+its recorded open finding is superseded by this correction, not counted as a
+newly repaired vulnerability. No compiler code change is needed here.
+
+Added explicit `-info` cases at 999/1,000/1,001/1,020/2,048 bytes to the existing
+CLI regression group. Accepted argument lengths reach a controlled missing-file
+error; larger arguments fail at the global guard. All must exit normally with
+status 1 and without sanitizer failures. Evidence is recorded in
+[the path-bound verification](validation/cli-path-bounds.json). The confirmed
+hardware-query output/supersession task remains the next GUI change.

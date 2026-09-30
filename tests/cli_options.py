@@ -36,6 +36,18 @@ def main():
     for options in [['-light','-super','8','-lightmapsize','2048'],['-light','-lightmapsearchpower','20'],['-profile','x'*1001]]:
         result=subprocess.run([str(exe),*map(str,base),*options,str(source)],cwd=root,capture_output=True,timeout=10)
         assert result.returncode!=0 and b'ERROR' in result.stdout,options
+    path_checks=[]
+    for length in (999,1000,1001,1020,2048):
+        result=subprocess.run([str(exe),*map(str,base),'-threads','1','-info','x'*length],
+                              cwd=root,capture_output=True,timeout=10)
+        output=result.stdout+result.stderr
+        assert result.returncode==1,(length,result.returncode,output[-2000:])
+        assert b'AddressSanitizer' not in output and b'runtime error:' not in output
+        guarded=b'Command-line argument exceeds supported 1000-byte length' in output
+        assert guarded==(length>1000),(length,output[-2000:])
+        path_checks.append({'argument_bytes':length,'exit_code':result.returncode,
+                            'global_argument_guard':guarded,'sanitizer_failure':False})
+    (root/'info-path-bounds.json').write_text(json.dumps(path_checks,indent=2)+'\n',encoding='utf-8')
     visibility = []
     for workers in (1, 4, 70):
         profile = root / f'profile-{workers}.json'

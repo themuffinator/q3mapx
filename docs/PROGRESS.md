@@ -917,3 +917,33 @@ Several names cannot be published as one atomic filesystem operation: interrupti
 between the two OBJ replacements can leave mixed generations. Metadata and
 power-loss durability are outside this guarantee; concurrent writers are unsupported.
 These limits are explicit in the recovery guide. No new unrelated defect was found.
+
+## 2026-09-30 — Workbench BSP inspection
+
+Added a dedicated inspection page with an independent source field, optional
+project-profile check, candidate games, selectable native directory layouts,
+section sizes/offsets/record counts, diagnostic notes and JSON export. The table
+and notes share a resizable divider, including at the 1024×720 minimum window
+size. Invalid directories remain inspectable and exportable. Saving refuses to
+replace the source BSP and uses the existing atomic JSON writer.
+
+The QtCore inspector runs real CLI queries asynchronously, limits combined output
+to 1 MiB, validates the schema and source/status consistency, supports cancellation,
+and rejects stale replies. Its default deadline is ten seconds. Directory validity
+and game ambiguity are explicit; the page does not imply geometry validation.
+
+Windows and Linux release each pass six relevant groups (6.09/17.47 seconds).
+The new model tests exercise valid/malformed native reports, schema mutations,
+oversized stdout/stderr, timeout, cancellation, supersession and failed starts.
+The actual window test builds a map, inspects it, changes layouts, exports JSON
+and checks source protection. Direct widget paintings at 1380×920 and 1024×720
+were reviewed without input injection or OS capture. A fresh-settings run exposed
+and repaired a test setup omission: the render-output directory must exist before
+the first capture. [Evidence](validation/workbench-inspection.json) records the
+binary identities, checks and retained log/image locations. The 0.3.0 archive
+remains unchanged.
+
+Separate code review found that the older hardware-discovery query still reads
+unbounded merged output on completion and has no generation check for superseded
+replies. This needs a follow-up robustness task; the new inspector already has
+both controls. Larger recovery profiling remains the next performance task.

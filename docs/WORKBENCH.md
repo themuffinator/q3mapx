@@ -48,6 +48,10 @@ with its discovery failure shown beside the selection.
 - History: the latest 100 completed runs, their output folders and reloadable
   project snapshots. The snapshot references the staged source copy.
 - Hardware: asynchronous JSON device inventory from the configured compiler.
+- BSP inspection: choose any BSP, inspect its format and named file sections,
+  compare ambiguous directory layouts, and save the full JSON report. The
+  optional profile check uses the project's selected game. The inspection file
+  is independent of the project source; no game assets are needed.
 - View: light/dark themes. Standard Qt focus navigation and label mnemonics apply.
 
 **Ctrl+N/O/S** create/open/save projects, **Ctrl+Shift+S** saves a copy,
@@ -60,6 +64,15 @@ Relative paths in a project resolve against the project file's directory. Saves
 use atomic replacement. GUI preferences/history normally live in the OS application
 configuration directory; `--state-dir PATH` selects an isolated location.
 
+The inspection page is available in development builds after 0.3.0. It shows
+invalid-directory diagnostics as well as successful results and supports cancelling
+a query. A resizable divider separates the section table from diagnostic notes.
+Queries have a ten-second deadline and a 1 MiB combined output limit; stale or
+malformed replies cannot replace the current result. Changing the file, compiler
+or enabled profile check clears the previous report. Saving uses atomic replacement
+and refuses to replace the inspected BSP. Directory checks do not validate geometry
+or establish game compatibility; see [inspection scope](BSP-INSPECTION.md).
+
 ## Validation and limits
 
 Automated tests run the real compiler through the Qt queue, including complete
@@ -70,6 +83,10 @@ tests exercise malformed replies, output limits, timeouts and stale responses.
 The window test also checks recovery-only mesh capabilities and curve-detail
 command construction, and directly renders the quality controls without input
 events. Mesh export limitations are in the [recovery guide](DECOMPILATION.md).
+Inspector tests cover real native directory reports, malformed schemas, oversized
+output on either stream, timeouts, cancellation, failed starts and superseded
+queries. The window test switches ambiguous layouts, saves reports, checks source
+protection and paints both standard and compact inspection layouts.
 The GUI can render its own widget tree directly to PNG:
 
 ```sh

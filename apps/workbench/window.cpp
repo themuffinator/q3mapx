@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "window.h"
+#include "inspection_page.h"
 #include <QtWidgets>
 #include <QDesktopServices>
 #include <QJsonDocument>
@@ -33,9 +34,10 @@ Window::Window(const QString& stateDirectory):stateDirectory_(stateDirectory),qu
     header->addWidget(cancel_); header->addWidget(run_); outer->addLayout(header);
     auto* body=new QHBoxLayout; body->setSpacing(22);
     navigation_=new QListWidget; navigation_->setObjectName("navigation"); navigation_->setFixedWidth(172);
-    navigation_->addItems({"01   Project","02   Build queue","03   History","04   Hardware"});
+    navigation_->addItems({"01   Project","02   Build queue","03   History","04   Hardware","05   BSP inspection"});
     navigation_->setSpacing(5); navigation_->setCurrentRow(0); navigation_->setAccessibleName("Workbench pages");
     pages_=new QStackedWidget; pages_->addWidget(configuration()); pages_->addWidget(queuePage()); pages_->addWidget(historyPage()); pages_->addWidget(hardwarePage());
+    inspection_=new InspectionPage; pages_->addWidget(inspection_);
     body->addWidget(navigation_); body->addWidget(pages_,1); outer->addLayout(body,1);
     auto* footer=new QHBoxLayout; status_=new QLabel("Ready · configure a project to begin");
     progress_=new QProgressBar; progress_->setFixedWidth(240); progress_->setRange(0,1); progress_->setValue(0); progress_->setTextVisible(false);
@@ -245,6 +247,7 @@ void Window::updatePreview(){
     const auto commands=buildPlan(p,workflow_->currentData().toString(),QDir(p.outputRoot).filePath("<new-run>"));
     QStringList lines; for(const auto& job:commands) lines << job.label+"\n"+displayCommand(job);
     preview_->setPlainText(lines.join("\n\n"));
+    inspection_->setContext(p.compiler,QDir::toNativeSeparators(p.source),p.game);
     refreshGameHint();
 }
 void Window::saveProject(bool saveAs){
@@ -390,6 +393,7 @@ void Window::closeEvent(QCloseEvent* event){
     if(queue_.running() && QMessageBox::question(this,"Build in progress","Cancel the active build and close?",QMessageBox::Yes|QMessageBox::No,QMessageBox::No)!=QMessageBox::Yes) { event->ignore(); return; }
     if(!confirmDiscard()) { event->ignore(); return; }
     queue_.cancel();
+    inspection_->cancel();
     if(QDir().mkpath(stateDirectory_)) try {
         saveJson(QDir(stateDirectory_).filePath("ui.json"),{{"schema_version",1},{"theme",theme_},{"geometry",QString::fromLatin1(saveGeometry().toBase64())}});
         saveJson(QDir(stateDirectory_).filePath("last-queue.json"),queue_.report());

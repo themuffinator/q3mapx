@@ -174,7 +174,7 @@ not a redefinition of the overall goal around the existing release:
 - [x] Protect mesh exports against write/close failures and failed publication;
   stage OBJ/MTL together, roll back a published companion on a reported failure,
   and verify existing files survive actual filesystem errors.
-- [ ] Bring the bounded BSP inspector into the workbench with asynchronous
+- [x] Bring the bounded BSP inspector into the workbench with asynchronous
   discovery, useful directory/compatibility details and visible invalid-input
   diagnostics; preserve the CLI and test real compiler responses.
 - [ ] Profile larger recovery workloads and address measured costs with geometry,

@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "scope": "Post-0.3.0 workbench BSP directory inspection; no geometry or gameplay certification",
+  "suites": [
+    {
+      "platform": "Windows x64 / GCC 15.2 / Qt 6.10.1",
+      "build": "release",
+      "passed": 6,
+      "seconds": 6.09,
+      "compiler_sha256": "cf9cd5741fd588b8c4a284a4da20fcf73299034868fe94c2cd786919f340e48e",
+      "workbench_sha256": "9e1e196b2433745fce0328b084c9dbb6ea9ae54720f146e7a945a2828dd1359a"
+    },
+    {
+      "platform": "Ubuntu 24.04 WSL / GCC 13.3 / Qt 6.4.2",
+      "build": "linux-release",
+      "passed": 6,
+      "seconds": 17.47,
+      "compiler_sha256": "f1ee8a8f7ce831562d385422006ec67ac1ba6c36438093a3dc25e08900ce0ef2",
+      "workbench_sha256": "87f719f1b7b6d8e9d4851114e96b783d6458e27c7a1dbfb1d587d9515e724f63"
+    }
+  ],
+  "ctest_groups": ["bsp_inspect", "game_catalog", "workbench_inspector", "workbench", "workbench_window", "workbench_preview"],
+  "checks": [
+    "Real IBSP 46, both IBSP 47 layouts and native Allied Assault directory reports",
+    "Malformed directory, mismatched profile and missing input retain structured errors",
+    "Report JSON types, bounds, counts, source and exit-status consistency",
+    "1 MiB combined stdout/stderr limit, timeout, failed start, cancellation and superseded replies",
+    "Actual window build, inspection, layout switching, report export and source-overwrite refusal",
+    "Case-insensitive source protection on Windows",
+    "Direct Qt painting at 1380x920 and 1024x720; compact table retains three full rows",
+    "Fresh Windows settings directory creates its own render output path"
+  ],
+  "evidence_directory": ".agents/tmp/continuation",
+  "fresh_window_images": ".agents/tmp/continuation/inspector-window-fresh-complete",
+  "input_injection": false,
+  "os_screen_capture": false,
+  "portable_0_3_0_changed": false
+}

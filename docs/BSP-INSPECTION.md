@@ -46,3 +46,24 @@ installed Alice, F.A.K.K.2 and Allied Assault archives; the
 [evidence](validation/native-inspection-win-x64.json) contains hashes and results,
 not proprietary map data. This is directory evidence, not recovery or gameplay
 evidence. Use `tests/native_maps.py --inspect` for the optional archive probe.
+
+## Workbench
+
+Development builds after 0.3.0 include **BSP inspection** in the navigation panel.
+Browse to a file or use the current project source, then select **Inspect BSP**.
+The page shows signature, file size, candidate profiles, layout validity and each
+lump's size, offset and fixed-record count. **Directory layout** switches between
+interpretations when more than one exists. The diagnostics pane can be resized
+to give the table more space. Inspection does not change the project source.
+
+Leave **Check against project profile** unchecked to identify candidates without
+assuming a game. Enable it to check the current project profile explicitly. Shared
+signatures still cannot prove a map's game. Invalid directories retain their
+structured diagnostics and can be exported through **Save report**. Reports use
+the same JSON schema as the CLI; saving cannot replace the BSP being inspected.
+
+The workbench runs the compiler asynchronously with cancellation, a ten-second
+timeout and a 1 MiB limit across stdout and stderr. It checks the report schema,
+source path and exit-status consistency before presenting a result, and ignores
+replies from superseded queries. Native geometry validation still requires a
+recovery or other workflow that loads the map.

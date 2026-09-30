@@ -92,8 +92,19 @@ options apply only transformations that meet visibility or presentation contract
 Structural participation changes run before portal generation in a full build;
 VIS-only processing preserves a conservative mapping to the existing BSP clusters.
 Lighting inference uses the game's forward lighting semantics and records how much
-of the baked data its hypotheses explain. Inference, review overlays and automatic
-transformations remain planned; the current analysis command makes no such edits.
+of the baked data its hypotheses explain. The read-only analysis command makes
+no edits. Optional recovery policies now use bounded brush-cell evidence for
+detail proposals and shared rendered surfaces for group proposals; broader
+inference, review overlays and automatic compiler transformations remain planned.
+
+Group recovery reuses the per-material triangle bounds index, with stricter plane
+and overlap tests than ordinary UV recovery. `recovery_groups.h/.cpp` separates
+association components and loader-order planning from compiler globals and MAP/JSON
+serialization. The planner prunes incompatible groups, orders accepted groups
+deterministically and enforces a work budget. Export accounts for both opaque
+brush reversals during parsing and group collapse, while preserving translucent
+order. Reports distinguish this mechanical ordering contract from unproven
+original grouping, compile parameters and rebuilt presentation.
 
 ## Decisions recorded at project start
 

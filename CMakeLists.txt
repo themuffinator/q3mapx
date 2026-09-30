@@ -225,6 +225,14 @@ if(BUILD_TESTING)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/brush_cells.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/brush-cells)
     set_tests_properties(brush_cells PROPERTIES TIMEOUT 360)
+    add_executable(recovery_group_order_test tests/recovery_group_order.cpp tools/quake3/q3map2/recovery_groups.cpp)
+    target_include_directories(recovery_group_order_test PRIVATE tools/quake3/q3map2)
+    add_test(NAME recovery_group_order COMMAND recovery_group_order_test)
+    set_tests_properties(recovery_group_order PROPERTIES TIMEOUT 30)
+    add_test(NAME recovery_groups COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/recovery_groups.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/recovery-groups)
+    set_tests_properties(recovery_groups PROPERTIES TIMEOUT 360)
     add_executable(job_pool_test tests/job_pool.cpp)
     target_link_libraries(job_pool_test PRIVATE q3mapx_jobs)
     add_test(NAME job_pool COMMAND job_pool_test)

@@ -33,8 +33,9 @@ The next fidelity work is specified in [recovery inference](RECOVERY-INFERENCE.m
 - More accurate brush/UV/patch reconstruction and CLI/workbench tools for reviewing
   evidence, applying manual corrections and comparing rebuilt geometry and lighting.
 
-The first optional geometric detail policy is implemented below; group/light
-inference and authoring review remain planned. Known-source
+The first optional geometric detail and surface-supported group policies are
+implemented below; broader grouping, light inference and authoring review remain
+planned. Known-source
 fixtures, held-out lighting samples and recorded uncertainty will distinguish a
 close visual recreation from recovery of uniquely identifiable authoring data.
 The separate [intelligent compiler options](COMPILER-OPTIMIZATION.md) optimize new
@@ -47,13 +48,14 @@ q3mapx -decompile -game quake3 -fs_basepath /path/to/game -o recovered.map maps/
 q3mapx -decompile -format map_bp -report recovery.json maps/example.bsp
 q3mapx -decompile -brush-order rebuild -o recovered.map maps/example.bsp
 q3mapx -decompile -detail-policy cells -brush-order rebuild -o candidate.map maps/example.bsp
+q3mapx -decompile -group-policy surfaces -detail-policy cells -o assemblies.map maps/example.bsp
 q3mapx -convert -format map_220 maps/example.bsp
 ```
 
 `-decompile` defaults to Valve 220 output and writes `<output.map>.recovery.json`.
 Without `-o`, the map is `<input>_converted.map`. `-report` selects a different JSON
 path. The legacy `-convert` syntax remains available and writes a report when
-explicitly requested or when cell detail inference is selected. `-o` requires a
+explicitly requested or when cell detail or surface grouping is selected. `-o` requires a
 `.map` extension and `-report` requires `.json`.
 Unknown conversion formats/options now produce a diagnostic instead of silently
 choosing ASE or ignoring the option.
@@ -111,10 +113,79 @@ The optional version 1 `brush_order` report object records `policy`, `basis`,
 `author_order_proven: false` and `rebuild_equivalence_proven: false`. The report
 names shader/loader assumptions when rebuilding order is requested.
 
+### Group inference policy
+
+Development builds after 0.3.0 accept `-group-policy none|surfaces`. The default
+`none` leaves recovered world geometry flat. `surfaces` proposes `func_group`
+assemblies from brushes that overlap the same rendered BSP surface. It works
+independently of detail classification: one group can contain structural and
+detail brushes, and can use either detail policy. It supports fast/full recovery,
+all three MAP formats and legacy `-convert`. A report is mandatory. It automatically
+selects rebuild brush order; an explicit `-brush-order bsp` conflicts with it.
+It requires compiled BSP input and a BSP-writing profile, excludes `-wtf`, and
+is not yet exposed in the workbench.
+
+The analysis matches current side materials and closely coplanar, positive-area
+triangle overlap. Brushes linked through shared surfaces form deterministic
+proposals of at least two members. A source compiler can merge several brushes
+into one surface while respecting group boundaries, but ordinary world geometry
+can produce the same evidence. Shared surfaces do **not** prove an original group,
+its name or its parameters. Disconnected assemblies and surfaces split by the
+compiler may leave insufficient evidence. This first policy does not invent
+groups around unrelated brushes to fill those gaps.
+
+Only world brushes with unambiguous ownership and usable exported windings can
+move. Patches and brush entities stay in their recovered owners. Special
+hint/skip/origin/portal/sky/liquid/fog materials, context-dependent shader effects,
+and brushes touching the outer world bounds are excluded. The bounds exclusion
+is a conservative scope heuristic, not a proof of sealing. Excess overlapping
+surface coverage marks ambiguous support. World index maps, smoothing context,
+nonstandard world entities and shared model ownership can block all export.
+Excluded brushes remain part of association analysis so a linked proposal cannot
+silently drop an incompatible member.
+
+The MAP loader reverses opaque brushes when reading them and again when collapsing
+a group. Export therefore requires each group's members to be contiguous within
+each opacity class, with opaque groups forming a prefix of compiled opaque order
+and translucent groups a suffix of translucent order. Conflicting group-order
+constraints leave proposals flat. The report distinguishes exclusions,
+noncontiguous order, world-order changes and incompatible opacity ordering.
+These restrictions preserve the recoverable brush sequence; they do not guarantee
+identical output from arbitrary recompilation settings.
+
+Generated names are `q3mapx_inferred_group_N`. Groups copy the recovered worldspawn's
+recognized shadow, lightmap scale/sample, cel shader, smoothing and ambient/color
+keys so regrouping does not reset those baseline settings. This does not recover
+discarded original group values. Rebuild and compare using the same current assets
+and compiler settings before treating a proposal as a faithful reconstruction.
+
+`-group-max-work N` bounds the additional evidence, surface association and ordering
+work (default 50,000,000; range 1–100,000,000). Hard limits include 50,000 world
+brushes, 256 sides per world brush, 2,000,000 expanded world triangles, 2,048 points
+per winding, 2,000,000 total winding points and surface associations, and absolute
+brush coordinates of 10,000,000. The budget does not bound all inherited loading,
+shader processing or MAP export. Inference reports share the 64 MiB ceiling;
+budget/limit failures preserve previous outputs.
+
+The optional schema 1 `group_inference` object records the policy/basis, current
+shader assumptions, copied compile keys, work usage, any global export block,
+per-brush supporting surfaces/exclusion and every proposed group's members,
+bounds, status, generated name, export flag and detail count. `emission_order`
+maps accepted proposals to emitted entities. `source_entities` counts input
+entities; the existing `entities` count includes generated groups. Original
+grouping/parameters and rebuild validation are explicitly unproven. Saved manual
+overrides, alternative partitions and GUI evidence review remain future work.
+
+The [validation corpus](validation/recovery-groups.json) includes 42 rebuilds,
+mixed detail/opacity, sloped faces, preserved brush entities/patches, and three
+controlled lighting rebuilds. A flat-source case deliberately yields plausible
+assemblies without original groups. A disconnected case deliberately stays flat
+when export would change brush order. These limits are part of the checks.
+
 ### Detail inference policy
 
 Development builds after 0.3.0 accept `-detail-policy legacy|cells`. The default
-`legacy` retains the existing nonopaque leaf-reference heuristic and MAP bytes.
+`legacy` retains the existing nonopaque leaf-reference classification heuristic.
 `cells` adds bounded geometric evidence independently of those reference lists,
 using [convex brush/tree intersections](BSP-EVIDENCE.md#brush-interiors). It supports
 all three MAP formats, fast/full export and legacy `-convert`, and always writes
@@ -179,6 +250,13 @@ default brush-detail membership uses nonopaque leaf references and explicit
 structural shader flags. The optional cell policy above extends this heuristic;
 portal adjacency and authoring review remain future work.
 
+Fast export now solves nonaxial face points from stored planes in double precision
+and prints 17 significant digits. Its earlier float tangent basis and three
+decimal places could change sloped brush planes during rebuilding. Axial point
+formatting remains unchanged. Controlled slopes in all six dominant-axis/sign
+orientations now retain exact stored brush planes; arbitrary original editor
+coordinates are still unrecoverable, and fast mode still uses fallback texture axes.
+
 The optional `detail_classification` object in version 1 reports names this
 selected policy, records its structural override scope (`brush_shader_contents`
 by default, extended to current exported side materials in cell mode), and
@@ -194,8 +272,9 @@ matched/fallback faces, degenerate triangles/transforms, approximate Quake UVs,
 triangle-soup surface count, paths, output format, and recovery limitations.
 Fallback faces include invisible brush sides that have no rendered triangle;
 their count alone does not imply a visible defect. Model instances and editor
-grouping cannot be uniquely determined from data the BSP no longer contains;
-future proposals and source-assisted matching will identify their evidence explicitly.
+grouping cannot be uniquely determined from data the BSP no longer contains.
+Optional grouping proposals identify their evidence explicitly; model-instance
+and source-assisted matching remain future work.
 
 ## Acceptance fixtures
 

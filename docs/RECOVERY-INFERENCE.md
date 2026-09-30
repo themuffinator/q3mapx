@@ -5,8 +5,10 @@
 This roadmap was added on 2026-09-30. The first shared
 [BSP evidence command](BSP-EVIDENCE.md) and optional
 [`-detail-policy cells` exporter](DECOMPILATION.md#detail-inference-policy) are
-implemented with bounded geometry and per-brush decisions. The broader group,
-light and review tools below remain planned. Recover the closest supported
+implemented with bounded geometry and per-brush decisions. Optional
+[`-group-policy surfaces`](DECOMPILATION.md#group-inference-policy) now exports
+surface-supported assemblies with explicit ambiguity and loader-order constraints.
+Broader grouping, light and review tools below remain planned. Recover the closest supported
 recreation of the author's MAP: editable geometry, organization, materials,
 visibility behavior and source lighting. Keep exact extraction available alongside
 optional inference, and preserve the input BSP and existing recovered output.
@@ -95,6 +97,21 @@ wrongly classifying structural brushes; successful recompilation alone is not
 evidence of correct classification.
 
 ## func_group inference
+
+The first optional CLI policy associates closely coplanar brush faces with shared
+BSP draw surfaces, then emits supported world assemblies only when their collapse
+can preserve compiled opaque/translucent brush order. It keeps group membership
+independent of detail flags, preserves model/patch ownership, protects sensitive
+materials/context, copies relevant recovered worldspawn parameters and records
+rejected proposals. It does not infer lost original group parameters or names.
+The [42-rebuild corpus](validation/recovery-groups.json) includes mixed flags and
+opacity, slopes, identical controlled lighting, flat-source ambiguity and a
+disconnected assembly that cannot be exported without changing brush order.
+An independent 6,000-layout test checks the ordering contract. These are initial
+synthetic controls, not general grouping accuracy or rendering equivalence proof.
+
+Next steps extend beyond shared surfaces to the cues below, including disconnected
+assemblies, alternative partitions, saved overrides and interactive comparison.
 
 Propose useful authoring groups from connected geometry, shared transforms and
 grid patterns, material/UV continuity, repeated assemblies, region boundaries and

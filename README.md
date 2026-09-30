@@ -21,6 +21,9 @@ companion rollback on publication errors, plus an asynchronous [BSP inspection p
 in the workbench. See [export guarantees and limits](docs/DECOMPILATION.md).
 The new [`-bsp-evidence` command](docs/BSP-EVIDENCE.md) reports validated brush,
 partition, regional and stored-visibility observations for inference development.
+Optional [detail and group inference](docs/DECOMPILATION.md#group-inference-policy)
+can now export cell-supported detail flags and surface-supported `func_group`
+assemblies, with bounded work, rebuild-order protection and explicit uncertainty.
 The packaged 0.3.0 archive remains unchanged.
 
 Recover an editable map with a texture-recovery report:
@@ -82,7 +85,7 @@ native validation of 242 installed-map entries without distributing game assets.
 - [Measured performance and backend options](docs/PERFORMANCE.md)
 - [Installation, packaging and known limits](docs/RELEASE.md)
 - [BSP decompilation design](docs/DECOMPILATION.md)
-- [Planned detail/group/light inference and recreation tools](docs/RECOVERY-INFERENCE.md)
+- [Detail/group inference and the light/recreation roadmap](docs/RECOVERY-INFERENCE.md)
 - [Planned intelligent VIS and geometry optimization](docs/COMPILER-OPTIMIZATION.md)
 - [Upstream provenance and credits](docs/UPSTREAM.md)
 - [Completed tasks and known issues](docs/PROGRESS.md)

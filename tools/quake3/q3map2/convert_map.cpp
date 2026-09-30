@@ -37,6 +37,7 @@
 #include "qspatial.h"
 #include "decompile.h"
 #include "bsp_evidence.h"
+#include "recovery_groups.h"
 #include "q3mapx/affine.h"
 #include "q3mapx/atomic_file.h"
 #include "rapidjson/prettywriter.h"
@@ -81,11 +82,12 @@ static int InferredBrushDetailFlag( int brushNum ){
 struct BspTriangleRef
 {
 	bspSurfaceType_t surfaceType;
+	int surfaceIndex;
 	TriRef tri;
 	MinMax minmax; // X is on c_spatial_sort_direction
 
-	BspTriangleRef( bspSurfaceType_t surfaceType, const bspDrawVert_t& v0, const bspDrawVert_t& v1, const bspDrawVert_t& v2 )
-	:	surfaceType( surfaceType ),
+	BspTriangleRef( bspSurfaceType_t surfaceType, int surfaceIndex, const bspDrawVert_t& v0, const bspDrawVert_t& v1, const bspDrawVert_t& v2 )
+	:	surfaceType( surfaceType ), surfaceIndex( surfaceIndex ),
 		tri{ &v0, &v1, &v2 }
 	{
 		minmax.extend( Vector3( spatial_distance( v0.xyz ), v0.xyz.y(), v0.xyz.z() ) );
@@ -154,7 +156,7 @@ class ModelTriangles
 	};
 	std::map<CopiedString, ShaderTriangles> m_modelTriangles;
 public:
-	ModelTriangles( const bspModel_t& model ){
+	ModelTriangles( const bspModel_t& model, bool countDegenerate = true ){
 		for ( int surface = 0; surface < model.numBSPSurfaces; ++surface )
 		{
 			const auto& s = bspDrawSurfaces[model.firstBSPSurface + surface];
@@ -162,14 +164,14 @@ public:
 				auto& vec = m_modelTriangles[bspShaders[s.shaderNum].shader].triangles;
 				for ( int t = 0; t + 3 <= s.numIndexes; t += 3 )
 				{
-					BspTriangleRef triangle( s.surfaceType,
+					BspTriangleRef triangle( s.surfaceType, model.firstBSPSurface + surface,
 						bspDrawVerts[s.firstVert + bspDrawIndexes[s.firstIndex + t + 0]],
 						bspDrawVerts[s.firstVert + bspDrawIndexes[s.firstIndex + t + 1]],
 						bspDrawVerts[s.firstVert + bspDrawIndexes[s.firstIndex + t + 2]]
 					);
 					Plane3f plane;
 					if ( !PlaneFromPoints( plane, triangle.tri[0]->xyz, triangle.tri[1]->xyz, triangle.tri[2]->xyz ) ) {
-						++recovery.degenerateTriangles;
+						if ( countDegenerate ) ++recovery.degenerateTriangles;
 						continue;
 					}
 					vec.push_back( triangle );
@@ -179,9 +181,11 @@ public:
 
 		for( auto& [ k, values ] : m_modelTriangles ) values.build();
 	}
-	TriRef GetBestSurfaceTriangleMatchForBrushside( side_t& buildSide ) const {
-		const float nepsilon = normalEpsilon * 100; // default target 0.005 - gives worthy results practically
-		const float depsilon = 2;
+	TriRef GetBestSurfaceTriangleMatchForBrushside( side_t& buildSide, std::vector<int>* groupSurfaces = nullptr,
+	    uint64_t* groupWork = nullptr, bool* ambiguous = nullptr ) const {
+		const float nepsilon = groupSurfaces ? 0.0001f : normalEpsilon * 100;
+		const float depsilon = groupSurfaces ? 0.01f : 2;
+		double coveredArea = 0;
 		winding_t polygon;
 		float bestarea = 0;
 		float thisarea;
@@ -206,6 +210,7 @@ public:
 			minmax.maxs += Vector3( 32, depsilon, depsilon ); // e.g. produced by original model autoclip
 
 			triangles->second.query( minmax, [&]( const BspTriangleRef& triangle ) {
+				if ( groupWork ) q3mapx::spendGroupWork( *groupWork, decompileOptions.groupWorkLimit, 1 + buildSide.winding.size() );
 				const auto* tri = &triangle;
 				if ( !minmax.test( tri->minmax ) ) {
 					return;
@@ -250,7 +255,7 @@ public:
 				polygon = buildSide.winding;
 				for ( const Plane3f& plane : planes )
 				{
-					ChopWindingInPlace( polygon, plane, distanceEpsilon );
+					ChopWindingInPlace( polygon, plane, groupSurfaces ? 0.00001f : distanceEpsilon );
 					if ( polygon.empty() ) {
 						goto exwinding;
 					}
@@ -258,6 +263,11 @@ public:
 				thisarea = WindingArea( polygon );
 				if ( thisarea > 0 ) {
 					++matches;
+				}
+				if ( groupSurfaces && thisarea > 0.001f ) {
+					if ( groupSurfaces->size() == 2'000'000 ) throw std::runtime_error( "Group surface association limit exceeded" );
+					groupSurfaces->push_back( tri->surfaceIndex );
+					coveredArea += thisarea;
 				}
 				if ( thisarea > bestarea ) {
 					bestarea = thisarea;
@@ -268,6 +278,7 @@ public:
 				;
 			} );
 		}
+		if ( ambiguous && coveredArea > double( WindingArea( buildSide.winding ) ) * 1.001 + 0.001 ) *ambiguous = true;
 		//if( !striEqualPrefix( buildSide.shaderInfo->shader, "textures/common/" ) )
 		//	fprintf( stderr, "brushside with %s: %d matches (%f area)\n", buildSide.shaderInfo->shader, matches, bestarea );
 		if(inferMaterial && bestMaterial) {
@@ -277,6 +288,24 @@ public:
 		return bestVert;
 	}
 };
+
+struct GroupRecovery {
+	uint64_t work = 0;
+	const char* exportBlock = nullptr;
+	std::vector<q3mapx::GroupBrushEvidence> brushes;
+	q3mapx::RecoveryGroupPlan plan;
+	std::vector<int> assigned;
+	std::unique_ptr<ModelTriangles> triangles;
+};
+static std::unique_ptr<GroupRecovery> groupRecovery;
+
+static bool GroupCompileKey( const char* key ){
+	for ( const char* candidate : { "_castShadows", "_cs", "_receiveShadows", "_rs", "lightmapscale", "_lightmapscale", "_ls",
+	    "_celshader", "_shadeangle", "_smoothnormals", "_sn", "_sa", "_smooth", "_lightmapsamplesize", "_samplesize", "_ss",
+	    "_color", "_ambient", "ambient" } )
+		if ( striEqual( key, candidate ) ) return true;
+	return false;
+}
 
 #define FRAC( x ) ( ( x ) - floor( x ) )
 static void ConvertOriginBrush( FILE *f, int num, const Vector3& origin, EBrushType brushType ){
@@ -452,7 +481,28 @@ static void ConvertBrushFast( FILE *f, int bspBrushNum, const Vector3& origin, E
 		}
 
 		{
-			fprintf( f, "\t\t( %.3f %.3f %.3f ) ( %.3f %.3f %.3f ) ( %.3f %.3f %.3f ) ",
+			if ( buildPlane.type >= 3 ) {
+				// A float tangent basis plus three decimal places changes oblique
+				// normals/distances. Solve the dominant coordinate in double precision
+				// near the face instead; the two free axes keep the points well spaced.
+				size_t axis = 0;
+				for ( size_t a = 1; a < 3; ++a ) if ( std::abs( buildPlane.normal()[a] ) > std::abs( buildPlane.normal()[axis] ) ) axis = a;
+				const size_t b = ( axis+1 )%3, c = ( axis+2 )%3;
+				DoubleVector3 precise[3];
+				precise[0] = DoubleVector3( buildSide.winding.front() );
+				precise[0][b] = std::round( precise[0][b] ); precise[0][c] = std::round( precise[0][c] );
+				precise[1] = precise[2] = precise[0];
+				precise[1][buildPlane.normal()[axis] > 0 ? c : b] += 256;
+				precise[2][buildPlane.normal()[axis] > 0 ? b : c] += 256;
+				for ( auto& point : precise ) {
+					point[axis] = ( double( buildPlane.dist() ) - double( buildPlane.normal()[b] )*point[b]
+					    - double( buildPlane.normal()[c] )*point[c] ) / double( buildPlane.normal()[axis] );
+					point += DoubleVector3( origin );
+				}
+				fprintf( f, "\t\t( %.17g %.17g %.17g ) ( %.17g %.17g %.17g ) ( %.17g %.17g %.17g ) ",
+				    precise[0][0], precise[0][1], precise[0][2], precise[1][0], precise[1][1], precise[1][2], precise[2][0], precise[2][1], precise[2][2] );
+			}
+			else fprintf( f, "\t\t( %.3f %.3f %.3f ) ( %.3f %.3f %.3f ) ( %.3f %.3f %.3f ) ",
 			         pts[ 0 ][ 0 ], pts[ 0 ][ 1 ], pts[ 0 ][ 2 ],
 			         pts[ 1 ][ 0 ], pts[ 1 ][ 1 ], pts[ 1 ][ 2 ],
 			         pts[ 2 ][ 0 ], pts[ 2 ][ 1 ], pts[ 2 ][ 2 ]
@@ -960,6 +1010,101 @@ static void InferBrushDetailFromCells(){
 	}
 }
 
+static void InferBrushGroups(){
+	groupRecovery = std::make_unique<GroupRecovery>();
+	auto& state = *groupRecovery;
+	const auto evidence = q3mapx::analyzeBSPEvidence( 0, decompileOptions.groupWorkLimit );
+	state.work = evidence.workUsed;
+	const auto spend = [&]( uint64_t amount ){ q3mapx::spendGroupWork( state.work, decompileOptions.groupWorkLimit, amount ); };
+	const auto& world = bspModels[0];
+	if ( world.numBSPBrushes > 50'000 ) throw std::runtime_error( "Group inference exceeds 50000 world brushes" );
+	for ( size_t i = 1; i < bspModels.size(); ++i ) {
+		const auto& other = bspModels[i];
+		if ( other.numBSPSurfaces && world.numBSPSurfaces
+		    && other.firstBSPSurface < world.firstBSPSurface + world.numBSPSurfaces
+		    && world.firstBSPSurface < other.firstBSPSurface + other.numBSPSurfaces )
+			state.exportBlock = "ambiguous_surface_model_ownership";
+	}
+	uint64_t triangles = 0;
+	for ( int i = 0; i < world.numBSPSurfaces; ++i ) {
+		const auto& surface = bspDrawSurfaces[world.firstBSPSurface+i];
+		triangles += surface.numIndexes / 3;
+		if ( triangles > 2'000'000 ) throw std::runtime_error( "Group inference exceeds 2000000 expanded world triangles" );
+	}
+	spend( triangles );
+	state.triangles = std::make_unique<ModelTriangles>( world, !fast );
+	state.assigned.assign( bspBrushes.size(), -1 );
+	if ( !entities[0].classname_is( "worldspawn" ) || entities[0].vectorForKey( "origin" ) != g_vector3_identity )
+		state.exportBlock = "nonstandard_world_entity";
+	if ( const char* value; entities[0].read_keyvalue( value, "_indexmap", "alphamap" ) ) state.exportBlock = "world_index_map";
+	if ( entities[0].floatForKey( "_shadeangle", "_smoothnormals", "_sn", "_sa", "_smooth" ) > 0 )
+		state.exportBlock = "world_smoothing_context";
+	for ( size_t i = 1; i < entities.size(); ++i )
+		if ( strEqual( entities[i].valueForKey( "model" ), "*0" ) ) state.exportBlock = "shared_world_entity_model";
+	MinMax worldBounds;
+	uint64_t windingPoints = 0, associations = 0;
+	for ( int i = 0; i < world.numBSPBrushes; ++i ) {
+		q3mapx::GroupBrushEvidence brush;
+		brush.index = world.firstBSPBrush+i;
+		const auto& raw = bspBrushes[brush.index];
+		if ( raw.numSides > 256 ) throw std::runtime_error( "Group inference exceeds 256 sides on a world brush" );
+		spend( 1 + uint64_t( raw.numSides ) * raw.numSides * raw.numSides );
+		bspBrush_to_buildBrush( raw );
+		if ( evidence.brushes[brush.index].model != 0 ) {
+			brush.exclusion = "ambiguous_model_ownership"; state.exportBlock = "ambiguous_model_ownership";
+		}
+		if ( !CreateBrushWindings( buildBrush ) ) {
+			brush.exclusion = "unavailable_export_geometry"; state.exportBlock = "incomplete_geometry_mapping";
+		}
+		else {
+			worldBounds.extend( buildBrush.minmax );
+			for ( size_t a = 0; a < 3; ++a ) {
+				brush.mins[a] = buildBrush.minmax.mins[a]; brush.maxs[a] = buildBrush.minmax.maxs[a];
+				if ( !std::isfinite( brush.mins[a] ) || !std::isfinite( brush.maxs[a] )
+				    || std::abs( brush.mins[a] ) > 1e7 || std::abs( brush.maxs[a] ) > 1e7 )
+					throw std::runtime_error( "Group inference world-brush coordinate limit exceeded" );
+			}
+			bool ambiguous = false;
+			for ( auto& side : buildBrush.sides ) {
+				windingPoints += side.winding.size();
+				if ( side.winding.size() > 2048 || windingPoints > 2'000'000 ) throw std::runtime_error( "Group inference winding-point limit exceeded" );
+				if ( side.winding.empty() || !side.shaderInfo ) continue;
+				const auto& material = *side.shaderInfo;
+				brush.opaque &= !( material.compileFlags & C_TRANSLUCENT );
+				if ( material.compileFlags & ( C_HINT | C_SKIP | C_ORIGIN | C_AREAPORTAL | C_ANTIPORTAL | C_SKY | C_LIQUID | C_FOG ) )
+					brush.exclusion = "protected_material";
+				if ( material.indexed || material.legacyTerrain || material.nonplanar || material.shadeAngleDegrees > 0
+				    || material.autosprite || material.furNumLayers || !material.surfaceModels.empty() || !material.foliage.empty()
+				    || material.backShader || material.cloneShader || material.remapShader || material.deprecateShader
+				    || std::ranges::any_of( material.colorMod, []( const auto& mod ){ return mod.type == EColorMod::Volume; } ) )
+					brush.exclusion = "context_dependent_material";
+				state.triangles->GetBestSurfaceTriangleMatchForBrushside( side, &brush.surfaces, &state.work, &ambiguous );
+			}
+			if ( ambiguous ) brush.exclusion = "ambiguous_overlapping_surface_support";
+			std::sort( brush.surfaces.begin(), brush.surfaces.end() );
+			brush.surfaces.erase( std::unique( brush.surfaces.begin(), brush.surfaces.end() ), brush.surfaces.end() );
+			if ( brush.surfaces.empty() ) brush.exclusion = "no_render_surface_support";
+		}
+		associations += brush.surfaces.size();
+		if ( associations > 2'000'000 ) throw std::runtime_error( "Group inference surface association limit exceeded" );
+		state.brushes.push_back( std::move( brush ) );
+	}
+	for ( auto& brush : state.brushes ) {
+		spend( 1 );
+		if ( brush.exclusion ) continue;
+		for ( size_t a = 0; a < 3; ++a )
+			if ( brush.mins[a] <= worldBounds.mins[a]+0.01 || brush.maxs[a] >= worldBounds.maxs[a]-0.01 )
+				brush.exclusion = "outer_world_boundary";
+	}
+	state.plan = q3mapx::planRecoveryGroups( state.brushes, state.work, decompileOptions.groupWorkLimit );
+	if ( state.exportBlock ) {
+		for ( auto& group : state.plan.groups ) if ( group.exported ) { group.exported = false; group.status = "world_context_blocks_export"; }
+		state.plan.emissionOrder.clear();
+	}
+	for ( size_t group : state.plan.emissionOrder )
+		for ( int member : state.plan.groups[group].members ) state.assigned[member] = int( group );
+}
+
 static void ConvertModel( FILE *f, const bspModel_t& model, const Vector3& origin, EBrushType brushType ){
 	if ( origin != g_vector3_identity ) {
 		ConvertOriginBrush( f, -1, origin, brushType );
@@ -981,14 +1126,17 @@ static void ConvertModel( FILE *f, const bspModel_t& model, const Vector3& origi
 	const auto brushAt = [&]( int i ){
 		return brushes.empty() ? model.firstBSPBrush + i : brushes[i];
 	};
+	const bool groupedWorld = groupRecovery && &model == &bspModels[0];
+	const auto assigned = [&]( int index ){ return groupedWorld && groupRecovery->assigned[index] >= 0; };
 
 	/* go through each brush in the model */
 	if( fast ){
-		for ( int i = 0; i < model.numBSPBrushes; ++i ) ConvertBrushFast( f, brushAt( i ), origin, brushType );
+		for ( int i = 0; i < model.numBSPBrushes; ++i ) if ( !assigned( brushAt( i ) ) ) ConvertBrushFast( f, brushAt( i ), origin, brushType );
 	}
 	else{
-		ModelTriangles modelTriangles( model );
-		for ( int i = 0; i < model.numBSPBrushes; ++i ) ConvertBrush( f, brushAt( i ), origin, brushType, modelTriangles );
+		const auto local = groupedWorld ? nullptr : std::make_unique<ModelTriangles>( model );
+		const auto& modelTriangles = groupedWorld ? *groupRecovery->triangles : *local;
+		for ( int i = 0; i < model.numBSPBrushes; ++i ) if ( !assigned( brushAt( i ) ) ) ConvertBrush( f, brushAt( i ), origin, brushType, modelTriangles );
 	}
 
 	/* go through each drawsurf in the model */
@@ -1042,9 +1190,55 @@ static void ConvertEPairs( FILE *f, const entity_t& e, bool skip_origin ){
    exports an quake map file from the bsp
  */
 
+static void WriteGroupInferenceReport( rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, rapidjson::StringBuffer& buffer ){
+	const auto count = [&]( const char* key, uint64_t value ){ writer.Key( key ); writer.Uint64( value ); };
+	writer.Key( "group_inference" ); writer.StartObject();
+	writer.Key( "policy" ); writer.String( "surfaces" );
+	writer.Key( "basis" ); writer.String( "strict_coplanar_brush_face_overlap_with_shared_bsp_draw_surfaces" );
+	writer.Key( "author_grouping_proven" ); writer.Bool( false );
+	writer.Key( "original_group_parameters_recovered" ); writer.Bool( false );
+	writer.Key( "bsp_rebuild_validated" ); writer.Bool( false );
+	writer.Key( "current_shader_assets_used" ); writer.Bool( true );
+	writer.Key( "original_shader_assets_verified" ); writer.Bool( false );
+	writer.Key( "compile_parameter_basis" ); writer.String( "copied_from_recovered_worldspawn" );
+	writer.Key( "copied_compile_keys" ); writer.StartArray();
+	for ( const auto& ep : entities[0].epairs ) if ( GroupCompileKey( ep.key.c_str() ) && !ep.value.empty() ) writer.String( ep.key.c_str() );
+	writer.EndArray();
+	count( "source_entities", entities.size() ); count( "exported_groups", groupRecovery->plan.emissionOrder.size() );
+	count( "work_limit", decompileOptions.groupWorkLimit ); count( "work_used", groupRecovery->work );
+	writer.Key( "export_block" ); if ( groupRecovery->exportBlock ) writer.String( groupRecovery->exportBlock ); else writer.Null();
+	writer.Key( "emission_order" ); writer.StartArray(); for ( size_t i : groupRecovery->plan.emissionOrder ) writer.Uint64( i ); writer.EndArray();
+	writer.Key( "brushes" ); writer.StartArray();
+	for ( const auto& brush : groupRecovery->brushes ) {
+		if ( buffer.GetSize() > 64 * 1024 * 1024 ) throw std::runtime_error( "Group inference report exceeds 64 MiB" );
+		writer.StartObject(); count( "brush_index", brush.index );
+		writer.Key( "opaque" ); writer.Bool( brush.opaque );
+		writer.Key( "exclusion" ); if ( brush.exclusion ) writer.String( brush.exclusion ); else writer.Null();
+		writer.Key( "surface_indices" ); writer.StartArray(); for ( int surface : brush.surfaces ) writer.Int( surface ); writer.EndArray();
+		writer.EndObject();
+	}
+	writer.EndArray(); writer.Key( "groups" ); writer.StartArray();
+	for ( size_t i = 0; i < groupRecovery->plan.groups.size(); ++i ) {
+		if ( buffer.GetSize() > 64 * 1024 * 1024 ) throw std::runtime_error( "Group inference report exceeds 64 MiB" );
+		const auto& group = groupRecovery->plan.groups[i];
+		writer.StartObject(); count( "group_index", i );
+		const std::string groupName = "q3mapx_inferred_group_" + std::to_string( i+1 );
+		writer.Key( "name" ); writer.String( groupName.c_str() );
+		writer.Key( "status" ); writer.String( group.status ); writer.Key( "exported" ); writer.Bool( group.exported );
+		writer.Key( "brush_indices" ); writer.StartArray(); for ( int member : group.members ) writer.Int( member ); writer.EndArray();
+		writer.Key( "surface_indices" ); writer.StartArray(); for ( int surface : group.surfaces ) writer.Int( surface ); writer.EndArray();
+		writer.Key( "mins" ); writer.StartArray(); for ( double value : group.mins ) writer.Double( value ); writer.EndArray();
+		writer.Key( "maxs" ); writer.StartArray(); for ( double value : group.maxs ) writer.Double( value ); writer.EndArray();
+		count( "members_with_detail_flag", std::count_if( group.members.begin(), group.members.end(), []( int b ){ return InferredBrushDetailFlag( b ) != 0; } ) );
+		writer.EndObject();
+	}
+	writer.EndArray(); writer.EndObject();
+}
+
 static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 	recovery = {};
 	detailDecisions.clear(); detailEvidence.reset();
+	groupRecovery.reset();
 	detailBrushes.assign( bspBrushes.size(), false );
 	for ( const auto& leaf : bspLeafs ) {
 		if ( leaf.cluster <= CLUSTER_OPAQUE ) continue;
@@ -1070,6 +1264,7 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		buildBrush.original = &buildBrush;
 	}
 	if ( decompileOptions.detailPolicy == DecompileOptions::DetailPolicy::Cells ) InferBrushDetailFromCells();
+	if ( decompileOptions.groupPolicy == DecompileOptions::GroupPolicy::Surfaces ) InferBrushGroups();
 
 	if( g_game->load == LoadRBSPFile )
 		UnSetLightStyles();
@@ -1133,6 +1328,22 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		fprintf( f, "}\n\n" );
 	}
 
+	if ( groupRecovery ) {
+		size_t emitted = 0;
+		for ( size_t groupIndex : groupRecovery->plan.emissionOrder ) {
+			const auto& group = groupRecovery->plan.groups[groupIndex];
+			fprintf( f, "// entity %zu\n// Inferred assembly; original author grouping and compile properties are unproven.\n{\n", entities.size()+emitted++ );
+			fprintf( f, "\t\"classname\" \"func_group\"\n\t\"name\" \"q3mapx_inferred_group_%zu\"\n", groupIndex+1 );
+			for ( const auto& ep : entities[0].epairs ) if ( GroupCompileKey( ep.key.c_str() ) && !ep.value.empty() )
+				fprintf( f, "\t\"%s\" \"%s\"\n", ep.key.c_str(), ep.value.c_str() );
+			for ( int brush : group.members ) {
+				if ( fast ) ConvertBrushFast( f, brush, g_vector3_identity, brushType );
+				else ConvertBrush( f, brush, g_vector3_identity, brushType, *groupRecovery->triangles );
+			}
+			fprintf( f, "}\n\n" );
+		}
+	}
+
 	if ( wantReport ) {
 		rapidjson::StringBuffer buffer;
 		rapidjson::PrettyWriter<rapidjson::StringBuffer> writer( buffer );
@@ -1145,7 +1356,7 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		writer.Key( "brush_order" ); writer.StartObject();
 		const bool rebuildOrder = decompileOptions.brushOrder == DecompileOptions::BrushOrder::Rebuild;
 		writer.Key( "policy" ); writer.String( rebuildOrder ? "rebuild" : "bsp" );
-		writer.Key( "basis" ); writer.String( rebuildOrder ? "q3mapx_map_loader_side_shader_opacity" : "bsp_brush_record_order" );
+		writer.Key( "basis" ); writer.String( groupRecovery ? "q3mapx_map_loader_group_collapse_and_side_shader_opacity" : rebuildOrder ? "q3mapx_map_loader_side_shader_opacity" : "bsp_brush_record_order" );
 		writer.Key( "author_order_proven" ); writer.Bool( false );
 		writer.Key( "rebuild_equivalence_proven" ); writer.Bool( false );
 		writer.EndObject();
@@ -1205,7 +1416,7 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 			}
 		}
 		const auto count = [&]( const char* key, size_t value ){ writer.Key( key ); writer.Uint64( value ); };
-		count( "entities", entities.size() );
+		count( "entities", entities.size() + ( groupRecovery ? groupRecovery->plan.emissionOrder.size() : 0 ) );
 		count( "brushes", recovery.brushes );
 		writer.Key( "detail_classification" ); writer.StartObject();
 		writer.Key( "method" ); writer.String( detailEvidence ? "convex_interior_witnesses_with_material_protection" : "nonopaque_leaf_reference_heuristic" );
@@ -1248,6 +1459,7 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 			}
 			writer.EndArray(); writer.EndObject();
 		}
+		if ( groupRecovery ) WriteGroupInferenceReport( writer, buffer );
 		count( "skipped_brushes", recovery.skippedBrushes );
 		count( "patches", recovery.patches );
 		count( "faces", recovery.faces );
@@ -1292,10 +1504,11 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		writer.String( "Triangle soup geometry is not exported separately; collision brushes may approximate it." );
 		writer.String( "Fallback texture axes are used on faces without a usable rendered triangle, including hidden faces." );
 		if ( detailEvidence ) writer.String( "Cell detail inference proposes opaque world brushes with witnessed open-cell interiors as detail under current material semantics. Protected materials and ambiguous/opaque interiors retain the baseline; original author flags and rebuilt VIS equivalence are unproven." );
+		if ( groupRecovery ) writer.String( "Shared render surfaces propose authoring assemblies independently of detail flags. Generated func_groups copy recovered worldspawn compile parameters and preserve compiled opacity order; original groups/names/parameters and rebuilt rendering equivalence are unproven. Protected, ambiguous and order-incompatible proposals remain flat. Patches and brush entities are not regrouped." );
 		if ( rebuildOrder ) writer.String( "Rebuild brush order depends on the current shader assets and q3mapx loader semantics. Discarded source flags, plane/side ordering and other compiler differences can still change partitions or visibility." );
 		writer.EndArray();
 		writer.EndObject();
-		if ( detailEvidence && buffer.GetSize() > 64 * 1024 * 1024 ) throw std::runtime_error( "Detail inference report exceeds 64 MiB" );
+		if ( ( detailEvidence || groupRecovery ) && buffer.GetSize() > 64 * 1024 * 1024 ) throw std::runtime_error( "Recovery inference report exceeds 64 MiB" );
 		if ( std::fwrite( buffer.GetString(), 1, buffer.GetSize(), reportFile ) != buffer.GetSize() )
 			throw std::runtime_error( "Cannot write recovery report " + std::string( report.c_str() ) );
 	}

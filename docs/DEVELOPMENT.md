@@ -255,6 +255,24 @@ world roots exercise read-only evidence. Each build records
 `tests/brush-cells/validation.json`; these controls do not prove general authoring
 fidelity or portal causality.
 
+`recovery_group_order` independently simulates MAP brush insertion and group
+collapse for 6,000 deterministic association/opacity/protection layouts, requiring
+exact sequence preservation, unique ownership, stable decisions and budget checks.
+`recovery_groups` adds 42 known-source rebuilds through fast/full and three formats,
+including mixed detail/opacity, slopes, baseline compile parameters, original
+entities and patches. Each checks exact ordered geometry/materials/contents and
+spatial partition/PVS relationships at 650 points (422,500 ordered pairs). Three
+full Valve 220 controls require identical baked lightmap/lightgrid bytes. Five
+additional rotated fast-mode controls exercise the other dominant-plane-axis/sign
+combinations without grouping enabled. Ambiguous flat-source and disconnected
+order-blocked fixtures prevent treating plausible assemblies as original metadata.
+World context, overlapping surface/model ownership, hard limits, option validation,
+work budgets, worker parity, legacy conversion and previous-output preservation
+have separate controls. Each build writes `tests/recovery-groups/validation.json`.
+The [round's validation record](validation/recovery-groups.json) also compares the
+preserved preceding executable: 39 default MAPs are byte-identical, while three
+fast sloped outputs intentionally change and rebuild with corrected planes.
+
 Workbench recovery checks cover saved/legacy brush-order settings, malformed
 project/catalog fields, the real decompile job/report and run snapshot, and
 absence of recovery arguments from other workflows. The offscreen window test

@@ -1039,6 +1039,7 @@ int ConvertBSPMain( Args& args, bool decompile ){
 	bool patchStepsSpecified=false;
 	bool brushOrderSpecified=false;
 	bool detailPolicySpecified=false, detailWorkSpecified=false;
+	bool groupPolicySpecified=false, groupWorkSpecified=false;
 	int ( *convertFunc )( char * );
 	const game_t  *convertGame;
 	bool map_allowed, force_bsp, force_map;
@@ -1166,12 +1167,35 @@ int ConvertBSPMain( Args& args, bool decompile ){
 			if ( work < 1 || work > 100'000'000 ) Error( "Detail analysis work must be between 1 and 100000000" );
 			decompileOptions.detailWorkLimit = unsigned( work );
 		}
+		while ( args.takeArg( "-group-policy" ) ) {
+			groupPolicySpecified = true;
+			const char* policy = args.takeNext();
+			if ( striEqual( policy, "none" ) ) decompileOptions.groupPolicy = DecompileOptions::GroupPolicy::None;
+			else if ( striEqual( policy, "surfaces" ) ) decompileOptions.groupPolicy = DecompileOptions::GroupPolicy::Surfaces;
+			else Error( "Group policy must be none or surfaces" );
+		}
+		while ( args.takeArg( "-group-max-work" ) ) {
+			groupWorkSpecified = true;
+			decompileOptions.groupWorkLimit = unsigned( args.takeInt( 1, 100'000'000 ) );
+		}
 	}
 	if ( !args.empty() ) Error( "Unknown conversion option '%s'", args.takeFront() );
 	if ( brushOrderSpecified && ( !map_allowed || convertGame ) )
 		Error( "-brush-order requires map, map_bp or map_220 export" );
 	if ( detailPolicySpecified && ( !map_allowed || convertGame ) )
 		Error( "-detail-policy requires map, map_bp or map_220 export" );
+	if ( groupPolicySpecified && ( !map_allowed || convertGame ) ) Error( "-group-policy requires MAP export" );
+	if ( groupWorkSpecified && decompileOptions.groupPolicy != DecompileOptions::GroupPolicy::Surfaces )
+		Error( "-group-max-work requires -group-policy surfaces" );
+	if ( decompileOptions.groupPolicy == DecompileOptions::GroupPolicy::Surfaces ) {
+		if ( !g_game->write ) Error( "Group inference requires a BSP-writing game profile" );
+		if ( g_decompile_wtf ) Error( "Group inference cannot be combined with -wtf material replacement" );
+		if ( force_map || ( !force_bsp && path_extension_is( fileName, "map" ) ) ) Error( "Group inference requires a compiled BSP input" );
+		if ( brushOrderSpecified && decompileOptions.brushOrder != DecompileOptions::BrushOrder::Rebuild )
+			Error( "Group inference requires rebuild brush order" );
+		decompileOptions.brushOrder = DecompileOptions::BrushOrder::Rebuild;
+		decompileOptions.automaticReport = true;
+	}
 	if ( detailWorkSpecified && decompileOptions.detailPolicy != DecompileOptions::DetailPolicy::Cells )
 		Error( "-detail-max-work requires -detail-policy cells" );
 	if ( decompileOptions.detailPolicy == DecompileOptions::DetailPolicy::Cells ) {

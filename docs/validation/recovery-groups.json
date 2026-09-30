@@ -1,0 +1,2464 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-30T10:01:48.504577+00:00",
+  "base_revision": "018e086cd58dd63b75dfeea317860f499084f4ca",
+  "scope": "Opt-in surface-supported func_group inference with loader-order protection; fast nonaxial MAP plane precision repair",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "fac980b1cbbfae93a42596f64e699faa8815016f6f646abcfd6fe7279cd9b584",
+    "tools/quake3/q3map2/convert_bsp.cpp": "8ff21b63dca7102a36b06caf1703109eb62351f98b37e0c78af7e44ffa97e95c",
+    "tools/quake3/q3map2/convert_map.cpp": "bbc69858ccef03f9c096b95d8b15f29fd928a6e66bd0818132541ec3f8a4ee77",
+    "tools/quake3/q3map2/decompile.h": "29b1b8cefadb6faae1a48ed5811398535fa732f86acb8e73ab72c66f8fa1da69",
+    "tools/quake3/q3map2/help.cpp": "1a7a5c8e6e9e768578023b518459cf7c15b8d278998c479582336bbd7ff46ad5",
+    "tools/quake3/q3map2/recovery_groups.h": "390bf4a3b2dfb639e65b4e9a9c6074e5a8769504c171a0dbeb1d57b34a12d412",
+    "tools/quake3/q3map2/recovery_groups.cpp": "cd7902376d32c4b5f9d33443647e776f56e11781aa40830413d853d01b41f29a",
+    "tools/quake3/q3map2/map.cpp": "888263f877cf66efbb7defcaf59196b9876ca5f24cafd895862ca51d37e682a1",
+    "tools/quake3/q3map2/surface_meta.cpp": "97e05f62c1cf2d936d54952831ba2c3a0530287dc329a0ff91a2d422ed10ce95",
+    "tests/recovery_group_order.cpp": "20e1208c1209d52cec0cc3ccba59da3d4ba82804b6ccf5eb93a721dd6cf8edd0",
+    "tests/recovery_groups.py": "db4162d05d08ac43dc7ffb801a8a76c94e1327ba9077139db2645f859979b551",
+    "tests/recovery_classification.py": "a83d27245f2dc98331552a494b127577d2c6cd2fe14313c2624364fa0287bc37",
+    "tests/fixtures.py": "5cc300117041bc22a719451f9915bca17cc5af10094521408538b850284436c7",
+    "tests/integration.py": "3bb8e703e9e898a4c079f6a52321941aeb54876a7eac7804b8e1069c1541dfb3"
+  },
+  "platforms": [
+    {
+      "build": "release",
+      "compiler": {
+        "path": "build/release/bin/q3mapx.exe",
+        "sha256": "5cce8ce2cc15b560652f4b4ef81bdf197027046d639cb2983adff76bca9c672c"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/recovery-groups-build-windows.log",
+        "sha256": "f8e349bf3e3ce72e819d1ddf20839eadbd2457c22072a218a123208473ec4894"
+      },
+      "test_log": {
+        "path": ".agents/tmp/continuation/recovery-groups-test-windows.log",
+        "sha256": "55460abb1b4c777e9fe52de67f1313d28487d04f25d1f3216d807734a8b440b0"
+      },
+      "passed": [
+        {
+          "name": "compiler_pipeline",
+          "seconds": 1.1
+        },
+        {
+          "name": "bsp_evidence",
+          "seconds": 1.8
+        },
+        {
+          "name": "native_fakk",
+          "seconds": 1.29
+        },
+        {
+          "name": "native_mohaa",
+          "seconds": 0.74
+        },
+        {
+          "name": "native_early",
+          "seconds": 2.49
+        },
+        {
+          "name": "recovery_outputs",
+          "seconds": 0.39
+        },
+        {
+          "name": "decompile_recovery",
+          "seconds": 0.23
+        },
+        {
+          "name": "recovery_classification",
+          "seconds": 7.8
+        },
+        {
+          "name": "recovery_order",
+          "seconds": 17.68
+        },
+        {
+          "name": "brush_cells",
+          "seconds": 13.45
+        },
+        {
+          "name": "recovery_group_order",
+          "seconds": 0.09
+        },
+        {
+          "name": "recovery_groups",
+          "seconds": 18.23
+        }
+      ],
+      "total_test_seconds": 65.32,
+      "sanitizer_options": null,
+      "ordering_layouts": 6000,
+      "ordering_exported_groups": 718,
+      "ordering_conflicting_decisions": 34,
+      "corpus_file": {
+        "path": "build/release/tests/recovery-groups/validation.json",
+        "sha256": "91a33ee6d6d90e9b01b796586e4bd24dfcbf4818de9c307e9480bda4e955c6f0"
+      },
+      "corpus": {
+        "rebuilds": [
+          {
+            "case": "connected",
+            "fast": false,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "connected",
+            "fast": false,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "connected",
+            "fast": false,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "connected",
+            "fast": true,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "connected",
+            "fast": true,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "connected",
+            "fast": true,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "oblique",
+            "fast": false,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "oblique",
+            "fast": false,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "oblique",
+            "fast": false,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "oblique",
+            "fast": true,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "oblique",
+            "fast": true,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "oblique",
+            "fast": true,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "mixed-opacity",
+            "fast": false,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "mixed-opacity",
+            "fast": false,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "mixed-opacity",
+            "fast": false,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "mixed-opacity",
+            "fast": true,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "mixed-opacity",
+            "fast": true,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "mixed-opacity",
+            "fast": true,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "all-translucent",
+            "fast": false,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "all-translucent",
+            "fast": false,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "all-translucent",
+            "fast": false,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "all-translucent",
+            "fast": true,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "all-translucent",
+            "fast": true,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "all-translucent",
+            "fast": true,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "world-params",
+            "fast": false,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "world-params",
+            "fast": false,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "world-params",
+            "fast": false,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "world-params",
+            "fast": true,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "world-params",
+            "fast": true,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "world-params",
+            "fast": true,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "flat-ambiguous",
+            "fast": false,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": false,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "flat-ambiguous",
+            "fast": false,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": false,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "flat-ambiguous",
+            "fast": false,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": false,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "flat-ambiguous",
+            "fast": true,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": false,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "flat-ambiguous",
+            "fast": true,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": false,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "flat-ambiguous",
+            "fast": true,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": false,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "disconnected",
+            "fast": false,
+            "format": "map",
+            "groups_exported": 0,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": false,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "disconnected",
+            "fast": false,
+            "format": "map_bp",
+            "groups_exported": 0,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": false,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "disconnected",
+            "fast": false,
+            "format": "map_220",
+            "groups_exported": 0,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": false,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "disconnected",
+            "fast": true,
+            "format": "map",
+            "groups_exported": 0,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": false,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "disconnected",
+            "fast": true,
+            "format": "map_bp",
+            "groups_exported": 0,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": false,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "disconnected",
+            "fast": true,
+            "format": "map_220",
+            "groups_exported": 0,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": false,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          }
+        ],
+        "baked_lighting_parity": [
+          {
+            "case": "connected",
+            "lightmaps_sha256": "e29e27cce9a422db4674cd7d2c13e227c8c56d8843576df6199f98db95154c78",
+            "lightgrid_sha256": "23c7eb27f6e81c46170b16279cf97c7e24793941c9a5c1d891d13ead2350a971"
+          },
+          {
+            "case": "mixed-opacity",
+            "lightmaps_sha256": "6e877f441144f25ff36bb4ccf9a8708132ed5e760cda2526cb0367a31148e3bf",
+            "lightgrid_sha256": "9fcaf806cdbb7f4a44377040207c61bed6db7f5311221ea26dd5bc4555cca352"
+          },
+          {
+            "case": "world-params",
+            "lightmaps_sha256": "17adebb75a533b98127b6f59d60219e8d215950abc5630f38f1727c472760b43",
+            "lightgrid_sha256": "bbf8bbbe971f1e7a7ffe8524c51705c134de5530138193172a9b2654b5ec0bec"
+          }
+        ],
+        "sampled_points": 650,
+        "additional_fast_plane_precision_controls": [
+          {
+            "orientation": "positive-x",
+            "source_bsp_sha256": "3207013a33e21a9d51e84905ebcc23a7247124e3c1e2b46f05f1c552ae76e5d4",
+            "brush_planes_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "orientation": "negative-x",
+            "source_bsp_sha256": "39d36ed56717e796e386492dfe9b0ef5e4be0928f430087d572b347503aabbe0",
+            "brush_planes_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "orientation": "positive-y",
+            "source_bsp_sha256": "bef8dfbe1ba61b9e1ca749803c16492b1a9847824e2d53ebb9e0697ca348a2e1",
+            "brush_planes_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "orientation": "negative-y",
+            "source_bsp_sha256": "10c45326dcad6a8919d3e9359996594fb5e09c61f09f717057d0b0a4498e17e8",
+            "brush_planes_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "orientation": "negative-z",
+            "source_bsp_sha256": "cabe0452eba2da5b6198de2db3bf3c631232fb58c059a857bcddb306c07c159a",
+            "brush_planes_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          }
+        ],
+        "ordered_pairs_per_rebuild": 422500,
+        "invalid_cli_controls": 12,
+        "scope": "Synthetic assembly controls, with a deliberately indistinguishable flat-source case and an order-blocked disconnected case; no universal authoring guarantee"
+      },
+      "generated_inputs": [
+        {
+          "case": "connected",
+          "map": {
+            "path": "build/release/tests/recovery-groups/connected/baseq3/maps/fixture.map",
+            "sha256": "65a07e5c63e0f4b613806845b6b5f375b1407ce73c6f056d51c014737a189cb8"
+          },
+          "bsp": {
+            "path": "build/release/tests/recovery-groups/connected/baseq3/maps/fixture.bsp",
+            "sha256": "e8bf33d63473fd1d7037b7a894c09a82526bc737a224bf9d2f1c46475d05f7f3"
+          },
+          "shader": {
+            "path": "build/release/tests/recovery-groups/connected/baseq3/scripts/q3mapx_tests.shader",
+            "sha256": "df11ef2f0043609572b0f94f4ac354998141be24f7c72fb6236cc566171ae4fb"
+          }
+        },
+        {
+          "case": "oblique",
+          "map": {
+            "path": "build/release/tests/recovery-groups/oblique/baseq3/maps/fixture.map",
+            "sha256": "42b9e4a1e68b324977c5c5c07acb96841b55543de6ce2df5f7f6fda3caaa1074"
+          },
+          "bsp": {
+            "path": "build/release/tests/recovery-groups/oblique/baseq3/maps/fixture.bsp",
+            "sha256": "5cdfe113f91450a29afa53d3f00dd410e9cdd1f41400767e7c3c18a3f1d3e0d2"
+          },
+          "shader": {
+            "path": "build/release/tests/recovery-groups/oblique/baseq3/scripts/q3mapx_tests.shader",
+            "sha256": "df11ef2f0043609572b0f94f4ac354998141be24f7c72fb6236cc566171ae4fb"
+          }
+        },
+        {
+          "case": "mixed-opacity",
+          "map": {
+            "path": "build/release/tests/recovery-groups/mixed-opacity/baseq3/maps/fixture.map",
+            "sha256": "907560136a64f382f7f9f538cb5714ec5a62b892a492fb8482777a6364736d7f"
+          },
+          "bsp": {
+            "path": "build/release/tests/recovery-groups/mixed-opacity/baseq3/maps/fixture.bsp",
+            "sha256": "fd401ad434d1c27bfdb90de4c3acbcc398690075f3a32d12d8bf1ede0b26c1ad"
+          },
+          "shader": {
+            "path": "build/release/tests/recovery-groups/mixed-opacity/baseq3/scripts/q3mapx_tests.shader",
+            "sha256": "df11ef2f0043609572b0f94f4ac354998141be24f7c72fb6236cc566171ae4fb"
+          }
+        },
+        {
+          "case": "all-translucent",
+          "map": {
+            "path": "build/release/tests/recovery-groups/all-translucent/baseq3/maps/fixture.map",
+            "sha256": "baf9d8a6b36b3ca09835bb59fcea9ec461f46cae80835928432024f9bd73f8a0"
+          },
+          "bsp": {
+            "path": "build/release/tests/recovery-groups/all-translucent/baseq3/maps/fixture.bsp",
+            "sha256": "7dc317c8d8cfebefbeb7b519909602a9a1c4cfd0fb776c65919ea2223c9e34ee"
+          },
+          "shader": {
+            "path": "build/release/tests/recovery-groups/all-translucent/baseq3/scripts/q3mapx_tests.shader",
+            "sha256": "df11ef2f0043609572b0f94f4ac354998141be24f7c72fb6236cc566171ae4fb"
+          }
+        },
+        {
+          "case": "world-params",
+          "map": {
+            "path": "build/release/tests/recovery-groups/world-params/baseq3/maps/fixture.map",
+            "sha256": "f4911e6b1779daa2f49d886ba7656552b0d6158d4a0232c5b4323a060bba02a1"
+          },
+          "bsp": {
+            "path": "build/release/tests/recovery-groups/world-params/baseq3/maps/fixture.bsp",
+            "sha256": "a0c52046e246bdbee20fb131af4b17c54a7aa69098cb2d93d3ae2bddf7cb360c"
+          },
+          "shader": {
+            "path": "build/release/tests/recovery-groups/world-params/baseq3/scripts/q3mapx_tests.shader",
+            "sha256": "df11ef2f0043609572b0f94f4ac354998141be24f7c72fb6236cc566171ae4fb"
+          }
+        },
+        {
+          "case": "flat-ambiguous",
+          "map": {
+            "path": "build/release/tests/recovery-groups/flat-ambiguous/baseq3/maps/fixture.map",
+            "sha256": "7f10fd6c3a0bc395ae4f9764621a0ebd8e38850831facc2b0ce55e690dc90010"
+          },
+          "bsp": {
+            "path": "build/release/tests/recovery-groups/flat-ambiguous/baseq3/maps/fixture.bsp",
+            "sha256": "184223abe1b286624fde1759261c4d1d19f0a8ebbd384a05259fbed939950e3b"
+          },
+          "shader": {
+            "path": "build/release/tests/recovery-groups/flat-ambiguous/baseq3/scripts/q3mapx_tests.shader",
+            "sha256": "df11ef2f0043609572b0f94f4ac354998141be24f7c72fb6236cc566171ae4fb"
+          }
+        },
+        {
+          "case": "disconnected",
+          "map": {
+            "path": "build/release/tests/recovery-groups/disconnected/baseq3/maps/fixture.map",
+            "sha256": "c95d95b62f70ba0f0948ff63beb8a958307d9e2776d361fb19fa01aedcc31918"
+          },
+          "bsp": {
+            "path": "build/release/tests/recovery-groups/disconnected/baseq3/maps/fixture.bsp",
+            "sha256": "b10914a4307211a65139e44dfb8ae78024aa76dd8abf135741facaa6dcc08627"
+          },
+          "shader": {
+            "path": "build/release/tests/recovery-groups/disconnected/baseq3/scripts/q3mapx_tests.shader",
+            "sha256": "df11ef2f0043609572b0f94f4ac354998141be24f7c72fb6236cc566171ae4fb"
+          }
+        }
+      ]
+    },
+    {
+      "build": "linux-release",
+      "compiler": {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "822b2ae2e81e79d0f6d9e5b1550a7474f8d4dd735a715fb7a7f4f653dad04189"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/recovery-groups-build-linux.log",
+        "sha256": "92ef6604e350d4e901aec3b5d0da18295a0183003a79fa3ddcec47d8ac1b9664"
+      },
+      "test_log": {
+        "path": ".agents/tmp/continuation/recovery-groups-test-linux.log",
+        "sha256": "23b6ca2a7d07c53f9f91f26d512c04166e18d7d16c69749d7f6bda25cd7798a1"
+      },
+      "passed": [
+        {
+          "name": "compiler_pipeline",
+          "seconds": 3.98
+        },
+        {
+          "name": "bsp_evidence",
+          "seconds": 6.13
+        },
+        {
+          "name": "native_fakk",
+          "seconds": 6.58
+        },
+        {
+          "name": "native_mohaa",
+          "seconds": 3.03
+        },
+        {
+          "name": "native_early",
+          "seconds": 5.43
+        },
+        {
+          "name": "recovery_outputs",
+          "seconds": 1.19
+        },
+        {
+          "name": "decompile_recovery",
+          "seconds": 0.7
+        },
+        {
+          "name": "recovery_classification",
+          "seconds": 13.59
+        },
+        {
+          "name": "recovery_order",
+          "seconds": 27.57
+        },
+        {
+          "name": "brush_cells",
+          "seconds": 34.38
+        },
+        {
+          "name": "recovery_group_order",
+          "seconds": 0.05
+        },
+        {
+          "name": "recovery_groups",
+          "seconds": 33.45
+        }
+      ],
+      "total_test_seconds": 136.27,
+      "sanitizer_options": null,
+      "ordering_layouts": 6000,
+      "ordering_exported_groups": 718,
+      "ordering_conflicting_decisions": 34,
+      "corpus_file": {
+        "path": "build/linux-release/tests/recovery-groups/validation.json",
+        "sha256": "401f0ea422c7307629b9999f828faef310abdec95ea35097cff9937a3f977ff0"
+      },
+      "corpus": {
+        "rebuilds": [
+          {
+            "case": "connected",
+            "fast": false,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "connected",
+            "fast": false,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "connected",
+            "fast": false,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "connected",
+            "fast": true,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "connected",
+            "fast": true,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "connected",
+            "fast": true,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "oblique",
+            "fast": false,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "oblique",
+            "fast": false,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "oblique",
+            "fast": false,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "oblique",
+            "fast": true,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "oblique",
+            "fast": true,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "oblique",
+            "fast": true,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "mixed-opacity",
+            "fast": false,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "mixed-opacity",
+            "fast": false,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "mixed-opacity",
+            "fast": false,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "mixed-opacity",
+            "fast": true,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "mixed-opacity",
+            "fast": true,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "mixed-opacity",
+            "fast": true,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "all-translucent",
+            "fast": false,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "all-translucent",
+            "fast": false,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "all-translucent",
+            "fast": false,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "all-translucent",
+            "fast": true,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "all-translucent",
+            "fast": true,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "all-translucent",
+            "fast": true,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "world-params",
+            "fast": false,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "world-params",
+            "fast": false,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "world-params",
+            "fast": false,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "world-params",
+            "fast": true,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "world-params",
+            "fast": true,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "world-params",
+            "fast": true,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "flat-ambiguous",
+            "fast": false,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": false,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "flat-ambiguous",
+            "fast": false,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": false,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "flat-ambiguous",
+            "fast": false,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": false,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "flat-ambiguous",
+            "fast": true,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": false,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "flat-ambiguous",
+            "fast": true,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": false,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "flat-ambiguous",
+            "fast": true,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": false,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "disconnected",
+            "fast": false,
+            "format": "map",
+            "groups_exported": 0,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": false,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "disconnected",
+            "fast": false,
+            "format": "map_bp",
+            "groups_exported": 0,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": false,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "disconnected",
+            "fast": false,
+            "format": "map_220",
+            "groups_exported": 0,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": false,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "disconnected",
+            "fast": true,
+            "format": "map",
+            "groups_exported": 0,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": false,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "disconnected",
+            "fast": true,
+            "format": "map_bp",
+            "groups_exported": 0,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": false,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "disconnected",
+            "fast": true,
+            "format": "map_220",
+            "groups_exported": 0,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": false,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          }
+        ],
+        "baked_lighting_parity": [
+          {
+            "case": "connected",
+            "lightmaps_sha256": "e29e27cce9a422db4674cd7d2c13e227c8c56d8843576df6199f98db95154c78",
+            "lightgrid_sha256": "23c7eb27f6e81c46170b16279cf97c7e24793941c9a5c1d891d13ead2350a971"
+          },
+          {
+            "case": "mixed-opacity",
+            "lightmaps_sha256": "6e877f441144f25ff36bb4ccf9a8708132ed5e760cda2526cb0367a31148e3bf",
+            "lightgrid_sha256": "9fcaf806cdbb7f4a44377040207c61bed6db7f5311221ea26dd5bc4555cca352"
+          },
+          {
+            "case": "world-params",
+            "lightmaps_sha256": "17adebb75a533b98127b6f59d60219e8d215950abc5630f38f1727c472760b43",
+            "lightgrid_sha256": "bbf8bbbe971f1e7a7ffe8524c51705c134de5530138193172a9b2654b5ec0bec"
+          }
+        ],
+        "sampled_points": 650,
+        "additional_fast_plane_precision_controls": [
+          {
+            "orientation": "positive-x",
+            "source_bsp_sha256": "76f9faa52bed39ff0aaff0440283bf2dfe513f93c243746a7b797f7f7c230984",
+            "brush_planes_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "orientation": "negative-x",
+            "source_bsp_sha256": "6ba57297e86a3f92cac647c96488f09db49f24fc799b8c7633536ecfc92b3b13",
+            "brush_planes_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "orientation": "positive-y",
+            "source_bsp_sha256": "97f2bb97a569021649798d468fc1e3c8796c751cc1ae07000d4e14331c24bf29",
+            "brush_planes_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "orientation": "negative-y",
+            "source_bsp_sha256": "afe58ec6793f990c96f7aa81a9750c4ab723f673621d392405c2bb6511dafd37",
+            "brush_planes_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "orientation": "negative-z",
+            "source_bsp_sha256": "a86daa525dd4e44b267aba199c19e092d9d03de22500799a8dbede5140af5ada",
+            "brush_planes_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          }
+        ],
+        "ordered_pairs_per_rebuild": 422500,
+        "invalid_cli_controls": 12,
+        "scope": "Synthetic assembly controls, with a deliberately indistinguishable flat-source case and an order-blocked disconnected case; no universal authoring guarantee"
+      },
+      "generated_inputs": [
+        {
+          "case": "connected",
+          "map": {
+            "path": "build/linux-release/tests/recovery-groups/connected/baseq3/maps/fixture.map",
+            "sha256": "3c68c8589ad14543cc1bd461ac9919aea8a411c63e7122e0a6130a02b0ff8671"
+          },
+          "bsp": {
+            "path": "build/linux-release/tests/recovery-groups/connected/baseq3/maps/fixture.bsp",
+            "sha256": "1069a43969d51971d3737fb929e344c1700059da69615da6c0d75484658d2c5a"
+          },
+          "shader": {
+            "path": "build/linux-release/tests/recovery-groups/connected/baseq3/scripts/q3mapx_tests.shader",
+            "sha256": "86ffafd87f67841c72805c19f0ffb19d04c1988eabb409829a0ef67de3f70b3c"
+          }
+        },
+        {
+          "case": "oblique",
+          "map": {
+            "path": "build/linux-release/tests/recovery-groups/oblique/baseq3/maps/fixture.map",
+            "sha256": "5c8fcc79e715f9b4fdc0e076a9df76f507dded92665dd7dbda2bfb8f089d1b88"
+          },
+          "bsp": {
+            "path": "build/linux-release/tests/recovery-groups/oblique/baseq3/maps/fixture.bsp",
+            "sha256": "a1af9a1dd64755ce92ee90c93238874252cf3952b6b31f0d93f651998064330c"
+          },
+          "shader": {
+            "path": "build/linux-release/tests/recovery-groups/oblique/baseq3/scripts/q3mapx_tests.shader",
+            "sha256": "86ffafd87f67841c72805c19f0ffb19d04c1988eabb409829a0ef67de3f70b3c"
+          }
+        },
+        {
+          "case": "mixed-opacity",
+          "map": {
+            "path": "build/linux-release/tests/recovery-groups/mixed-opacity/baseq3/maps/fixture.map",
+            "sha256": "9ab03cc2203c490dafc3e15fd59569add83137bd3250f25f8dce2a796fc26408"
+          },
+          "bsp": {
+            "path": "build/linux-release/tests/recovery-groups/mixed-opacity/baseq3/maps/fixture.bsp",
+            "sha256": "8f3f75cf602df96c7bf7257ef1b5e352334bdbef9277260562b6ebba8a7f6435"
+          },
+          "shader": {
+            "path": "build/linux-release/tests/recovery-groups/mixed-opacity/baseq3/scripts/q3mapx_tests.shader",
+            "sha256": "86ffafd87f67841c72805c19f0ffb19d04c1988eabb409829a0ef67de3f70b3c"
+          }
+        },
+        {
+          "case": "all-translucent",
+          "map": {
+            "path": "build/linux-release/tests/recovery-groups/all-translucent/baseq3/maps/fixture.map",
+            "sha256": "4de1bfcf61c6f990ddb7b02997c0f4715e75bc10aa704109e2ec0752badf86f8"
+          },
+          "bsp": {
+            "path": "build/linux-release/tests/recovery-groups/all-translucent/baseq3/maps/fixture.bsp",
+            "sha256": "e058626c274226a7b33cb7ace8ba5f35498f62ce39f3b73cae24f9801fcd7a98"
+          },
+          "shader": {
+            "path": "build/linux-release/tests/recovery-groups/all-translucent/baseq3/scripts/q3mapx_tests.shader",
+            "sha256": "86ffafd87f67841c72805c19f0ffb19d04c1988eabb409829a0ef67de3f70b3c"
+          }
+        },
+        {
+          "case": "world-params",
+          "map": {
+            "path": "build/linux-release/tests/recovery-groups/world-params/baseq3/maps/fixture.map",
+            "sha256": "a478bc45a1d658d57e38c47c9584867c5ebdcb42e082275e5991992dc1e3a912"
+          },
+          "bsp": {
+            "path": "build/linux-release/tests/recovery-groups/world-params/baseq3/maps/fixture.bsp",
+            "sha256": "a53edaa18e21588d7def8aad5d6afb61ce067c8d181748a69708ab44a0d576d4"
+          },
+          "shader": {
+            "path": "build/linux-release/tests/recovery-groups/world-params/baseq3/scripts/q3mapx_tests.shader",
+            "sha256": "86ffafd87f67841c72805c19f0ffb19d04c1988eabb409829a0ef67de3f70b3c"
+          }
+        },
+        {
+          "case": "flat-ambiguous",
+          "map": {
+            "path": "build/linux-release/tests/recovery-groups/flat-ambiguous/baseq3/maps/fixture.map",
+            "sha256": "f13724eceda7fe19576875d13bad5ccc12259fd429163c1162a350d82e786411"
+          },
+          "bsp": {
+            "path": "build/linux-release/tests/recovery-groups/flat-ambiguous/baseq3/maps/fixture.bsp",
+            "sha256": "c88c0c4530ed170c7469601bf5024016f87c7a012ee6b97c386d0cedf7a6e078"
+          },
+          "shader": {
+            "path": "build/linux-release/tests/recovery-groups/flat-ambiguous/baseq3/scripts/q3mapx_tests.shader",
+            "sha256": "86ffafd87f67841c72805c19f0ffb19d04c1988eabb409829a0ef67de3f70b3c"
+          }
+        },
+        {
+          "case": "disconnected",
+          "map": {
+            "path": "build/linux-release/tests/recovery-groups/disconnected/baseq3/maps/fixture.map",
+            "sha256": "3229e92ce039b54c69459df62803991079c850dc71b0737be1f76be4dc53df14"
+          },
+          "bsp": {
+            "path": "build/linux-release/tests/recovery-groups/disconnected/baseq3/maps/fixture.bsp",
+            "sha256": "8a48d4c552ef26fe894237a4c65e82125e755d044cd15577fed55c3171e0fb70"
+          },
+          "shader": {
+            "path": "build/linux-release/tests/recovery-groups/disconnected/baseq3/scripts/q3mapx_tests.shader",
+            "sha256": "86ffafd87f67841c72805c19f0ffb19d04c1988eabb409829a0ef67de3f70b3c"
+          }
+        }
+      ]
+    },
+    {
+      "build": "linux-sanitized",
+      "compiler": {
+        "path": "build/linux-sanitized/bin/q3mapx",
+        "sha256": "2056c13070b2910b2f395f21a688c22709cc92924351515164583fdc97013e4c"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/recovery-groups-build-sanitized.log",
+        "sha256": "ba81327d15c70652263c8a2aca2d4afbe3f1afd6e9945e19ce054408999b4940"
+      },
+      "test_log": {
+        "path": ".agents/tmp/continuation/recovery-groups-test-sanitized.log",
+        "sha256": "a27e2e8e810570e8e9ab56fc346545f5148c15e4a3da46550cfc2c420baf35c0"
+      },
+      "passed": [
+        {
+          "name": "bsp_evidence",
+          "seconds": 36.61
+        },
+        {
+          "name": "native_fakk",
+          "seconds": 40.04
+        },
+        {
+          "name": "native_mohaa",
+          "seconds": 21.84
+        },
+        {
+          "name": "native_early",
+          "seconds": 44.62
+        },
+        {
+          "name": "recovery_outputs",
+          "seconds": 10.88
+        },
+        {
+          "name": "decompile_recovery",
+          "seconds": 5.1
+        },
+        {
+          "name": "recovery_classification",
+          "seconds": 85.67
+        },
+        {
+          "name": "recovery_order",
+          "seconds": 150.3
+        },
+        {
+          "name": "brush_cells",
+          "seconds": 201.11
+        },
+        {
+          "name": "recovery_group_order",
+          "seconds": 1.32
+        },
+        {
+          "name": "recovery_groups",
+          "seconds": 180.81
+        }
+      ],
+      "total_test_seconds": 778.48,
+      "sanitizer_options": "detect_leaks=0:abort_on_error=1",
+      "ordering_layouts": 6000,
+      "ordering_exported_groups": 718,
+      "ordering_conflicting_decisions": 34,
+      "corpus_file": {
+        "path": "build/linux-sanitized/tests/recovery-groups/validation.json",
+        "sha256": "fc87adf48e5cf7490970025d34e92fa79f84f1dd547f6863465c80aa0e57a195"
+      },
+      "corpus": {
+        "rebuilds": [
+          {
+            "case": "connected",
+            "fast": false,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "connected",
+            "fast": false,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "connected",
+            "fast": false,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "connected",
+            "fast": true,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "connected",
+            "fast": true,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "connected",
+            "fast": true,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "oblique",
+            "fast": false,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "oblique",
+            "fast": false,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "oblique",
+            "fast": false,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "oblique",
+            "fast": true,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "oblique",
+            "fast": true,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "oblique",
+            "fast": true,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "mixed-opacity",
+            "fast": false,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "mixed-opacity",
+            "fast": false,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "mixed-opacity",
+            "fast": false,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "mixed-opacity",
+            "fast": true,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "mixed-opacity",
+            "fast": true,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "mixed-opacity",
+            "fast": true,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "all-translucent",
+            "fast": false,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "all-translucent",
+            "fast": false,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "all-translucent",
+            "fast": false,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "all-translucent",
+            "fast": true,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "all-translucent",
+            "fast": true,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "all-translucent",
+            "fast": true,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "world-params",
+            "fast": false,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "world-params",
+            "fast": false,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "world-params",
+            "fast": false,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "world-params",
+            "fast": true,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "world-params",
+            "fast": true,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "world-params",
+            "fast": true,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "flat-ambiguous",
+            "fast": false,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": false,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "flat-ambiguous",
+            "fast": false,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": false,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "flat-ambiguous",
+            "fast": false,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": false,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "flat-ambiguous",
+            "fast": true,
+            "format": "map",
+            "groups_exported": 2,
+            "source_grouping_known": false,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "flat-ambiguous",
+            "fast": true,
+            "format": "map_bp",
+            "groups_exported": 2,
+            "source_grouping_known": false,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "flat-ambiguous",
+            "fast": true,
+            "format": "map_220",
+            "groups_exported": 2,
+            "source_grouping_known": false,
+            "group_members_match_labeled_assemblies": true,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "disconnected",
+            "fast": false,
+            "format": "map",
+            "groups_exported": 0,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": false,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "disconnected",
+            "fast": false,
+            "format": "map_bp",
+            "groups_exported": 0,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": false,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "disconnected",
+            "fast": false,
+            "format": "map_220",
+            "groups_exported": 0,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": false,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "disconnected",
+            "fast": true,
+            "format": "map",
+            "groups_exported": 0,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": false,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "disconnected",
+            "fast": true,
+            "format": "map_bp",
+            "groups_exported": 0,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": false,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "case": "disconnected",
+            "fast": true,
+            "format": "map_220",
+            "groups_exported": 0,
+            "source_grouping_known": true,
+            "group_members_match_labeled_assemblies": false,
+            "brush_geometry_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          }
+        ],
+        "baked_lighting_parity": [
+          {
+            "case": "connected",
+            "lightmaps_sha256": "e29e27cce9a422db4674cd7d2c13e227c8c56d8843576df6199f98db95154c78",
+            "lightgrid_sha256": "23c7eb27f6e81c46170b16279cf97c7e24793941c9a5c1d891d13ead2350a971"
+          },
+          {
+            "case": "mixed-opacity",
+            "lightmaps_sha256": "6e877f441144f25ff36bb4ccf9a8708132ed5e760cda2526cb0367a31148e3bf",
+            "lightgrid_sha256": "9fcaf806cdbb7f4a44377040207c61bed6db7f5311221ea26dd5bc4555cca352"
+          },
+          {
+            "case": "world-params",
+            "lightmaps_sha256": "17adebb75a533b98127b6f59d60219e8d215950abc5630f38f1727c472760b43",
+            "lightgrid_sha256": "bbf8bbbe971f1e7a7ffe8524c51705c134de5530138193172a9b2654b5ec0bec"
+          }
+        ],
+        "sampled_points": 650,
+        "additional_fast_plane_precision_controls": [
+          {
+            "orientation": "positive-x",
+            "source_bsp_sha256": "283645c6de97b745e9123dac49199a3185e3a9b7b586ff73a012a22ebab729d2",
+            "brush_planes_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "orientation": "negative-x",
+            "source_bsp_sha256": "a31c375069a172eb2fce5cb901b17fb4679526ac05b0626fb4ba5c922a2f8ed8",
+            "brush_planes_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "orientation": "positive-y",
+            "source_bsp_sha256": "f8703823086815fb12bbded6971ae856f1070c2e0cbd8bdb39d42ce9ffefb3e3",
+            "brush_planes_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "orientation": "negative-y",
+            "source_bsp_sha256": "adb0c6e416fff27fb48e4f540de9b33c0230b1ec85d5978e36f6f9718cab5eff",
+            "brush_planes_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          },
+          {
+            "orientation": "negative-z",
+            "source_bsp_sha256": "fcc871ce369c4887d90aba15a418dcaf1cf7eac61953b78770cb1ae3e89d534e",
+            "brush_planes_materials_contents_order_match": true,
+            "sampled_partitions_pvs_match": true
+          }
+        ],
+        "ordered_pairs_per_rebuild": 422500,
+        "invalid_cli_controls": 12,
+        "scope": "Synthetic assembly controls, with a deliberately indistinguishable flat-source case and an order-blocked disconnected case; no universal authoring guarantee"
+      },
+      "generated_inputs": [
+        {
+          "case": "connected",
+          "map": {
+            "path": "build/linux-sanitized/tests/recovery-groups/connected/baseq3/maps/fixture.map",
+            "sha256": "3c68c8589ad14543cc1bd461ac9919aea8a411c63e7122e0a6130a02b0ff8671"
+          },
+          "bsp": {
+            "path": "build/linux-sanitized/tests/recovery-groups/connected/baseq3/maps/fixture.bsp",
+            "sha256": "caea4aaeca9f69f3604dcd5940087812b2db57000263a2498c845f90b45181c4"
+          },
+          "shader": {
+            "path": "build/linux-sanitized/tests/recovery-groups/connected/baseq3/scripts/q3mapx_tests.shader",
+            "sha256": "86ffafd87f67841c72805c19f0ffb19d04c1988eabb409829a0ef67de3f70b3c"
+          }
+        },
+        {
+          "case": "oblique",
+          "map": {
+            "path": "build/linux-sanitized/tests/recovery-groups/oblique/baseq3/maps/fixture.map",
+            "sha256": "5c8fcc79e715f9b4fdc0e076a9df76f507dded92665dd7dbda2bfb8f089d1b88"
+          },
+          "bsp": {
+            "path": "build/linux-sanitized/tests/recovery-groups/oblique/baseq3/maps/fixture.bsp",
+            "sha256": "e3878f63e010d3861d520f44400a70fa6beca38bd4678aeefae3dc461309dc0c"
+          },
+          "shader": {
+            "path": "build/linux-sanitized/tests/recovery-groups/oblique/baseq3/scripts/q3mapx_tests.shader",
+            "sha256": "86ffafd87f67841c72805c19f0ffb19d04c1988eabb409829a0ef67de3f70b3c"
+          }
+        },
+        {
+          "case": "mixed-opacity",
+          "map": {
+            "path": "build/linux-sanitized/tests/recovery-groups/mixed-opacity/baseq3/maps/fixture.map",
+            "sha256": "9ab03cc2203c490dafc3e15fd59569add83137bd3250f25f8dce2a796fc26408"
+          },
+          "bsp": {
+            "path": "build/linux-sanitized/tests/recovery-groups/mixed-opacity/baseq3/maps/fixture.bsp",
+            "sha256": "60796a2c5899ef42f592d8f3205243605f470e7c453dadbd1529154076bf0e4e"
+          },
+          "shader": {
+            "path": "build/linux-sanitized/tests/recovery-groups/mixed-opacity/baseq3/scripts/q3mapx_tests.shader",
+            "sha256": "86ffafd87f67841c72805c19f0ffb19d04c1988eabb409829a0ef67de3f70b3c"
+          }
+        },
+        {
+          "case": "all-translucent",
+          "map": {
+            "path": "build/linux-sanitized/tests/recovery-groups/all-translucent/baseq3/maps/fixture.map",
+            "sha256": "4de1bfcf61c6f990ddb7b02997c0f4715e75bc10aa704109e2ec0752badf86f8"
+          },
+          "bsp": {
+            "path": "build/linux-sanitized/tests/recovery-groups/all-translucent/baseq3/maps/fixture.bsp",
+            "sha256": "1d2951fd3c2cff6d3862a8ecf2d87ed6469bef1349cc73cf44ca1b48a6a881c4"
+          },
+          "shader": {
+            "path": "build/linux-sanitized/tests/recovery-groups/all-translucent/baseq3/scripts/q3mapx_tests.shader",
+            "sha256": "86ffafd87f67841c72805c19f0ffb19d04c1988eabb409829a0ef67de3f70b3c"
+          }
+        },
+        {
+          "case": "world-params",
+          "map": {
+            "path": "build/linux-sanitized/tests/recovery-groups/world-params/baseq3/maps/fixture.map",
+            "sha256": "a478bc45a1d658d57e38c47c9584867c5ebdcb42e082275e5991992dc1e3a912"
+          },
+          "bsp": {
+            "path": "build/linux-sanitized/tests/recovery-groups/world-params/baseq3/maps/fixture.bsp",
+            "sha256": "1e9154a1adca9f87a62aee0296640943a9a0c9c9d316f4512a106e8f832f97f9"
+          },
+          "shader": {
+            "path": "build/linux-sanitized/tests/recovery-groups/world-params/baseq3/scripts/q3mapx_tests.shader",
+            "sha256": "86ffafd87f67841c72805c19f0ffb19d04c1988eabb409829a0ef67de3f70b3c"
+          }
+        },
+        {
+          "case": "flat-ambiguous",
+          "map": {
+            "path": "build/linux-sanitized/tests/recovery-groups/flat-ambiguous/baseq3/maps/fixture.map",
+            "sha256": "f13724eceda7fe19576875d13bad5ccc12259fd429163c1162a350d82e786411"
+          },
+          "bsp": {
+            "path": "build/linux-sanitized/tests/recovery-groups/flat-ambiguous/baseq3/maps/fixture.bsp",
+            "sha256": "8627a76a9e21f862f411ee8b6c3dd31258ae64abdf9477363165801d32e20a13"
+          },
+          "shader": {
+            "path": "build/linux-sanitized/tests/recovery-groups/flat-ambiguous/baseq3/scripts/q3mapx_tests.shader",
+            "sha256": "86ffafd87f67841c72805c19f0ffb19d04c1988eabb409829a0ef67de3f70b3c"
+          }
+        },
+        {
+          "case": "disconnected",
+          "map": {
+            "path": "build/linux-sanitized/tests/recovery-groups/disconnected/baseq3/maps/fixture.map",
+            "sha256": "3229e92ce039b54c69459df62803991079c850dc71b0737be1f76be4dc53df14"
+          },
+          "bsp": {
+            "path": "build/linux-sanitized/tests/recovery-groups/disconnected/baseq3/maps/fixture.bsp",
+            "sha256": "9dc2a564fa0ebde87333bafd66adaf02da2f8c63a49c58d0cdb672c5c7002d15"
+          },
+          "shader": {
+            "path": "build/linux-sanitized/tests/recovery-groups/disconnected/baseq3/scripts/q3mapx_tests.shader",
+            "sha256": "86ffafd87f67841c72805c19f0ffb19d04c1988eabb409829a0ef67de3f70b3c"
+          }
+        }
+      ]
+    }
+  ],
+  "platform_fidelity_matrix_matches": true,
+  "preceding_executable_comparison": {
+    "file": {
+      "path": ".agents/tmp/continuation/recovery-groups-compatibility/validation.json",
+      "sha256": "f2a9d500b69210df6f1780d49d60729461bc6996f894466bba629067e8193584"
+    },
+    "results": {
+      "baseline_revision": "018e086cd58dd63b75dfeea317860f499084f4ca",
+      "compiler_sha256": {
+        "baseline": "30fa5ac4f7d344df973ef2b25425450a72082c94814ac9ecf24f42caadfaae7a",
+        "current": "5cce8ce2cc15b560652f4b4ef81bdf197027046d639cb2983adff76bca9c672c"
+      },
+      "default_output": [
+        {
+          "case": "connected",
+          "fast": false,
+          "format": "map",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "b969bb9adb02930866325f0c11ae6f1d6c28262748f3879fc8317c977019766b",
+            "current": "b969bb9adb02930866325f0c11ae6f1d6c28262748f3879fc8317c977019766b"
+          }
+        },
+        {
+          "case": "connected",
+          "fast": false,
+          "format": "map_bp",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "df85f49e434ba5296cbe7759aa1391c62fc18cafc2dbdf18cb3b899b56d5a51c",
+            "current": "df85f49e434ba5296cbe7759aa1391c62fc18cafc2dbdf18cb3b899b56d5a51c"
+          }
+        },
+        {
+          "case": "connected",
+          "fast": false,
+          "format": "map_220",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "8f348b7810cdc1a28ff8cc9728c2e3ddc5b12c246aee1f1001bcbb8383b227e3",
+            "current": "8f348b7810cdc1a28ff8cc9728c2e3ddc5b12c246aee1f1001bcbb8383b227e3"
+          }
+        },
+        {
+          "case": "connected",
+          "fast": true,
+          "format": "map",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "584d02416d3f851463407f83158af186ea95f4d1ed348a9d28780593368bae4c",
+            "current": "584d02416d3f851463407f83158af186ea95f4d1ed348a9d28780593368bae4c"
+          }
+        },
+        {
+          "case": "connected",
+          "fast": true,
+          "format": "map_bp",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "508e36c73b1fe9c4d0bc1643b6c8916730d3c0baf604e2c3c158b2562d5788af",
+            "current": "508e36c73b1fe9c4d0bc1643b6c8916730d3c0baf604e2c3c158b2562d5788af"
+          }
+        },
+        {
+          "case": "connected",
+          "fast": true,
+          "format": "map_220",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "42ccc56237e0cfc3f9fa695802a53c5861f4d1ac3fbd3b8e284e29acc0d11962",
+            "current": "42ccc56237e0cfc3f9fa695802a53c5861f4d1ac3fbd3b8e284e29acc0d11962"
+          }
+        },
+        {
+          "case": "oblique",
+          "fast": false,
+          "format": "map",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "4a9008375306b8a8f89ef6cd5062fe9a75036adbf9c3947920501f20e372e19a",
+            "current": "4a9008375306b8a8f89ef6cd5062fe9a75036adbf9c3947920501f20e372e19a"
+          }
+        },
+        {
+          "case": "oblique",
+          "fast": false,
+          "format": "map_bp",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "d94d64f3798b627cf4a83d201de36fef8cb684046511d39737f9a3818732bbfb",
+            "current": "d94d64f3798b627cf4a83d201de36fef8cb684046511d39737f9a3818732bbfb"
+          }
+        },
+        {
+          "case": "oblique",
+          "fast": false,
+          "format": "map_220",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "79d85cf04885c76faf1198cda87e33a763f5409828d1f1ab96cdd3e5b6f6b6c0",
+            "current": "79d85cf04885c76faf1198cda87e33a763f5409828d1f1ab96cdd3e5b6f6b6c0"
+          }
+        },
+        {
+          "case": "oblique",
+          "fast": true,
+          "format": "map",
+          "byte_identical": false,
+          "sha256": {
+            "baseline": "b52065a32478f89b6345ef3b44025cd9580dc4cb0d3b07cb2e21a1f15f814aa9",
+            "current": "1a17c760ff3374d2cb2027da6520636fa640618f66bc983fee4ba9c802c3ab25"
+          }
+        },
+        {
+          "case": "oblique",
+          "fast": true,
+          "format": "map_bp",
+          "byte_identical": false,
+          "sha256": {
+            "baseline": "01ec367f32cf95de1ec81124b4688251c879e5c16785de68695bac5a1fb720fa",
+            "current": "6045f2bf2ea5f463908a1973d620b943beb919d5e3a0fce971b9bb66c14aaa03"
+          }
+        },
+        {
+          "case": "oblique",
+          "fast": true,
+          "format": "map_220",
+          "byte_identical": false,
+          "sha256": {
+            "baseline": "79f0ddf6419dcb5d96031811bb341d8d239ef17073a476f95472e82f29270007",
+            "current": "cd0d6a5466c6c6f45d6887516cc53f6c7646027d9578c1e55ecdfa7451d73373"
+          }
+        },
+        {
+          "case": "mixed-opacity",
+          "fast": false,
+          "format": "map",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "40d91ab90cf43321456daf54222fba797c4b7bba3c27b3af97d58468de8135ea",
+            "current": "40d91ab90cf43321456daf54222fba797c4b7bba3c27b3af97d58468de8135ea"
+          }
+        },
+        {
+          "case": "mixed-opacity",
+          "fast": false,
+          "format": "map_bp",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "935f757e8313dc0addbd7435884c47ac532c401c13cebe152ac0e01b997a9a90",
+            "current": "935f757e8313dc0addbd7435884c47ac532c401c13cebe152ac0e01b997a9a90"
+          }
+        },
+        {
+          "case": "mixed-opacity",
+          "fast": false,
+          "format": "map_220",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "65f7360eee7048fba9fe0ace2a30aca515b45adaca0281604562fb250603fb84",
+            "current": "65f7360eee7048fba9fe0ace2a30aca515b45adaca0281604562fb250603fb84"
+          }
+        },
+        {
+          "case": "mixed-opacity",
+          "fast": true,
+          "format": "map",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "89f3c193f272ff532ba3a7559f6bcb2f60429137ee889519198b1bb2b5845516",
+            "current": "89f3c193f272ff532ba3a7559f6bcb2f60429137ee889519198b1bb2b5845516"
+          }
+        },
+        {
+          "case": "mixed-opacity",
+          "fast": true,
+          "format": "map_bp",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "ce922cbc9aa05fd5d360d89ddb0f48d1903580f59007d7929acdfffb54d3cac1",
+            "current": "ce922cbc9aa05fd5d360d89ddb0f48d1903580f59007d7929acdfffb54d3cac1"
+          }
+        },
+        {
+          "case": "mixed-opacity",
+          "fast": true,
+          "format": "map_220",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "cebc6f41c6c7a84884b05367c087f4fe2b13ff4e3bb0449a267ee13f0335887d",
+            "current": "cebc6f41c6c7a84884b05367c087f4fe2b13ff4e3bb0449a267ee13f0335887d"
+          }
+        },
+        {
+          "case": "all-translucent",
+          "fast": false,
+          "format": "map",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "5ec8a6934c54db2f84bff3408682bfb5d557d15e1de24a59ff94fa6740cf0702",
+            "current": "5ec8a6934c54db2f84bff3408682bfb5d557d15e1de24a59ff94fa6740cf0702"
+          }
+        },
+        {
+          "case": "all-translucent",
+          "fast": false,
+          "format": "map_bp",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "fc2d5012379f32755beb9780e1c200b34e5321f9fa672fa66467bf0bf8f191c1",
+            "current": "fc2d5012379f32755beb9780e1c200b34e5321f9fa672fa66467bf0bf8f191c1"
+          }
+        },
+        {
+          "case": "all-translucent",
+          "fast": false,
+          "format": "map_220",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "97babadfa3aad0481c63532d2398f6280d129b6bc9bc651fffd90a8ebe2c8bce",
+            "current": "97babadfa3aad0481c63532d2398f6280d129b6bc9bc651fffd90a8ebe2c8bce"
+          }
+        },
+        {
+          "case": "all-translucent",
+          "fast": true,
+          "format": "map",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "84d1c045cf870f87641657d594e9c2a813bd27027a7dbe7b0f66f9b94daecd22",
+            "current": "84d1c045cf870f87641657d594e9c2a813bd27027a7dbe7b0f66f9b94daecd22"
+          }
+        },
+        {
+          "case": "all-translucent",
+          "fast": true,
+          "format": "map_bp",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "07a19c9c594500072e8863cdeed1fefd2bf4c2c7410f203a71fcc5af16bfc5fd",
+            "current": "07a19c9c594500072e8863cdeed1fefd2bf4c2c7410f203a71fcc5af16bfc5fd"
+          }
+        },
+        {
+          "case": "all-translucent",
+          "fast": true,
+          "format": "map_220",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "a28b0e7695b5ddd4d7dd740d43a2faf3c28512a9b919f99180fe2b14987fa056",
+            "current": "a28b0e7695b5ddd4d7dd740d43a2faf3c28512a9b919f99180fe2b14987fa056"
+          }
+        },
+        {
+          "case": "world-params",
+          "fast": false,
+          "format": "map",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "e2a3a73a3fd1da38840bb3ead2cd0c1f65b7aa371d12003b51085fcd33852144",
+            "current": "e2a3a73a3fd1da38840bb3ead2cd0c1f65b7aa371d12003b51085fcd33852144"
+          }
+        },
+        {
+          "case": "world-params",
+          "fast": false,
+          "format": "map_bp",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "3a58796d50f69e0383931871c7e8bcd5252797f712d42f4d6979302e458d4b57",
+            "current": "3a58796d50f69e0383931871c7e8bcd5252797f712d42f4d6979302e458d4b57"
+          }
+        },
+        {
+          "case": "world-params",
+          "fast": false,
+          "format": "map_220",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "b0f6e83285c30564737a90e8f6b6267d8ef4a7332ab8d0991fd564e96862244f",
+            "current": "b0f6e83285c30564737a90e8f6b6267d8ef4a7332ab8d0991fd564e96862244f"
+          }
+        },
+        {
+          "case": "world-params",
+          "fast": true,
+          "format": "map",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "65438fb06865630e97baa83862ef21cd31330c69a93a04a34078ff574dc10840",
+            "current": "65438fb06865630e97baa83862ef21cd31330c69a93a04a34078ff574dc10840"
+          }
+        },
+        {
+          "case": "world-params",
+          "fast": true,
+          "format": "map_bp",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "54125e0b1a36e99e3abf5bd18ccde515e3f31dcfc193d6b1bfd12b0399f4f7f1",
+            "current": "54125e0b1a36e99e3abf5bd18ccde515e3f31dcfc193d6b1bfd12b0399f4f7f1"
+          }
+        },
+        {
+          "case": "world-params",
+          "fast": true,
+          "format": "map_220",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "a73d79ba7dd58c9ac9a3af2b7e6394c1019b5e2e9a8aa3013f71e483c73aee61",
+            "current": "a73d79ba7dd58c9ac9a3af2b7e6394c1019b5e2e9a8aa3013f71e483c73aee61"
+          }
+        },
+        {
+          "case": "flat-ambiguous",
+          "fast": false,
+          "format": "map",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "a645e3bd8430d004c5b34df0bdaeab7ecc2101992945204b5927c5b656f1252c",
+            "current": "a645e3bd8430d004c5b34df0bdaeab7ecc2101992945204b5927c5b656f1252c"
+          }
+        },
+        {
+          "case": "flat-ambiguous",
+          "fast": false,
+          "format": "map_bp",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "b074f3dac1fd9b9a0f9087a51b32f4c69307c95f2624d5889338fea5bbc96adc",
+            "current": "b074f3dac1fd9b9a0f9087a51b32f4c69307c95f2624d5889338fea5bbc96adc"
+          }
+        },
+        {
+          "case": "flat-ambiguous",
+          "fast": false,
+          "format": "map_220",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "32048d68e6b7ade2ab14b34ea238dec268056d3f6451bc01f22b2643886bfaf0",
+            "current": "32048d68e6b7ade2ab14b34ea238dec268056d3f6451bc01f22b2643886bfaf0"
+          }
+        },
+        {
+          "case": "flat-ambiguous",
+          "fast": true,
+          "format": "map",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "af9f5575ae9171cd1a95f2ad81ec509345b31eaf74fd6fe53a7dbdf4bb702236",
+            "current": "af9f5575ae9171cd1a95f2ad81ec509345b31eaf74fd6fe53a7dbdf4bb702236"
+          }
+        },
+        {
+          "case": "flat-ambiguous",
+          "fast": true,
+          "format": "map_bp",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "6f7bb3ea971dad9af0454ca5ced9438a0e1d97198fb1607b2a4cfc606e5a1047",
+            "current": "6f7bb3ea971dad9af0454ca5ced9438a0e1d97198fb1607b2a4cfc606e5a1047"
+          }
+        },
+        {
+          "case": "flat-ambiguous",
+          "fast": true,
+          "format": "map_220",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "ec051541fa2dddfcfe5f5bc8b302d4c15946a90d2b816ff2187fb8917df5be66",
+            "current": "ec051541fa2dddfcfe5f5bc8b302d4c15946a90d2b816ff2187fb8917df5be66"
+          }
+        },
+        {
+          "case": "disconnected",
+          "fast": false,
+          "format": "map",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "f0abb970d26cca891a8259009f4d61761e0ffe718fe4000b75966622ea646d3b",
+            "current": "f0abb970d26cca891a8259009f4d61761e0ffe718fe4000b75966622ea646d3b"
+          }
+        },
+        {
+          "case": "disconnected",
+          "fast": false,
+          "format": "map_bp",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "1a55a0f523f697c8949ec900b34738a15fd0771d7c083d8433ee431d4976655b",
+            "current": "1a55a0f523f697c8949ec900b34738a15fd0771d7c083d8433ee431d4976655b"
+          }
+        },
+        {
+          "case": "disconnected",
+          "fast": false,
+          "format": "map_220",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "cd88047e9c8401eefea6ff6fecd7d039f4882fe3048090abbe54c736aeee335b",
+            "current": "cd88047e9c8401eefea6ff6fecd7d039f4882fe3048090abbe54c736aeee335b"
+          }
+        },
+        {
+          "case": "disconnected",
+          "fast": true,
+          "format": "map",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "776024105473892f18e24d37e0c65670b1142523fd970c1966ee9f92e6ff78fd",
+            "current": "776024105473892f18e24d37e0c65670b1142523fd970c1966ee9f92e6ff78fd"
+          }
+        },
+        {
+          "case": "disconnected",
+          "fast": true,
+          "format": "map_bp",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "b652e8660c5e8ccdac876b2c2d6c6a1709a8ccd0db09a3d7106496fa6cbc92f3",
+            "current": "b652e8660c5e8ccdac876b2c2d6c6a1709a8ccd0db09a3d7106496fa6cbc92f3"
+          }
+        },
+        {
+          "case": "disconnected",
+          "fast": true,
+          "format": "map_220",
+          "byte_identical": true,
+          "sha256": {
+            "baseline": "da77d079407089f1f2c167697601e19bc2ef81b8666a2c68a817b5665674a525",
+            "current": "da77d079407089f1f2c167697601e19bc2ef81b8666a2c68a817b5665674a525"
+          }
+        }
+      ],
+      "oblique_fast_rebuilds": [
+        {
+          "format": "map",
+          "ordered_geometry_match": {
+            "baseline": false,
+            "current": true
+          }
+        },
+        {
+          "format": "map_bp",
+          "ordered_geometry_match": {
+            "baseline": false,
+            "current": true
+          }
+        },
+        {
+          "format": "map_220",
+          "ordered_geometry_match": {
+            "baseline": false,
+            "current": true
+          }
+        }
+      ]
+    }
+  },
+  "limits_and_interpretation": [
+    "Generated first-party fixtures only. No universal grouping or authoring accuracy claim; a flat source can produce the same supporting surfaces as original groups.",
+    "The corpus field source_grouping_known indicates whether source func_groups existed. The flat-ambiguous case is known to have none; inferred assemblies remain explicitly unproven.",
+    "Disconnected assemblies without shared surfaces can remain flat, and order constraints can reject otherwise supported proposals.",
+    "Groups copy recognized recovered worldspawn settings. Original lost group parameters/names are not recovered; three controlled lighting comparisons do not prove arbitrary re-bake equivalence.",
+    "Geometry/material/content/order and sampled spatial partition/PVS agreement are required independently of successful compilation. Finite sampling is not universal visibility proof.",
+    "Fast sloped MAP output changes intentionally. The controlled stored planes now rebuild exactly across six dominant-axis/sign orientations; original editor coordinates and texture mappings are not recovered by fast mode.",
+    "Work, brush and side limits plus world/surface ownership/context controls are tested. Existing detail tests exercise the report ceiling; a group-only saturation of the 64 MiB ceiling is not part of this corpus.",
+    "ASan/UBSan run with the established legacy process-lifetime leak exclusion. Release and sanitizer tests overlap in time; their durations are validation timings, not performance benchmarks.",
+    "Broader group/light inference, saved overrides and workbench proposal review remain open. The portable 0.3.0 archive is unchanged."
+  ]
+}

@@ -1356,3 +1356,61 @@ overrides and workbench review remain active roadmap work.
 Cleanup limitation: automatic approval review rejected removal of the disposable
 initial `.agents/tmp/continuation/brush-cells-probe` directory, reporting only
 "blocked by policy". That directory remains alongside the retained final evidence.
+
+## 2026-09-30 — Surface-supported group recovery and fast plane precision
+
+Added optional `-group-policy none|surfaces` and `-group-max-work`. Closely coplanar
+brush-face overlap with shared rendered surfaces supports deterministic world
+assembly proposals, independently of detail flags. Accepted proposals export as
+named `func_group` entities with recovered worldspawn compile parameters and a
+mandatory report. Brush entities and patches keep their owners. Sensitive
+materials, ambiguous ownership/support, outer boundaries and context-dependent
+world settings protect against unsupported regrouping. The ordering planner
+accounts for both opaque brush reversals during loading/group collapse, preserves
+translucent order and rejects proposals that would change the recoverable sequence.
+
+The report records brush/surface links, bounds, exclusions, group status, export
+order, work and copied keys. Original grouping, names and lost parameters remain
+unproven. An ordinary flat world can produce the same supporting surfaces; a
+deliberately flat-source control demonstrates this ambiguity. A disconnected
+assembly without shared support remains flat, and its unassociated brushes can
+prevent another proposal from exporting without changing order. The option does
+not create filler groups to conceal this limit. Current shader assets remain an
+assumption, with bounded geometry, work and report size. The workbench does not
+yet expose the new policy.
+
+The new corpus checks 42 fast/full rebuilds across three formats, covering mixed
+detail/structure, mixed and fully translucent groups, sloped geometry and baseline
+compile parameters. Exact ordered brush geometry/materials/contents, surviving
+entities, node counts and spatial partition/PVS relationships agree at 650 points
+(422,500 ordered pairs per rebuild). Three full Valve 220 controls retain exact
+baked lightmaps/lightgrids. Detail-policy independence, one/four-worker parity,
+legacy conversion, invalid options, work/hard limits and prior-output preservation
+are checked separately. An independent planner test checks 6,000 generated layouts,
+718 accepted groups and 34 conflicting-order decisions, including exact work limits.
+
+The sloped control exposed a preexisting fast-export precision defect: a float
+tangent basis printed to three decimals changed stored brush planes. Nonaxial
+points now solve the dominant coordinate in double precision and print 17
+significant digits, preserving axial formatting. Five additional rotated controls
+cover the remaining dominant-axis/sign orientations without grouping enabled.
+Against the preserved `018e086` executable, 39 default MAPs remain byte-identical;
+three fast sloped outputs intentionally change and now rebuild exact ordered
+geometry in all formats, where the prior outputs did not.
+
+Twelve relevant release regression groups pass on Windows (65.32 seconds) and
+Linux (136.27 seconds). Their grouping fidelity matrices agree, as do the three
+controlled bake byte results. Eleven Linux ASan/UBSan groups pass in 778.48 seconds
+with the established legacy leak-detection exclusion; its grouping fidelity
+matrix also agrees. These durations include concurrent validation and are not
+performance benchmarks.
+
+[Validation identities and results](validation/recovery-groups.json) retain the
+source/binary hashes, generated input identities, platform checks and preceding
+executable comparison. Logs, comparison scripts and investigative probes remain
+under `.agents/tmp/continuation/recovery-groups-*`, with reusable fixtures in each
+build's `tests/recovery-groups` directory. No new unrelated issue was found;
+existing `UnsortedSet` warnings remain. No external code/dependency was added, and
+the 0.3.0 packaged archive is unchanged. Broader grouping/parameter inference,
+light reconstruction, saved overrides, workbench review and the independent
+intelligent VIS/geometry optimizers remain active roadmap work.

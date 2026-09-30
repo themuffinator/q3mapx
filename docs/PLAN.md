@@ -205,8 +205,8 @@ Keep remaining work visible as development proceeds.
 
 ## M8 — Decompiler inference and authoring fidelity
 
-User-requested expansion, 2026-09-30. Shared evidence and the first optional
-geometric detail policy are implemented; broader inference/review remains active.
+User-requested expansion, 2026-09-30. Shared evidence and initial optional
+geometric detail/surface grouping policies are implemented; broader inference/review remains active.
 Detailed design, source-data
 limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md).
 
@@ -234,6 +234,12 @@ limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md
 - [ ] Infer useful `func_group` membership from geometry, materials, repeated
   assemblies and compile-property evidence, independently of detail classification.
   Preserve entity ownership and distinguish inferred groups from surviving metadata.
+  The initial CLI surface-association policy now proposes and exports bounded
+  world assemblies, copies recovered baseline compile settings, preserves brush
+  insertion/collapse order and reports exclusions and ambiguity. Forty-two rebuilds,
+  three lighting controls and 6,000 generated ordering layouts cover this policy.
+  Repeated/disconnected assemblies, original parameter inference, alternatives,
+  saved overrides, broader calibration and workbench review remain open.
 - [ ] Infer stripped entity lights from baked lightmaps, vertex/grid and available
   directional lighting. Explain sky/sun, surface emitters, ambient and indirect
   contributions before fitting residual point/spot lights; account for bake settings.
@@ -242,6 +248,8 @@ limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md
   target entities without disturbing existing gameplay links.
 - [ ] Improve multi-triangle UV fitting, compatible brush-fragment reconstruction,
   plane/grid recovery, patches/model instances, hidden faces and entity relationships.
+  Fast nonaxial plane output now avoids float-basis/decimal truncation, with exact
+  stored-plane rebuild controls across six dominant-axis/sign orientations.
 - [ ] Add CLI/workbench review, confidence/provenance overlays, manual corrections
   and iterative rebuild comparisons for geometry, collision, visibility and lighting.
 

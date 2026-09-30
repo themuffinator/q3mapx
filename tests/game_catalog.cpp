@@ -52,6 +52,10 @@ int main(int argc, char** argv) {
     require(catalog.error().isEmpty() && catalog.profiles().size() >= 19, "Real compiler catalog failed");
     require(catalog.find("JKA-SP") && catalog.find("JKA-SP")->id == "ja", "Case-insensitive alias resolution failed");
     require(catalog.find("sof2") && catalog.find("prophecy"), "Catalog omitted previously hidden profiles");
+    for (const auto& profile:catalog.profiles()) {
+        require(profile.recoveryBrushOrders.contains("bsp"),"Current compiler omitted default recovery policy");
+        require(profile.supportsRebuildOrder()==profile.nativeWrite,"Rebuild order capability does not match the current compiler");
+    }
     for(const auto* id:{"alice","fakk2","q3-ihv","q3test44","q3test45"}) {
         const auto* profile=catalog.find(id);
         require(profile && !profile->nativeWrite && profile->workflows.contains("decompile")
@@ -74,6 +78,8 @@ int main(int argc, char** argv) {
         qputenv("Q3MAPX_TEST_CATALOG_MODE",mode);
         catalog.refresh(QCoreApplication::applicationFilePath()); finish(catalog);
         require(catalog.error().isEmpty() && catalog.find("fixture"),"Valid catalog within the combined budget was rejected");
+        require(catalog.find("fixture")->nativeWrite && !catalog.find("fixture")->supportsRebuildOrder()
+                && catalog.find("fixture")->recoveryBrushOrders==QStringList{"bsp"},"Older compiler catalog incorrectly enabled rebuild order");
     }
     qputenv("Q3MAPX_TEST_CATALOG_MODE","slow"); catalog.refresh(QCoreApplication::applicationFilePath());
     qputenv("Q3MAPX_TEST_CATALOG_MODE","valid"); catalog.refresh(QCoreApplication::applicationFilePath()); finish(catalog);
@@ -87,7 +93,7 @@ int main(int argc, char** argv) {
     qunsetenv("Q3MAPX_TEST_CATALOG_MODE");
     QProcess query; query.start(argv[1], {"-games"}); require(query.waitForFinished(15000), "Catalog parse fixture failed");
     const auto original = QJsonDocument::fromJson(query.readAllStandardOutput()).object();
-    for (unsigned mutation = 0; mutation < 4; ++mutation) {
+    for (unsigned mutation = 0; mutation < 10; ++mutation) {
         auto object = original;
         if (mutation == 0) object["schema_version"] = 2;
         else {
@@ -96,6 +102,15 @@ int main(int argc, char** argv) {
             if (mutation == 1) profiles.append(first);
             if (mutation == 2) { first["bsp_version"] = 1.5; profiles[0] = first; }
             if (mutation == 3) { first["aliases"] = QJsonArray{first["id"]}; profiles[0] = first; }
+            if (mutation >= 4) {
+                if (mutation == 4) first["recovery_brush_orders"]="rebuild";
+                if (mutation == 5) first["recovery_brush_orders"]=QJsonArray{"bsp","rebuild","rebuild"};
+                if (mutation == 6) first["recovery_brush_orders"]=QJsonArray{"bsp",17};
+                if (mutation == 7) first["recovery_brush_orders"]=QJsonArray{"bad identifier"};
+                if (mutation == 8) { QJsonArray large; for(int i=0;i<33;++i) large.append(QString("policy%1").arg(i)); first["recovery_brush_orders"]=large; }
+                if (mutation == 9) first["recovery_brush_orders"]=QJsonArray{"rebuild\n"};
+                profiles[0]=first;
+            }
             object["profiles"] = profiles;
         }
         bool rejected = false;

@@ -14,6 +14,13 @@ The workbench queries the selected compiler asynchronously, displays its actual
 profiles and format information, and checks the chosen workflow before staging
 input. `-help -game` remains available for a readable list.
 
+The optional schema 1 `recovery_brush_orders` array advertises available MAP
+ordering policies per profile. Current writable profiles advertise `bsp` and
+`rebuild`; recovery-only profiles advertise `bsp`. The workbench accepts bounded,
+unique policy identifiers and treats an absent field in older catalogs as ordinary
+BSP order only. Native writing support alone does not imply the compiler has the
+new option. Unknown future policy identifiers do not enable a known policy.
+
 Profile names and aliases are case-insensitive. Useful aliases include `q3`,
 `ql`, `rtcw-sp`, `rtcw-mp`, `wolfet`, `stvef-sp`, `stvef-mp`, `jk2-sp`,
 `jk2-mp`, `jka-sp` and `jka-mp`. Unknown names fail instead of silently selecting

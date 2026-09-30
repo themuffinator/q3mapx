@@ -28,13 +28,13 @@ private:
     QStringList recordedGroups_;
     QMap<int,QString> logs_;
     QLineEdit *name_, *source_, *gameRoot_, *outputRoot_, *compiler_, *mod_, *search_;
-    QComboBox *game_, *quality_, *backend_, *format_, *workflow_, *reports_;
+    QComboBox *game_, *quality_, *backend_, *format_, *brushOrder_, *workflow_, *reports_;
     QSpinBox *workers_, *gpu_, *size_, *samples_, *patchSteps_;
     QCheckBox* reproducibleVis_;
     QPlainTextEdit *bspOptions_, *visOptions_, *lightOptions_, *preview_, *logView_, *reportView_;
     QTableWidget *jobs_, *historyView_;
     QTreeWidget* diagnostics_;
-    QLabel *title_, *status_, *gameHint_;
+    QLabel *title_, *status_, *gameHint_, *recoveryHint_;
     QPushButton *run_, *cancel_;
     QProgressBar* progress_;
     QListWidget* navigation_;

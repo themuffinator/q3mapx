@@ -91,7 +91,9 @@ mixed-material brushes. Redundant sides with empty windings do not participate.
 The mode supports fast/full recovery and all three MAP writers, including legacy
 `-convert`. It requires a profile with BSP writing support and excludes `-wtf`,
 which can replace materials. Native recovery-only profiles retain ordinary BSP
-order; native round-trip fidelity is not implied. This option is currently CLI-only.
+order; native round-trip fidelity is not implied. The workbench's **Project →
+Recovery** tab saves this choice and checks the selected compiler's advertised
+policy/profile support before allowing rebuild-order jobs.
 
 Use the same shader assets and compatible compiler settings for recovery and
 recompilation. This is an attempt to preserve compiled ordering, not recovery of

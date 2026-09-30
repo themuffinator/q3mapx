@@ -10,8 +10,10 @@ namespace workbench {
 struct GameProfile {
     QString id, title, baseDirectory, shaderDirectory, bspIdent;
     QStringList aliases, workflows;
+    QStringList recoveryBrushOrders{"bsp"}; // Catalogs before this option retain ordinary export.
     int bspVersion = 0;
     bool nativeWrite = false;
+    bool supportsRebuildOrder() const { return nativeWrite && recoveryBrushOrders.contains("rebuild"); }
 };
 QVector<GameProfile> parseGameCatalog(const QByteArray& bytes);
 

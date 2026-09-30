@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QJsonDocument>
+#include <QJsonArray>
 #include <QTimer>
 #include <iostream>
 #include <stdexcept>
@@ -31,6 +32,8 @@ int main(int argc,char** argv){
         QDir assets=QFileInfo(p.source).absoluteDir(); assets.cdUp(); assets.cdUp(); p.gameRoot=assets.absolutePath();
         p.outputRoot=root+"/outputs with spaces"; p.workers=4;
         p.bspOptions={"-keeplights"};
+        require(p.brushOrder=="bsp","New projects changed the default recovery order");
+        p.brushOrder="rebuild";
         const auto path=root+"/project.q3mapx.json"; p.save(path); auto loaded=Project::load(path);
         require(loaded.toJson()==p.toJson(),"Project did not round-trip");
         auto invalid=p.toJson(); invalid["workers"]=-1; bool rejected=false;
@@ -45,6 +48,13 @@ int main(int argc,char** argv){
         require(!Project::fromJson(older).reproducibleVis,"Older project behavior changed");
         older.remove("mesh_patch_steps");
         require(Project::fromJson(older).meshPatchSteps==8,"Older project mesh detail default changed");
+        older.remove("brush_order");
+        require(Project::fromJson(older).brushOrder=="bsp","Older project recovery order changed");
+        for(const auto& value:QJsonArray{"reverse",17,false,QJsonValue(QJsonValue::Null)}) {
+            invalid=p.toJson(); invalid["brush_order"]=value; rejected=false;
+            try { Project::fromJson(invalid); } catch(...) { rejected=true; }
+            require(rejected,"Malformed recovery brush order accepted");
+        }
         invalid=p.toJson(); invalid["mesh_patch_steps"]=33; rejected=false;
         try { Project::fromJson(invalid); } catch(...) { rejected=true; }
         require(rejected,"Invalid mesh curve detail accepted");
@@ -56,10 +66,18 @@ int main(int argc,char** argv){
         const auto snapshot=Project::load(directory+"/project.q3mapx.json"); require(snapshot.source.startsWith(directory),"Run snapshot did not retain staged source");
         p.source=plan.back().outputPath;
         p.meshPatchSteps=4;
+        auto legacy=p; legacy.brushOrder="bsp";
+        require(!buildPlan(legacy,"decompile",root).front().arguments.contains("-brush-order"),"Default recovery command changed");
         for(const auto& workflow:QStringList{"decompile","minimap","obj","ase"}) {
             const auto output=prepareRun(p,workflow); auto jobs=buildPlan(p,workflow,output);
+            require(jobs.front().arguments.contains("-brush-order")== (workflow=="decompile"),"Recovery setting escaped its workflow");
             queue.enqueue(jobs); finishQueue(queue); require(queue.jobs().back().state=="Succeeded","Recovery/minimap/mesh export failed");
             require(QFileInfo(jobs.back().outputPath).size()>0,"Missing workflow output");
+            if(workflow=="decompile") {
+                QFile report(jobs.back().outputPath+".recovery.json"); require(report.open(QIODevice::ReadOnly),"Missing recovery report");
+                require(QJsonDocument::fromJson(report.readAll()).object()["brush_order"].toObject()["policy"]=="rebuild","Real compiler ignored the saved recovery order");
+                require(Project::load(output+"/project.q3mapx.json").brushOrder=="rebuild","Run snapshot lost recovery order");
+            }
         }
         Job bad; bad.group="bad"; bad.label="Broken executable"; bad.program=root+"/missing-compiler"; bad.directory=root; bad.logPath=root+"/bad.log";
         Job skipped=bad; skipped.label="Dependent"; skipped.logPath=root+"/skipped.log";

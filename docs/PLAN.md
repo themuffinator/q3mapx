@@ -220,10 +220,11 @@ limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md
   by recompilation, preserve seals/occluders and expose ambiguous cases.
   The initial known-source audit now covers 24 fast/full MAP round trips, exact
   brush geometry and spatial PVS comparisons. Fast export's dropped detail bits
-  are repaired. An explicit CLI rebuild-order option now compensates for loader
-  insertion, with 38 additional rebuilds covering opacity, entity origins and
-  redundant sides. Discarded contradictory side flags and brush-model detail
-  ambiguity remain explicit findings for the inference work.
+  are repaired. An explicit CLI/workbench rebuild-order option now compensates
+  for loader insertion, with 38 additional rebuilds covering opacity, entity origins and
+  redundant sides. Projects retain the policy, and the workbench checks advertised
+  compiler/profile support before queuing. Discarded contradictory side flags
+  and brush-model detail ambiguity remain explicit findings for the inference work.
 - [ ] Infer useful `func_group` membership from geometry, materials, repeated
   assemblies and compile-property evidence, independently of detail classification.
   Preserve entity ownership and distinguish inferred groups from surviving metadata.

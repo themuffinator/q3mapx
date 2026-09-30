@@ -30,7 +30,7 @@ QVector<GameProfile> parseGameCatalog(const QByteArray& bytes) {
     if (array.isEmpty() || array.size() > 256) invalid();
     QVector<GameProfile> profiles;
     QSet<QString> names;
-    const QRegularExpression identifier("^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$");
+    const QRegularExpression identifier("\\A[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}\\z");
     const auto string = [](const QJsonObject& source, const char* key) {
         const auto value = source.value(key);
         if (!value.isString() || value.toString().isEmpty() || value.toString().size() > 512
@@ -68,6 +68,17 @@ QVector<GameProfile> parseGameCatalog(const QByteArray& bytes) {
             if (!workflow.isString() || !identifier.match(workflow.toString()).hasMatch()
                 || profile.workflows.contains(workflow.toString())) invalid();
             profile.workflows << workflow.toString();
+        }
+        if (source.contains("recovery_brush_orders")) {
+            if (!source["recovery_brush_orders"].isArray()) invalid();
+            const auto orders=source["recovery_brush_orders"].toArray();
+            if (orders.size()>32) invalid();
+            profile.recoveryBrushOrders.clear();
+            for (const auto& order:orders) {
+                if (!order.isString() || !identifier.match(order.toString()).hasMatch()
+                    || profile.recoveryBrushOrders.contains(order.toString())) invalid();
+                profile.recoveryBrushOrders << order.toString();
+            }
         }
         profiles.append(profile);
     }

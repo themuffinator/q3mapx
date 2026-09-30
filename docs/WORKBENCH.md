@@ -10,7 +10,8 @@ remains a separate executable and can be built without Qt using
 2. Set the game root that contains `baseq3` or the corresponding game's asset
    directory, then select the game profile. Set a mod directory if needed.
 3. Choose an output folder and confirm the compiler path.
-4. Choose quality, workers and a workflow. GPU settings apply to minimaps.
+4. Choose quality, workers and a workflow. GPU settings apply to minimaps;
+   **Recovery** contains the MAP format and brush-order choices for decompilation.
 5. Inspect the command preview. Press **F5** to queue and run, or add several
    workflows before starting the queue.
 6. Review stage results, searchable logs, diagnostics and JSON reports. Open the
@@ -40,7 +41,8 @@ with its discovery failure shown beside the selection.
   produce repeatable VIS across worker counts at some scheduling cost. Older
   saved projects without this setting retain their previous behavior.
 - Minimap: automatic/CPU/GPU/reference backend, device index, size and samples.
-- Recovery: Valve 220, brush primitives or classic coordinates; automatic loss report.
+- Recovery tab: Valve 220, brush primitives or classic coordinates, saved BSP/rebuild
+  brush order, and an automatic report of recovery assumptions and limitations.
 - Mesh export: OBJ/MTL or ASE, including curves and native MOHAA terrain. Curve
   detail is 1–32 samples per span (default 8); higher values create larger meshes.
 - Advanced: separate extra arguments for BSP, VIS and LIGHT, one argument per
@@ -66,6 +68,21 @@ and reject invalid field types, unknown schema versions and invalid numeric limi
 Relative paths in a project resolve against the project file's directory. Saves
 use atomic replacement. GUI preferences/history normally live in the OS application
 configuration directory; `--state-dir PATH` selects an isolated location.
+
+Development builds after 0.3.0 offer **BSP order** (the unchanged default) and
+**Rebuild order** in the Recovery tab. Rebuild order can reduce partition changes
+when a recovered MAP is recompiled with matching assets/settings; it does not
+recover original editor ordering or guarantee identical visibility. See
+[ordering behavior and validation](DECOMPILATION.md#brush-order-for-rebuilding).
+
+The compiler catalog must advertise rebuild order for a profile with BSP writing
+support. Older compilers and native recovery-only profiles keep ordinary BSP
+order available. A saved rebuild choice remains visible when switching to an
+incompatible compiler/profile, with an explanation; it is not silently replaced.
+Run, queue and menu actions reject that combination before staging inputs.
+The project schema's optional `brush_order` field accepts `bsp` or `rebuild`.
+Projects without it retain BSP order and the previous command; only decompile
+jobs receive the new CLI argument, and run snapshots retain the choice.
 
 The inspection page is available in development builds after 0.3.0. It shows
 invalid-directory diagnostics as well as successful results and supports cancelling

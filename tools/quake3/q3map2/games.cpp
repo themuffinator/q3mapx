@@ -1073,6 +1073,12 @@ int PrintGameCatalog(){
 		writer.Key( "bsp_version" ); writer.Int( game.bspVersion );
 		writer.Key( "lightmap_size" ); writer.Int( game.lightmapSize );
 		writer.Key( "native_write" ); writer.Bool( game.write != nullptr );
+		writer.Key( "recovery_brush_orders" ); writer.StartArray();
+		if ( game.load ) {
+			writer.String( "bsp" );
+			if ( game.write ) writer.String( "rebuild" );
+		}
+		writer.EndArray();
 		writer.Key( "workflows" ); writer.StartArray();
 		if ( game.write ) {
 			writer.String( "build" ); writer.String( "bsp" ); writer.String( "vis" ); writer.String( "light" );

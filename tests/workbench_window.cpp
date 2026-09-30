@@ -12,10 +12,13 @@
 #include <QTabWidget>
 #include <QPlainTextEdit>
 #include <QLineEdit>
+#include <QLabel>
+#include <QMessageBox>
 #include <QListWidget>
 #include <QTableWidget>
 #include <QHeaderView>
 #include <QScrollBar>
+#include <QScrollArea>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QtEndian>
@@ -142,14 +145,66 @@ int main(int argc, char** argv) {
     QTimer ready;
     QObject::connect(&ready, &QTimer::timeout, &app, [&] {
         if (window.discoveringGames() || launched) return;
+        ready.stop(); // Rendering and modal error checks can enter the event loop.
         auto* profiles = window.findChild<QComboBox*>("gameProfiles");
         require(profiles && profiles->count() >= 19, "Window did not use the compiler catalog");
         require(profiles->currentText() == project.game, "Catalog replaced the saved project selection");
         auto* button=window.findChild<QPushButton*>("primary");
         require(button, "Run button missing");
+        auto* order=window.findChild<QComboBox*>("recoveryBrushOrder");
+        auto* orderHint=window.findChild<QLabel*>("recoveryOrderHint");
+        auto* preview=window.findChild<QPlainTextEdit*>("commandPreview");
+        auto* workflow=window.findChild<QComboBox*>("workflow");
+        auto* projectTabs=window.findChild<QTabWidget*>("projectOptions");
+        require(order && orderHint && preview && workflow && projectTabs,"Recovery controls missing");
+        require(order->currentData().toString()==project.brushOrder && project.brushOrder=="rebuild","Saved recovery setting did not reach the window");
+        const auto available=[&]{ return order->model()->flags(order->model()->index(order->findData("rebuild"),0)).testFlag(Qt::ItemIsEnabled); };
+        workflow->setCurrentIndex(workflow->findData("decompile"));
+        require(available() && button->isEnabled() && preview->toPlainText().contains("-brush-order rebuild"),"Writable profile did not enable rebuild order");
+        profiles->setCurrentText("alice");
+        require(!available() && !button->isEnabled() && order->currentData()=="rebuild","Unsupported profile silently changed or accepted saved recovery order");
+        require(orderHint->text().contains("Select BSP order"),"Recovery-only restriction has no explanation");
+        // The menu/shortcut action must enforce the same rule as the button.
+        // Dismiss this isolated offscreen test dialog directly, without input events.
+        QAction* runAction=nullptr;
+        for(auto* action:window.findChildren<QAction*>()) if(action->shortcut()==QKeySequence(Qt::Key_F5)) runAction=action;
+        require(runAction,"Run workflow action missing");
+        bool rejectedRecovery=false;
+        QTimer::singleShot(0,&app,[&]{
+            auto* dialog=qobject_cast<QMessageBox*>(QApplication::activeModalWidget());
+            require(dialog && dialog->text().contains("BSP writing support"),"Unsupported recovery was not rejected before staging");
+            rejectedRecovery=true; dialog->accept();
+        });
+        runAction->trigger();
+        require(rejectedRecovery && queue->jobs().isEmpty(),"Unsupported recovery enqueued compiler work");
+        order->setCurrentIndex(order->findData("bsp"));
+        require(button->isEnabled() && !preview->toPlainText().contains("-brush-order"),"Default native recovery was blocked or changed");
+        profiles->setCurrentText("unknown-profile"); require(!available() && !button->isEnabled(),"Unknown profile enabled rebuild order");
+        profiles->setCurrentText(project.game); order->setCurrentIndex(order->findData("rebuild"));
+        require(available() && button->isEnabled(),"Writable profile did not restore recovery controls");
+        require(projectTabs->tabText(2)=="Recovery","Recovery tab missing"); projectTabs->setCurrentIndex(2);
+        const auto originalSize=window.size();
+        for(int theme=0;theme<2;++theme) {
+            const auto themeName=window.styleSheet().contains("#141a21") ? "dark" : "light";
+            window.resize(1380,920);
+            require(window.renderPreview(QDir(argv[2]).filePath(QString("recovery-%1.png").arg(themeName))),"Recovery options did not render");
+            window.resize(1024,720);
+            require(window.renderPreview(QDir(argv[2]).filePath(QString("recovery-%1-compact.png").arg(themeName))),"Compact recovery options did not render");
+            require(order->geometry().right()<order->parentWidget()->width(),"Compact recovery order exceeds the page width");
+            auto* recoveryPage=qobject_cast<QScrollArea*>(projectTabs->widget(2));
+            require(recoveryPage && recoveryPage->horizontalScrollBar()->maximum()==0
+                    && recoveryPage->verticalScrollBar()->maximum()==0,"Compact recovery page clips options or guidance");
+            for(auto* action:window.findChildren<QAction*>()) if(action->text().startsWith("Toggle &light")) action->trigger();
+        }
+        window.resize(originalSize); projectTabs->setCurrentIndex(0);
+        workbench::saveJson(QDir(argv[2]).filePath("recovery-checks.json"),{
+            {"saved_policy_loaded",true},{"compatible_profile_enabled",true},{"native_rebuild_disabled",true},
+            {"incompatible_selection_retained",true},{"native_default_enabled",true},{"unknown_profile_disabled",true},
+            {"command_preview_policy",true},{"menu_action_rejected_before_staging",true},
+            {"both_themes",true},{"compact_page_without_clipping",true},{"os_input_or_capture_used",false}});
+        workflow->setCurrentIndex(workflow->findData("build"));
         profiles->setCurrentText("alice");
         require(!button->isEnabled(), "Recovery-only profile enabled compilation in the window");
-        auto* workflow=window.findChild<QComboBox*>("workflow");
         auto* detail=window.findChild<QSpinBox*>("meshPatchSteps");
         require(workflow && detail && detail->value()==8,"Mesh controls/default missing");
         workflow->setCurrentIndex(workflow->findData("obj")); detail->setValue(5);
@@ -176,6 +231,7 @@ int main(int argc, char** argv) {
         // No mouse/keyboard events or operating-system input are synthesized.
         run->trigger();
         require(queue->jobs().size() == 3, "Window failed to enqueue the full pipeline");
+        for(const auto& job:queue->jobs()) require(!job.arguments.contains("-brush-order"),"Window applied recovery settings to compilation");
     });
     QObject::connect(queue, &workbench::JobQueue::idle, &app, [&] {
         if (!launched) return;

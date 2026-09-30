@@ -1264,3 +1264,41 @@ the reusable corpus under each build's `tests/recovery-order` directory. No new
 unrelated issue was found; existing `UnsortedSet` warnings remain. No external code
 or dependency was added. Workbench exposure follows as a separate round, and the
 0.3.0 archive remains unchanged.
+
+## 2026-09-30 — Workbench recovery ordering and capability discovery
+
+Added a dedicated Recovery tab with MAP format and saved BSP/rebuild brush-order
+choices, explanatory guidance and command-preview integration. Project schema 1
+stores the optional policy and defaults older files to ordinary BSP order, keeping
+their previous command unchanged. Run snapshots retain the choice, and only
+decompile jobs receive the argument. A real queued recovery verifies the compiler's
+reported policy as well as the generated MAP.
+
+The compiler's schema 1 game catalog now advertises optional
+`recovery_brush_orders` per profile. The client validates the bounded identifier
+list and treats older catalogs as BSP-order-only, so native writing capability
+alone cannot enable an option absent from an older executable. Current writable
+profiles advertise both policies; the six native recovery-only profiles advertise
+BSP order. The UI preserves an incompatible saved selection, explains the issue,
+disables unsupported selection/run controls and rejects menu/queue actions before
+staging. Switching back to a compatible profile restores availability.
+
+Six affected regression groups pass on Windows (6.95 seconds) and Linux (15.15
+seconds), covering real jobs, project migration, malformed metadata, catalogs,
+inspection and hardware. The actual offscreen window exercises native and unknown
+profiles, retained settings and blocked menu execution. Direct QWidget renders in
+both themes at 1380×920 and 1024×720 exposed a clipped compact note; adjusted
+spacing and shorter wording fix it. Two affected groups pass again after that
+polish on Windows (3.28 seconds) and Linux (5.81 seconds), with explicit checks
+that compact controls/guidance need no scrolling. No mouse/keyboard injection or
+OS capture was used.
+
+Final catalog checks also anchor identifiers to the complete string, rejecting
+trailing newlines. The catalog group passes again on Windows (0.61 seconds) and
+Linux (1.68 seconds); the validation record retains each phase's log and identities.
+
+[Validation identities and renders](validation/workbench-recovery-controls.json)
+reference the project-local logs and each build's `tests/workbench/window-state`
+images. No new unrelated issue was found; the existing `UnsortedSet` warning
+remains. No external code/dependency was added, and the 0.3.0 packaged archive is
+unchanged. The broader inference and intelligent compiler roadmap remains open.

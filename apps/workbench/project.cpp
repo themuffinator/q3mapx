@@ -23,7 +23,7 @@ QJsonObject Project::toJson() const {
         {"compiler",compiler},{"game",game},{"mod",mod},{"quality",quality},{"backend",backend},{"map_format",mapFormat},
         {"workers",workers},{"gpu_device",gpuDevice},{"minimap_size",minimapSize},{"minimap_samples",minimapSamples},
         {"reproducible_vis",reproducibleVis},
-        {"mesh_patch_steps",meshPatchSteps},
+        {"mesh_patch_steps",meshPatchSteps},{"brush_order",brushOrder},
         {"bsp_options",QJsonArray::fromStringList(bspOptions)},{"vis_options",QJsonArray::fromStringList(visOptions)},
         {"light_options",QJsonArray::fromStringList(lightOptions)}};
 }
@@ -38,6 +38,7 @@ Project Project::fromJson(const QJsonObject& o){
     string("name",p.name); string("source",p.source); string("game_root",p.gameRoot); string("output_root",p.outputRoot);
     string("compiler",p.compiler); string("game",p.game); string("mod",p.mod); string("quality",p.quality);
     string("backend",p.backend); string("map_format",p.mapFormat);
+    string("brush_order",p.brushOrder);
     const auto integer=[&](const char* key,int& value,int low,int high){
         if (!o.contains(key)) return;
         if (!o[key].isDouble() || o[key].toDouble()!=o[key].toInt() || o[key].toInt()<low || o[key].toInt()>high)
@@ -59,6 +60,7 @@ Project Project::fromJson(const QJsonObject& o){
     if (!QStringList{"draft","balanced","production"}.contains(p.quality)) fail("Unknown quality preset");
     if (!QStringList{"auto","cpu","gpu","reference"}.contains(p.backend)) fail("Unknown compute backend");
     if (!QStringList{"map","map_bp","map_220"}.contains(p.mapFormat)) fail("Unknown map format");
+    if (!QStringList{"bsp","rebuild"}.contains(p.brushOrder)) fail("Unknown recovery brush order");
     return p;
 }
 Project Project::load(const QString& path){
@@ -87,6 +89,7 @@ QStringList Project::validate(const QString& workflow) const {
     if (workflow!="build" && workflow!="bsp" && extension!="bsp") errors << "This workflow needs a .bsp source.";
     if (!QStringList{"build","bsp","vis","light","minimap","decompile","obj","ase"}.contains(workflow)) errors << "Unknown workflow.";
     if (meshPatchSteps<1 || meshPatchSteps>32) errors << "Mesh curve detail must be between 1 and 32.";
+    if (!QStringList{"bsp","rebuild"}.contains(brushOrder)) errors << "Unknown recovery brush order.";
     if (workers<0 || workers>1024 || minimapSize<1 || minimapSize>8192 || minimapSamples<1 || minimapSamples>256)
         errors << "Invalid worker count or minimap dimensions.";
     return errors;
@@ -120,7 +123,12 @@ QVector<Job> buildPlan(const Project& p,const QString& workflow,const QString& d
         if (p.quality=="production") options << "-bounce" << "2";
         add("LIGHT",options+p.lightOptions,bsp,bsp);
     }
-    if (workflow=="decompile") add("DECOMPILE",{"-decompile","-format",p.mapFormat,"-o",output.filePath("recovered.map")},staged,output.filePath("recovered.map"));
+    if (workflow=="decompile") {
+        QStringList options{"-decompile","-format",p.mapFormat,"-o",output.filePath("recovered.map")};
+        // Preserve the previous command for default and older saved projects.
+        if (p.brushOrder=="rebuild") options << "-brush-order" << "rebuild";
+        add("DECOMPILE",options,staged,output.filePath("recovered.map"));
+    }
     if (workflow=="obj" || workflow=="ase")
         add(workflow.toUpper(),{"-convert","-format",workflow,"-patchsteps",QString::number(p.meshPatchSteps)},staged,
             output.filePath(QFileInfo(p.source).completeBaseName()+"."+workflow));

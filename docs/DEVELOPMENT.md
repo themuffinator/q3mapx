@@ -245,6 +245,13 @@ source flags. Redundant translucent sides, multiple brush-entity solids/origins,
 default/legacy parity, worker parity and option/profile rejection are covered.
 Evidence is written to `tests/recovery-order/validation.json` in each build tree.
 
+Workbench recovery checks cover saved/legacy brush-order settings, malformed
+project/catalog fields, the real decompile job/report and run snapshot, and
+absence of recovery arguments from other workflows. The offscreen window test
+exercises compatible/native-only profiles, retained incompatible selections,
+menu-action rejection before staging and direct QWidget rendering of the Recovery
+tab at 1380×920 and 1024×720 in both themes. No OS capture or input injection is used.
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

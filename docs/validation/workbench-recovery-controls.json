@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-30T08:23:36.398512+00:00",
+  "scope": "Workbench Recovery tab, saved brush order, actual decompile job/report and advertised compiler/profile capability checks",
+  "base_revision": "199e97ac54842f5baf3f88f33325910ae9041ef1",
+  "source_sha256": {
+    "apps/workbench/project.h": "f1a79c3286fbcf18ed838b9ffee0f5656c622fa3fcab8b8774c2513723af8ed4",
+    "apps/workbench/project.cpp": "d422bbe97edd5c50807a9ee221437451e9c67584767558c2ed0b080906b10003",
+    "apps/workbench/window.h": "1d224468427d0e5f350fc9fb61418bbfbbcece583123b572134077ccf663f3be",
+    "apps/workbench/window.cpp": "6f8dd6d7bb9a1acd4f0bb94b5b55477719fa403fffda637ef215845d494d56e3",
+    "apps/workbench/game_catalog.h": "c12a2f90930dba116fd21fb7a1a42b58a634596d7ee1895fdd4ed677d751bbb7",
+    "apps/workbench/game_catalog.cpp": "bf525168243c0eeefc6df0bbb969172081e1301b8847d6830139af66b52f34d7",
+    "tools/quake3/q3map2/games.cpp": "3eed5fe64fd0ba2675e1c88a93ab32e6a7648ff851bbfd9f050fc9304b70c21b",
+    "tests/workbench.cpp": "ced6c75c173f6bfb5ecdf35def923974b995db743ea1fa8641d168d0abb89557",
+    "tests/workbench_window.cpp": "c20b357b466ac034c9288cc9eacfbd4f9fe365869cb2c8108da9381e5dd09941",
+    "tests/game_catalog.cpp": "275a93d0d6cea5b3b12bbb285240da35384fbcae9b6a0f77e3662695b29acb7c"
+  },
+  "project_schema_version": 1,
+  "optional_project_field": "brush_order",
+  "legacy_project_default": "bsp",
+  "default_command_unchanged": true,
+  "catalog_schema_version": 1,
+  "optional_catalog_field": "recovery_brush_orders",
+  "catalog_profiles": 25,
+  "rebuild_order_profiles": 19,
+  "legacy_catalog_rebuild_disabled": true,
+  "catalog_capture": ".agents/tmp/continuation/recovery-controls-games.json",
+  "malformed_project_policy_cases": 4,
+  "malformed_catalog_metadata_cases": 10,
+  "test_groups": [
+    "game_catalog",
+    "workbench_inspector",
+    "workbench_devices",
+    "workbench",
+    "workbench_window",
+    "workbench_preview"
+  ],
+  "platforms": [
+    {
+      "build": "release",
+      "groups_passed": 6,
+      "seconds": 6.95,
+      "log": ".agents/tmp/continuation/recovery-controls-tests-windows.log",
+      "final_layout_groups_passed": 2,
+      "final_layout_seconds": 3.28,
+      "final_layout_log": ".agents/tmp/continuation/recovery-controls-polish-tests-windows.log",
+      "window_checks": {
+        "both_themes": true,
+        "command_preview_policy": true,
+        "compact_page_without_clipping": true,
+        "compatible_profile_enabled": true,
+        "incompatible_selection_retained": true,
+        "menu_action_rejected_before_staging": true,
+        "native_default_enabled": true,
+        "native_rebuild_disabled": true,
+        "os_input_or_capture_used": false,
+        "saved_policy_loaded": true,
+        "unknown_profile_disabled": true
+      },
+      "direct_widget_renders": [
+        {
+          "path": "build/release/tests/workbench/window-state/recovery-dark-compact.png",
+          "sha256": "4ea98ee7501703e848c6aa0361fb8a80d1a31bc2e2dece5e04f8e396db9b7051"
+        },
+        {
+          "path": "build/release/tests/workbench/window-state/recovery-dark.png",
+          "sha256": "3000e4e955cdf77f1e446376e6e78e0dbb399f905518bc3219c41e70f42f7e32"
+        },
+        {
+          "path": "build/release/tests/workbench/window-state/recovery-light-compact.png",
+          "sha256": "f789836091d554cb1b7232ff2d6a594f518bf7d27f083148165863d5e76589a5"
+        },
+        {
+          "path": "build/release/tests/workbench/window-state/recovery-light.png",
+          "sha256": "6c7b67e8e0def75aeb61681f7d0e55e4f2a8b6f57483b53cfdbb456d9bb2ecf6"
+        }
+      ],
+      "final_catalog_groups_passed": 1,
+      "final_catalog_seconds": 0.61,
+      "final_catalog_log": ".agents/tmp/continuation/recovery-controls-catalog-tests-windows.log",
+      "binary_sha256_after_layout_validation": {
+        "q3mapx": "36de516ea106c1a29aaa4c0d11f53f205d77032e1bb768fcd219255a86400f71",
+        "q3mapx-workbench": "91de5fb905b666c9f9ae4ee6c842f4a7dc118a4f14e14406cd5f4e1987a7b7c9",
+        "workbench_test": "6e15244457490afdeca1c330b4be7551bc2b2b296360d83164214e0683969048",
+        "workbench_window_test": "da24a8e546ef2a44c9fa2a4562d19077488cd2ba0ce71d3c518e1ef16422c896",
+        "game_catalog_test": "25479048df9b1fb40b53593ae4a559eca847987436261ab6ab8d68987e3311d6"
+      },
+      "final_binary_sha256": {
+        "q3mapx": "36de516ea106c1a29aaa4c0d11f53f205d77032e1bb768fcd219255a86400f71",
+        "q3mapx-workbench": "cbfccd1448ed27c943ac5a53a2371063d75f078714dae0e534d767336cda8301",
+        "workbench_test": "3195897d097f3504042c0b972515d25cea39dcbc947c6efabe69c2226bcf162d",
+        "workbench_window_test": "d6a4a3eb39183d024aa51a4b15531b808a4fd18b518db2771ce077eb55f64c9c",
+        "game_catalog_test": "4eb2e6dbf7f61bdd04ce630b99f95d848d5fcaf83cfa84fe516011b5c5c0d07f"
+      }
+    },
+    {
+      "build": "linux-release",
+      "groups_passed": 6,
+      "seconds": 15.15,
+      "log": ".agents/tmp/continuation/recovery-controls-tests-linux.log",
+      "final_layout_groups_passed": 2,
+      "final_layout_seconds": 5.81,
+      "final_layout_log": ".agents/tmp/continuation/recovery-controls-polish-tests-linux.log",
+      "window_checks": {
+        "both_themes": true,
+        "command_preview_policy": true,
+        "compact_page_without_clipping": true,
+        "compatible_profile_enabled": true,
+        "incompatible_selection_retained": true,
+        "menu_action_rejected_before_staging": true,
+        "native_default_enabled": true,
+        "native_rebuild_disabled": true,
+        "os_input_or_capture_used": false,
+        "saved_policy_loaded": true,
+        "unknown_profile_disabled": true
+      },
+      "direct_widget_renders": [
+        {
+          "path": "build/linux-release/tests/workbench/window-state/recovery-dark-compact.png",
+          "sha256": "f07f3c520b318189a8de7e2b563810e2f53eeb8ee42f33d7deabb2134f88c26a"
+        },
+        {
+          "path": "build/linux-release/tests/workbench/window-state/recovery-dark.png",
+          "sha256": "b0f8f469bdd2ee2f355d3e3c0bd77ac9c2e06ccb1fcabc04be53825f9beb1c48"
+        },
+        {
+          "path": "build/linux-release/tests/workbench/window-state/recovery-light-compact.png",
+          "sha256": "fcddcfcfdffbd2cdba0379ef3a6e5c182ff14d37d253447751889cc40d3d6a38"
+        },
+        {
+          "path": "build/linux-release/tests/workbench/window-state/recovery-light.png",
+          "sha256": "d713d1dfef923a3d60585f894a1d70e4d240d52a3778165736d7ceec086b0994"
+        }
+      ],
+      "final_catalog_groups_passed": 1,
+      "final_catalog_seconds": 1.68,
+      "final_catalog_log": ".agents/tmp/continuation/recovery-controls-catalog-tests-linux.log",
+      "binary_sha256_after_layout_validation": {
+        "q3mapx": "82a431f29dc1b9f115acae3cac98c9fff8ac1965f30ecacff0d6f93914f34b3e",
+        "q3mapx-workbench": "15f578eb8a6f23c9c0feaf91f8443d9da7ab3df7fecf14d641ba1c6cf07775f6",
+        "workbench_test": "85eee92814fa17cd447f20274950ae7405c9c36d854b9f5ae63e5dd5e709ebb0",
+        "workbench_window_test": "5a8bc0f37fb83390732d598c30331d4a936f0fc4340ab75a7470f6501e18e4c1",
+        "game_catalog_test": "d20097f1bff680ff87208da259e4f9b6170dd2e764fb9268304c2864bbd6df3c"
+      },
+      "final_binary_sha256": {
+        "q3mapx": "82a431f29dc1b9f115acae3cac98c9fff8ac1965f30ecacff0d6f93914f34b3e",
+        "q3mapx-workbench": "e14d9157e8760d1b4e8df401855b7150d93aec14004032e254bc7ae3f9a0d170",
+        "workbench_test": "85eee92814fa17cd447f20274950ae7405c9c36d854b9f5ae63e5dd5e709ebb0",
+        "workbench_window_test": "34a7e26fb3b542606b0bcfa1b79099ec98ba3d3ae476854b5c14b6748699a1df",
+        "game_catalog_test": "51e08a1e6c660e00b15204d87513877e481bdf3081c2a73efdcaecd42e2edc65"
+      }
+    }
+  ],
+  "visual_review": "Direct QWidget paint files inspected; both themes and compact controls/guidance fit after spacing adjustment. No OS capture or input injection.",
+  "no_new_unrelated_findings": true,
+  "existing_warning": "UnsortedSet non-standard-layout offsetof warning unchanged.",
+  "packaged_0_3_0_archive_changed": false,
+  "trailing_newline_policy_rejected": true
+}

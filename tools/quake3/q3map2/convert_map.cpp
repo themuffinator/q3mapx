@@ -39,6 +39,7 @@
 #include "bsp_evidence.h"
 #include "recovery_groups.h"
 #include "q3mapx/affine.h"
+#include "q3mapx/uv_fit.h"
 #include "q3mapx/atomic_file.h"
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/stringbuffer.h"
@@ -51,6 +52,18 @@ struct DecompileStats {
 	size_t brushesWithDetailFlag = 0;
 };
 static DecompileStats recovery;
+struct UVRecoveryRecord {
+	int brush, plane;
+	size_t triangles;
+	const char* status;
+	q3mapx::UVFitResult error;
+	std::vector<int> surfaces;
+	size_t omittedSurfaces = 0;
+};
+static constexpr size_t maxUVRecoveryRecords = 10'000;
+static std::vector<UVRecoveryRecord> uvRecoveryRecords;
+static std::map<std::string, size_t> uvRecoveryCounts;
+static size_t omittedUVRecoveryRecords = 0;
 static std::vector<bool> detailBrushes;
 struct DetailDecision {
 	bool baseline = false, applied = false;
@@ -98,6 +111,110 @@ struct BspTriangleRef
 		return minmax.mins.x() < other.minmax.mins.x();
 	}
 };
+
+struct UVFaceMatches {
+	struct Triangle { TriRef verts; double weight; const char* material; int surface; };
+	std::vector<Triangle> triangles;
+	const char* material = nullptr;
+	size_t total = 0;
+	bool limited = false;
+	void add( const BspTriangleRef& triangle, double area, const char* shader ) {
+		++total;
+		if ( limited ) return;
+		if ( triangles.size() == q3mapx::maxUVFitSamples / 3 ) {
+			triangles.clear(); limited = true; return;
+		}
+		triangles.push_back( { triangle.tri, area, shader, triangle.surfaceIndex } );
+	}
+};
+
+static bool UVVertexLess( const bspDrawVert_t* a, const bspDrawVert_t* b ) {
+	for ( size_t axis = 0; axis < 3; ++axis ) if ( a->xyz[axis] != b->xyz[axis] ) return a->xyz[axis] < b->xyz[axis];
+	for ( size_t axis = 0; axis < 2; ++axis ) if ( a->st[axis] != b->st[axis] ) return a->st[axis] < b->st[axis];
+	return false;
+}
+
+static TriRef CanonicalUVTriangle( const TriRef& triangle ) {
+	size_t first = 0;
+	for ( size_t i = 1; i < 3; ++i ) if ( UVVertexLess( triangle[i], triangle[first] ) ) first = i;
+	return { triangle[first], triangle[(first+1)%3], triangle[(first+2)%3] }; // preserve winding
+}
+
+static bool FitTextureUV( const UVFaceMatches& matches, const TriRef& anchor, const Vector3& origin,
+    const DoubleVector3& texX, const DoubleVector3& texY, int brush, int plane, q3mapx::Affine2& matrix,
+    q3mapx::Point2 outputUnits = { 1, 1 } ) {
+	if ( decompileOptions.uvPolicy == DecompileOptions::UVPolicy::Triangle ) return false;
+	std::vector<q3mapx::UVSample> samples;
+	std::vector<int> surfaces;
+	samples.reserve( matches.triangles.size() * 3 );
+	surfaces.reserve( matches.triangles.size() );
+	for ( const auto& triangle : matches.triangles ) if ( triangle.material == matches.material ) {
+		for ( const auto* vert : triangle.verts ) {
+			const DoubleVector3 point = DoubleVector3( vert->xyz ) + DoubleVector3( origin );
+			samples.push_back( { { vector3_dot( point, texX ), vector3_dot( point, texY ) },
+			    { vert->st[0], vert->st[1] }, triangle.weight } );
+		}
+		surfaces.push_back( triangle.surface );
+	}
+	if ( !matches.limited && samples.size() <= 3 ) { ++uvRecoveryCounts["insufficient_triangles"]; return false; }
+	q3mapx::Affine2 fitted;
+	q3mapx::UVFitResult result;
+	bool anchorConsistent = false;
+	if ( !matches.limited ) {
+		std::array<q3mapx::Point2, 3> xy, uv;
+		for ( size_t i = 0; i < 3; ++i ) {
+			const DoubleVector3 point = DoubleVector3( anchor[i]->xyz ) + DoubleVector3( origin );
+			xy[i] = { vector3_dot( point, texX ), vector3_dot( point, texY ) };
+			uv[i] = { anchor[i]->st[0], anchor[i]->st[1] };
+		}
+		q3mapx::Affine2 baseline;
+		if ( q3mapx::solveAffine( xy, uv, baseline ) ) {
+			for ( auto& row : baseline ) for ( double& value : row ) value = float( value );
+			result = q3mapx::evaluateUVFit( samples, baseline );
+			anchorConsistent = result.status == q3mapx::UVFitStatus::Consistent;
+		}
+	}
+	// Preserve a transform that already explains all evidence. Besides avoiding
+	// needless source churn, this common path needs no regression or sample sort.
+	if ( !anchorConsistent ) result = matches.limited ? q3mapx::UVFitResult{ q3mapx::UVFitStatus::Limit }
+	    : q3mapx::fitUVConsensus( samples, fitted );
+	const char* status = anchorConsistent ? "triangle_consistent" : q3mapx::uvFitStatusName( result.status );
+	bool accepted = !anchorConsistent && result.status == q3mapx::UVFitStatus::Consistent;
+	if ( accepted ) {
+		// Brush-primitive/Valve emission stores this intermediate in binary32.
+		// Validate that representation too, not only a double-precision fit.
+		q3mapx::Affine2 stored = fitted;
+		for ( auto& row : stored ) for ( double& value : row ) value = float( value );
+		const auto storageError = q3mapx::evaluateUVFit( samples, stored );
+		if ( storageError.status != q3mapx::UVFitStatus::Consistent ) {
+			accepted = false; status = "storage_precision"; result = storageError;
+		}
+		else {
+			// Classic MAP conversion works in texture pixels. Its old affine
+			// solver checks this range too; fitting repeats must not bypass it.
+			for ( size_t axis = 0; axis < 2; ++axis ) for ( double value : fitted[axis] ) {
+				const double scaled = value * outputUnits[axis];
+				if ( !std::isfinite( scaled ) || std::abs( scaled ) > std::numeric_limits<float>::max() ) {
+					accepted = false; status = "output_precision";
+				}
+			}
+			if ( accepted ) matrix = fitted;
+		}
+	}
+	++uvRecoveryCounts[status];
+	if ( decompileOptions.report || decompileOptions.automaticReport ) {
+		if ( uvRecoveryRecords.size() == maxUVRecoveryRecords ) ++omittedUVRecoveryRecords;
+		else {
+			std::sort( surfaces.begin(), surfaces.end() );
+			surfaces.erase( std::unique( surfaces.begin(), surfaces.end() ), surfaces.end() );
+			const size_t omittedSurfaces = surfaces.size() > 64 ? surfaces.size() - 64 : 0;
+			if ( omittedSurfaces ) surfaces.resize( 64 );
+			uvRecoveryRecords.push_back( { brush, plane, matches.limited ? matches.total : samples.size()/3,
+			    status, result, std::move( surfaces ), omittedSurfaces } );
+		}
+	}
+	return accepted;
+}
 
 class ModelTriangles
 {
@@ -182,7 +299,7 @@ public:
 		for( auto& [ k, values ] : m_modelTriangles ) values.build();
 	}
 	TriRef GetBestSurfaceTriangleMatchForBrushside( side_t& buildSide, std::vector<int>* groupSurfaces = nullptr,
-	    uint64_t* groupWork = nullptr, bool* ambiguous = nullptr ) const {
+	    uint64_t* groupWork = nullptr, bool* ambiguous = nullptr, UVFaceMatches* uvMatches = nullptr ) const {
 		const float nepsilon = groupSurfaces ? 0.0001f : normalEpsilon * 100;
 		const float depsilon = groupSurfaces ? 0.01f : 2;
 		double coveredArea = 0;
@@ -215,7 +332,7 @@ public:
 				if ( !minmax.test( tri->minmax ) ) {
 					return;
 				}
-				const TriRef& vert = tri->tri;
+				const TriRef vert = uvMatches ? CanonicalUVTriangle( tri->tri ) : tri->tri;
 				if ( tri->surfaceType == MST_PLANAR
 				&& VectorCompare( vert[0]->normal, vert[1]->normal )
 				&& VectorCompare( vert[1]->normal, vert[2]->normal ) ) {
@@ -263,13 +380,24 @@ public:
 				thisarea = WindingArea( polygon );
 				if ( thisarea > 0 ) {
 					++matches;
+					if ( uvMatches ) {
+						Plane3 plane;
+						PlaneFromPoints( plane, DoubleVector3( vert[0]->xyz ), DoubleVector3( vert[1]->xyz ), DoubleVector3( vert[2]->xyz ) );
+						if ( vector3_equal_epsilon( plane.normal(), DoubleVector3( buildPlane.normal() ), 0.0001 )
+						  && std::fabs( plane3_distance_to_point( buildPlane.plane, vert[0]->xyz ) ) <= 0.01
+						  && std::fabs( plane3_distance_to_point( buildPlane.plane, vert[1]->xyz ) ) <= 0.01
+						  && std::fabs( plane3_distance_to_point( buildPlane.plane, vert[2]->xyz ) ) <= 0.01 )
+							uvMatches->add( *tri, thisarea, triangles->first.c_str() );
+					}
 				}
 				if ( groupSurfaces && thisarea > 0.001f ) {
 					if ( groupSurfaces->size() == 2'000'000 ) throw std::runtime_error( "Group surface association limit exceeded" );
 					groupSurfaces->push_back( tri->surfaceIndex );
 					coveredArea += thisarea;
 				}
-				if ( thisarea > bestarea ) {
+				if ( thisarea > bestarea || ( uvMatches && thisarea > 0 && thisarea == bestarea
+				    && bestMaterial == triangles->first.c_str()
+				    && std::lexicographical_compare( vert.begin(), vert.end(), bestVert.begin(), bestVert.end(), UVVertexLess ) ) ) {
 					bestarea = thisarea;
 					bestVert = vert;
 					bestMaterial=triangles->first.c_str();
@@ -285,6 +413,7 @@ public:
 			buildSide.shaderInfo=&ShaderInfoForShader(bestMaterial);
 			++recovery.inferredMaterials;
 		}
+		if ( uvMatches ) uvMatches->material = bestMaterial;
 		return bestVert;
 	}
 };
@@ -583,7 +712,9 @@ static void ConvertBrush( FILE *f, int bspBrushNum, const Vector3& origin, EBrus
 		//   - meshverts point in pairs of three into verts
 		//   - (triangles)
 		//   - find the triangle that has most in common with our
-		const TriRef vert = modelTriangles.GetBestSurfaceTriangleMatchForBrushside( buildSide );
+		UVFaceMatches uvMatches;
+		const TriRef vert = modelTriangles.GetBestSurfaceTriangleMatchForBrushside( buildSide, nullptr, nullptr, nullptr,
+		    decompileOptions.uvPolicy == DecompileOptions::UVPolicy::Consensus ? &uvMatches : nullptr );
 
 		/* get texture name */
 		const char *texture = striEqualPrefix( buildSide.shaderInfo->shader, "textures/" )
@@ -654,7 +785,8 @@ static void ConvertBrush( FILE *f, int bspBrushNum, const Vector3& origin, EBrus
 					uv[i] = { sts[i][0], sts[i][1] };
 				}
 				q3mapx::Affine2 matrix;
-				if ( q3mapx::solveAffine( xy, uv, matrix ) ) {
+				if ( FitTextureUV( uvMatches, vert, origin, texX, texY, bspBrushNum, buildSide.planenum, matrix )
+				  || q3mapx::solveAffine( xy, uv, matrix ) ) {
 					for ( int i = 0; i < 2; ++i ) buildSide.texMat[i] = Vector3( matrix[i][0], matrix[i][1], matrix[i][2] );
 					++recovery.matchedFaces;
 				}
@@ -708,7 +840,14 @@ static void ConvertBrush( FILE *f, int bspBrushNum, const Vector3& origin, EBrus
 					          double( sts[i][1] ) * buildSide.shaderInfo->shaderHeight };
 				}
 				q3mapx::Affine2 matrix;
-				if ( q3mapx::solveAffine( xy, uv, matrix ) ) {
+				DoubleVector3 fitX( 0 ), fitY( 0 ); fitX[sv] = 1; fitY[tv] = 1;
+				const bool fitted = FitTextureUV( uvMatches, vert, origin, fitX, fitY, bspBrushNum, buildSide.planenum, matrix,
+				    { double( buildSide.shaderInfo->shaderWidth ), double( buildSide.shaderInfo->shaderHeight ) } );
+				if ( fitted ) {
+					for ( double& value : matrix[0] ) value *= buildSide.shaderInfo->shaderWidth;
+					for ( double& value : matrix[1] ) value *= buildSide.shaderInfo->shaderHeight;
+				}
+				if ( fitted || q3mapx::solveAffine( xy, uv, matrix ) ) {
 					for ( int i = 0; i < 2; ++i ) texMat[i] = DoubleVector3( matrix[i][0], matrix[i][1], matrix[i][2] );
 					++recovery.matchedFaces;
 					const double crossAxis = std::fabs( matrix[0][0] * matrix[1][0] + matrix[0][1] * matrix[1][1] );
@@ -1237,6 +1376,7 @@ static void WriteGroupInferenceReport( rapidjson::PrettyWriter<rapidjson::String
 
 static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 	recovery = {};
+	uvRecoveryRecords.clear(); uvRecoveryCounts.clear(); omittedUVRecoveryRecords = 0;
 	detailDecisions.clear(); detailEvidence.reset();
 	groupRecovery.reset();
 	detailBrushes.assign( bspBrushes.size(), false );
@@ -1471,6 +1611,29 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		count( "normalized_unused_flare_fogs", bspNormalizedUnusedFlareFogs );
 		count( "normalized_unused_native_equations", bspNormalizedUnusedNativeEquations );
 		count( "inferred_material_faces", recovery.inferredMaterials );
+		writer.Key( "uv_recovery" ); writer.StartObject();
+		writer.Key( "policy" ); writer.String( decompileOptions.uvPolicy == DecompileOptions::UVPolicy::Consensus ? "consensus" : "triangle" );
+		writer.Key( "enabled" ); writer.Bool( !fast && decompileOptions.uvPolicy == DecompileOptions::UVPolicy::Consensus );
+		writer.Key( "author_mapping_proven" ); writer.Bool( false );
+		count( "triangle_limit_per_face", q3mapx::maxUVFitSamples / 3 );
+		count( "record_limit", maxUVRecoveryRecords ); count( "omitted_records", omittedUVRecoveryRecords );
+		writer.Key( "counts" ); writer.StartObject();
+		for ( const auto& [status, value] : uvRecoveryCounts ) count( status.c_str(), value );
+		writer.EndObject(); writer.Key( "faces" ); writer.StartArray();
+		for ( const auto& record : uvRecoveryRecords ) {
+			writer.StartObject(); writer.Key( "brush" ); writer.Int( record.brush );
+			writer.Key( "plane" ); writer.Int( record.plane ); count( "triangles", record.triangles );
+			writer.Key( "status" ); writer.String( record.status );
+			const bool measured = record.error.status == q3mapx::UVFitStatus::Consistent || record.error.status == q3mapx::UVFitStatus::Conflict;
+			writer.Key( "rms_error" ); if ( measured ) writer.Double( record.error.rmsError ); else writer.Null();
+			writer.Key( "max_error" ); if ( measured ) writer.Double( record.error.maxError ); else writer.Null();
+			writer.Key( "max_tolerance_ratio" ); if ( measured ) writer.Double( record.error.maxToleranceRatio ); else writer.Null();
+			writer.Key( "surfaces" ); writer.StartArray(); for ( int surface : record.surfaces ) writer.Int( surface ); writer.EndArray();
+			count( "omitted_surfaces", record.omittedSurfaces );
+			writer.EndObject();
+			if ( buffer.GetSize() > 64 * 1024 * 1024 ) throw std::runtime_error( "UV recovery report exceeds 64 MiB" );
+		}
+		writer.EndArray(); writer.EndObject();
 		if(bspEarlyVersion) {
 			writer.Key("native_models"); writer.StartArray();
 			for(const auto& model:bspEarlyModels) {
@@ -1503,6 +1666,7 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		if(bspEarlyVersion==43 || bspEarlyVersion==44) writer.String("This format has no brush-side material names. Visible face names and UVs are inferred from rendered triangles; unmatched faces use common/caulk and fallback UVs. Raw brush contents and side flags remain in source order in this report.");
 		writer.String( "Triangle soup geometry is not exported separately; collision brushes may approximate it." );
 		writer.String( "Fallback texture axes are used on faces without a usable rendered triangle, including hidden faces." );
+		writer.String( "UV consensus uses bounded overlap-weighted samples and a capped binary32 error allowance. Conflicting, ill-conditioned or limited evidence retains the largest-triangle mapping; charts are not averaged across a detected seam. Independent integer UV biases can also cause conflicts. Report errors describe fitting, not a guarantee of exact serialized/rebuilt UVs or original author intent." );
 		if ( detailEvidence ) writer.String( "Cell detail inference proposes opaque world brushes with witnessed open-cell interiors as detail under current material semantics. Protected materials and ambiguous/opaque interiors retain the baseline; original author flags and rebuilt VIS equivalence are unproven." );
 		if ( groupRecovery ) writer.String( "Shared render surfaces propose authoring assemblies independently of detail flags. Generated func_groups copy recovered worldspawn compile parameters and preserve compiled opacity order; original groups/names/parameters and rebuilt rendering equivalence are unproven. Protected, ambiguous and order-incompatible proposals remain flat. Patches and brush entities are not regrouped." );
 		if ( rebuildOrder ) writer.String( "Rebuild brush order depends on the current shader assets and q3mapx loader semantics. Discarded source flags, plane/side ordering and other compiler differences can still change partitions or visibility." );
@@ -1520,6 +1684,10 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		    recovery.skippedBrushes, recovery.degenerateUVs, recovery.approximateQuakeFaces );
 	}
 	if ( wantReport ) Sys_Printf( "Recovery report: %s\n", report.c_str() );
+	if ( !uvRecoveryCounts.empty() ) {
+		Sys_Printf( "UV consensus: %zu fitted faces, %zu conflicting mappings, %zu candidate limits\n",
+		    uvRecoveryCounts["consistent"], uvRecoveryCounts["conflicting_mappings"], uvRecoveryCounts["sample_limit"] );
+	}
 
 	/* return to sender */
 	return 0;

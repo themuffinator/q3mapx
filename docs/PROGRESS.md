@@ -2273,3 +2273,63 @@ remain open. Existing `UnsortedSet`, patch aggregate and clone-brush lifetime
 warnings remain, together with the documented VIS, raw-sidecar and intermittent
 Windows-delay issues. Light inference, intelligent VIS/geometry optimization and
 the newly planned Radiant authoring work remain active.
+
+## 2026-09-30 — Multi-triangle UV recovery
+
+The native decompiler now checks multiple overlapping rendered triangles before
+exporting a brush face's texture mapping. It retains an already-supported
+triangle transform or fits an overlap-weighted affine field when every retained
+sample agrees. Strict plane checks exclude nearby unrelated surfaces. Conflicting
+charts, poor conditioning, unsupported constant axes, numeric/representation
+limits and excess candidates retain the existing triangle/fallback path instead
+of exporting a partial or conflicting fit. A deterministic triangle choice and
+canonical regression ordering remove dependence on cyclic/index ordering in the
+qualified cases. Surviving brush-entity origins participate in the projection.
+
+`-uv-policy consensus` is the default for full MAP recovery, including ordinary
+workbench jobs. `-uv-policy triangle` preserves the preceding export path for
+comparison and compatibility. An explicit policy is rejected for fast/non-MAP
+conversion before output publication. Optional schema-1 report data records
+decisions, residuals and supporting normalized BSP identifiers with explicit
+candidate/record limits. Residuals describe the affine field before decimal MAP
+serialization; author mapping is never marked proven.
+
+The independent rational oracle passes 240 cases on Windows Release, Linux
+Release and Linux ASan/UBSan, including translated geometry, sample permutations
+and uniform weight scaling. The native matrix passes 60 cases per platform and
+rebuilds both policies in IBSP/RBSP, all three MAP formats, and world/translated
+brush models. It exercises quantization, reordered triangles, conflicting charts,
+a nearby unrelated plane and candidate exhaustion. All rebuilds retain exact
+brush plane/material/contents signatures. One/four-worker controls and reordered
+consensus MAPs agree; every Windows triangle-policy MAP matches the preceding
+executable. Quantized-fixture maximum UV error falls from roughly 0.00053–0.00063
+repeats to 0.00000057–0.00000164, over 300× lower on those controlled cases.
+
+The other 68 Windows CTest groups pass. The full 69-group Linux suite passes 68
+and skips unavailable GPU `area_factors`; all 14 selected ASan/UBSan groups pass,
+including recovery, native readers, geometry evidence, checked output publication
+and the compiler pipeline. Existing process-lifetime leak exclusions remain.
+No engine was launched and no renderer-equivalence claim is made.
+
+Five alternating whole-command measurements after warmup show median added cost
+of 18 ms on a generated 13,296-face room, 85 ms on a private 26,791-face Jedi
+Academy sample and 11 ms on a private 16,170-face MOHAA sample. Both policies are
+repeatable, triangle output matches the preceding compiler and all non-UV MAP
+text agrees. Private source bytes are preserved and not distributed. See
+[measured cost](PERFORMANCE.md#uv-consensus-recovery-cost), [the feature contract](UV-RECOVERY.md)
+and [validation evidence](validation/uv-consensus.json).
+
+The preceding executable, diagnostic/final logs, evidence generator and local
+benchmark copies remain under `.agents/tmp/continuation/uv-consensus/`;
+generated test cases/reports remain in each build's `tests/uv-recovery/` and
+`tests/uv-fit/`. They support reproduction and are retained as evidence. No
+portable archive was refreshed and earlier policy-blocked cleanup was not retried.
+
+Source review identified remaining export fidelity limits: integer texture-shift
+wrapping, fixed decimal precision, constant-axis fallback and classic MAP shear
+approximation. Non-repeating materials, extreme transforms and multi-chart face
+reconstruction need separate qualification. Existing CLI numeric-sign/include
+lookahead/quoted-line issues, compiler warnings, VIS discrepancies, raw-sidecar
+publication and intermittent Windows process delays remain outside this round.
+No new unrelated defect was reproduced. Light inference, intelligent VIS/geometry
+work and the planned Radiant patch painting/lightmap-density features remain open.

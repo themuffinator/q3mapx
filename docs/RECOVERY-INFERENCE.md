@@ -198,6 +198,10 @@ from this corpus before enabling inferred-light export by default.
 
 - Recover brush-face UVs from multiple consistent triangles using robust fitting;
   detect genuine seams and mixed mappings rather than averaging them away.
+  The first [bounded consensus implementation](UV-RECOVERY.md) is delivered with
+  a compatibility policy, per-face decisions, a rational oracle and native rebuild
+  controls. It does not reconstruct multiple charts on one face or qualify every
+  material's addressing/serialization behavior.
 - Reassemble compatible compiler-split brush fragments while preserving the solid
   union, contents, plane orientation, materials and per-face UV functions. Infer
   likely grid/plane snapping only when an error bound and rebuild check justify it.

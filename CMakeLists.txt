@@ -38,7 +38,7 @@ target_include_directories(q3mapx_jobs PUBLIC libs)
 target_link_libraries(q3mapx_jobs PUBLIC Threads::Threads)
 add_library(q3mapx_io STATIC libs/q3mapx/atomic_file.cpp libs/q3mapx/portal_graph.cpp
     libs/q3mapx/cell_graph.cpp libs/q3mapx/exact_predicates.cpp libs/q3mapx/planar_reduction.cpp
-    libs/q3mapx/quake3_materials.cpp)
+    libs/q3mapx/quake3_materials.cpp libs/q3mapx/uv_fit.cpp)
 target_include_directories(q3mapx_io PUBLIC libs)
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/libs/q3mapx/columns.cl Q3MAPX_COLUMN_KERNEL)
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS libs/q3mapx/columns.cl)
@@ -196,6 +196,17 @@ if(BUILD_TESTING)
     add_executable(decompile_math_test tests/decompile_math.cpp)
     target_include_directories(decompile_math_test PRIVATE libs)
     add_test(NAME decompile_math COMMAND decompile_math_test)
+    add_executable(uv_fit_test tests/uv_fit.cpp)
+    target_link_libraries(uv_fit_test PRIVATE q3mapx_io)
+    add_test(NAME uv_fit COMMAND uv_fit_test)
+    add_test(NAME uv_fit_oracle COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/uv_fit.py --unit $<TARGET_FILE:uv_fit_test>
+        --work-dir ${CMAKE_BINARY_DIR}/tests/uv-fit)
+    set_tests_properties(uv_fit_oracle PROPERTIES TIMEOUT 120)
+    add_test(NAME uv_recovery COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/uv_recovery.py --compiler $<TARGET_FILE:q3mapx>
+        --work-dir ${CMAKE_BINARY_DIR}/tests/uv-recovery)
+    set_tests_properties(uv_recovery PROPERTIES TIMEOUT 600)
     add_executable(lighting_math_test tests/lighting_math.cpp tools/quake3/q3map2/lighting_math.cpp)
     target_include_directories(lighting_math_test PRIVATE libs tools/quake3/common tools/quake3/q3map2)
     add_test(NAME lighting_math COMMAND lighting_math_test)

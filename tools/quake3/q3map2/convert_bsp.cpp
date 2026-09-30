@@ -1040,6 +1040,7 @@ int ConvertBSPMain( Args& args, bool decompile ){
 	bool brushOrderSpecified=false;
 	bool detailPolicySpecified=false, detailWorkSpecified=false;
 	bool groupPolicySpecified=false, groupWorkSpecified=false;
+	bool uvPolicySpecified=false;
 	int ( *convertFunc )( char * );
 	const game_t  *convertGame;
 	bool map_allowed, force_bsp, force_map;
@@ -1178,8 +1179,17 @@ int ConvertBSPMain( Args& args, bool decompile ){
 			groupWorkSpecified = true;
 			decompileOptions.groupWorkLimit = unsigned( args.takeInt( 1, 100'000'000 ) );
 		}
+		while ( args.takeArg( "-uv-policy" ) ) {
+			uvPolicySpecified = true;
+			const char* policy = args.takeNext();
+			if ( striEqual( policy, "consensus" ) ) decompileOptions.uvPolicy = DecompileOptions::UVPolicy::Consensus;
+			else if ( striEqual( policy, "triangle" ) ) decompileOptions.uvPolicy = DecompileOptions::UVPolicy::Triangle;
+			else Error( "UV policy must be consensus or triangle" );
+		}
 	}
 	if ( !args.empty() ) Error( "Unknown conversion option '%s'", args.takeFront() );
+	if ( uvPolicySpecified && ( !map_allowed || convertGame || fast ) )
+		Error( "-uv-policy requires MAP export without -fast" );
 	if ( brushOrderSpecified && ( !map_allowed || convertGame ) )
 		Error( "-brush-order requires map, map_bp or map_220 export" );
 	if ( detailPolicySpecified && ( !map_allowed || convertGame ) )

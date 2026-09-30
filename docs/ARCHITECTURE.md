@@ -106,6 +106,14 @@ brush reversals during parsing and group collapse, while preserving translucent
 order. Reports distinguish this mechanical ordering contract from unproven
 original grouping, compile parameters and rebuilt presentation.
 
+Texture consensus uses the same model/material bounds index with a strict
+coplanar collector. `libs/q3mapx/uv_fit.*` separates bounded deterministic affine
+regression and residual checks from compiler globals. The native adapter projects
+vertices, validates the binary32/output representation and owns compatibility
+fallbacks and capped report records. Numerical acceptance does not prove the
+author's original mapping or final MAP serialization fidelity; those require
+separate native rebuild checks. See [UV recovery](UV-RECOVERY.md).
+
 ## Planar reduction boundary
 
 The first triangle-reduction transformation is isolated in

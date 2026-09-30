@@ -423,3 +423,31 @@ Tiny manual-detail controls have substantial process/scheduling variation.
 These are fixture-specific observations, not a general compiler speedup or
 peak-memory claim. All observations, including slow samples, profile timings
 and compiler/input identities, remain in the [raw measurements](benchmarks/vis-clipping-win-x64.json).
+
+## UV consensus recovery cost
+
+The default [multi-triangle recovery](UV-RECOVERY.md) adds evidence collection,
+affine checks/fitting and bounded per-face reporting. This is an accuracy feature
+with measured additional cost. Windows x64 measurements on an Intel Core
+i7-13700H use one worker, Valve 220 output and five alternating observations per
+policy after one warmup. Runs were sequential after the build/test jobs finished.
+
+| Input | Exported faces | Triangle median (s) | Consensus median (s) | Added cost |
+| --- | ---: | ---: | ---: | ---: |
+| Generated 47×47 room | 13,296 | 0.1605 | 0.1789 | 11.5% |
+| Private Jedi Academy sample | 26,791 | 0.9144 | 0.9990 | 9.3% |
+| Private MOHAA sample | 16,170 | 0.3708 | 0.3815 | 2.9% |
+
+These whole-command medians include resource lookup, recovery and MAP/report
+publication; they are neither kernel timings nor general scaling predictions.
+Each policy produces identical MAP/report bytes on repeated runs. Triangle-mode
+MAPs exactly match the preceding `3df5fd2` compiler, and consensus changes only UV
+definitions in the exported MAP text. These checks do not establish original-map
+UV fidelity for the private samples. The generated room also exercises report
+truncation: 10,000 retained face records and 1,057 explicitly omitted records.
+
+Reproduce with `benchmarks/uv_recovery.py`; see [test instructions](DEVELOPMENT.md#multi-triangle-uv-recovery).
+All observations, compiler/input identities, decisions and limitations are in the
+[validation record](validation/uv-consensus.json). Private native inputs and assets
+are not distributed. Timing variation, especially on short commands, remains
+visible in the individual observations.

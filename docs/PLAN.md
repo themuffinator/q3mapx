@@ -292,6 +292,12 @@ limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md
   target entities without disturbing existing gameplay links.
 - [ ] Improve multi-triangle UV fitting, compatible brush-fragment reconstruction,
   plane/grid recovery, patches/model instances, hidden faces and entity relationships.
+  [Multi-triangle UV consensus](UV-RECOVERY.md) is now implemented in the native
+  exporter: preserve already-supported transforms, fit agreeing evidence, report
+  conflicts/limits and retain a compatibility policy. Independent numeric oracles
+  and native world/entity rebuilds cover the initial affine recovery contract.
+  Non-repeating texture offsets, constant axes, extreme export precision and
+  geometric/chart reconstruction remain open.
   Fast nonaxial plane output now avoids float-basis/decimal truncation, with exact
   stored-plane rebuild controls across six dominant-axis/sign orientations.
 - [ ] Add CLI/workbench review, confidence/provenance overlays, manual corrections

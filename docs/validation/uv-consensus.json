@@ -1,0 +1,747 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-30T19:12:57.772572+00:00",
+  "base_revision": "3df5fd26d25a7b18031054a130ed60f800a87e48",
+  "scope": "Bounded native multi-triangle affine UV recovery, conflict reporting and preceding-path compatibility",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "8bd8c97bc671889427b390ccb3b85bcbcb6ddd99baeffe2e6b4936e9c359fb4c",
+    "libs/q3mapx/uv_fit.h": "a1cac1072835c20ae274a759015dbe92320fee041e80a8f229c65832e002effa",
+    "libs/q3mapx/uv_fit.cpp": "2ca3ef892a841f215b03dc71391705e0ac5d470756168ad9bfe2b69cb9d15194",
+    "libs/q3mapx/affine.h": "b74f6a2d7a19727d4b07ac219289ed59e0db32432c7e4274c6ddde2c5d78624b",
+    "tools/quake3/q3map2/convert_map.cpp": "8b364fe4eed29951e1cf9f1aaf9c3ba5e0fe893bc343d3f42df51434c3dd525e",
+    "tools/quake3/q3map2/convert_bsp.cpp": "32ec58732ed4b18f2d4ff1e577becf033195c5537156ccb108cc00f1fd2c36dd",
+    "tools/quake3/q3map2/decompile.h": "f6fc90a9d34e5b3f4e1fb4bff36bc93e43654a677d623548657d3f3f0545d0cf",
+    "tools/quake3/q3map2/help.cpp": "f0334289ad74d5bc3f8b840193636c04b65d435524cf29343aaad031c4a3ef24",
+    "tests/uv_fit.cpp": "291d42d20d0569774ccc5fafb4aa976c631a3383a1647ca55f37cfab984dd186",
+    "tests/uv_fit.py": "9bc6fb64653b6dd9c4d596bd324bd59a3b813cb38d802347b235925bdcfcd198",
+    "tests/uv_recovery.py": "e1849a176675e565ff62968febb7494e84a9bcd6edc104557c8e07898819d2a9",
+    "tests/fixtures.py": "5cc300117041bc22a719451f9915bca17cc5af10094521408538b850284436c7",
+    "tests/integration.py": "3bb8e703e9e898a4c079f6a52321941aeb54876a7eac7804b8e1069c1541dfb3",
+    "tests/patch_input.py": "af6edf90302cea60ce16674c6758ef5d9683997777557749b22d225c52873e51",
+    "benchmarks/uv_recovery.py": "becd4e06b6e2e3529b08bb63056fefc86aac7b72d4ac30989e52322f3cde868b"
+  },
+  "windows_reference": {
+    "path": ".agents/tmp/continuation/uv-consensus/q3mapx-before.exe",
+    "sha256": "46b17bb571e353d0f40a1e5afe9ca741fb25d1b59d360e9942c795de13238df1"
+  },
+  "fixture_provenance": "First-party native IBSP/RBSP records from generated compiled geometry; rendered UV islands replaced with binary32 samples of a known affine field. Authoring field only generates/evaluates fixtures.",
+  "platforms": {
+    "windows": {
+      "compiler": {
+        "path": "build/release/bin/q3mapx.exe",
+        "sha256": "9556fe84151cf584fdefe808db76c2b1eb96f53e875e2612bfd24951e9b671af"
+      },
+      "unit": {
+        "path": "build/release/bin/uv_fit_test.exe",
+        "sha256": "14637fd9b0a39848e096e63b313ba3e28a25b39cfb1c0a3f59d459a7a4d7b41c"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/uv-consensus/build-win-verified.log",
+        "sha256": "4c51638c0bfe462c99afe7247199375d381fc6d501203cc9e3d0afcda0464e46"
+      },
+      "ctest": {
+        "path": ".agents/tmp/continuation/uv-consensus/suite-win-verified.log",
+        "sha256": "cac48594a01f5ffe5c2595dbed04d7266092c956b261419bfbacb3469103dfdd",
+        "cases": 68,
+        "failures": 0,
+        "skipped": [],
+        "tests": [
+          "workbench",
+          "patch_input",
+          "recovery_order",
+          "recovery_groups",
+          "vis_passage_clipping",
+          "vis_merge",
+          "script_input",
+          "brush_cells",
+          "recovery_classification",
+          "vis_reproducible",
+          "cell_adjacency",
+          "meta_order",
+          "bsp_inspect",
+          "lighting_gpu",
+          "game_profiles",
+          "gpu_columns",
+          "planar_reduction_native",
+          "planar_reduction_oracle",
+          "portal_evidence",
+          "vis_passage_storage",
+          "geometry_optimize",
+          "workbench_devices",
+          "index_validation_cli",
+          "workbench_window",
+          "bsp_evidence",
+          "binary_outputs",
+          "portal_validation",
+          "bsp_analyze",
+          "native_early",
+          "area_factors",
+          "lighting_materials",
+          "raven_compat",
+          "native_fakk",
+          "mesh_export",
+          "export_outputs",
+          "cli_options",
+          "recovery_outputs",
+          "workbench_inspector",
+          "uv_fit_oracle",
+          "lightgrid_cli",
+          "native_mohaa",
+          "minimap",
+          "vis_clip",
+          "bsp_validation",
+          "lightgrid",
+          "recovery_group_order",
+          "index_validation",
+          "vis_mask",
+          "portal_graph",
+          "quake3_materials",
+          "ftx",
+          "game_catalog",
+          "terrain",
+          "cell_graph",
+          "planar_reduction",
+          "columns",
+          "compiler_pipeline",
+          "decompile_recovery",
+          "uv_fit",
+          "lighting_math",
+          "atomic_file",
+          "workbench_preview",
+          "cli_help",
+          "job_pool",
+          "decompile_math",
+          "area_factors_disabled",
+          "cli_games",
+          "brush_input"
+        ]
+      },
+      "oracle_report": {
+        "path": "build/release/tests/uv-fit/oracle.json",
+        "sha256": "0fcb8edf851ee5d8fa0450202841523405ea729a13198260a9745a3a93783c48"
+      },
+      "oracle_results": {
+        "cases": 240,
+        "oracle": "exact rational normal equations with Gaussian elimination",
+        "maximum_coefficient_error": 3.725290298461914e-09,
+        "permutation_and_weight_scale_identity": true,
+        "input_sha256": "07e5682d96380b33b072d8768dd90b9822812f8badc219e9feff3000ad206dee",
+        "unit_sha256": "14637fd9b0a39848e096e63b313ba3e28a25b39cfb1c0a3f59d459a7a4d7b41c"
+      },
+      "native_report": {
+        "path": "build/release/tests/uv-recovery/validation.json",
+        "sha256": "adafdd36c92de57c77a94ffb4a64686bcda277abc26e645b88a1ff7e4aef3007"
+      },
+      "native_cases": 60,
+      "native_rebuilds": 120,
+      "native_cases_by_mode": {
+        "quantized": 12,
+        "reordered": 12,
+        "seam": 12,
+        "nearby": 12,
+        "limit": 12
+      },
+      "triangle_reference_map_comparisons": 60,
+      "geometry_material_contents_parity": true,
+      "quantized_max_error_ranges_in_repeats": {
+        "triangle": {
+          "min": 0.0005285630657709817,
+          "max": 0.0006341899279078689
+        },
+        "consensus": {
+          "min": 5.74792949237235e-07,
+          "max": 1.6349665301618188e-06
+        }
+      },
+      "quantized_error_improvement_range": {
+        "min": 323.359692878977,
+        "max": 920.1934267661518
+      },
+      "case_result_sha256": "7f9b2f6ba3a853750b5b01db7cac63f9be6f3939e244068e8ae6c9ef0b0c381a"
+    },
+    "linux": {
+      "compiler": {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "cce0cbb198bc028aa89597271d2b68028520c96575a2bb25a16e2c0f0924e968"
+      },
+      "unit": {
+        "path": "build/linux-release/bin/uv_fit_test",
+        "sha256": "97f4d025d954514eb5b2d3d2d26ff8ee8c79a057afd738208b5d8ffb267bc936"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/uv-consensus/build-linux-verified.log",
+        "sha256": "7b05a042e9c190062fe61b6ee9c45eb3355f2b89ce458820e47fb4c405e0e25a"
+      },
+      "ctest": {
+        "path": ".agents/tmp/continuation/uv-consensus/suite-linux-verified.log",
+        "sha256": "cee8c434ce72edc037f635507ca066ecbc5ed0d9920facd29e718887519ac2c6",
+        "cases": 69,
+        "failures": 0,
+        "skipped": [
+          "area_factors"
+        ],
+        "tests": [
+          "workbench",
+          "uv_recovery",
+          "patch_input",
+          "script_input",
+          "meta_order",
+          "brush_input",
+          "vis_passage_clipping",
+          "recovery_groups",
+          "game_profiles",
+          "recovery_order",
+          "brush_cells",
+          "vis_merge",
+          "cell_adjacency",
+          "portal_evidence",
+          "recovery_classification",
+          "lighting_materials",
+          "vis_reproducible",
+          "native_fakk",
+          "bsp_evidence",
+          "bsp_validation",
+          "binary_outputs",
+          "geometry_optimize",
+          "bsp_inspect",
+          "index_validation_cli",
+          "portal_validation",
+          "planar_reduction_native",
+          "mesh_export",
+          "gpu_columns",
+          "native_early",
+          "vis_passage_storage",
+          "bsp_analyze",
+          "raven_compat",
+          "cli_options",
+          "minimap",
+          "recovery_outputs",
+          "native_mohaa",
+          "export_outputs",
+          "planar_reduction_oracle",
+          "lighting_gpu",
+          "lightgrid_cli",
+          "workbench_inspector",
+          "compiler_pipeline",
+          "workbench_window",
+          "workbench_devices",
+          "uv_fit_oracle",
+          "atomic_file",
+          "decompile_recovery",
+          "lightgrid",
+          "vis_clip",
+          "game_catalog",
+          "recovery_group_order",
+          "index_validation",
+          "columns",
+          "job_pool",
+          "planar_reduction",
+          "cli_help",
+          "portal_graph",
+          "vis_mask",
+          "lighting_math",
+          "workbench_preview",
+          "area_factors_disabled",
+          "cli_games",
+          "ftx",
+          "quake3_materials",
+          "terrain",
+          "cell_graph",
+          "decompile_math",
+          "uv_fit",
+          "area_factors"
+        ]
+      },
+      "oracle_report": {
+        "path": "build/linux-release/tests/uv-fit/oracle.json",
+        "sha256": "f71662ecff16ac522e149697d76922af6cbd23d03fcfac95bab07b5de9a44467"
+      },
+      "oracle_results": {
+        "cases": 240,
+        "oracle": "exact rational normal equations with Gaussian elimination",
+        "maximum_coefficient_error": 3.725290298461914e-09,
+        "permutation_and_weight_scale_identity": true,
+        "input_sha256": "07e5682d96380b33b072d8768dd90b9822812f8badc219e9feff3000ad206dee",
+        "unit_sha256": "97f4d025d954514eb5b2d3d2d26ff8ee8c79a057afd738208b5d8ffb267bc936"
+      },
+      "native_report": {
+        "path": "build/linux-release/tests/uv-recovery/validation.json",
+        "sha256": "1b595058eef8706316ff0297a08555ed41386eea76536972fdbc4424e1c7170c"
+      },
+      "native_cases": 60,
+      "native_rebuilds": 120,
+      "native_cases_by_mode": {
+        "quantized": 12,
+        "reordered": 12,
+        "seam": 12,
+        "nearby": 12,
+        "limit": 12
+      },
+      "triangle_reference_map_comparisons": 0,
+      "geometry_material_contents_parity": true,
+      "quantized_max_error_ranges_in_repeats": {
+        "triangle": {
+          "min": 0.0005285630657709817,
+          "max": 0.0006341899279078689
+        },
+        "consensus": {
+          "min": 5.74792949237235e-07,
+          "max": 1.6349665301618188e-06
+        }
+      },
+      "quantized_error_improvement_range": {
+        "min": 323.359692878977,
+        "max": 920.1934267661518
+      },
+      "case_result_sha256": "5818bf402cf803a47ce75e05c88dbf6100e69b788e920f45a1146a68ae63df4f"
+    },
+    "sanitized": {
+      "compiler": {
+        "path": "build/linux-sanitized/bin/q3mapx",
+        "sha256": "8b599b6300da9712a5a05c5304468ea4428fc654c884313d45840d6c110ff345"
+      },
+      "unit": {
+        "path": "build/linux-sanitized/bin/uv_fit_test",
+        "sha256": "930331fdd8433d6d0073188194e5ad3b12fea5996e25616d0771e4a2d140adc0"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/uv-consensus/build-sanitized-verified.log",
+        "sha256": "7b05a042e9c190062fe61b6ee9c45eb3355f2b89ce458820e47fb4c405e0e25a"
+      },
+      "ctest": {
+        "path": ".agents/tmp/continuation/uv-consensus/suite-sanitized-verified.log",
+        "sha256": "6eb7453b57d459196d983c59bbd7b3e446d8e9dead37b97877e816bb62da3864",
+        "cases": 14,
+        "failures": 0,
+        "skipped": [],
+        "tests": [
+          "recovery_groups",
+          "uv_recovery",
+          "brush_cells",
+          "binary_outputs",
+          "recovery_classification",
+          "native_fakk",
+          "native_mohaa",
+          "native_early",
+          "decompile_recovery",
+          "uv_fit_oracle",
+          "uv_fit",
+          "decompile_math",
+          "compiler_pipeline",
+          "recovery_order"
+        ]
+      },
+      "oracle_report": {
+        "path": "build/linux-sanitized/tests/uv-fit/oracle.json",
+        "sha256": "4eacb18483ed3f22362d5e551457ffede8e51eae8534f48cd05c06fa817a2c78"
+      },
+      "oracle_results": {
+        "cases": 240,
+        "oracle": "exact rational normal equations with Gaussian elimination",
+        "maximum_coefficient_error": 3.725290298461914e-09,
+        "permutation_and_weight_scale_identity": true,
+        "input_sha256": "07e5682d96380b33b072d8768dd90b9822812f8badc219e9feff3000ad206dee",
+        "unit_sha256": "930331fdd8433d6d0073188194e5ad3b12fea5996e25616d0771e4a2d140adc0"
+      },
+      "native_report": {
+        "path": "build/linux-sanitized/tests/uv-recovery/validation.json",
+        "sha256": "80517ffe4a2d32f9f5f595c4bfb8e2ff5b1d473a54c3bb8ba8979e251f5e03d8"
+      },
+      "native_cases": 60,
+      "native_rebuilds": 120,
+      "native_cases_by_mode": {
+        "quantized": 12,
+        "reordered": 12,
+        "seam": 12,
+        "nearby": 12,
+        "limit": 12
+      },
+      "triangle_reference_map_comparisons": 0,
+      "geometry_material_contents_parity": true,
+      "quantized_max_error_ranges_in_repeats": {
+        "triangle": {
+          "min": 0.0005285630657709817,
+          "max": 0.0006341899279078689
+        },
+        "consensus": {
+          "min": 5.74792949237235e-07,
+          "max": 1.6349665301618188e-06
+        }
+      },
+      "quantized_error_improvement_range": {
+        "min": 323.359692878977,
+        "max": 920.1934267661518
+      },
+      "case_result_sha256": "5818bf402cf803a47ce75e05c88dbf6100e69b788e920f45a1146a68ae63df4f"
+    }
+  },
+  "benchmarks": [
+    {
+      "schema_version": 1,
+      "recorded_utc": "2026-09-30T19:08:10.235433+00:00",
+      "kind": "generated_47x47_room",
+      "game": "quake3",
+      "platform": "Windows-10-10.0.26200-SP0",
+      "compiler_sha256": "9556fe84151cf584fdefe808db76c2b1eb96f53e875e2612bfd24951e9b671af",
+      "reference_sha256": "46b17bb571e353d0f40a1e5afe9ca741fb25d1b59d360e9942c795de13238df1",
+      "source_sha256": "e6bdcdc0eb646521decb783039ed5fe14c7b1efb0941c47b5899485be1909709",
+      "source_bytes": 4187452,
+      "sources_preserved": true,
+      "triangle_reference_map_parity": true,
+      "non_uv_map_content_identical": true,
+      "policy_repeatability": true,
+      "map_sha256": {
+        "triangle": "2f19d1ead1add47dee5210d2f5f38c31783d522a8a0df4db46ea9143a27953a7",
+        "consensus": "151e808303ffec4048fb2dc2d55e3039a3e3d08e58a17efc1b8aa6ae860dd7e4"
+      },
+      "faces": 13296,
+      "uv_recovery_counts": {
+        "conflicting_mappings": 1105,
+        "consistent": 233,
+        "storage_precision": 4357,
+        "triangle_consistent": 5362
+      },
+      "omitted_face_records": 1057,
+      "median_seconds": {
+        "triangle": 0.1604939000098966,
+        "consensus": 0.1789260000223294
+      },
+      "consensus_over_triangle_ratio": 1.1148461094863804,
+      "limits": [
+        "Whole-command overhead measurement; not a speedup or parallel scaling claim.",
+        "Native author UVs are unavailable; unchanged non-UV text and fit residuals do not prove original-map fidelity."
+      ],
+      "raw_report": {
+        "path": ".agents/tmp/continuation/uv-consensus/benchmark-dense/benchmark.json",
+        "sha256": "94d93def93e32f3a9c2f6bdce918be8f4a7a25a6b6bb80786ae39781c6cdf142"
+      },
+      "cpu": "13th Gen Intel Core i7-13700H; 14 cores, 20 logical processors",
+      "configuration": {
+        "workers": 1,
+        "format": "map_220",
+        "measured_runs_per_policy": 5,
+        "warmups_per_policy": 1
+      },
+      "observations": [
+        {
+          "policy": "triangle",
+          "warmup": true,
+          "seconds": 0.23738399997819215
+        },
+        {
+          "policy": "consensus",
+          "warmup": true,
+          "seconds": 0.1815739999874495
+        },
+        {
+          "policy": "consensus",
+          "warmup": false,
+          "seconds": 0.1789260000223294
+        },
+        {
+          "policy": "triangle",
+          "warmup": false,
+          "seconds": 0.1604939000098966
+        },
+        {
+          "policy": "triangle",
+          "warmup": false,
+          "seconds": 0.15475250000599772
+        },
+        {
+          "policy": "consensus",
+          "warmup": false,
+          "seconds": 0.16861530003370717
+        },
+        {
+          "policy": "consensus",
+          "warmup": false,
+          "seconds": 0.16891620005480945
+        },
+        {
+          "policy": "triangle",
+          "warmup": false,
+          "seconds": 0.16161419998388737
+        },
+        {
+          "policy": "triangle",
+          "warmup": false,
+          "seconds": 0.150806299992837
+        },
+        {
+          "policy": "consensus",
+          "warmup": false,
+          "seconds": 0.20764529996085912
+        },
+        {
+          "policy": "consensus",
+          "warmup": false,
+          "seconds": 0.19866469997214153
+        },
+        {
+          "policy": "triangle",
+          "warmup": false,
+          "seconds": 0.16705059999367222
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "recorded_utc": "2026-09-30T19:08:30.863015+00:00",
+      "kind": "private_native",
+      "game": "ja",
+      "platform": "Windows-10-10.0.26200-SP0",
+      "compiler_sha256": "9556fe84151cf584fdefe808db76c2b1eb96f53e875e2612bfd24951e9b671af",
+      "reference_sha256": "46b17bb571e353d0f40a1e5afe9ca741fb25d1b59d360e9942c795de13238df1",
+      "source_sha256": "886680f55a494d9accd5fcd7de70b952962e8d8741169dedf15f3a5f91e62101",
+      "source_bytes": 12754764,
+      "sources_preserved": true,
+      "triangle_reference_map_parity": true,
+      "non_uv_map_content_identical": true,
+      "policy_repeatability": true,
+      "map_sha256": {
+        "triangle": "7a31714ee7ed7fef0ccec94324624e1cf7e7f306da409bc899de7e352e5c95a3",
+        "consensus": "464a75e75b9dbf02540254c7f20fbce60c348dd98c2b70040b7425cf753c43ca"
+      },
+      "faces": 26791,
+      "uv_recovery_counts": {
+        "conflicting_mappings": 328,
+        "consistent": 37,
+        "insufficient_triangles": 1202,
+        "storage_precision": 1559,
+        "triangle_consistent": 9388
+      },
+      "omitted_face_records": 1312,
+      "median_seconds": {
+        "triangle": 0.9144415999762714,
+        "consensus": 0.9990461000124924
+      },
+      "consensus_over_triangle_ratio": 1.0925203971892972,
+      "limits": [
+        "Whole-command overhead measurement; not a speedup or parallel scaling claim.",
+        "Native author UVs are unavailable; unchanged non-UV text and fit residuals do not prove original-map fidelity."
+      ],
+      "raw_report": {
+        "path": ".agents/tmp/continuation/uv-consensus/benchmark-ja/benchmark.json",
+        "sha256": "d78b70c31eccb6b6c90fe66d85cbb274688be51db7fdd2f5cb6b5a72a6600dbf"
+      },
+      "cpu": "13th Gen Intel Core i7-13700H; 14 cores, 20 logical processors",
+      "configuration": {
+        "workers": 1,
+        "format": "map_220",
+        "measured_runs_per_policy": 5,
+        "warmups_per_policy": 1
+      },
+      "observations": [
+        {
+          "policy": "triangle",
+          "warmup": true,
+          "seconds": 1.2759908000007272
+        },
+        {
+          "policy": "consensus",
+          "warmup": true,
+          "seconds": 1.2324688999797218
+        },
+        {
+          "policy": "consensus",
+          "warmup": false,
+          "seconds": 0.9619413000182249
+        },
+        {
+          "policy": "triangle",
+          "warmup": false,
+          "seconds": 0.8843887000111863
+        },
+        {
+          "policy": "triangle",
+          "warmup": false,
+          "seconds": 0.9144415999762714
+        },
+        {
+          "policy": "consensus",
+          "warmup": false,
+          "seconds": 1.3016170000191778
+        },
+        {
+          "policy": "consensus",
+          "warmup": false,
+          "seconds": 0.9990461000124924
+        },
+        {
+          "policy": "triangle",
+          "warmup": false,
+          "seconds": 0.9663086999789812
+        },
+        {
+          "policy": "triangle",
+          "warmup": false,
+          "seconds": 0.9057180000236258
+        },
+        {
+          "policy": "consensus",
+          "warmup": false,
+          "seconds": 1.030991300009191
+        },
+        {
+          "policy": "consensus",
+          "warmup": false,
+          "seconds": 0.8936453000060283
+        },
+        {
+          "policy": "triangle",
+          "warmup": false,
+          "seconds": 0.9866332999663427
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "recorded_utc": "2026-09-30T19:08:43.691001+00:00",
+      "kind": "private_native",
+      "game": "mohaa",
+      "platform": "Windows-10-10.0.26200-SP0",
+      "compiler_sha256": "9556fe84151cf584fdefe808db76c2b1eb96f53e875e2612bfd24951e9b671af",
+      "reference_sha256": "46b17bb571e353d0f40a1e5afe9ca741fb25d1b59d360e9942c795de13238df1",
+      "source_sha256": "38ab956dd4dcd89b0068ceca4c24bd46bc6142415a0491d59850d361de87f514",
+      "source_bytes": 7354304,
+      "sources_preserved": true,
+      "triangle_reference_map_parity": true,
+      "non_uv_map_content_identical": true,
+      "policy_repeatability": true,
+      "map_sha256": {
+        "triangle": "505440fd979f8e7df35a9fa10ddfcfb19fac031b6b5ebd95a1eb48d881fd0c0c",
+        "consensus": "903376e7a66b642f8712233e4cdec1cd1bb33492207495bed2a3f41a289832ac"
+      },
+      "faces": 16170,
+      "uv_recovery_counts": {
+        "conflicting_mappings": 61,
+        "consistent": 18,
+        "insufficient_triangles": 384,
+        "storage_precision": 183,
+        "triangle_consistent": 3107
+      },
+      "omitted_face_records": 0,
+      "median_seconds": {
+        "triangle": 0.37083230004645884,
+        "consensus": 0.3814989000093192
+      },
+      "consensus_over_triangle_ratio": 1.028763945216002,
+      "limits": [
+        "Whole-command overhead measurement; not a speedup or parallel scaling claim.",
+        "Native author UVs are unavailable; unchanged non-UV text and fit residuals do not prove original-map fidelity."
+      ],
+      "raw_report": {
+        "path": ".agents/tmp/continuation/uv-consensus/benchmark-mohaa/benchmark.json",
+        "sha256": "0aef6059e2263f884b746d2c135592edd0373affa30bb57b6e038f0bb06e0555"
+      },
+      "cpu": "13th Gen Intel Core i7-13700H; 14 cores, 20 logical processors",
+      "configuration": {
+        "workers": 1,
+        "format": "map_220",
+        "measured_runs_per_policy": 5,
+        "warmups_per_policy": 1
+      },
+      "observations": [
+        {
+          "policy": "triangle",
+          "warmup": true,
+          "seconds": 0.3853691999684088
+        },
+        {
+          "policy": "consensus",
+          "warmup": true,
+          "seconds": 0.38324930000817403
+        },
+        {
+          "policy": "consensus",
+          "warmup": false,
+          "seconds": 0.37260000000242144
+        },
+        {
+          "policy": "triangle",
+          "warmup": false,
+          "seconds": 0.39243619999615476
+        },
+        {
+          "policy": "triangle",
+          "warmup": false,
+          "seconds": 0.3684081000392325
+        },
+        {
+          "policy": "consensus",
+          "warmup": false,
+          "seconds": 0.39277279999805614
+        },
+        {
+          "policy": "consensus",
+          "warmup": false,
+          "seconds": 0.4134320999728516
+        },
+        {
+          "policy": "triangle",
+          "warmup": false,
+          "seconds": 0.37083230004645884
+        },
+        {
+          "policy": "triangle",
+          "warmup": false,
+          "seconds": 0.39260989998001605
+        },
+        {
+          "policy": "consensus",
+          "warmup": false,
+          "seconds": 0.3814989000093192
+        },
+        {
+          "policy": "consensus",
+          "warmup": false,
+          "seconds": 0.3766653999919072
+        },
+        {
+          "policy": "triangle",
+          "warmup": false,
+          "seconds": 0.36672039999393746
+        }
+      ]
+    }
+  ],
+  "windows_native_reference_log": {
+    "path": ".agents/tmp/continuation/uv-consensus/native-win-verified.log",
+    "sha256": "a050b282044746c2e63cd2bc079c946d51a717490536e9c98182708e76752ec1"
+  },
+  "release_platform_comparison": {
+    "cases": 60,
+    "maximum_uv_error_metric_difference": 0.0,
+    "uv_decision_counts_identical": true
+  },
+  "sanitizer_native_log_scan": {
+    "logs": 249,
+    "diagnostics": [],
+    "log_set_sha256": "4f48743398694e9c750f8f688dcfe1ee9a80b2ba9292a76bf1c5c6caa95c6c74",
+    "asan_options": "detect_leaks=0:abort_on_error=1",
+    "ubsan_options": "print_stacktrace=1"
+  },
+  "report_cap_control": {
+    "report": {
+      "path": ".agents/tmp/continuation/uv-consensus/report-cap-check.map.recovery.json",
+      "sha256": "b2511a00447f489abb87fed1b3e9107b926b8b68483bcc8288053f6fff7b18b4"
+    },
+    "log": {
+      "path": ".agents/tmp/continuation/uv-consensus/report-cap-check.log",
+      "sha256": "fd73c931ddad9a2d2f41be6db5caa1c7594ef6c5b0fab8d66f40783076664f30"
+    },
+    "retained_faces": 10000,
+    "omitted_faces": 1057,
+    "map_parity_with_benchmark": true
+  },
+  "limits": [
+    "Generated affine-island cases are controlled recovery experiments, not a claim of exact original MAP reconstruction.",
+    "Private benchmark source/asset content is not distributed; timing and unchanged non-UV content do not prove original-author UV fidelity.",
+    "Fit residuals precede decimal serialization. Integer shift wrapping, constant axes, fixed precision, classic shear and multi-chart reconstruction remain separate work.",
+    "No renderer-equivalence, peak-memory, parallel-scaling, GPU or general speedup claim.",
+    "Linux area_factors is skipped because no GPU backend was available.",
+    "ASan leak detection retains established process-lifetime exclusions.",
+    "Known parser-sign/include-line, compiler-warning, raw-sidecar, VIS and intermittent Windows delay issues remain open."
+  ]
+}

@@ -5,6 +5,7 @@ struct DecompileOptions {
 	enum class BrushOrder { Bsp, Rebuild };
 	enum class DetailPolicy { Legacy, Cells };
 	enum class GroupPolicy { None, Surfaces };
+	enum class UVPolicy { Consensus, Triangle };
 	const char* output = nullptr;
 	const char* report = nullptr;
 	bool automaticReport = false;
@@ -13,5 +14,6 @@ struct DecompileOptions {
 	unsigned detailWorkLimit = 50'000'000;
 	GroupPolicy groupPolicy = GroupPolicy::None;
 	unsigned groupWorkLimit = 50'000'000;
+	UVPolicy uvPolicy = UVPolicy::Consensus;
 };
 inline DecompileOptions decompileOptions;

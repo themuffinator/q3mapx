@@ -351,6 +351,7 @@ static void HelpConvert()
 		{ "-detail-max-work <1..100000000>", "Bound geometry/PVS analysis work for -detail-policy cells (default 50000000); exhaustion preserves previous outputs" },
 		{ "-group-policy <none|surfaces>", "Keep flat world geometry (default), or propose func_groups from shared rendered surfaces; only compatible groups export, with rebuild brush order and a report" },
 		{ "-group-max-work <1..100000000>", "Bound group surface-association and ordering work (default 50000000); requires -group-policy surfaces" },
+		{ "-uv-policy <consensus|triangle>", "Fit agreeing overlapping triangles (default), or retain the largest-triangle texture transform; conflicting mappings keep the triangle result and are reported. Requires MAP export without -fast" },
 		{ "-deluxemapsastexcoord", "Save deluxemap names and texcoords instead of textures (only when writing ase and obj)" },
 		{ "-de <F>", "Distance epsilon for the conversion (only when reading map)" },
 		{ "-fast", "fast bsp to map conversion mode (without texture alignments)" },

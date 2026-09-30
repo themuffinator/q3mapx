@@ -493,6 +493,27 @@ controls test only entity updates, without constructing giant-world BSP geometry
 The group has a 600-second CTest timeout. Reports and per-command logs remain in
 `tests/brush-input/` under the selected build. See [accepted input](MAP-INPUT.md).
 
+## Multi-triangle UV recovery
+
+The independent numeric oracle and native recovery/rebuild matrix run through
+CTest. The native matrix can also compare the explicit compatibility policy
+against a preceding executable:
+
+```sh
+ctest --test-dir build/release -R '^uv_(fit|fit_oracle|recovery)$' -V
+python tests/uv_recovery.py --compiler build/release/bin/q3mapx --reference /path/to/preceding/q3mapx --work-dir build/release/tests/uv-recovery
+python benchmarks/uv_recovery.py --compiler build/release/bin/q3mapx --reference /path/to/preceding/q3mapx --work-dir build/release/tests/uv-recovery-benchmark
+```
+
+Use `.exe` on Windows and the corresponding Linux/sanitizer build directory.
+`uv_recovery` has a 600-second timeout for instrumented native subprocesses.
+Reports/logs stay beneath the requested directory. The benchmark alternates five
+measured runs after warmup and separately verifies deterministic output, exact
+legacy MAP compatibility and unchanged non-UV MAP content. It measures added
+recovery cost, not a speedup. Optional `--map`, `--game` and `--game-root` use an
+independent native BSP copy and read-only assets without redistributing either.
+See [the feature's scope and limits](UV-RECOVERY.md).
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

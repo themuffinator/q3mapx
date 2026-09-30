@@ -49,6 +49,7 @@ q3mapx -decompile -format map_bp -report recovery.json maps/example.bsp
 q3mapx -decompile -brush-order rebuild -o recovered.map maps/example.bsp
 q3mapx -decompile -detail-policy cells -brush-order rebuild -o candidate.map maps/example.bsp
 q3mapx -decompile -group-policy surfaces -detail-policy cells -o assemblies.map maps/example.bsp
+q3mapx -decompile -uv-policy triangle -o comparison.map maps/example.bsp
 q3mapx -convert -format map_220 maps/example.bsp
 ```
 
@@ -78,6 +79,11 @@ Use the correct game profile and resource paths: shader dimensions affect textur
 recovery. Valve 220 and brush primitives preserve affine texture mappings. Classic
 Quake texture definitions cannot represent arbitrary shear; the report counts
 such approximations. `-fast` skips texture reconstruction and reports fallback axes.
+Default [multi-triangle UV recovery](UV-RECOVERY.md) checks a face's overlapping
+triangles and fits an improved mapping only when they agree. Conflicting charts
+retain a largest-triangle transform and are reported. Use `-uv-policy triangle`
+to retain the preceding recovery path; this option requires MAP export without
+`-fast`. The workbench's ordinary decompile jobs inherit the new default.
 Development builds after 0.3.0 use the same detail-flag policy for fast and full
 recovery in all three MAP formats. Earlier fast recovery wrote zero detail flags,
 which could turn detail geometry into structural splitters when rebuilt.
@@ -247,8 +253,11 @@ A per-material bounds hierarchy searches all overlapping triangles, including
 triangles larger than the source brush face. The previous maximum-bound cutoff
 could miss these. Degenerate triangles are excluded. The affine solve works on
 edge differences in double precision, rejects ill-conditioned geometry and
-constant/non-finite UV axes, and supplies finite fallback transforms. Current
-default brush-detail membership uses nonopaque leaf references and explicit
+constant/non-finite UV axes, and supplies finite fallback transforms. Consensus
+recovery adds bounded, overlap-weighted fitting and per-face conflict
+diagnostics; see [the fitting and report contract](UV-RECOVERY.md).
+
+Default brush-detail membership uses nonopaque leaf references and explicit
 structural shader flags. The optional cell policy above extends this heuristic;
 portal adjacency and authoring review remain future work.
 

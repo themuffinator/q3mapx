@@ -293,8 +293,9 @@ throughput, determine whether GPU selection is useful for a given workload.
 Both passage solvers now enumerate the intersection of preliminary flood masks,
 skip separator construction for empty intersections and store trimmed word spans
 in one block per source portal. Recursive flow explicitly clears omitted words
-in reused scratch. These are representation/work reductions, with the same
-graph, clipping order, solver choice and visibility bytes.
+in reused scratch. These packing changes were validated before the separate
+large-portal clipping repair described below; they retained the same graph,
+clipping order, solver choice and visibility bytes.
 
 On the structural grid=9 fixture (220 clusters, 718 undirected portals), retained
 requested passage storage changes as follows:
@@ -340,3 +341,45 @@ same toolchain, options, hardware and input generation for both binaries.
 The report includes hashes, all samples, pass profiles, storage and candidate
 counts. This does not validate automatic topology changes: the separate
 baseline-inclusion failures of existing merge modes remain open.
+
+## Large-portal clipping repair
+
+The passage clipper now retains complete input polygons and allows bounded
+intermediate growth instead of truncating at 24 points. This is a correctness
+repair: old visibility bytes are intentionally changed for affected large
+portals. The [analytic/native validation](validation/vis-clipping.json) is
+separate from timing unchanged ordinary-map workloads. Reusable per-worker
+scratch avoids per-candidate allocation and alternates buffers instead of copying
+the entire polygon after each cut. Mask storage figures above exclude this
+scratch and are not a peak-memory measurement.
+
+Use `benchmarks/vis_passages.py --reference-storage packed --reference
+/path/to/ac402aa/q3mapx --compiler /path/to/current/q3mapx --work-dir
+build/clipping-benchmark` to compare two revisions that both use packed masks.
+This mode requires identical visibility and storage accounting for the measured
+fixtures. The original dense-reference mode remains the default.
+
+On Windows x64, five alternating observations after warmup cover the same
+grid=9 structural/manual-detail fixtures, both passage solvers, normal/merged
+graphs and one/four workers. All 192 commands retain reference/worker VIS bytes,
+unchanged native non-entity/non-VIS lumps and identical passage accounting.
+The structural complete-command results are seconds, with median (minimum–maximum):
+
+| Graph/solver | Workers | `ac402aa` | Complete-winding clipping |
+| --- | ---: | ---: | ---: |
+| Default/full | 1 | 2.3613 (2.3271–2.3981) | 2.3189 (2.3128–2.3762) |
+| Default/full | 4 | 0.6891 (0.6633–0.7560) | 0.6828 (0.6435–0.6855) |
+| Default/passage-only | 1 | 0.2273 (0.2003–0.3196) | 0.2318 (0.2179–0.2466) |
+| Default/passage-only | 4 | 0.0958 (0.0940–0.1186) | 0.0957 (0.0812–0.1074) |
+| Merge/full | 1 | 2.0180 (1.9731–2.0446) | 1.9894 (1.9767–2.0348) |
+| Merge/full | 4 | 0.6198 (0.5673–0.6473) | 0.5998 (0.5845–0.6437) |
+| Merge/passage-only | 1 | 0.2429 (0.2256–0.2544) | 0.2320 (0.2195–0.2788) |
+| Merge/passage-only | 4 | 0.1318 (0.0987–0.1530) | 0.0919 (0.0841–0.1217) |
+
+Default/full single-worker `CreatePassages` time with setup falls from 0.07115
+to 0.06454 seconds median. Complete-command changes are mixed: default single-
+worker passage-only is 2.0% slower, while full-flow medians are slightly lower.
+Tiny manual-detail controls have substantial process/scheduling variation.
+These are fixture-specific observations, not a general compiler speedup or
+peak-memory claim. All observations, including slow samples, profile timings
+and compiler/input identities, remain in the [raw measurements](benchmarks/vis-clipping-win-x64.json).

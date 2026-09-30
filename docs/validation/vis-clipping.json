@@ -1,0 +1,711 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-30T13:56:27.703361+00:00",
+  "base_revision": "ac402aa0061b42cd72c660f0ea77e488f16facab",
+  "scope": "Complete-winding passage clipping with bounded growth and conservative capacity fallback; exact-full separator cache repair",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "cdf0e6e8a0e915e40de22aa6611d17c0656728442496e9d2d7ca03e7e1aec5b4",
+    "libs/q3mapx/vis_clip.h": "41ce8debbd24cfb6f6e3f6f1eff24435f3a5c665499a682e9272a80833f92e6d",
+    "tools/quake3/q3map2/vis.h": "4fc759d441ed13782a071853a776bfa56cd6b8eea61f6c59f1b892b40248d286",
+    "tools/quake3/q3map2/visflow.cpp": "347dcd67b4efcf4bb9fe669c2c41539a320f357a1364128e22dfbef56f1f3650",
+    "tests/vis_clip.cpp": "87230d01fe582f6c799c46c629a0b2f5c58899af2a466415036c136911f2baed",
+    "tests/vis_passage_clipping.py": "1a66bfa39926add3644d35c80493aafa9798edcc4776a9220adce1b4d7275fe6",
+    "tests/vis_fixtures.py": "1fa706f41f11a08224ba403e23274d83e7fd10823f8c9100e3067a7e2f4fd7f4",
+    "tests/vis_merge.py": "25e550a3a3860476c15c9fa82842a6a2ce0ff64037185f91b16499d98acd1782",
+    "tests/vis_passage_storage.py": "c798218834f489bf6298596435db4cc840f7aff84bd903db1593bdf49ede0401",
+    "tests/fixtures.py": "5cc300117041bc22a719451f9915bca17cc5af10094521408538b850284436c7",
+    "tests/integration.py": "3bb8e703e9e898a4c079f6a52321941aeb54876a7eac7804b8e1069c1541dfb3",
+    "benchmarks/vis_passages.py": "af55f31e3f02d8157e6c7aad202a879ae18c57ec195a02fd32665a6ef1af54ad"
+  },
+  "platforms": {
+    "windows": {
+      "compiler": {
+        "path": "build/release/bin/q3mapx.exe",
+        "sha256": "9d539ce7935e1334fb640368ac8cb85f6ff2be8f4e2cfa1c85cca2df3e5d1574"
+      },
+      "ctest": {
+        "path": ".agents/tmp/continuation/passage-clipping-tests-win.log",
+        "sha256": "7d461442248f10fc1c361a62fdd71350ac197f33cc099e245bf033efe994a425",
+        "groups": [
+          {
+            "name": "compiler_pipeline",
+            "seconds": 0.93
+          },
+          {
+            "name": "portal_validation",
+            "seconds": 4.26
+          },
+          {
+            "name": "vis_passage_clipping",
+            "seconds": 25.07
+          },
+          {
+            "name": "vis_passage_storage",
+            "seconds": 2.0
+          },
+          {
+            "name": "vis_reproducible",
+            "seconds": 23.95
+          }
+        ],
+        "total_seconds": 56.23
+      },
+      "final_unit": {
+        "path": ".agents/tmp/continuation/passage-clipping-unit-final-win.log",
+        "sha256": "c94adffc8d12b1ffaa7036ba2cd428ac91eda8ec2377bdbe211eba687c80641e",
+        "groups": [
+          {
+            "name": "vis_clip",
+            "seconds": 0.25
+          }
+        ],
+        "total_seconds": 0.27
+      },
+      "clipping": {
+        "path": "build/release/tests/vis-passage-clipping/validation.json",
+        "sha256": "89860028d3004812aca045c4eb3c99be129573e0085abee40461ea0adcf555e6",
+        "graph_runs": 288,
+        "native_runs": 6,
+        "semantics_sha256": "cdbb30d2562e21d84573fc1c9095a9e68d096fe9635c43e7a3218183c830028d",
+        "native_source_sha256_lf": "0d4cfdfb491226feb8715f873775d2b6813861ba51c0a70f3ffba989c6c3c07c",
+        "native_prt_sha256_lf": "89ccff966caf3de6b694dfaf3281da55300044b55e060576f36e12c910520c12",
+        "native_clusters": 5,
+        "native_portals": 4,
+        "native_portal_points": 64
+      },
+      "existing_matrix": {
+        "path": "build/release/tests/vis-merge/report.json",
+        "sha256": "e309fb39a4d684e006d84bb95aa6dfcd3c4df6b96bec0cb3e999d6de1e67f465",
+        "graph_runs": 31,
+        "map_runs": 120,
+        "preceding_executable_byte_parity": true,
+        "semantics_sha256": "dfbde329db52cc7d6e0cd8918ed7a29f38f5ea75eed955b8a2773997ef70243d"
+      },
+      "matrix_log": {
+        "path": ".agents/tmp/continuation/passage-clipping-parity-win.log",
+        "sha256": "b86b21d2209a8c2d61d5a6d15b6e293a2b405e2481f4aee09fc3cc9afa2071ea"
+      }
+    },
+    "linux": {
+      "compiler": {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "446baaf52aac255d900cb1a3fc233ead2a6c35d49bbe8c87a392632306e99677"
+      },
+      "ctest": {
+        "path": ".agents/tmp/continuation/passage-clipping-tests-linux.log",
+        "sha256": "10ea0ed2e6d16bf66c6af6ed44e14b5509169d7b527a12bd45f43bbb095bb2db",
+        "groups": [
+          {
+            "name": "compiler_pipeline",
+            "seconds": 5.47
+          },
+          {
+            "name": "portal_validation",
+            "seconds": 7.31
+          },
+          {
+            "name": "vis_clip",
+            "seconds": 0.28
+          },
+          {
+            "name": "vis_passage_clipping",
+            "seconds": 44.92
+          },
+          {
+            "name": "vis_passage_storage",
+            "seconds": 2.34
+          },
+          {
+            "name": "vis_reproducible",
+            "seconds": 16.03
+          }
+        ],
+        "total_seconds": 76.46
+      },
+      "final_unit": {
+        "path": ".agents/tmp/continuation/passage-clipping-unit-final-linux.log",
+        "sha256": "c0e1016151dffb7978ebee76c8c9646e43c8522a4c7f4a00b8722a0b8223c760",
+        "groups": [
+          {
+            "name": "vis_clip",
+            "seconds": 0.13
+          }
+        ],
+        "total_seconds": 0.16
+      },
+      "clipping": {
+        "path": "build/linux-release/tests/vis-passage-clipping/validation.json",
+        "sha256": "1e5b142e51c540aae4b8fc76e9c1e13253f41a1ea2dfb5123a4b8d2d97a8f593",
+        "graph_runs": 288,
+        "native_runs": 6,
+        "semantics_sha256": "cdbb30d2562e21d84573fc1c9095a9e68d096fe9635c43e7a3218183c830028d",
+        "native_source_sha256_lf": "0d4cfdfb491226feb8715f873775d2b6813861ba51c0a70f3ffba989c6c3c07c",
+        "native_prt_sha256_lf": "89ccff966caf3de6b694dfaf3281da55300044b55e060576f36e12c910520c12",
+        "native_clusters": 5,
+        "native_portals": 4,
+        "native_portal_points": 64
+      },
+      "existing_matrix": {
+        "path": "build/linux-release/tests/vis-merge/report.json",
+        "sha256": "9cc5259b3423fb5a6d0b44560d7df61cfb9f44a550e944687f6982d7ed8109ff",
+        "graph_runs": 31,
+        "map_runs": 120,
+        "preceding_executable_byte_parity": true,
+        "semantics_sha256": "dfbde329db52cc7d6e0cd8918ed7a29f38f5ea75eed955b8a2773997ef70243d"
+      },
+      "final_graph_log": {
+        "path": ".agents/tmp/continuation/passage-clipping-graph-linux-final.log",
+        "sha256": "3861ed6dcc81169cf433a9a67a2a443d6194cf38a202800fe619c5f971321941"
+      },
+      "matrix_log": {
+        "path": ".agents/tmp/continuation/passage-clipping-parity-linux.log",
+        "sha256": "84bb4ac74a1a65d7baf2c6979fa18cd9682134e22545dfcf9a764b94ae1012a6"
+      }
+    },
+    "asan_ubsan": {
+      "compiler": {
+        "path": "build/linux-sanitized/bin/q3mapx",
+        "sha256": "e386ed99f6b1ec0cea78b845a1cf09aa79c11f8382ec3b2ced75c19300cbbbbf"
+      },
+      "ctest": {
+        "path": ".agents/tmp/continuation/passage-clipping-tests-sanitized.log",
+        "sha256": "f95bbfcba6a0de1458cb3b8467c16fb62f4cca428671a746c4541cfad601e15e",
+        "groups": [
+          {
+            "name": "compiler_pipeline",
+            "seconds": 24.44
+          },
+          {
+            "name": "portal_validation",
+            "seconds": 61.84
+          },
+          {
+            "name": "vis_clip",
+            "seconds": 7.27
+          },
+          {
+            "name": "vis_passage_storage",
+            "seconds": 14.01
+          },
+          {
+            "name": "vis_merge",
+            "seconds": 138.89
+          }
+        ],
+        "total_seconds": 426.66,
+        "failed_group": {
+          "name": "vis_passage_clipping",
+          "reason": "aggregate CTest 180-second deadline; raised to 600 seconds and rerun without changing child deadlines"
+        }
+      },
+      "final_unit": {
+        "path": ".agents/tmp/continuation/passage-clipping-unit-final-sanitized.log",
+        "sha256": "2fa72aee529d8e37c46e7cd56ef5bea5b03b471350c6bec1ffeb17d71b635b0a",
+        "groups": [
+          {
+            "name": "vis_clip",
+            "seconds": 7.01
+          }
+        ],
+        "total_seconds": 7.05
+      },
+      "clipping": {
+        "path": "build/linux-sanitized/tests/vis-passage-clipping/validation.json",
+        "sha256": "9de3bcfe22fda1802ba07032c2211e12e68b743249d8adee1dcaec6c13ee35be",
+        "graph_runs": 288,
+        "native_runs": 6,
+        "semantics_sha256": "cdbb30d2562e21d84573fc1c9095a9e68d096fe9635c43e7a3218183c830028d",
+        "native_source_sha256_lf": "0d4cfdfb491226feb8715f873775d2b6813861ba51c0a70f3ffba989c6c3c07c",
+        "native_prt_sha256_lf": "89ccff966caf3de6b694dfaf3281da55300044b55e060576f36e12c910520c12",
+        "native_clusters": 5,
+        "native_portals": 4,
+        "native_portal_points": 64
+      },
+      "existing_matrix": {
+        "path": "build/linux-sanitized/tests/vis-merge/report.json",
+        "sha256": "5bb2f3d528f1caee513af2e38d846732f0f8213044f042abb287b930d7c564c3",
+        "graph_runs": 31,
+        "map_runs": 120,
+        "preceding_executable_byte_parity": false,
+        "semantics_sha256": "dfbde329db52cc7d6e0cd8918ed7a29f38f5ea75eed955b8a2773997ef70243d"
+      },
+      "final_clipping_retry": {
+        "path": ".agents/tmp/continuation/passage-clipping-graph-sanitized-final.log",
+        "sha256": "46085a97e8f95328612b8b0738f5d810f23c69628ff5365e215f6a3cfbe5d3b6",
+        "groups": [
+          {
+            "name": "vis_passage_clipping",
+            "seconds": 278.77
+          }
+        ],
+        "total_seconds": 278.81
+      },
+      "environment": {
+        "ASAN_OPTIONS": "detect_leaks=0:abort_on_error=1",
+        "UBSAN_OPTIONS": "print_stacktrace=1"
+      }
+    }
+  },
+  "references": {
+    "windows": {
+      "path": ".agents/tmp/continuation/passage-clipping-reference/q3mapx.exe",
+      "sha256": "05fb19cdb1873f91733ea0487151627c0d4f42d247d08c5ee6d77c91bb53bd49"
+    },
+    "linux": {
+      "path": ".agents/tmp/continuation/passage-clipping-reference/q3mapx-linux",
+      "sha256": "c8a1350d6986e07029bc44d44d303b07dc4165497b07cb1fcc339dc10a8baba4"
+    }
+  },
+  "baseline_findings": {
+    "reference_runs": 144,
+    "wrong_visibility_runs": 10,
+    "separator_limit_failures": 8,
+    "changed_cases": [
+      {
+        "points": 64,
+        "blocked": false,
+        "shift": 0,
+        "reverse": false,
+        "options": [],
+        "workers": 1,
+        "rows": [
+          15,
+          15,
+          15,
+          15
+        ],
+        "reference": {
+          "exit_code": 0,
+          "rows": [
+            7,
+            15,
+            15,
+            15
+          ]
+        }
+      },
+      {
+        "points": 64,
+        "blocked": false,
+        "shift": 0,
+        "reverse": false,
+        "options": [
+          "-passageOnly"
+        ],
+        "workers": 1,
+        "rows": [
+          15,
+          15,
+          15,
+          15
+        ],
+        "reference": {
+          "exit_code": 0,
+          "rows": [
+            7,
+            15,
+            15,
+            15
+          ]
+        }
+      },
+      {
+        "points": 64,
+        "blocked": false,
+        "shift": 0,
+        "reverse": true,
+        "options": [],
+        "workers": 1,
+        "rows": [
+          15,
+          15,
+          15,
+          15
+        ],
+        "reference": {
+          "exit_code": 0,
+          "rows": [
+            7,
+            15,
+            15,
+            15
+          ]
+        }
+      },
+      {
+        "points": 64,
+        "blocked": false,
+        "shift": 0,
+        "reverse": true,
+        "options": [
+          "-passageOnly"
+        ],
+        "workers": 1,
+        "rows": [
+          15,
+          15,
+          15,
+          15
+        ],
+        "reference": {
+          "exit_code": 0,
+          "rows": [
+            7,
+            15,
+            15,
+            15
+          ]
+        }
+      },
+      {
+        "points": 129,
+        "blocked": false,
+        "shift": 0,
+        "reverse": false,
+        "options": [],
+        "workers": 1,
+        "rows": [
+          15,
+          15,
+          15,
+          15
+        ],
+        "reference": {
+          "exit_code": 0,
+          "rows": [
+            7,
+            15,
+            15,
+            15
+          ]
+        }
+      },
+      {
+        "points": 129,
+        "blocked": false,
+        "shift": 0,
+        "reverse": false,
+        "options": [
+          "-passageOnly"
+        ],
+        "workers": 1,
+        "rows": [
+          15,
+          15,
+          15,
+          15
+        ],
+        "reference": {
+          "exit_code": 0,
+          "rows": [
+            7,
+            15,
+            15,
+            15
+          ]
+        }
+      },
+      {
+        "points": 129,
+        "blocked": false,
+        "shift": 0,
+        "reverse": true,
+        "options": [],
+        "workers": 1,
+        "rows": [
+          15,
+          15,
+          15,
+          15
+        ],
+        "reference": {
+          "exit_code": 0,
+          "rows": [
+            7,
+            15,
+            15,
+            15
+          ]
+        }
+      },
+      {
+        "points": 129,
+        "blocked": false,
+        "shift": 0,
+        "reverse": true,
+        "options": [
+          "-passageOnly"
+        ],
+        "workers": 1,
+        "rows": [
+          15,
+          15,
+          15,
+          15
+        ],
+        "reference": {
+          "exit_code": 0,
+          "rows": [
+            7,
+            15,
+            15,
+            15
+          ]
+        }
+      },
+      {
+        "points": 512,
+        "blocked": false,
+        "shift": 0,
+        "reverse": false,
+        "options": [],
+        "workers": 1,
+        "rows": [
+          15,
+          15,
+          15,
+          15
+        ],
+        "reference": {
+          "exit_code": 1,
+          "rows": null
+        }
+      },
+      {
+        "points": 512,
+        "blocked": false,
+        "shift": 0,
+        "reverse": false,
+        "options": [
+          "-passageOnly"
+        ],
+        "workers": 1,
+        "rows": [
+          15,
+          15,
+          15,
+          15
+        ],
+        "reference": {
+          "exit_code": 0,
+          "rows": [
+            7,
+            15,
+            15,
+            15
+          ]
+        }
+      },
+      {
+        "points": 512,
+        "blocked": false,
+        "shift": 0,
+        "reverse": false,
+        "options": [
+          "-nopassage"
+        ],
+        "workers": 1,
+        "rows": [
+          15,
+          15,
+          15,
+          15
+        ],
+        "reference": {
+          "exit_code": 1,
+          "rows": null
+        }
+      },
+      {
+        "points": 512,
+        "blocked": false,
+        "shift": 0,
+        "reverse": true,
+        "options": [],
+        "workers": 1,
+        "rows": [
+          15,
+          15,
+          15,
+          15
+        ],
+        "reference": {
+          "exit_code": 1,
+          "rows": null
+        }
+      },
+      {
+        "points": 512,
+        "blocked": false,
+        "shift": 0,
+        "reverse": true,
+        "options": [
+          "-passageOnly"
+        ],
+        "workers": 1,
+        "rows": [
+          15,
+          15,
+          15,
+          15
+        ],
+        "reference": {
+          "exit_code": 0,
+          "rows": [
+            7,
+            15,
+            15,
+            15
+          ]
+        }
+      },
+      {
+        "points": 512,
+        "blocked": false,
+        "shift": 0,
+        "reverse": true,
+        "options": [
+          "-nopassage"
+        ],
+        "workers": 1,
+        "rows": [
+          15,
+          15,
+          15,
+          15
+        ],
+        "reference": {
+          "exit_code": 1,
+          "rows": null
+        }
+      },
+      {
+        "points": 512,
+        "blocked": false,
+        "shift": 256,
+        "reverse": false,
+        "options": [],
+        "workers": 1,
+        "rows": [
+          15,
+          15,
+          15,
+          15
+        ],
+        "reference": {
+          "exit_code": 1,
+          "rows": null
+        }
+      },
+      {
+        "points": 512,
+        "blocked": false,
+        "shift": 256,
+        "reverse": false,
+        "options": [
+          "-nopassage"
+        ],
+        "workers": 1,
+        "rows": [
+          15,
+          15,
+          15,
+          15
+        ],
+        "reference": {
+          "exit_code": 1,
+          "rows": null
+        }
+      },
+      {
+        "points": 512,
+        "blocked": false,
+        "shift": 256,
+        "reverse": true,
+        "options": [],
+        "workers": 1,
+        "rows": [
+          15,
+          15,
+          15,
+          15
+        ],
+        "reference": {
+          "exit_code": 1,
+          "rows": null
+        }
+      },
+      {
+        "points": 512,
+        "blocked": false,
+        "shift": 256,
+        "reverse": true,
+        "options": [
+          "-nopassage"
+        ],
+        "workers": 1,
+        "rows": [
+          15,
+          15,
+          15,
+          15
+        ],
+        "reference": {
+          "exit_code": 1,
+          "rows": null
+        }
+      }
+    ]
+  },
+  "unit": {
+    "half_plane_oracle_comparisons": 1998,
+    "visible": 474,
+    "hidden": 1524,
+    "numerical_margin_exclusions": 1,
+    "controls": [
+      "empty/front/back/on polygons",
+      "double threshold versus float immediately above 0.1",
+      "intermediate growth beyond 512 vertices from 1024 cuts",
+      "exact-capacity output",
+      "conservative overflow preserves surviving corner outside truncated prefix",
+      "safe rejection after overflow",
+      "oversized input before scratch access",
+      "scratch reuse"
+    ],
+    "points_per_input": [
+      3,
+      4,
+      23,
+      24,
+      25,
+      32,
+      64,
+      129,
+      511,
+      512
+    ]
+  },
+  "benchmark": {
+    "path": "docs/benchmarks/vis-clipping-win-x64.json",
+    "sha256": "1a6adaad8132f16b0ddca283494d2f2d1e07120508350dc00fd104c8951c2889",
+    "configurations": 16,
+    "warmup_runs_per_implementation": 1,
+    "measured_runs_per_implementation": 5,
+    "reference_and_worker_vis_byte_parity": true
+  },
+  "limits": [
+    "Synthetic portal graphs use a validated carrier BSP but do not assert matching carrier spatial geometry; six native controls use a genuinely paired BSP/PRT.",
+    "Analytic and feasibility oracles cover the repaired winding/capacity cases, not a proof of exact general PVS or safe automatic merging.",
+    "Recursive portal clipping retains its conservative original-winding fallback at its 24-point output capacity.",
+    "Full passage scratch is bounded to 1536 vertices in two buffers per worker; mask counters exclude this scratch and are not peak-RSS measurements.",
+    "Sanitizer process-lifetime leak detection remains excluded; address and undefined-behavior checks stay enabled.",
+    "The initial sanitizer aggregate timeout was a harness limit, not an accepted pass; final retry must pass.",
+    "Only unit-test/fixture/benchmark/documentation changes and the aggregate test timeout followed the compiler builds."
+  ],
+  "unrelated_findings": [
+    "Inherited UnsortedSet non-standard-layout offsetof warnings remain.",
+    "Previously recorded raw sidecar writers, Windows delays outside VIS passes and automatic-merge baseline-inclusion failures remain open.",
+    "Previously policy-blocked cache/temporary cleanup targets were not retried; no new cleanup rejection occurred this round."
+  ],
+  "artifacts": "Logs, independent preceding executables and exploratory fixtures remain in .agents/tmp/continuation/passage-clipping-*; reusable outputs remain under build/*/tests."
+}

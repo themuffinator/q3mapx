@@ -32,6 +32,7 @@
 #include "q3map2.h"
 #include "vis.h"
 #include "q3mapx/vis_mask.h"
+#include "q3mapx/vis_clip.h"
 #include <bit>
 #include <memory>
 
@@ -364,10 +365,10 @@ static fixedWinding_t  *ClipToSeperators( fixedWinding_t *source, fixedWinding_t
 			}
 
 #ifdef SEPERATORCACHE
-			stack->seperators[flipclip][stack->numseperators[flipclip]] = plane;
-			if ( ++stack->numseperators[flipclip] >= MAX_SEPERATORS ) {
+			if ( stack->numseperators[flipclip] >= MAX_SEPERATORS ) {
 				Error( "MAX_SEPERATORS" );
 			}
+			stack->seperators[flipclip][stack->numseperators[flipclip]++] = plane;
 #endif
 			//MrE: fast check first
 			d = plane3_distance_to_point( plane, stack->portal->origin );
@@ -1002,101 +1003,6 @@ void PassagePortalFlow( int portalnum ){
 	 */
 }
 
-static fixedWinding_t *PassageChopWinding( fixedWinding_t *in, fixedWinding_t *out, const visPlane_t& split ){
-	float localDists[MAX_POINTS_ON_FIXED_WINDING + 1];
-	EPlaneSide localSides[MAX_POINTS_ON_FIXED_WINDING + 1];
-	float* dists = in->numpoints <= MAX_POINTS_ON_FIXED_WINDING ? localDists : LargeClip().dists;
-	EPlaneSide* sides = in->numpoints <= MAX_POINTS_ON_FIXED_WINDING ? localSides : LargeClip().sides;
-	int counts[3];
-	float dot;
-	int i, j;
-	Vector3 mid;
-	fixedWinding_t  *neww;
-
-	counts[0] = counts[1] = counts[2] = 0;
-
-	// determine sides for each point
-	for ( i = 0; i < in->numpoints; ++i )
-	{
-		dists[i] = plane3_distance_to_point( split, in->points[i] );
-		if ( dists[i] > ON_EPSILON ) {
-			sides[i] = eSideFront;
-		}
-		else if ( dists[i] < -ON_EPSILON ) {
-			sides[i] = eSideBack;
-		}
-		else
-		{
-			sides[i] = eSideOn;
-		}
-		counts[sides[i]]++;
-	}
-
-	if ( !counts[1] ) {
-		return in;      // completely on front side
-	}
-	if ( !counts[0] ) {
-		return nullptr;
-	}
-
-	sides[i] = sides[0];
-	dists[i] = dists[0];
-
-	neww = out;
-
-	neww->numpoints = 0;
-
-	for ( i = 0; i < in->numpoints; ++i )
-	{
-		const Vector3& p1 = in->points[i];
-
-		if ( neww->numpoints == MAX_POINTS_ON_FIXED_WINDING ) {
-			return in;      // can't chop -- fall back to original
-		}
-
-		if ( sides[i] == eSideOn ) {
-			neww->points[neww->numpoints] = p1;
-			neww->numpoints++;
-			continue;
-		}
-
-		if ( sides[i] == eSideFront ) {
-			neww->points[neww->numpoints] = p1;
-			neww->numpoints++;
-		}
-
-		if ( sides[i + 1] == eSideOn || sides[i + 1] == sides[i] ) {
-			continue;
-		}
-
-		if ( neww->numpoints == MAX_POINTS_ON_FIXED_WINDING ) {
-			return in;      // can't chop -- fall back to original
-		}
-
-		// generate a split point
-		const Vector3& p2 = in->points[( i + 1 ) % in->numpoints];
-
-		dot = dists[i] / ( dists[i] - dists[i + 1] );
-		for ( j = 0; j < 3; ++j )
-		{	// avoid round off error when possible
-			if ( split.normal()[j] == 1 ) {
-				mid[j] = split.dist();
-			}
-			else if ( split.normal()[j] == -1 ) {
-				mid[j] = -split.dist();
-			}
-			else{
-				mid[j] = p1[j] + dot * ( p2[j] - p1[j] );
-			}
-		}
-
-		neww->points[neww->numpoints] = mid;
-		neww->numpoints++;
-	}
-
-	return neww;
-}
-
 /*
    ===============
    AddSeperators
@@ -1231,7 +1137,9 @@ void CreatePassages( int portalnum ){
 	vportal_t       *portal, *p;
 	visPlane_t seperators[MAX_SEPERATORS * 2];
 	fixedWinding_t  *w;
-	fixedWinding_t in, out, *res;
+	// A convex winding gains at most one vertex per separator. This scratch is
+	// reused by each persistent worker and never grows the recursive flow stack.
+	thread_local q3mapx::PassageClipper<MAX_POINTS_ON_WINDING + MAX_SEPERATORS * 2> clipper;
 	std::array<VisWord, MAX_PORTALS / 64> candidates, cansee;
 
 
@@ -1307,38 +1215,11 @@ void CreatePassages( int portalnum ){
 					continue;
 				}
 
-				/* explitive deleted */
-
-
-				/* ydnar: prefer correctness to stack overflow  */
-				//% memcpy( &in, p->winding, (int)((fixedWinding_t *)0)->points[p->winding->numpoints] );
-				if ( p->winding->numpoints <= MAX_POINTS_ON_FIXED_WINDING ) {
-					memcpy( &in, p->winding, offsetof_array( fixedWinding_t, points, p->winding->numpoints ) );
-				}
-				else{
-					memcpy( &in, p->winding, sizeof( fixedWinding_t ) );
-				}
-
-
-				for ( k = 0; k < numseperators; ++k )
-				{
-					/* ydnar: this is a shitty crutch */
-					//% if ( in.numpoints > MAX_POINTS_ON_FIXED_WINDING ) Sys_Printf( "[%d]", p->winding->numpoints );
-					value_minimize( in.numpoints, MAX_POINTS_ON_FIXED_WINDING );
-
-					res = PassageChopWinding( &in, &out, seperators[ k ] );
-					if ( res == &out ) {
-						memcpy( &in, &out, sizeof( fixedWinding_t ) );
-					}
-
-
-					if ( res == nullptr ) {
-						break;
-					}
-				}
-				if ( k < numseperators ) {
-					continue;
-				}
+				const auto clipped = clipper.intersects(
+					std::span(p->winding->points, size_t(p->winding->numpoints)),
+					std::span(seperators, size_t(numseperators)), ON_EPSILON);
+				portal->passageClipOverflows += clipped.overflows;
+				if (!clipped.visible) continue;
 				cansee[word] |= VisWord{1} << (j%64);
 			}
 		}
@@ -1362,12 +1243,13 @@ void PassageMemory(){
 	// Jobs have joined. Neither retained storage nor the former dense layout
 	// includes allocator overhead, temporary allocation bounds or other VIS data.
 	struct DensePassage { void* next; alignas(VisWord) byte cansee[1]; };
-	std::uint64_t passages=0, bytes=0, empty=0, candidates=0, allocations=0;
+	std::uint64_t passages=0, bytes=0, empty=0, candidates=0, allocations=0, clipOverflows=0;
 	for (const auto* portal : activePortals) {
 		passages += portal->numPassages;
 		bytes += portal->passageAllocation;
 		allocations += portal->passages != nullptr;
 		candidates += portal->passageCandidates;
+		clipOverflows += portal->passageClipOverflows;
 		for (int i=0; i<portal->numPassages; ++i) empty += !portal->passages[i].wordCount;
 	}
 	Sys_Printf("%7llu bytes required passage memory (%llu passages)\n",(unsigned long long)bytes,(unsigned long long)passages);
@@ -1376,6 +1258,9 @@ void PassageMemory(){
 		(unsigned long long)empty,(unsigned long long)allocations);
 	Sys_Printf("Passage candidate tests: %llu / %llu dense portal visits\n",
 		(unsigned long long)candidates,(unsigned long long)(passages*visPortalBits));
+	if (clipOverflows) Sys_FPrintf(SYS_WRN,
+		"Passage clipping retained input for %llu over-capacity cuts; visibility may be less selective.\n",
+		static_cast<unsigned long long>(clipOverflows));
 }
 
 void FreePassages(){
@@ -1386,6 +1271,7 @@ void FreePassages(){
 		portal->numPassages = 0;
 		portal->passageAllocation = 0;
 		portal->passageCandidates = 0;
+		portal->passageClipOverflows = 0;
 	}
 }
 

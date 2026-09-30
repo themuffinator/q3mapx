@@ -87,6 +87,7 @@ struct vportal_t
 	VisWord             *passageWords;  /* Stored after descriptors in one allocation. */
 	std::size_t passageAllocation;      /* Requested retained bytes, excluding allocator overhead. */
 	std::uint64_t passageCandidates;
+	std::uint64_t passageClipOverflows;
 	int numPassages;
 };
 

@@ -84,6 +84,18 @@ The earlier binary passes the same acceptance/diagnostic cases; the new helper
 removes repeated work without changing those contracts. The
 [benchmark guide](PERFORMANCE.md#shared-bsp-index-validation) covers timing evidence.
 
+`vis_clip` compares passage clipping against an independent 2D half-plane
+feasibility oracle, excluding cases within its numerical margin. It covers
+24/25- and 511/512-point boundaries, cyclic/reversed winding order, intermediate
+growth beyond 512 points, double-precision epsilon thresholds, exact capacity,
+conservative overflow and scratch reuse. `vis_passage_clipping` checks 288
+analytic graph runs at one/four workers in full, passage-only and portal-only
+modes, plus six VIS runs on a matched BSP/PRT corridor with 64-point portals.
+Its optional `--reference` records old wrong visibility and separator-limit errors;
+the old executable is not the correctness oracle for repaired cases. Native
+non-VIS lumps and the PRT must survive every successful run unchanged. These
+checks complement ordinary-map reference parity in `vis_merge`.
+
 `lighting_materials` generates alpha textures, colored filters, an emissive panel,
 sun/sky, a curved patch and a brush model with an origin. It checks adaptive,
 bounced, deluxe and supersampled lighting at one and four workers. Mutating alpha

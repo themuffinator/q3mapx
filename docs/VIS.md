@@ -67,9 +67,9 @@ need no separator construction. Both passage solvers use a packed contiguous
 span of nonzero-boundary words per passage; words outside the span remain zero,
 including when a recursive scratch frame is reused. One block per source portal
 holds the descriptors and mask payloads. These blocks are freed after flow joins,
-before assembling/writing BSP visibility. Clipping and fixed reproducible job
-order remain unchanged; reference comparisons require identical output bits with
-`-reproducible`. Ordinary scheduling retains its existing variability.
+before assembling/writing BSP visibility. Packing retains fixed reproducible job
+order; representation-only reference comparisons require identical output bits
+with `-reproducible`. Ordinary scheduling retains its existing variability.
 
 The passage log compares **retained requested bytes** with the preceding dense
 linked-list representation and reports empty masks, retained blocks and candidate
@@ -79,10 +79,32 @@ block and reports its full requested size. These figures exclude allocator
 overhead, the bounded per-job scratch, temporary reservation and other compiler
 state; they are not measured peak process memory.
 
-The inherited passage clipper still truncates windings above its 24-point scratch
-capacity when clipping is required. That separate geometry issue needs a repair
-and large-portal audit. Packing parity establishes agreement with the preceding
-solver; it is not a proof that all inherited geometric approximations are exact.
+## Large portal clipping
+
+Passage construction clips the **complete** input winding, including all 512
+points supported by PRT input. Two reusable buffers per worker replace the
+inherited 24-point prefix copy. Intermediate convex polygons may grow while
+clipping: capacity is 512 input points plus 1,024 possible separating planes,
+since a convex polygon gains at most one vertex per plane. Buffers alternate
+without copying the full polygon between cuts and stay off the recursive stack.
+
+If malformed/nonconvex geometry or numerical degeneracy exceeds that bound,
+the clipper discards the incomplete output, retains its complete input to that
+cut and reports the fallback. Skipping a cut can add visibility; dropping an
+arbitrary prefix could wrongly hide visible geometry. Later planes can still
+reject the retained polygon. The original epsilon, plane order, axial-coordinate
+correction and all-on-plane behavior remain. The recursive separator cache also
+accepts its last valid entry, rather than rejecting exactly 512 separators.
+
+These repairs intentionally change affected legacy results. In an analytic
+three-opening chain, the old default/passage-only solver could hide a directly
+visible cluster solely because of the first vertex chosen for a 64-point polygon.
+Rotated/reversed 24–512-point controls now retain independently expected visibility,
+including blocked paths; a sealed MAP corridor exercises real 64-point BSP portals.
+See [validation](validation/vis-clipping.json). The separate recursive portal
+clipper still conservatively retains the original polygon when its small output
+buffer fills; this repair does not claim exact general visibility geometry or
+resolve the automatic-merge baseline-inclusion gate.
 
 The reference comparison covers all four solvers, default and three merge
 selections, and matched structural/manual-detail fixtures. Bitsets and passage

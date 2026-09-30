@@ -1,4 +1,4 @@
-"""Matched whole-command passage packing measurements. SPDX-License-Identifier: GPL-3.0-or-later."""
+"""Matched whole-command passage measurements. SPDX-License-Identifier: GPL-3.0-or-later."""
 import argparse
 from datetime import datetime, timezone
 import hashlib
@@ -36,6 +36,8 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--compiler',type=Path,required=True)
     parser.add_argument('--reference',type=Path,required=True)
+    parser.add_argument('--reference-storage',choices=('dense','packed'),default='dense',
+                        help='Storage layout of the reference revision (default: original dense implementation)')
     parser.add_argument('--work-dir',type=Path,required=True)
     parser.add_argument('--grid',type=int,default=9)
     parser.add_argument('--workers',type=int,nargs='+',default=[1,4])
@@ -43,7 +45,8 @@ def main():
     args=parser.parse_args()
     if args.repeat<2: parser.error('At least two measured runs are required')
     root=args.work_dir.resolve(); root.mkdir(parents=True,exist_ok=True)
-    methods=[('dense',args.reference.resolve()),('packed',args.compiler.resolve())]
+    reference_name='dense' if args.reference_storage=='dense' else 'packed-reference'
+    methods=[(reference_name,args.reference.resolve()),('packed',args.compiler.resolve())]
     binaries={name:{'path':str(exe),'sha256':sha(exe)} for name,exe in methods}
     records,fixtures=[],[]
     for detail in (False,True):
@@ -85,7 +88,10 @@ def main():
                                     for field in count: count[field]+=item[field]
                                 entry[name]['profiles'].append({'path':str(profile.relative_to(root)),
                                     'sha256':sha(profile),'total_seconds':measured['total_seconds'],'passes':passes})
-                    assert entry['packed']['storage']['dense_equivalent_bytes']==entry['dense']['storage']['retained_requested_bytes']
+                    if args.reference_storage=='dense':
+                        assert entry['packed']['storage']['dense_equivalent_bytes']==entry[reference_name]['storage']['retained_requested_bytes']
+                    else:
+                        assert entry['packed']['storage']==entry[reference_name]['storage']
                     for name in entry:
                         entry[name]['median_seconds']=statistics.median(entry[name]['seconds'])
                     record={'detail':detail,'options':options,'workers':workers,
@@ -97,11 +103,13 @@ def main():
     for name,exe in methods: assert sha(exe)==binaries[name]['sha256'],(name,'binary changed during benchmark')
     report={'schema_version':1,'kind':'whole_process_vis_passage_storage','recorded_utc':datetime.now(timezone.utc).isoformat(),
             'platform':platform.platform(),'processor':platform.processor(),'logical_cpus':os.cpu_count(),
-            'grid':args.grid,'warmup_runs':1,'measured_runs':args.repeat,'compilers':binaries,'fixtures':fixtures,'records':records,
+            'grid':args.grid,'warmup_runs':1,'measured_runs':args.repeat,'reference_storage':args.reference_storage,
+            'compilers':binaries,'fixtures':fixtures,'records':records,
             'notes':['Alternating preceding/current binaries, startup/input/merge/flow/output included; no LIGHT or renderer timing.',
                      'Storage counts retained requested bytes, not allocator overhead, temporary construction allocations or peak process RSS.',
                      'The packed implementation initially reserves a dense upper bound per concurrently building portal, then shrinks it.',
-                     'Graph/geometry/solver choices are unchanged. Existing merge-mode differences from default are outside this parity contract.']}
+                     'Both revisions use the same input and solver options. Large-winding correctness changes need separate analytic tests.',
+                     'Existing merge-mode differences from default are outside this parity contract.']}
     (root/'benchmark.json').write_text(json.dumps(report,indent=2)+'\n')
 
 

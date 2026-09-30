@@ -1703,3 +1703,74 @@ Automatic approval review rejected cleanup of `tests/__pycache__`, reporting
 only “blocked by policy.” Read-only inspection found 24 generated `.pyc` files;
 the cache was left untouched and the deletion was not retried. This restriction
 does not prevent committing/pushing the verified source and documentation.
+
+## 2026-09-30 — Preserve complete portal windings during passage clipping
+
+Reproduced an inherited false-culling case with a three-opening chain: the old
+default/passage-only solver omitted a directly visible cluster when the final
+64-point polygon started at one vertex, then restored it after rotating the same
+vertex list. Passage construction copied only the first 24 vertices before
+clipping. Replaced that prefix with complete input spans and two alternating,
+bounded scratch buffers per worker, without per-candidate allocations or copying
+the polygon between cuts. Intermediate convex windings can grow from the
+512-point input limit by up to one vertex for each of 1,024 separating planes.
+Capacity exhaustion discards partial output, retains the previous complete
+winding and emits a diagnostic; it can reduce selectivity but cannot hide geometry
+by dropping an arbitrary prefix. Float distance/interpolation order, the original
+double epsilon threshold and all-on-plane behavior are preserved.
+
+The large-portal audit also exposed an off-by-one separator-cache check: exactly
+512 stored planes caused an error even though the final slot was valid. The
+check now precedes writing and allows the full bounded cache. Neither change
+enables automatic portal merging or claims a general exact-PVS solution.
+
+The independent half-plane feasibility oracle verifies 1,998 rotated/reversed
+convex winding cases (474 visible, 1,524 hidden), excluding one trial inside its
+numerical margin. Direct controls cover epsilon, growth beyond 512 intermediate
+points, exact output capacity, conservative overflow, a surviving corner outside
+a partial prefix, later safe rejection, oversize input and scratch reuse.
+The CLI suite contains 288 analytic controls for visible and blocked paths with
+24, 25, 32, 64, 129 and 512 points, three solvers, two winding orientations,
+cyclic rotations and one/four workers. Six additional native VIS runs use a
+sealed 64-sided corridor with four genuine 64-point portals. Native lumps outside
+entities/VIS and the PRT remain unchanged.
+
+Against `ac402aa`, 144 Linux reference probes isolate ten old wrong-visibility
+results and eight old separator-limit errors. The old binary is not the oracle
+for those repaired cases. The ordinary 31-graph/120-map reference matrices retain
+exact preceding VIS bytes on Windows and Linux, with matching cross-platform
+semantics. The new suite's initial sanitizer run reached the aggregate 180-second
+CTest deadline while progressing through hundreds of instrumented subprocesses;
+the aggregate limit was raised to 600 seconds while retaining individual child
+deadlines. The initial timeout is retained in the validation evidence rather than
+treated as a pass.
+
+The final analytic/native controls pass on Windows Release, Linux Release and
+ASan/UBSan, with identical graph/PVS semantics across all three. The successful
+sanitizer retry finishes in 278.81 seconds; final unit checks pass in 0.27, 0.16
+and 7.05 seconds respectively. Existing compiler-pipeline, PRT-validation,
+passage-storage and ordinary VIS checks also pass; the established process-
+lifetime leak exclusion remains. See [the validation record](validation/vis-clipping.json)
+for final executable/source identities, aggregate-timeout history, regression
+digests and reference cases. CLI behavior applies equally to workbench-launched
+builds; this round does not change the workbench UI or saved project format.
+
+Five alternating Windows measurements after warmup cover 16 ordinary-map
+configurations and 192 VIS commands. Every measured output and its passage
+accounting match the preceding executable and worker counterpart. Default/full
+single-worker passage construction falls 0.07115→0.06454 seconds median, with
+whole commands 2.3613→2.3189 seconds. Default single-worker passage-only is 2.0%
+slower overall; the tiny detail controls have substantial process/scheduling
+variation. Full observations and ranges are retained in the
+[performance guide](PERFORMANCE.md#large-portal-clipping-repair) and
+[raw measurements](benchmarks/vis-clipping-win-x64.json). No general compiler
+speedup or peak-memory reduction is claimed for this correctness repair.
+
+Remaining findings include the recursive portal clipper's conservative small-
+buffer fallback, automatic-merge baseline-inclusion failures, raw sidecar writers,
+intermittent Windows delays outside VIS passes and inherited `UnsortedSet` layout
+warnings. The previously policy-blocked cleanup targets were not retried. Useful
+probes, preceding executables and logs remain under
+`.agents/tmp/continuation/passage-clipping-*`, and fixtures/reports in the existing
+build test directories. No external code/dependency was added, no game/input or
+capture automation was used, and the packaged 0.3.0 archive remains unchanged.

@@ -288,9 +288,13 @@ Separate compiler workstream; see [compiler optimization design](COMPILER-OPTIMI
   graph/solver results: intersect flood bounds before geometric tests, skip empty
   candidate sets, pack word spans into one block per source portal and free them
   after flow. Compare exact VIS bytes with the preceding dense implementation.
-- [ ] Audit passage clipping above 24 winding points. The inherited scratch
-  fallback truncates the winding before clipping; add large-portal controls and
-  repair this independently of representation-only parity work.
+- [x] Audit passage clipping above 24 winding points. Replace truncation with
+  complete-winding clipping and bounded intermediate growth, retain input on
+  capacity exhaustion, and accept exactly 512 cached separators. Validate
+  rotated/reversed large-portal visibility against analytic expectations and
+  half-plane feasibility, plus matched 64-point native portals and ordinary-map
+  reference parity. Recursive portal clipping still has a conservative small-
+  buffer fallback; this does not complete the broader geometric/merge audit.
 - [ ] Diagnose regional over-portalling, inefficient splits and poor detail usage,
   attributing costs to source geometry and comparing current merge/hint options.
   `-bsp-evidence` now ranks subtree subdivision/reference costs for investigation;

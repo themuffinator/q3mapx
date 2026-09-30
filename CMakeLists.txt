@@ -285,6 +285,19 @@ if(BUILD_TESTING)
     target_include_directories(vis_mask_test PRIVATE libs)
     add_test(NAME vis_mask COMMAND vis_mask_test)
     set_tests_properties(vis_mask PROPERTIES TIMEOUT 30)
+    add_executable(vis_clip_test tests/vis_clip.cpp)
+    target_include_directories(vis_clip_test PRIVATE libs)
+    if(NOT MSVC)
+        target_compile_options(vis_clip_test PRIVATE -fno-strict-aliasing)
+    endif()
+    add_test(NAME vis_clip COMMAND vis_clip_test)
+    set_tests_properties(vis_clip PROPERTIES TIMEOUT 60)
+    add_test(NAME vis_passage_clipping COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/vis_passage_clipping.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/vis-passage-clipping)
+    # Hundreds of real compiler starts are substantially slower under ASan.
+    # Individual child processes still have their own 30-second deadline.
+    set_tests_properties(vis_passage_clipping PROPERTIES TIMEOUT 600)
     add_test(NAME vis_passage_storage COMMAND ${Python3_EXECUTABLE}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/vis_passage_storage.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/vis-passage-storage)

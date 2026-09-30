@@ -165,6 +165,28 @@ include startup/serialization costs, and separate microbenchmarks from end-to-en
 results. Unsupported workflows fail before modifying the input or creating a
 misleading BSP. Existing CLI/GUI workflows remain available.
 
+## Continuing development after 0.3.0
+
+The requested continuing development retains performance, robustness, recovery,
+game coverage and the workbench as active areas. These are the first priorities,
+not a redefinition of the overall goal around the existing release:
+
+- [ ] Protect mesh exports against write/close failures and failed publication;
+  stage OBJ/MTL together, roll back a published companion on a reported failure,
+  and verify existing files survive actual filesystem errors.
+- [ ] Bring the bounded BSP inspector into the workbench with asynchronous
+  discovery, useful directory/compatibility details and visible invalid-input
+  diagnostics; preserve the CLI and test real compiler responses.
+- [ ] Profile larger recovery workloads and address measured costs with geometry,
+  UV/material and worker-count parity evidence before claiming speedups.
+- [ ] Continue native-format, input-validation and GUI improvements found by those
+  checks, update the guides and validate the resulting release on Windows/Linux.
+
+Each task must have its own implementation, validation evidence and commit.
+Publication of several filesystem names cannot be advertised as one crash-atomic
+operation; documented failure guarantees must match the actual implementation.
+Keep remaining work visible as development proceeds.
+
 ## Initial execution order
 
 Start with M0 and M1. Advance robustness and decompilation before using complex

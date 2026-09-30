@@ -876,3 +876,13 @@ found during delivery. Inherited compiler warnings, third-party decoder fuzzing,
 manual accessibility, MSVC/macOS and game-runtime validation remain open limits.
 New game profiles are recovery-only, and GPU lighting remains experimental with
 CPU as its default; the coverage and performance guides state those boundaries.
+
+## 2026-09-30 — Continuing development audit
+
+The current checkout is clean at `ce4b773`; 0.3.0 remains the verified delivery.
+Inspection confirms that OBJ and ASE still truncate destination files before
+generation and ignore `fprintf`/`fclose` failures. OBJ also opens its material
+companion after truncating the mesh, so a companion-open failure can destroy a
+previous export. This is the first repair in the new continuation plan, followed
+by workbench inspection and measurement of larger recovery workloads. The earlier
+cleanup restriction is unchanged; no blocked deletion was retried.

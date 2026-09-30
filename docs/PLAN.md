@@ -7,6 +7,8 @@ time. Retain the CLI, substantially improve performance and robustness, improve
 BSP decompilation, and deliver a capable native GUI. Major rewrites are permitted
 when measured results and correctness justify them. Commit after each completed
 task. A milestone can contain several independently validated task commits.
+As requested on 2026-09-30, keep development on `main` and push to `origin/main`
+after each completed, validated round. Preserve existing history; no force pushes.
 
 Development starts on Windows x64; design and build definitions must also support
 Linux. Use the available CPU and GPU for validation without changing system
@@ -201,6 +203,10 @@ limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md
 
 - [ ] Build shared BSP evidence/provenance analysis and a known-source evaluation
   corpus, with saved overrides and a versioned report extension.
+  The first [evidence command](BSP-EVIDENCE.md) and structural/detail controls are
+  implemented: native validation, hashes, ownership, local partition associations,
+  regional costs and stored PVS statistics. Saved proposals/overrides, broader
+  inference fixtures and an authoring review workflow remain open.
 - [ ] Infer detail versus structural geometry using BSP partitions, leaf/cluster
   relationships, VIS/PVS and compatible portal evidence; validate classifications
   by recompilation, preserve seals/occluders and expose ambiguous cases.
@@ -231,6 +237,8 @@ Separate compiler workstream; see [compiler optimization design](COMPILER-OPTIMI
 
 - [ ] Diagnose regional over-portalling, inefficient splits and poor detail usage,
   attributing costs to source geometry and comparing current merge/hint options.
+  `-bsp-evidence` now ranks subtree subdivision/reference costs for investigation;
+  portal adjacency, inefficiency decisions and merge/hint comparisons remain open.
 - [ ] Add a VIS-only option for conservative graph simplification with correct
   cluster mapping and bounded increases in runtime visibility work.
 - [ ] Add a coordinated full-build option that examines regional structure and

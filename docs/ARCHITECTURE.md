@@ -79,16 +79,21 @@ revision, hardware, thread/backend settings, and repeated elapsed measurements.
 
 ## Planned inference and optimization boundary
 
-The next planned analysis layer will share validated geometry, region boundaries
-and source provenance across [recovery inference](RECOVERY-INFERENCE.md) and
+The first shared analysis layer, `bsp_evidence.h/.cpp`, exposes native-reader
+observations separately from JSON serialization and CLI output publication.
+It uses exact unoriented plane groups, bounded iterative world traversal, active
+ancestor-plane counts and model ownership difference arrays. Versioned
+[evidence reports](BSP-EVIDENCE.md) provide provenance and explicit unavailable
+observations. Future stages will add proposals and saved overrides across
+[recovery inference](RECOVERY-INFERENCE.md) and
 [compiler optimization](COMPILER-OPTIMIZATION.md). Their objectives and application
 policies remain separate: recovery proposes authoring hypotheses, while compiler
 options apply only transformations that meet visibility or presentation contracts.
 Structural participation changes run before portal generation in a full build;
 VIS-only processing preserves a conservative mapping to the existing BSP clusters.
 Lighting inference uses the game's forward lighting semantics and records how much
-of the baked data its hypotheses explain. None of these planned systems is yet a
-capability of the current binaries.
+of the baked data its hypotheses explain. Inference, review overlays and automatic
+transformations remain planned; the current analysis command makes no such edits.
 
 ## Decisions recorded at project start
 

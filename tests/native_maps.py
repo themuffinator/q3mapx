@@ -45,6 +45,7 @@ def main():
     parser.add_argument("--game-root", type=Path, help="Read-only installed assets for texture recovery")
     parser.add_argument("--decompile", action="store_true", help="Also produce a recovery report for each map")
     parser.add_argument("--inspect", action="store_true", help="Inspect directories without loading geometry or game assets")
+    parser.add_argument("--evidence", action="store_true", help="Analyze normalized geometry/partitions/PVS and retain summary counts only in validation.json")
     parser.add_argument("--obj", action="store_true", help="Also export OBJ geometry and record mesh counts")
     args = parser.parse_args()
     if not args.pak and not args.bsp:
@@ -53,6 +54,8 @@ def main():
         parser.error("--map filters archive entries; select loose maps with --bsp")
     if args.inspect and (args.decompile or args.obj):
         parser.error("--inspect and geometry recovery are separate probes")
+    if args.evidence and (args.inspect or args.decompile or args.obj):
+        parser.error("--evidence is a separate analysis probe")
     if not args.inspect and not args.game:
         parser.error("--game is required for validation/recovery")
     exe, root = args.compiler.resolve(strict=True), args.work_dir.resolve()
@@ -69,6 +72,8 @@ def main():
         base = [str(exe), "-game", args.game, "-fs_basepath", str(asset_root),
                 "-fs_homepath", str(root / "home"), "-threads", "2"]
         options = ["-decompile", "-o", str(recovered)] if args.decompile else ["-info"]
+        if args.evidence:
+            options = ["-bsp-evidence", "-report", str(root / "evidence.json")]
         if args.inspect:
             base = [str(exe)] + (["-game", args.game] if args.game else [])
             options = ["-inspect", "-json"]
@@ -98,6 +103,14 @@ def main():
             inspection = json.loads(result.stdout)
             record["ident"], record["version"] = inspection["ident"], inspection["version"]
             record["valid_layouts"] = [l["id"] for l in inspection["layouts"] if l["valid"]]
+        if args.evidence and result.returncode == 0:
+            evidence = json.loads((root / "evidence.json").read_text(encoding="utf-8"))
+            assert evidence["source"]["sha256"] == record["sha256"]
+            for key in ("counts", "visibility", "world_graph"):
+                record[key] = evidence[key]
+            record["work_units_used"] = evidence["limits"]["work_units_used"]
+            record["regions"] = len(evidence["regions"])
+            record["report_bytes"] = (root / "evidence.json").stat().st_size
         if args.obj and result.returncode == 0:
             mesh = subprocess.run([*base, "-convert", "-format", "obj", str(staged)], cwd=root, capture_output=True, timeout=180)
             (root / f"mesh-{len(records):03d}.log").write_bytes(mesh.stdout + mesh.stderr)
@@ -120,7 +133,7 @@ def main():
     assert records, "No BSPs selected"
     assert hashlib.sha256(exe.read_bytes()).hexdigest() == executable_hash, "Compiler changed during probe"
     report = {"schema_version": 1, "timestamp_utc": datetime.now(timezone.utc).isoformat(),
-              "kind": "native_directory_inspection" if args.inspect else "native_archive_recovery" if args.decompile else "native_archive_mesh_export" if args.obj else "native_archive_validation",
+              "kind": "native_bsp_evidence" if args.evidence else "native_directory_inspection" if args.inspect else "native_archive_recovery" if args.decompile else "native_archive_mesh_export" if args.obj else "native_archive_validation",
               "game": args.game, "compiler_sha256": executable_hash,
               "passed": sum(r["exit_code"] == 0 for r in records), "total": len(records), "records": records}
     (root / "validation.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")

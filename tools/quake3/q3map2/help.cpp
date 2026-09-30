@@ -292,6 +292,16 @@ static void HelpAnalyze()
 	HelpOptions( "Analyzing BSP-like file structure", 0, 80, options );
 }
 
+static void HelpEvidence()
+{
+	HelpOptions( "Validated BSP geometry and visibility evidence", 0, 80, {
+		{ "-bsp-evidence <filename.bsp>", "Write a bounded .evidence.json analysis; no game assets required, select the matching -game profile" },
+		{ "-report <filename.json>", "Set report destination; preserve existing output if analysis or publication fails" },
+		{ "-region-depth <0..8>", "Subtree frontier for regional split/reference counts (default 4); these are observations, not optimization proposals" },
+		{ "-max-work <1..100000000>", "Bound expanded evidence work units (default 50000000); exhaustion fails without publishing a partial report" },
+	} );
+}
+
 static void HelpScale()
 {
 	const std::vector<HelpOption> options = {
@@ -512,6 +522,7 @@ void HelpMain( const char* arg )
 		{ "-vis", "VIS Stage" },
 		{ "-light", "Light Stage" },
 		{ "-analyze", "Analyzing BSP-like file structure" },
+		{ "-bsp-evidence", "Report validated partition, brush, regional and stored-PVS evidence" },
 		{ "-scale", "Scaling" },
 		{ "-shift", "Shift" },
 		{ "-convert", "Converting & Decompiling" },
@@ -532,6 +543,7 @@ void HelpMain( const char* arg )
 		HelpVis,
 		HelpLight,
 		HelpAnalyze,
+		HelpEvidence,
 		HelpScale,
 		HelpShift,
 		HelpConvert,

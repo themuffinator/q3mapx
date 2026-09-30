@@ -1,0 +1,611 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-30T06:37:44.596171+00:00",
+  "scope": "Validated BSP evidence extraction; no source inference or optimization edits",
+  "base_revision": "133f02c1303d73ec209c04820cace6074d857a3b",
+  "source_sha256": {
+    "tools/quake3/q3map2/bsp_evidence.h": "1f8e9daee521d36d923070427f21d32dd067b49dbc7edbd350d0231b73094b21",
+    "tools/quake3/q3map2/bsp_evidence.cpp": "831c030a81d29fa15078a5ea31b1bc270221e0f3df5a5f64df1761ab9432002b",
+    "tools/quake3/q3map2/bsp_evidence_cli.cpp": "e104480115bbd003a2da049c3094f795b6d3aa88315e8afd7bb48d9b57b73293",
+    "tests/bsp_evidence.py": "2c34b9e07e8e8309d0cb4921e841e268c9a721a4dfe6bdf3314cce1424b548a7"
+  },
+  "platform_checks": [
+    {
+      "build": "release",
+      "compiler_sha256": "5a084b175eb1ee396480958e1953d96ed0ce8caf066172e07cd8a8fa6d645d85",
+      "relevant_groups_passed": 13,
+      "groups_seconds": 11.99,
+      "final_evidence_test_seconds": 1.35,
+      "sanitizer_settings": {},
+      "fixture_checks": [
+        "SHA-256/input preservation",
+        "1/4-worker exact report parity",
+        "missing VIS",
+        "known structural/detail labels",
+        "coplanar detail ambiguity",
+        "submodel ownership",
+        "work budget and preserved output",
+        "streaming 64 MiB ceiling",
+        "default report path",
+        "source/hardlink protection",
+        "PVS tail/padding",
+        "reversed duplicate planes",
+        "spatially separate coplanar brush",
+        "shared DAG/cycle",
+        "bad plane references",
+        "overlapping model ranges",
+        "six recovery-only profiles",
+        "native nonzero world root",
+        "Windows output rejection"
+      ],
+      "known_source_pairs": [
+        {
+          "source_label": "structural",
+          "source_sha256": "6e2ba3f8744385e7e2584a108957b5e5b77a83e6efad94aa557ce8e2768c0050",
+          "bsp_sha256": "0e5b407c63423d6ae000e09e0533a6904e17ddc481967281daf43b12301b65bd",
+          "pillars": 25,
+          "nodes": 159,
+          "clusters": 84,
+          "local_plane_sides": 150,
+          "global_plane_sides": 150
+        },
+        {
+          "source_label": "detail",
+          "source_sha256": "633bb5c6ee3545748fd6c56bfe2ecfba636d31950a4e4a03d6270c7793eac889",
+          "bsp_sha256": "ec8db73d36c23746113ae2aeb079c96556b792aa0e1f384cb82b60ec54eeab8b",
+          "pillars": 25,
+          "nodes": 19,
+          "clusters": 4,
+          "local_plane_sides": 25,
+          "global_plane_sides": 25
+        }
+      ]
+    },
+    {
+      "build": "linux-release",
+      "compiler_sha256": "278cfc51c6fc976e9c6e66033a564d692d200fd5c94aaa4b477a7cb52cd0b76b",
+      "relevant_groups_passed": 13,
+      "groups_seconds": 62.44,
+      "final_evidence_test_seconds": 5.99,
+      "sanitizer_settings": {},
+      "fixture_checks": [
+        "SHA-256/input preservation",
+        "1/4-worker exact report parity",
+        "missing VIS",
+        "known structural/detail labels",
+        "coplanar detail ambiguity",
+        "submodel ownership",
+        "work budget and preserved output",
+        "streaming 64 MiB ceiling",
+        "default report path",
+        "source/hardlink protection",
+        "PVS tail/padding",
+        "reversed duplicate planes",
+        "spatially separate coplanar brush",
+        "shared DAG/cycle",
+        "bad plane references",
+        "overlapping model ranges",
+        "six recovery-only profiles",
+        "native nonzero world root",
+        "Linux buffered write failure"
+      ],
+      "known_source_pairs": [
+        {
+          "source_label": "structural",
+          "source_sha256": "6581d0f025b124899d1c2fffb9c0fadd414746284911ffda45261a8df51d94f6",
+          "bsp_sha256": "36a171d354daea0129ce80b490fe8b1fd1c962aa20a29227ceabc55e4f303637",
+          "pillars": 25,
+          "nodes": 159,
+          "clusters": 84,
+          "local_plane_sides": 150,
+          "global_plane_sides": 150
+        },
+        {
+          "source_label": "detail",
+          "source_sha256": "97662774de27e85992e1c3949c824dcfdb765ef9fca7338092ff9ab008e54edf",
+          "bsp_sha256": "b66e299d7ca76b45020879285a41e56828a869195227f049831e025046f9fd2c",
+          "pillars": 25,
+          "nodes": 19,
+          "clusters": 4,
+          "local_plane_sides": 25,
+          "global_plane_sides": 25
+        }
+      ]
+    },
+    {
+      "build": "linux-sanitized",
+      "compiler_sha256": "94bbc21fd263f072b4e26ecb7f4c36d93875d76b8ad7e9465e3d6ff8c876a000",
+      "relevant_groups_passed": 7,
+      "groups_seconds": 164.03,
+      "final_evidence_test_seconds": 33.6,
+      "sanitizer_settings": {
+        "ASAN_OPTIONS": "detect_leaks=0:abort_on_error=1"
+      },
+      "fixture_checks": [
+        "SHA-256/input preservation",
+        "1/4-worker exact report parity",
+        "missing VIS",
+        "known structural/detail labels",
+        "coplanar detail ambiguity",
+        "submodel ownership",
+        "work budget and preserved output",
+        "streaming 64 MiB ceiling",
+        "default report path",
+        "source/hardlink protection",
+        "PVS tail/padding",
+        "reversed duplicate planes",
+        "spatially separate coplanar brush",
+        "shared DAG/cycle",
+        "bad plane references",
+        "overlapping model ranges",
+        "six recovery-only profiles",
+        "native nonzero world root",
+        "Linux buffered write failure"
+      ],
+      "known_source_pairs": [
+        {
+          "source_label": "structural",
+          "source_sha256": "6581d0f025b124899d1c2fffb9c0fadd414746284911ffda45261a8df51d94f6",
+          "bsp_sha256": "ab6e1234ea10b68edf09f11b7f779c5c68283ed51cb02b52499be77455700d7a",
+          "pillars": 25,
+          "nodes": 159,
+          "clusters": 84,
+          "local_plane_sides": 150,
+          "global_plane_sides": 150
+        },
+        {
+          "source_label": "detail",
+          "source_sha256": "97662774de27e85992e1c3949c824dcfdb765ef9fca7338092ff9ab008e54edf",
+          "bsp_sha256": "0de45968f6b0c6382f2e67c863c27b7957e01ab10ebcd2524593546b53a45f7f",
+          "pillars": 25,
+          "nodes": 19,
+          "clusters": 4,
+          "local_plane_sides": 25,
+          "global_plane_sides": 25
+        }
+      ]
+    }
+  ],
+  "private_native_probes": [
+    {
+      "game": "alice",
+      "compiler_sha256": "5a084b175eb1ee396480958e1953d96ed0ce8caf066172e07cd8a8fa6d645d85",
+      "record": {
+        "archive": null,
+        "map": "input.bsp",
+        "bytes": 4562996,
+        "sha256": "36773ad709086fffa9c348e8dfcea1c3c1825d5a68cd7b3e46cd6f4d69dc832a",
+        "exit_code": 0,
+        "seconds": 0.07660790003137663,
+        "normalized_unused_lightmap_uv_pairs": 0,
+        "normalized_unused_flare_fogs": 0,
+        "missing_texture_warnings": 0,
+        "counts": {
+          "models": 12,
+          "brushes": 1149,
+          "brush_sides": 12193,
+          "planes": 11922,
+          "nodes": 5597,
+          "leaves": 5610,
+          "surfaces": 3533,
+          "entities": 408,
+          "native_terrain_triangles": 0,
+          "unloaded_static_model_instances": 0,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        "visibility": {
+          "present": true,
+          "referenced_clusters": 2717,
+          "stored_clusters": 2717,
+          "row_bytes": 344,
+          "visible_pairs": 962460,
+          "min_visible_clusters": 2,
+          "max_visible_clusters": 927,
+          "missing_self_bits": 0,
+          "density": 0.1303777291224747,
+          "all_visible": false,
+          "compile_mode": "unknown"
+        },
+        "world_graph": {
+          "head": 0,
+          "reachable_nodes": 5597,
+          "reachable_leaves": 5598,
+          "unique_node_paths": true,
+          "leaf_path_analysis_available": true
+        },
+        "work_units_used": 1235665,
+        "regions": 8,
+        "report_bytes": 1267005,
+        "source_archive": "pak0.pk3",
+        "source_map": "maps/centipede1.bsp"
+      }
+    },
+    {
+      "game": "fakk2",
+      "compiler_sha256": "5a084b175eb1ee396480958e1953d96ed0ce8caf066172e07cd8a8fa6d645d85",
+      "record": {
+        "archive": null,
+        "map": "input.bsp",
+        "bytes": 7238828,
+        "sha256": "92f15b2cb9b1d73266dff366499030eb476df93dfbec1d04ee65ffef34259624",
+        "exit_code": 0,
+        "seconds": 0.08731430000625551,
+        "normalized_unused_lightmap_uv_pairs": 0,
+        "normalized_unused_flare_fogs": 0,
+        "missing_texture_warnings": 0,
+        "counts": {
+          "models": 100,
+          "brushes": 2768,
+          "brush_sides": 21260,
+          "planes": 9954,
+          "nodes": 5362,
+          "leaves": 5463,
+          "surfaces": 7067,
+          "entities": 1615,
+          "native_terrain_triangles": 0,
+          "unloaded_static_model_instances": 0,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        "visibility": {
+          "present": true,
+          "referenced_clusters": 2537,
+          "stored_clusters": 2537,
+          "row_bytes": 320,
+          "visible_pairs": 723303,
+          "min_visible_clusters": 1,
+          "max_visible_clusters": 793,
+          "missing_self_bits": 0,
+          "density": 0.11237749109785346,
+          "all_visible": false,
+          "compile_mode": "unknown"
+        },
+        "world_graph": {
+          "head": 0,
+          "reachable_nodes": 5362,
+          "reachable_leaves": 5363,
+          "unique_node_paths": true,
+          "leaf_path_analysis_available": true
+        },
+        "work_units_used": 1014982,
+        "regions": 9,
+        "report_bytes": 3116567,
+        "source_archive": "pak0.pk3",
+        "source_map": "maps/towncenter_good.bsp"
+      }
+    },
+    {
+      "game": "mohaa",
+      "compiler_sha256": "5a084b175eb1ee396480958e1953d96ed0ce8caf066172e07cd8a8fa6d645d85",
+      "record": {
+        "archive": null,
+        "map": "input.bsp",
+        "bytes": 7354304,
+        "sha256": "38ab956dd4dcd89b0068ceca4c24bd46bc6142415a0491d59850d361de87f514",
+        "exit_code": 0,
+        "seconds": 0.07624899997608736,
+        "normalized_unused_lightmap_uv_pairs": 0,
+        "normalized_unused_flare_fogs": 0,
+        "missing_texture_warnings": 0,
+        "counts": {
+          "models": 74,
+          "brushes": 2711,
+          "brush_sides": 22133,
+          "planes": 18424,
+          "nodes": 920,
+          "leaves": 995,
+          "surfaces": 4288,
+          "entities": 932,
+          "native_terrain_triangles": 1128,
+          "unloaded_static_model_instances": 135,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        "visibility": {
+          "present": true,
+          "referenced_clusters": 583,
+          "stored_clusters": 583,
+          "row_bytes": 80,
+          "visible_pairs": 95253,
+          "min_visible_clusters": 7,
+          "max_visible_clusters": 444,
+          "missing_self_bits": 10,
+          "density": 0.28024737487826906,
+          "all_visible": false,
+          "compile_mode": "unknown"
+        },
+        "world_graph": {
+          "head": 0,
+          "reachable_nodes": 920,
+          "reachable_leaves": 921,
+          "unique_node_paths": true,
+          "leaf_path_analysis_available": true
+        },
+        "work_units_used": 198749,
+        "regions": 4,
+        "report_bytes": 2669257,
+        "source_archive": "Pak5.pk3",
+        "source_map": "maps/m1l1.bsp"
+      }
+    },
+    {
+      "game": "ja",
+      "compiler_sha256": "5a084b175eb1ee396480958e1953d96ed0ce8caf066172e07cd8a8fa6d645d85",
+      "record": {
+        "archive": null,
+        "map": "input.bsp",
+        "bytes": 12754764,
+        "sha256": "886680f55a494d9accd5fcd7de70b952962e8d8741169dedf15f3a5f91e62101",
+        "exit_code": 0,
+        "seconds": 0.12073570000939071,
+        "normalized_unused_lightmap_uv_pairs": 457,
+        "normalized_unused_flare_fogs": 0,
+        "missing_texture_warnings": 0,
+        "counts": {
+          "models": 227,
+          "brushes": 4118,
+          "brush_sides": 36471,
+          "planes": 20360,
+          "nodes": 3103,
+          "leaves": 3331,
+          "surfaces": 10649,
+          "entities": 1019,
+          "native_terrain_triangles": 0,
+          "unloaded_static_model_instances": 0,
+          "normalized_unused_lightmap_uv_pairs": 457,
+          "normalized_unused_flare_fogs": 0
+        },
+        "visibility": {
+          "present": true,
+          "referenced_clusters": 1486,
+          "stored_clusters": 1486,
+          "row_bytes": 192,
+          "visible_pairs": 374564,
+          "min_visible_clusters": 6,
+          "max_visible_clusters": 601,
+          "missing_self_bits": 0,
+          "density": 0.16962443551206505,
+          "all_visible": false,
+          "compile_mode": "unknown"
+        },
+        "world_graph": {
+          "head": 0,
+          "reachable_nodes": 3103,
+          "reachable_leaves": 3104,
+          "unique_node_paths": true,
+          "leaf_path_analysis_available": true
+        },
+        "work_units_used": 483814,
+        "regions": 11,
+        "report_bytes": 4384960,
+        "source_archive": "assets0.pk3",
+        "source_map": "maps/t3_stamp.bsp"
+      }
+    },
+    {
+      "game": "jk2",
+      "compiler_sha256": "5a084b175eb1ee396480958e1953d96ed0ce8caf066172e07cd8a8fa6d645d85",
+      "record": {
+        "archive": null,
+        "map": "input.bsp",
+        "bytes": 7723688,
+        "sha256": "0681d890a8eeac19f6c8cebea0473a8af00a89abe5d86a1eab7ae78169ea596a",
+        "exit_code": 0,
+        "seconds": 0.08606149995466694,
+        "normalized_unused_lightmap_uv_pairs": 0,
+        "normalized_unused_flare_fogs": 11,
+        "missing_texture_warnings": 0,
+        "counts": {
+          "models": 76,
+          "brushes": 2725,
+          "brush_sides": 25117,
+          "planes": 15576,
+          "nodes": 2233,
+          "leaves": 2310,
+          "surfaces": 7092,
+          "entities": 1432,
+          "native_terrain_triangles": 0,
+          "unloaded_static_model_instances": 0,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 11
+        },
+        "visibility": {
+          "present": true,
+          "referenced_clusters": 916,
+          "stored_clusters": 916,
+          "row_bytes": 120,
+          "visible_pairs": 118626,
+          "min_visible_clusters": 1,
+          "max_visible_clusters": 294,
+          "missing_self_bits": 0,
+          "density": 0.14138031311378502,
+          "all_visible": false,
+          "compile_mode": "unknown"
+        },
+        "world_graph": {
+          "head": 0,
+          "reachable_nodes": 2233,
+          "reachable_leaves": 2234,
+          "unique_node_paths": true,
+          "leaf_path_analysis_available": true
+        },
+        "work_units_used": 300555,
+        "regions": 10,
+        "report_bytes": 2891845,
+        "source_archive": "assets0.pk3",
+        "source_map": "maps/yavin_temple.bsp"
+      }
+    },
+    {
+      "game": "q3-ihv",
+      "compiler_sha256": "5a084b175eb1ee396480958e1953d96ed0ce8caf066172e07cd8a8fa6d645d85",
+      "record": {
+        "archive": null,
+        "map": "input.bsp",
+        "bytes": 618916,
+        "sha256": "40621dfd4037116ba3feb7816913f799320a57111c530e2319143706f0b1c2e2",
+        "exit_code": 0,
+        "seconds": 0.03811720001976937,
+        "normalized_unused_lightmap_uv_pairs": 0,
+        "normalized_unused_flare_fogs": 0,
+        "missing_texture_warnings": 0,
+        "counts": {
+          "models": 1,
+          "brushes": 279,
+          "brush_sides": 1678,
+          "planes": 424,
+          "nodes": 602,
+          "leaves": 604,
+          "surfaces": 843,
+          "entities": 46,
+          "native_terrain_triangles": 0,
+          "unloaded_static_model_instances": 0,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        "visibility": {
+          "present": true,
+          "referenced_clusters": 292,
+          "stored_clusters": 292,
+          "row_bytes": 40,
+          "visible_pairs": 67304,
+          "min_visible_clusters": 40,
+          "max_visible_clusters": 285,
+          "missing_self_bits": 0,
+          "density": 0.7893601050853819,
+          "all_visible": false,
+          "compile_mode": "unknown"
+        },
+        "world_graph": {
+          "head": 0,
+          "reachable_nodes": 602,
+          "reachable_leaves": 603,
+          "unique_node_paths": true,
+          "leaf_path_analysis_available": true
+        },
+        "work_units_used": 32637,
+        "regions": 10,
+        "report_bytes": 323499,
+        "source_archive": null,
+        "source_map": "tim_dm1.bsp"
+      }
+    },
+    {
+      "game": "q3test44",
+      "compiler_sha256": "5a084b175eb1ee396480958e1953d96ed0ce8caf066172e07cd8a8fa6d645d85",
+      "record": {
+        "archive": null,
+        "map": "input.bsp",
+        "bytes": 1163000,
+        "sha256": "d5d9ab52a81befd3f1181658c0c2c83218c0f6d6b3027f6f27ec9e92e2d20211",
+        "exit_code": 0,
+        "seconds": 0.03375280002364889,
+        "normalized_unused_lightmap_uv_pairs": 0,
+        "normalized_unused_flare_fogs": 0,
+        "missing_texture_warnings": 0,
+        "counts": {
+          "models": 20,
+          "brushes": 404,
+          "brush_sides": 3059,
+          "planes": 1886,
+          "nodes": 692,
+          "leaves": 713,
+          "surfaces": 1304,
+          "entities": 133,
+          "native_terrain_triangles": 0,
+          "unloaded_static_model_instances": 0,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        "visibility": {
+          "present": true,
+          "referenced_clusters": 398,
+          "stored_clusters": 398,
+          "row_bytes": 56,
+          "visible_pairs": 116526,
+          "min_visible_clusters": 53,
+          "max_visible_clusters": 397,
+          "missing_self_bits": 0,
+          "density": 0.735625362995884,
+          "all_visible": false,
+          "compile_mode": "unknown"
+        },
+        "world_graph": {
+          "head": 0,
+          "reachable_nodes": 692,
+          "reachable_leaves": 693,
+          "unique_node_paths": true,
+          "leaf_path_analysis_available": true
+        },
+        "work_units_used": 45876,
+        "regions": 12,
+        "report_bytes": 449680,
+        "source_archive": "pak0.pk3",
+        "source_map": "maps/Q3TEST2.bsp"
+      }
+    },
+    {
+      "game": "q3test45",
+      "compiler_sha256": "5a084b175eb1ee396480958e1953d96ed0ce8caf066172e07cd8a8fa6d645d85",
+      "record": {
+        "archive": null,
+        "map": "input.bsp",
+        "bytes": 3421640,
+        "sha256": "99c56e37247cbe7f360a57471c545c8f417ee38b05fb999008638d927f1669f7",
+        "exit_code": 0,
+        "seconds": 0.05514860001858324,
+        "normalized_unused_lightmap_uv_pairs": 0,
+        "normalized_unused_flare_fogs": 0,
+        "missing_texture_warnings": 0,
+        "counts": {
+          "models": 11,
+          "brushes": 1732,
+          "brush_sides": 11751,
+          "planes": 3584,
+          "nodes": 4129,
+          "leaves": 4141,
+          "surfaces": 3818,
+          "entities": 135,
+          "native_terrain_triangles": 0,
+          "unloaded_static_model_instances": 0,
+          "normalized_unused_lightmap_uv_pairs": 0,
+          "normalized_unused_flare_fogs": 0
+        },
+        "visibility": {
+          "present": true,
+          "referenced_clusters": 1947,
+          "stored_clusters": 1947,
+          "row_bytes": 248,
+          "visible_pairs": 789896,
+          "min_visible_clusters": 41,
+          "max_visible_clusters": 959,
+          "missing_self_bits": 0,
+          "density": 0.20837135292229178,
+          "all_visible": false,
+          "compile_mode": "unknown"
+        },
+        "world_graph": {
+          "head": 0,
+          "reachable_nodes": 4129,
+          "reachable_leaves": 4130,
+          "unique_node_paths": true,
+          "leaf_path_analysis_available": true
+        },
+        "work_units_used": 600774,
+        "regions": 9,
+        "report_bytes": 1946025,
+        "source_archive": "pak0.pk3",
+        "source_map": "maps/q3tourney.bsp"
+      }
+    }
+  ],
+  "timing_scope": "Native probe timings are single whole-command observations, including loading, hashing and publication; no speedup claim",
+  "retained_logs": ".agents/tmp/continuation/evidence-{build,tests,ceiling}-{win,linux,sanitized}.log",
+  "private_reports": "build/native-evidence/<game>/evidence.json",
+  "unchanged_release_archive_sha256": "b503bc43567bdea3c09432d7c1a460ddbf7f6018447db6cb4f0cc574447edaa5",
+  "unrelated_open_items": [
+    "Native validation repeats per-surface index-span walks before analysis limits; overlapping-span work needs hardening.",
+    "Workbench hardware discovery still needs bounded output and superseded-query handling."
+  ]
+}

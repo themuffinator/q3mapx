@@ -217,6 +217,7 @@ fixtures write only to their designated test output directory.
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and
-commit. Do not bundle unrelated fixes into an optimization commit. Preserve
+commit and push to `origin/main`, keeping development on `main` as requested.
+Do not bundle unrelated fixes into an optimization commit. Preserve
 upstream copyright headers and credit any additional incorporated external code
 after checking license compatibility. Record outstanding and unrelated issues.

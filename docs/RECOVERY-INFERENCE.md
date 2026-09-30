@@ -2,8 +2,9 @@
 
 ## Status and objective
 
-This is planned development, added on 2026-09-30. The current decompiler does not
-yet implement the inference or review tools below. Recover the closest supported
+This roadmap was added on 2026-09-30. The first shared
+[BSP evidence command](BSP-EVIDENCE.md) is implemented and validated; the current
+decompiler does not yet implement the inference or review tools below. Recover the closest supported
 recreation of the author's MAP: editable geometry, organization, materials,
 visibility behavior and source lighting. Keep exact extraction available alongside
 optional inference, and preserve the input BSP and existing recovered output.

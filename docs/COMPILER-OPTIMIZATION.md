@@ -9,6 +9,11 @@ existing paths as baselines before adding new behavior. CLI and workbench will u
 the same analysis/results, with explicit enablement, deterministic decisions,
 regional exclusions, bounded effort and a report explaining accepted/rejected edits.
 
+The first [BSP evidence command](BSP-EVIDENCE.md) now reports regional subdivision
+and reference costs, local brush-plane associations and stored PVS statistics.
+It supplies observations for this work; it does not identify safe portal or
+triangle transformations, or implement either planned compiler option.
+
 Start with reports and proposals. Once a transformation meets its correctness
 gates, the selected optimization mode may apply validated changes automatically
 to the build copy and fall back on the unchanged region when it cannot validate

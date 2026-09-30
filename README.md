@@ -19,6 +19,8 @@ see [release packaging](docs/RELEASE.md).
 Development after 0.3.0 adds checked, staged MAP/report and mesh output with
 companion rollback on publication errors, plus an asynchronous [BSP inspection page](docs/BSP-INSPECTION.md)
 in the workbench. See [export guarantees and limits](docs/DECOMPILATION.md).
+The new [`-bsp-evidence` command](docs/BSP-EVIDENCE.md) reports validated brush,
+partition, regional and stored-visibility observations for inference development.
 The packaged 0.3.0 archive remains unchanged.
 
 Recover an editable map with a texture-recovery report:
@@ -76,6 +78,7 @@ native validation of 242 installed-map entries without distributing game assets.
 - [Development and validation](docs/DEVELOPMENT.md)
 - [Game profiles, format coverage and native-map evidence](docs/GAME-COVERAGE.md)
 - [Asset-independent BSP inspection](docs/BSP-INSPECTION.md)
+- [BSP geometry, regional costs and visibility evidence](docs/BSP-EVIDENCE.md)
 - [Measured performance and backend options](docs/PERFORMANCE.md)
 - [Installation, packaging and known limits](docs/RELEASE.md)
 - [BSP decompilation design](docs/DECOMPILATION.md)

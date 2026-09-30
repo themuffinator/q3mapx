@@ -149,6 +149,10 @@ if(BUILD_TESTING)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/bsp_analyze.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/bsp-analyze)
     set_tests_properties(bsp_analyze PROPERTIES TIMEOUT 90)
+    add_test(NAME bsp_evidence COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/bsp_evidence.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/bsp-evidence)
+    set_tests_properties(bsp_evidence PROPERTIES TIMEOUT 240)
     add_executable(ftx_test tests/ftx.cpp)
     target_include_directories(ftx_test PRIVATE libs)
     add_test(NAME ftx COMMAND ftx_test)

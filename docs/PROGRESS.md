@@ -1014,3 +1014,57 @@ checked local documentation links and whitespace, and kept every new implementat
 item unchecked. Binaries and release artifacts are unchanged. No new unrelated
 issue was found; the existing hardware-query and recovery-performance tasks remain
 open alongside these additions. The continuing development goal remains active.
+
+## 2026-09-30 — Shared BSP evidence and regional investigation
+
+Implemented [`-bsp-evidence`](BSP-EVIDENCE.md), with separate reusable analysis and
+CLI/report publication layers. Full native validation and SHA-256 provenance
+precede observations of brush/model ownership, retained contents, exact unoriented
+partition-plane associations and local leaf-path associations. Iterative traversal
+with active ancestor planes excludes unrelated regional cuts. Shared acyclic node
+graphs explicitly disable local path/subtree evidence instead of expanding all
+paths. Early native head nodes and brush source indices are retained.
+
+Regional summaries rank node subtrees by subdivision count and report leaf,
+brush/surface, indexed-triangle and patch-reference costs. Stored PVS statistics
+handle missing tables, row padding, unused tail bits and missing self bits.
+Neither plane matches nor subdivision counts are presented as proof of original
+detail flags or safe optimization. Inference, portal adjacency, authoring review
+and automatic compiler transformations remain open in M8–M10.
+
+Known-source paired fixtures compile 25 identical pillars as structural or detail.
+The resulting trees have 159 versus 19 nodes and 84 versus 4 clusters, with 150
+versus 25 local matching sides. The remaining detail matches are the common floor,
+demonstrating a classification ambiguity. A separate spatial control distinguishes
+a globally matching plane in another subtree from a local brush-path match.
+
+Reports have fixed record/expanded-side/output ceilings and a configurable work
+budget. The 64 MiB JSON limit is exercised with a compact generated BSP that would
+produce a much larger report; checked staging preserves old output. Other checks
+cover exact 1/4-worker report parity, malformed references, shared graphs/cycles,
+overlapping model spans, six recovery-only profiles, nonzero native world roots,
+input aliases and real buffered-write failures. Native probes additionally cover
+eight private maps across Alice, F.A.K.K.2, Allied Assault, Raven and early Quake
+III. Full geometry reports stay under `build/native-evidence`; only hashes/counts
+are included in the [validation record](validation/bsp-evidence.json).
+
+Windows/Linux release each pass thirteen relevant regression groups
+(11.99/62.44 seconds); Linux ASan/UBSan passes seven (164.03 seconds, with the
+existing documented CLI leak setting). The final expanded evidence test, including
+the real streaming ceiling, passes on all three builds (1.35/5.99/33.60 seconds).
+Verified 118 local links across sixteen documentation guides and retained binary
+identities in the validation record. This is functional evidence, not a speedup
+claim or proof that structural classifications can yet be recovered automatically.
+
+Code review identified a separate robustness follow-up: the existing native
+validator walks each surface's index span independently, so highly overlapping
+spans can cause excessive repeated work before the new analysis budget begins.
+The report guide states this boundary. The older workbench hardware-discovery
+query also still needs bounded output and superseded-query handling. These remain
+open rather than being counted as fixed by this task.
+
+As newly requested, fast-forwarded `main` to include all completed development and
+pushed the previous task commits to `origin/main`. The working agreement now keeps
+development on `main`, with a commit and push after each validated round. The
+packaged 0.3.0 archive remains unchanged; this task updates development source and
+locally tested binaries. The broad continuing-development goal remains active.

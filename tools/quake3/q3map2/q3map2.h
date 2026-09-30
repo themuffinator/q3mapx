@@ -1548,6 +1548,7 @@ int                         MiniMapBSPMain( Args& args );
 /* convert_bsp.c */
 int                         FixAAS( Args& args );
 int                         AnalyzeBSP( Args& args );
+int                         BSPEvidenceMain( Args& args );
 int                         BSPInfo( Args& args );
 int                         ScaleBSPMain( Args& args );
 int                         ShiftBSPMain( Args& args );

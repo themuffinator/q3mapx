@@ -66,4 +66,7 @@ The workbench runs the compiler asynchronously with cancellation, a ten-second
 timeout and a 1 MiB limit across stdout and stderr. It checks the report schema,
 source path and exit-status consistency before presenting a result, and ignores
 replies from superseded queries. Native geometry validation still requires a
-recovery or other workflow that loads the map.
+recovery or other workflow that loads the map. Development builds also provide
+[`-bsp-evidence`](BSP-EVIDENCE.md), a separate CLI report with full native validation,
+brush/partition associations, regional costs and stored-PVS statistics. The
+workbench directory inspector's schema and bounded scope are unchanged.

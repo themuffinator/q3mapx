@@ -184,7 +184,7 @@ int main( int argc, char **argv ){
 	if (!g_game->write && !args.empty()) {
 		const char* stage=args.getVector().front();
 		bool supported=false;
-		for(const char* allowed : {"-info","-analyze","-decompile","-convert","-minimap","-exportents","-export"})
+		for(const char* allowed : {"-info","-analyze","-bsp-evidence","-decompile","-convert","-minimap","-exportents","-export"})
 			if(striEqual(stage,allowed)) supported=true;
 		if(!supported) Error("Profile '%s' supports native recovery only; BSP compilation and rewriting are not implemented",g_game->arg);
 		if(striEqual(stage,"-minimap") && !g_game->supportsMinimap)
@@ -207,6 +207,10 @@ int main( int argc, char **argv ){
 	}
 
 	/* analyze */
+	else if ( args.takeFront( "-bsp-evidence" ) ) {
+		r = BSPEvidenceMain( args );
+	}
+
 	else if ( args.takeFront( "-analyze" ) ) {
 		r = AnalyzeBSP( args );
 	}

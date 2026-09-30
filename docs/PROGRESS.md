@@ -2006,3 +2006,62 @@ and intermediate nodlight-matrix folders/files with “blocked by policy.” The
 verified as project-local with no reparse links but remain in
 `.agents/tmp/continuation/geometry-render/`; no alternate deletion was attempted.
 Earlier blocked cleanup targets were not retried either.
+
+## 2026-09-30 — Stable meta surfaces and initialized patch data
+
+Closed the concrete surface-order variability discovered during geometry
+qualification. Meta sorting previously compared unrelated shader heap addresses;
+unused shader allocations could reorder complete material groups, changing BSP
+surface IDs and index allocation. The compiler now ranks used shader identities
+by immutable name, with first-triangle encounter order for equal names. Existing
+merge eligibility and duplicate-definition precedence remain intact; pointer-keyed
+lookup never determines output order.
+
+The new native regression exposed a second cause after the sorting repair:
+`ParsePatch` populated authored positions, texture coordinates and colors but
+left lightmap channels uninitialized. Heap contents reached original patches and
+their interpolated meta geometry. Patch vertices now initialize all channels
+before parsing and interpolation. The first failing test is retained as evidence;
+the later successful matrix includes both defects' repairs.
+
+On Windows, the preceding `ed0199d` executable produced two grid BSP layouts and
+eight material/patch layouts across eleven shader-definition variants. Twenty-two
+reference builds preserve exact per-surface geometry, texture/color/normal data,
+metadata, model ownership, leaf associations, other native lumps and PRT files
+after normalizing global allocation and previously uninitialized, unassigned
+pre-LIGHT UVs. The old patch outputs include up to 34 vertices with nonzero
+unassigned coordinates. Current-to-current comparison masks no lump fields.
+
+The new `meta_order` group passes on Windows Release, Linux Release and Linux
+ASan/UBSan. Each run checks 56 BSP builds, including twelve native/converted Raven
+patch cases, and eight full BSP/VIS/LIGHT pipelines at one/four workers. Variants
+add unused definitions, reverse their order and append a conflicting duplicate.
+An independent changed-vertex control must fail semantic parity. Both Release
+platforms also agree on all fixture BSP and final baked lump payloads; PRT text
+differs only by native newlines. This establishes the tested fixtures, not global
+cross-toolchain determinism or identical old/new rendered presentation.
+
+The existing 62-group Windows sweep passes. The Linux sweep passes 61 groups and
+skips `area_factors` because a GPU backend is unavailable. Six relevant native,
+lighting, recovery and geometry groups pass under ASan/UBSan, including the new
+regression; established process-lifetime leak exclusions remain unchanged. The
+RBSP test initially assumed all brush lightmap fields were zero: inspection
+confirmed intentional T-junction edge IDs in the fourth channel. The final test
+checks all four channels on patches and complete output bytes on every surface.
+
+See [behavior and compatibility](PERFORMANCE.md#stable-meta-surfaces-and-patch-data),
+[reproduction](DEVELOPMENT.md#compiler-order-validation) and the
+[validation record](validation/meta-order.json). No compile-speed improvement,
+old/new final lightmap identity or refreshed portable 0.3.0 archive is claimed.
+Recompiled maps can have different surface IDs than earlier binaries; regenerate
+reports and surface exclusions against the new BSP. Useful original/final probes,
+baseline executable and logs remain in `.agents/tmp/continuation/bsp-order/`, with
+native outputs and detailed reports under each build's `tests/meta-order/`.
+
+A separate source audit found that MAP patch dimensions are converted and used
+to allocate the mesh before the range check. That malformed-source path is now
+explicitly queued in the plan; it was not exercised with unbounded allocations.
+Existing `UnsortedSet` layout, patch-group aggregate and meta-vertex initialization
+warnings remain. Previously recorded VIS merge omissions, raw sidecar writers,
+recursive clipping fallback and intermittent Windows delays remain open. Earlier
+policy-blocked cleanup targets were not retried.

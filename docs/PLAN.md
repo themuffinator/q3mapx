@@ -190,6 +190,14 @@ not a redefinition of the overall goal around the existing release:
   verify GPU-free replies and compiler changes on Windows and Linux.
 - [x] Apply combined-output accounting to game-catalog discovery, including
   stderr-only/mixed overflow, exact boundaries and superseded child cleanup.
+- [x] Stabilize meta-surface ordering independently of shader heap addresses and
+  initialize MAP patch channels before interpolation/publication. Check unused,
+  reordered and duplicate shader definitions, worker parity, native IBSP/RBSP
+  patches and complete compile pipelines; preserve geometry/ownership semantics.
+  See [compiler reproducibility](PERFORMANCE.md#stable-meta-surfaces-and-patch-data).
+- [ ] Validate MAP patch dimensions before conversion/allocation. The source audit
+  found that `ParsePatch` constructs its mesh before checking the dimensions;
+  add bounded malformed-source regressions when repairing that separate path.
 - [ ] Profile larger recovery workloads and address measured costs with geometry,
   UV/material and worker-count parity evidence before claiming speedups.
   Initial whole-command comparisons now cover a dense generated room and private

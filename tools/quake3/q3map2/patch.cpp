@@ -220,6 +220,9 @@ void ParsePatch( bool onlyLights, entity_t& mapEnt, int mapPrimitiveNum ){
 		MatchToken( "(" );
 		for ( int i = 0; i < m.height; ++i )
 		{
+			// MAP patches supply positions and texture coordinates only. Initialize
+			// the remaining channels before mesh interpolation or BSP publication.
+			m[ i ][ j ] = c_bspDrawVert_t0;
 			Parse1DMatrix( 5, m[ i ][ j ].xyz.data() );
 
 			/* ydnar: fix colors */

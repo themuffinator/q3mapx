@@ -5,6 +5,46 @@ unless explicitly described as microbenchmarks. Windows x64, GCC 15.2.0 release,
 i7-13700H, 20 logical CPUs; no global fast-math or LTO. Synthetic maps contain no
 commercial assets. Results describe these workloads, not every map or machine.
 
+## Stable meta surfaces and patch data
+
+Meta triangles now group materials by immutable shader name, with first-triangle
+encounter order breaking ties between distinct identities with the same name.
+Merge eligibility still uses the original shader identity and surface properties.
+Previously, ordering the shader pointers could permute entire material groups
+when unrelated shader allocations changed, affecting surface IDs, index sharing
+and subsequent lightmap packing. Adding unused shaders now leaves the tested
+outputs unchanged. Existing duplicate-definition precedence is retained.
+
+MAP patch vertices also initialize every channel before parsing authored position
+and texture coordinates. Their previously uninitialized lightmap coordinates could
+be serialized directly or interpolated into converted patch geometry. The repair
+initializes those coordinates without changing positions, texture alignment,
+colors, generated normals or patch tessellation in the reference fixtures.
+
+The `meta_order` regression compiles 56 IBSP/RBSP variants and completes eight
+BSP/VIS/LIGHT pipelines, varying unused shader allocations, definition order and
+one/four workers. Every stored lump is compared; only file gaps, including the
+unused writer timestamp, are outside that comparison. The generated model grid
+and material/patch room also have identical BSP and final baked lump payloads
+between the tested Windows and Linux Release builds. This is fixture evidence,
+not a guarantee of byte identity across all maps, options, toolchains or formats.
+VIS checks use `-reproducible`; ordinary VIS retains its documented scheduling
+behavior. PRT files are byte-identical within each platform and differ only by
+native CRLF/LF newlines between these Windows and Linux fixtures.
+
+The preceding Windows compiler produced two grid layouts and eight material/patch
+layouts across the same variants. Optional `--reference` checks normalize global
+surface allocation and previously uninitialized, unassigned pre-LIGHT UVs only;
+all per-surface geometry, texture/color/normal data, model ownership, leaf
+associations, other lumps and portal files must match. Current-to-current checks
+mask no lump fields. Old/new final lightmap packing and renderer output are not
+claimed identical, and this repair makes no compile-speed claim. Rebuilding a map
+can change its surface IDs relative to earlier releases, so regenerate reports or
+surface-ID exclusions for the newly compiled BSP.
+
+See [validation evidence](validation/meta-order.json) and the
+[test instructions](DEVELOPMENT.md#compiler-order-validation).
+
 ## Shared BSP index validation
 
 Surfaces may share all or part of the same stored triangle-index array while

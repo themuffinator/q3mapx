@@ -34,6 +34,7 @@
 #include "qspatial.h"
 #include "timer.h"
 #include <map>
+#include <unordered_map>
 
 
 struct metaTriangle_t;
@@ -138,10 +139,11 @@ static metaVertex_t* metaVertex_findOrInsert( const bspDrawVert_t& src ){
 template<bool sort_spatially>
 struct CompareMetaTriangles
 {
+	const std::unordered_map<const shaderInfo_t*, size_t>& shaderOrder;
 	bool operator()( const metaTriangle_t& a, const metaTriangle_t& b ) const {
 		/* shader first */
 		if ( a.si != b.si ) {
-			return a.si < b.si;
+			return shaderOrder.at( a.si ) < shaderOrder.at( b.si );
 		}
 		/* then fog */
 		else if ( a.fogNum != b.fogNum ) {
@@ -1608,7 +1610,23 @@ void MergeMetaTriangles(){
 			tri.minmax.extend( spatial_distance( vert->xyz ) );
 		}
 	}
-	metaTriangles.sort( CompareMetaTriangles<true>() );
+	// Heap addresses can reorder whole material groups between identical builds,
+	// changing draw-surface IDs, shared indices and subsequent lightmap packing.
+	// Rank only used shader identities by their immutable names. Equal names keep
+	// first-triangle encounter order: distinct definitions must remain distinct
+	// merge groups. Never iterate the pointer-keyed map to determine output order.
+	std::unordered_map<const shaderInfo_t*, size_t> shaderOrder;
+	std::vector<const shaderInfo_t*> orderedShaders;
+	for ( const metaTriangle_t& tri : metaTriangles ) {
+		if ( shaderOrder.emplace( tri.si, shaderOrder.size() ).second )
+			orderedShaders.push_back( tri.si );
+	}
+	std::stable_sort( orderedShaders.begin(), orderedShaders.end(), []( const shaderInfo_t *a, const shaderInfo_t *b ) {
+		return strcmp( a->shader.c_str(), b->shader.c_str() ) < 0;
+	} );
+	for ( size_t i = 0; i < orderedShaders.size(); ++i )
+		shaderOrder.at( orderedShaders[i] ) = i;
+	metaTriangles.sort( CompareMetaTriangles<true>{ shaderOrder } );
 #endif
 	MetaTrianglesToSurface();
 

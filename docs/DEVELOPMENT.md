@@ -410,6 +410,29 @@ The optional `tests/renderer/geometry_render.py` uses lawful external assets and
 Quake3e OpenGL with SDL offscreen, engine screenshots and disabled input devices.
 It is not part of ordinary CTest; see [reproduction and evidence](GEOMETRY-OPTIMIZATION.md).
 
+## Compiler order validation
+
+`meta_order` compiles a model grid and a material/patch room with unused shader
+padding, reversed definitions and a later conflicting duplicate at one/four
+workers. It requires identical BSP lump payloads and PRT bytes, plus final baked
+payload parity for eight full pipelines. Twelve additional Jedi Academy builds
+exercise native and converted patches and all four patch lightmap channels.
+The fourth channel of ordinary brush vertices may contain the existing temporary
+T-junction edge IDs; whole-lump comparisons still cover those bytes.
+
+```sh
+ctest --test-dir build/release -R '^meta_order$' -V
+python tests/meta_order.py --compiler build/release/bin/q3mapx --reference /path/to/preceding/q3mapx --work-dir build/release/tests/meta-order
+```
+
+Use the appropriate executable suffix and matching Linux Release/sanitizer build
+directory. Optional reference comparison retains old BSPs and checks exact
+surface contents, model ownership, leaf associations and portal files after
+normalizing only global surface allocation and unassigned pre-LIGHT lightmap UVs.
+It records the preceding parser's uninitialized-coordinate counts separately.
+A changed-vertex negative control verifies that geometry remains significant.
+`validation.json` and command logs stay in the specified test directory.
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

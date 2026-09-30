@@ -307,6 +307,10 @@ if(BUILD_TESTING)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/geometry_optimize.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/geometry-optimize)
     set_tests_properties(geometry_optimize PROPERTIES TIMEOUT 300)
+    add_test(NAME meta_order COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/meta_order.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/meta-order)
+    set_tests_properties(meta_order PROPERTIES TIMEOUT 360)
     add_test(NAME cell_adjacency COMMAND ${Python3_EXECUTABLE}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/cell_adjacency.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/cell-adjacency)

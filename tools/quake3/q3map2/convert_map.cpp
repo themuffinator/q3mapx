@@ -36,6 +36,7 @@
 #include "bspfile_rbsp.h"
 #include "qspatial.h"
 #include "decompile.h"
+#include "bsp_evidence.h"
 #include "q3mapx/affine.h"
 #include "q3mapx/atomic_file.h"
 #include "rapidjson/prettywriter.h"
@@ -50,13 +51,24 @@ struct DecompileStats {
 };
 static DecompileStats recovery;
 static std::vector<bool> detailBrushes;
+struct DetailDecision {
+	bool baseline = false, applied = false;
+	bool materialEvaluated = false;
+	int materialFlags = 0;
+	const char* reason = "legacy_fallback";
+};
+static std::vector<DetailDecision> detailDecisions;
+static std::unique_ptr<q3mapx::BSPEvidence> detailEvidence;
 
 // One policy for every MAP writer, including fast texture recovery. This is a
 // leaf-reference heuristic; it does not prove the author's original choice.
-static int InferredBrushDetailFlag( int brushNum ){
+static int LegacyBrushDetailFlag( int brushNum ){
 	return detailBrushes[brushNum]
 	    && !( bspShaders[bspBrushes[brushNum].shaderNum].contentFlags
 	          & GetRequiredSurfaceParm<"structural">().contentFlags ) ? C_DETAIL : 0;
+}
+static int InferredBrushDetailFlag( int brushNum ){
+	return detailDecisions.empty() ? LegacyBrushDetailFlag( brushNum ) : detailDecisions[brushNum].applied ? C_DETAIL : 0;
 }
 
 
@@ -918,6 +930,36 @@ static bool OpaqueBrushForRebuild( int brushNum ){
 	} );
 }
 
+static void InferBrushDetailFromCells(){
+	detailEvidence = std::make_unique<q3mapx::BSPEvidence>( q3mapx::analyzeBSPEvidence( 0, decompileOptions.detailWorkLimit ) );
+	q3mapx::analyzeBSPBrushCells( *detailEvidence, decompileOptions.detailWorkLimit );
+	detailDecisions.resize( bspBrushes.size() );
+	for ( size_t b = 0; b < bspBrushes.size(); ++b ) {
+		auto& decision = detailDecisions[b];
+		decision.baseline = decision.applied = LegacyBrushDetailFlag( int( b ) ) != 0;
+		if ( detailEvidence->brushes[b].model != 0 ) { decision.reason = "non_world_geometry_preserved"; continue; }
+		const auto& cells = detailEvidence->brushCells[b];
+		if ( !strEqual( cells.status, "analyzed" ) ) { decision.reason = "cell_analysis_unavailable"; continue; }
+		bspBrush_to_buildBrush( bspBrushes[b] );
+		if ( !CreateBrushWindings( buildBrush ) ) { decision.reason = "export_geometry_unavailable"; continue; }
+		decision.materialEvaluated = true;
+		for ( const auto& side : buildBrush.sides )
+			if ( side.shaderInfo && !side.winding.empty() ) decision.materialFlags |= side.shaderInfo->compileFlags;
+		if ( ( decision.materialFlags & C_STRUCTURAL )
+		    || ( bspShaders[bspBrushes[b].shaderNum].contentFlags & GetRequiredSurfaceParm<"structural">().contentFlags ) ) {
+			decision.applied = false; decision.reason = "explicit_structural_material";
+		}
+		else if ( decision.materialFlags & ( C_HINT | C_SKIP | C_AREAPORTAL | C_ANTIPORTAL | C_ORIGIN | C_SKY | C_LIQUID | C_FOG ) )
+			decision.reason = "protected_material_preserved";
+		else if ( decision.materialFlags & C_DETAIL ) { decision.applied = true; decision.reason = "explicit_detail_material"; }
+		else if ( !( decision.materialFlags & C_SOLID ) || ( decision.materialFlags & C_TRANSLUCENT ) )
+			decision.reason = "nonopaque_material_preserved";
+		else if ( detailEvidence->visibility.present && detailEvidence->visibility.missingSelfBits ) decision.reason = "inconsistent_pvs_preserved";
+		else if ( cells.open.available ) { decision.applied = true; decision.reason = "open_interior_detail_candidate"; }
+		else decision.reason = "opaque_or_uncertain_interior_preserved";
+	}
+}
+
 static void ConvertModel( FILE *f, const bspModel_t& model, const Vector3& origin, EBrushType brushType ){
 	if ( origin != g_vector3_identity ) {
 		ConvertOriginBrush( f, -1, origin, brushType );
@@ -1002,6 +1044,7 @@ static void ConvertEPairs( FILE *f, const entity_t& e, bool skip_origin ){
 
 static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 	recovery = {};
+	detailDecisions.clear(); detailEvidence.reset();
 	detailBrushes.assign( bspBrushes.size(), false );
 	for ( const auto& leaf : bspLeafs ) {
 		if ( leaf.cluster <= CLUSTER_OPAQUE ) continue;
@@ -1026,6 +1069,7 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		buildBrush.entityNum = 0;
 		buildBrush.original = &buildBrush;
 	}
+	if ( decompileOptions.detailPolicy == DecompileOptions::DetailPolicy::Cells ) InferBrushDetailFromCells();
 
 	if( g_game->load == LoadRBSPFile )
 		UnSetLightStyles();
@@ -1164,12 +1208,46 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		count( "entities", entities.size() );
 		count( "brushes", recovery.brushes );
 		writer.Key( "detail_classification" ); writer.StartObject();
-		writer.Key( "method" ); writer.String( "nonopaque_leaf_reference_heuristic" );
-		writer.Key( "structural_override_scope" ); writer.String( "brush_shader_contents" );
+		writer.Key( "method" ); writer.String( detailEvidence ? "convex_interior_witnesses_with_material_protection" : "nonopaque_leaf_reference_heuristic" );
+		writer.Key( "structural_override_scope" ); writer.String( detailEvidence ? "brush_shader_contents_and_current_exported_side_materials" : "brush_shader_contents" );
 		writer.Key( "author_classification_proven" ); writer.Bool( false );
 		count( "exported_brushes_with_detail_flag", recovery.brushesWithDetailFlag );
 		count( "exported_brushes_without_detail_flag", recovery.brushes - recovery.brushesWithDetailFlag );
 		writer.EndObject();
+		if ( detailEvidence ) {
+			writer.Key( "detail_inference" ); writer.StartObject();
+			writer.Key( "policy" ); writer.String( "cells" );
+			writer.Key( "author_classification_proven" ); writer.Bool( false );
+			writer.Key( "current_shader_assets_used" ); writer.Bool( true );
+			writer.Key( "original_shader_assets_verified" ); writer.Bool( false );
+			writer.Key( "bsp_rebuild_validated" ); writer.Bool( false );
+			count( "work_limit", decompileOptions.detailWorkLimit ); count( "work_used", detailEvidence->workUsed );
+			writer.Key( "stored_pvs_present" ); writer.Bool( detailEvidence->visibility.present );
+			count( "pvs_missing_self_bits", detailEvidence->visibility.missingSelfBits );
+			writer.Key( "brushes" ); writer.StartArray();
+			for ( size_t b = 0; b < detailDecisions.size(); ++b ) {
+				if ( buffer.GetSize() > 64 * 1024 * 1024 ) throw std::runtime_error( "Detail inference report exceeds 64 MiB" );
+				const auto& decision = detailDecisions[b]; const auto& cells = detailEvidence->brushCells[b];
+				writer.StartObject(); count( "brush_index", b );
+				writer.Key( "baseline_detail" ); writer.Bool( decision.baseline );
+				writer.Key( "applied_detail" ); writer.Bool( decision.applied );
+				writer.Key( "reason" ); writer.String( decision.reason );
+				writer.Key( "current_material_compile_flags" ); if ( decision.materialEvaluated ) writer.Uint( uint32_t( decision.materialFlags ) ); else writer.Null();
+				writer.Key( "cell_status" ); writer.String( cells.status );
+				count( "leaf_fragments", cells.leafFragments ); count( "uncertain_fragments", cells.uncertainFragments );
+				writer.Key( "interior_clusters" ); writer.StartArray(); for ( int cluster : cells.interiorClusters ) writer.Int( cluster ); writer.EndArray();
+				writer.Key( "invisible_pvs_pairs" ); if ( detailEvidence->visibility.present ) writer.Uint64( cells.invisiblePVSPairs ); else writer.Null();
+				writer.Key( "open_witness" );
+				if ( cells.open.available ) {
+					writer.StartObject(); count( "leaf", cells.open.leaf ); writer.Key( "cluster" ); writer.Int( cells.open.cluster );
+					writer.Key( "point" ); writer.StartArray(); for ( double v : cells.open.point ) writer.Double( v ); writer.EndArray();
+					writer.Key( "clearance" ); writer.Double( cells.open.clearance ); writer.EndObject();
+				}
+				else writer.Null();
+				writer.EndObject();
+			}
+			writer.EndArray(); writer.EndObject();
+		}
 		count( "skipped_brushes", recovery.skippedBrushes );
 		count( "patches", recovery.patches );
 		count( "faces", recovery.faces );
@@ -1213,9 +1291,11 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		if(bspEarlyVersion==43 || bspEarlyVersion==44) writer.String("This format has no brush-side material names. Visible face names and UVs are inferred from rendered triangles; unmatched faces use common/caulk and fallback UVs. Raw brush contents and side flags remain in source order in this report.");
 		writer.String( "Triangle soup geometry is not exported separately; collision brushes may approximate it." );
 		writer.String( "Fallback texture axes are used on faces without a usable rendered triangle, including hidden faces." );
+		if ( detailEvidence ) writer.String( "Cell detail inference proposes opaque world brushes with witnessed open-cell interiors as detail under current material semantics. Protected materials and ambiguous/opaque interiors retain the baseline; original author flags and rebuilt VIS equivalence are unproven." );
 		if ( rebuildOrder ) writer.String( "Rebuild brush order depends on the current shader assets and q3mapx loader semantics. Discarded source flags, plane/side ordering and other compiler differences can still change partitions or visibility." );
 		writer.EndArray();
 		writer.EndObject();
+		if ( detailEvidence && buffer.GetSize() > 64 * 1024 * 1024 ) throw std::runtime_error( "Detail inference report exceeds 64 MiB" );
 		if ( std::fwrite( buffer.GetString(), 1, buffer.GetSize(), reportFile ) != buffer.GetSize() )
 			throw std::runtime_error( "Cannot write recovery report " + std::string( report.c_str() ) );
 	}

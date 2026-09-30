@@ -33,7 +33,8 @@ The next fidelity work is specified in [recovery inference](RECOVERY-INFERENCE.m
 - More accurate brush/UV/patch reconstruction and CLI/workbench tools for reviewing
   evidence, applying manual corrections and comparing rebuilt geometry and lighting.
 
-These are planned options, not current command-line capabilities. Known-source
+The first optional geometric detail policy is implemented below; group/light
+inference and authoring review remain planned. Known-source
 fixtures, held-out lighting samples and recorded uncertainty will distinguish a
 close visual recreation from recovery of uniquely identifiable authoring data.
 The separate [intelligent compiler options](COMPILER-OPTIMIZATION.md) optimize new
@@ -45,13 +46,15 @@ builds; they do not silently alter the decompiler's reconstruction objective.
 q3mapx -decompile -game quake3 -fs_basepath /path/to/game -o recovered.map maps/example.bsp
 q3mapx -decompile -format map_bp -report recovery.json maps/example.bsp
 q3mapx -decompile -brush-order rebuild -o recovered.map maps/example.bsp
+q3mapx -decompile -detail-policy cells -brush-order rebuild -o candidate.map maps/example.bsp
 q3mapx -convert -format map_220 maps/example.bsp
 ```
 
 `-decompile` defaults to Valve 220 output and writes `<output.map>.recovery.json`.
 Without `-o`, the map is `<input>_converted.map`. `-report` selects a different JSON
-path. The legacy `-convert` syntax remains available and writes a report only when
-explicitly requested. `-o` requires a `.map` extension and `-report` requires `.json`.
+path. The legacy `-convert` syntax remains available and writes a report when
+explicitly requested or when cell detail inference is selected. `-o` requires a
+`.map` extension and `-report` requires `.json`.
 Unknown conversion formats/options now produce a diagnostic instead of silently
 choosing ASE or ignoring the option.
 
@@ -108,6 +111,63 @@ The optional version 1 `brush_order` report object records `policy`, `basis`,
 `author_order_proven: false` and `rebuild_equivalence_proven: false`. The report
 names shader/loader assumptions when rebuilding order is requested.
 
+### Detail inference policy
+
+Development builds after 0.3.0 accept `-detail-policy legacy|cells`. The default
+`legacy` retains the existing nonopaque leaf-reference heuristic and MAP bytes.
+`cells` adds bounded geometric evidence independently of those reference lists,
+using [convex brush/tree intersections](BSP-EVIDENCE.md#brush-interiors). It supports
+all three MAP formats, fast/full export and legacy `-convert`, and always writes
+a recovery report. It requires a BSP-writing profile and excludes `-wtf` material
+replacement. Native recovery-only profiles support read-only cell evidence, but
+not this classification/export policy. The workbench does not yet expose it.
+
+The policy starts from each brush's legacy flag. It only considers uniquely owned
+world geometry with successful cell analysis and usable exported windings. It
+combines the actual exported sides' current shader compile flags, omitting empty
+redundant sides. Explicit structural material semantics clear the detail bit;
+hint/skip, area/antiportals, origin, sky, liquid and fog semantics preserve the
+baseline. Explicit detail materials then request detail; nonsolid/translucent
+materials otherwise preserve the baseline. For remaining opaque solids, a point
+strictly inside an open leaf is a detail candidate. A PVS table with missing
+self-visibility bits suppresses that geometric promotion.
+
+This follows the compiler's behavior of marking leaf space opaque with structural
+opaque brushes, while detail brushes are inserted without doing so. It repairs
+missing leaf references and checks structural semantics beyond the first shader.
+It does not prove which brush caused a partition. Hidden detail inside opaque
+space remains ambiguous: absent open witnesses preserve the legacy flag rather
+than forcing structural. Thin fragments, unsupported enclosures, shared trees and
+resource limits similarly preserve the baseline. Brush entities retain their
+previous flags. Missing VIS remains unknown; all-visible or fast VIS does not
+establish authoring intent. Current shader assets may differ from the original
+assets, so material-based decisions are assumptions recorded in the report.
+
+`-detail-max-work N` selects the geometry/PVS analysis budget (default 50,000,000;
+range 1–100,000,000). It applies to this optional analysis, not all preexisting
+loading, shader processing or MAP export work. Exhaustion occurs before output
+staging, preserving previous MAP/report files. Geometry scratch limits and
+numerical thresholds are those of `-bsp-evidence -brush-cells`. Optional inference
+reports are limited to 64 MiB; exceeding that limit preserves prior outputs too.
+
+The schema 1 report adds an optional `detail_inference` object. It records policy,
+analysis work, VIS availability/inconsistency and one decision per normalized
+input brush: baseline/applied flags, a reason, evaluated material compile flags
+(null when unevaluated), cell status, fragment counts, interior clusters, invisible
+PVS pairs and an open witness where found. These records include skipped input
+brushes; `detail_classification` separately counts brushes actually exported.
+Reports explicitly mark original classification, original shader identity and
+rebuilt BSP equivalence as unproven. This is a deterministic proposed export,
+not yet a saved-override or interactive review system.
+
+The [known-source corpus](validation/brush-cell-inference.json) checks 36 rebuilds
+in fast/full mode across three formats. Controls include removed detail references,
+mixed groups, translucent structural materials and structural semantics present
+only on a non-first side. They require source geometry/materials/contents/order,
+entity preservation and sampled spatial partition/PVS agreement. These synthetic
+controls support the option's limited policy; they do not establish universal
+classification accuracy or recreate lost author metadata.
+
 ## Recovery details
 
 A per-material bounds hierarchy searches all overlapping triangles, including
@@ -115,11 +175,13 @@ triangles larger than the source brush face. The previous maximum-bound cutoff
 could miss these. Degenerate triangles are excluded. The affine solve works on
 edge differences in double precision, rejects ill-conditioned geometry and
 constant/non-finite UV axes, and supplies finite fallback transforms. Current
-brush-detail membership uses nonopaque leaf references and explicit structural
-shader flags; it is a heuristic, not the planned portal-participation analysis.
+default brush-detail membership uses nonopaque leaf references and explicit
+structural shader flags. The optional cell policy above extends this heuristic;
+portal adjacency and authoring review remain future work.
 
 The optional `detail_classification` object in version 1 reports names this
-policy, records its structural override scope (`brush_shader_contents`), and
+selected policy, records its structural override scope (`brush_shader_contents`
+by default, extended to current exported side materials in cell mode), and
 counts exported brushes with/without the detail bit. `author_classification_proven`
 is false: neither a retained flag nor leaf membership proves the original editor
 choice. Counts include brush entities and exclude synthetic origin brushes;

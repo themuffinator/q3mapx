@@ -3,8 +3,10 @@
 ## Status and objective
 
 This roadmap was added on 2026-09-30. The first shared
-[BSP evidence command](BSP-EVIDENCE.md) is implemented and validated; the current
-decompiler does not yet implement the inference or review tools below. Recover the closest supported
+[BSP evidence command](BSP-EVIDENCE.md) and optional
+[`-detail-policy cells` exporter](DECOMPILATION.md#detail-inference-policy) are
+implemented with bounded geometry and per-brush decisions. The broader group,
+light and review tools below remain planned. Recover the closest supported
 recreation of the author's MAP: editable geometry, organization, materials,
 visibility behavior and source lighting. Keep exact extraction available alongside
 optional inference, and preserve the input BSP and existing recovered output.
@@ -35,7 +37,7 @@ the original author's recovered metadata solely because its rebuild looks simila
 
 ## Detail and structural geometry inference
 
-The current converter's `detailBrushes` table marks brushes referenced by leaves
+The default converter's `detailBrushes` table marks brushes referenced by leaves
 with nonopaque clusters, then excludes explicit structural shader flags. This is
 a useful starting heuristic, not a complete reconstruction of portal participation.
 Audit it against known detail/structural labels before replacing or extending it.
@@ -55,6 +57,15 @@ detail flags on structural source sides remain a distinct limitation: the
 compiler retains their splitter-priority effects without preserving those flags
 as recoverable source metadata. Known-source controls isolate this effect rather
 than interpreting every partition difference as a classification error.
+
+The first optional classifier now clips brush interiors through the world tree,
+without relying on leaf-brush references. Strict interior witnesses and current
+exported-side material semantics support detail proposals; protected or uncertain
+cases retain the legacy baseline. A 36-rebuild corpus includes deliberately
+removed references and non-first-side structural materials, alongside analytical
+geometry, VIS, budget and worker controls. It does not yet reconstruct complete
+leaf adjacency, accept PRTs, prove portal causality, save user overrides or expose
+GUI proposal review. Broader real-map classification calibration remains open.
 
 1. Relate brush faces to BSP partition planes, adjacent leaf cells, opaque space,
    cluster boundaries and PVS changes. When a compatible PRT is supplied, use its

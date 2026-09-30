@@ -205,8 +205,9 @@ Keep remaining work visible as development proceeds.
 
 ## M8 — Decompiler inference and authoring fidelity
 
-User-requested expansion, 2026-09-30. This work is planned; current MAP recovery
-does not yet implement these inference systems. Detailed design, source-data
+User-requested expansion, 2026-09-30. Shared evidence and the first optional
+geometric detail policy are implemented; broader inference/review remains active.
+Detailed design, source-data
 limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md).
 
 - [ ] Build shared BSP evidence/provenance analysis and a known-source evaluation
@@ -225,6 +226,11 @@ limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md
   redundant sides. Projects retain the policy, and the workbench checks advertised
   compiler/profile support before queuing. Discarded contradictory side flags
   and brush-model detail ambiguity remain explicit findings for the inference work.
+  The CLI now offers bounded convex brush-interior evidence and an opt-in cell
+  policy with current-material protection and per-brush decision provenance.
+  Thirty-six additional rebuilds cover missing detail references, non-first-side
+  structural semantics and positive/negative controls. Complete leaf adjacency,
+  PRT integration, wider calibration, saved overrides and GUI review remain open.
 - [ ] Infer useful `func_group` membership from geometry, materials, repeated
   assemblies and compile-property evidence, independently of detail classification.
   Preserve entity ownership and distinguish inferred groups from surviving metadata.

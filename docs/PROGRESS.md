@@ -1302,3 +1302,57 @@ reference the project-local logs and each build's `tests/workbench/window-state`
 images. No new unrelated issue was found; the existing `UnsortedSet` warning
 remains. No external code/dependency was added, and the 0.3.0 packaged archive is
 unchanged. The broader inference and intelligent compiler roadmap remains open.
+
+## 2026-09-30 — Convex brush-cell evidence and optional detail inference
+
+Added `-bsp-evidence -brush-cells` to clip bounded world-brush interiors through
+the actual BSP tree, independently of stored leaf-brush references. The analysis
+records open/opaque interior witnesses, clearance, fragment/volume consistency
+and stored PVS relationships. Double-precision clipping has explicit coordinate,
+geometry and work limits; up to 32 tasks distribute uneven brushes through the
+persistent job pool. Thin, unavailable or ambiguous geometry produces explicit
+fallback status rather than an unsupported classification claim.
+
+Added `-detail-policy legacy|cells` and `-detail-max-work` for MAP recovery. Legacy
+remains the default. The cell policy considers current exported-side materials,
+protects structural/hint/sky/liquid/portal and other special semantics, preserves
+brush-entity and ambiguous baseline flags, and records every input-brush decision
+in the optional schema 1 report extension. Inconsistent PVS prevents geometric
+promotion. The policy supports three formats, fast/full recovery and legacy
+conversion with an automatic report. Native recovery-only profiles support
+read-only cell evidence; inference export requires a writable profile. Current
+shader assumptions and unproven authoring/rebuild equivalence are explicit.
+
+The new corpus evaluates 90 labelled world brushes and independently verifies
+195 interior witnesses. It repairs 19 legacy classification errors across
+deliberately removed detail references and structural semantics present only on
+a non-first side. Thirty-six rebuilds preserve exact compiled brush geometry,
+order, materials, contents and surviving entities, with matching node counts and
+spatial partition/PVS relationships at 594 points (352,836 ordered pairs). Oblique
+half-cubes/tetrahedra, overlaps, thin slivers, translated solids, bounds, shared
+trees, single leaves, six native readers and relocated early roots add independent
+controls. Work budgets and the actual 64 MiB report ceiling preserve previous
+outputs. One/four-worker reports and MAPs agree; 36 default MAP exports also match
+the preserved `39a8ec5` executable byte for byte.
+
+Nine existing regression groups pass on Windows and Linux release builds. The
+final new-feature group passes in 10.75 and 36.76 seconds respectively; the first
+development runs corrected test assumptions about malformed planes, contradictory
+axial bounds and `.map` basename resolution. Nine Linux ASan/UBSan groups pass in
+581.92 seconds with the established legacy leak-detection exclusion. Fidelity
+metrics and analytical values agree across all three builds. A separate 448-brush
+probe confirms parallel report parity; its small local timings, collected during
+other validation, do not establish a general decompilation speedup.
+
+[Validation identities and results](validation/brush-cell-inference.json) retain
+the exact source/binary hashes, executed checks and compatibility/profiling
+evidence. Useful logs/probes remain under `.agents/tmp/continuation/brush-cells-*`
+and generated fixtures under each build's `tests/brush-cells` directory. No new
+unrelated issue was found; existing `UnsortedSet` warnings remain. No external
+code/dependency was added, and the portable 0.3.0 archive is unchanged. Complete
+leaf adjacency/PRT use, broader calibration, group/light inference, saved user
+overrides and workbench review remain active roadmap work.
+
+Cleanup limitation: automatic approval review rejected removal of the disposable
+initial `.agents/tmp/continuation/brush-cells-probe` directory, reporting only
+"blocked by policy". That directory remains alongside the retained final evidence.

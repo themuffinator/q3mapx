@@ -298,6 +298,7 @@ static void HelpEvidence()
 		{ "-bsp-evidence <filename.bsp>", "Write a bounded .evidence.json analysis; no game assets required, select the matching -game profile" },
 		{ "-report <filename.json>", "Set report destination; preserve existing output if analysis or publication fails" },
 		{ "-region-depth <0..8>", "Subtree frontier for regional split/reference counts (default 4); these are observations, not optimization proposals" },
+		{ "-brush-cells", "Clip bounded world-brush interiors through the BSP tree; report open/opaque witnesses and stored PVS relationships independently of leaf-brush references" },
 		{ "-max-work <1..100000000>", "Bound expanded evidence work units (default 50000000); exhaustion fails without publishing a partial report" },
 	} );
 }
@@ -330,6 +331,8 @@ static void HelpConvert()
 		{ "-o <output.map>", "Choose output path for map decompilation" },
 		{ "-report <output.json>", "Write a recovery report with counts, texture fallbacks and format limitations" },
 		{ "-brush-order <bsp|rebuild>", "MAP brush order: source BSP records (default), or compensate for q3mapx loader insertion using current shader opacity; rebuild requires a BSP-writing profile and excludes -wtf" },
+		{ "-detail-policy <legacy|cells>", "Keep the existing leaf-reference heuristic (default), or infer detail candidates from open brush interiors with current material protection and a per-brush report; cells requires a BSP-writing profile and excludes -wtf" },
+		{ "-detail-max-work <1..100000000>", "Bound geometry/PVS analysis work for -detail-policy cells (default 50000000); exhaustion preserves previous outputs" },
 		{ "-deluxemapsastexcoord", "Save deluxemap names and texcoords instead of textures (only when writing ase and obj)" },
 		{ "-de <F>", "Distance epsilon for the conversion (only when reading map)" },
 		{ "-fast", "fast bsp to map conversion mode (without texture alignments)" },

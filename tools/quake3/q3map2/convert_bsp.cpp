@@ -1038,6 +1038,7 @@ int ConvertBSPMain( Args& args, bool decompile ){
 	int meshPatchSteps=8;
 	bool patchStepsSpecified=false;
 	bool brushOrderSpecified=false;
+	bool detailPolicySpecified=false, detailWorkSpecified=false;
 	int ( *convertFunc )( char * );
 	const game_t  *convertGame;
 	bool map_allowed, force_bsp, force_map;
@@ -1152,10 +1153,33 @@ int ConvertBSPMain( Args& args, bool decompile ){
 			else if ( striEqual( order, "rebuild" ) ) decompileOptions.brushOrder = DecompileOptions::BrushOrder::Rebuild;
 			else Error( "Brush order must be bsp or rebuild" );
 		}
+		while ( args.takeArg( "-detail-policy" ) ) {
+			detailPolicySpecified = true;
+			const char* policy = args.takeNext();
+			if ( striEqual( policy, "legacy" ) ) decompileOptions.detailPolicy = DecompileOptions::DetailPolicy::Legacy;
+			else if ( striEqual( policy, "cells" ) ) decompileOptions.detailPolicy = DecompileOptions::DetailPolicy::Cells;
+			else Error( "Detail policy must be legacy or cells" );
+		}
+		while ( args.takeArg( "-detail-max-work" ) ) {
+			detailWorkSpecified = true;
+			const int work = args.takeInt();
+			if ( work < 1 || work > 100'000'000 ) Error( "Detail analysis work must be between 1 and 100000000" );
+			decompileOptions.detailWorkLimit = unsigned( work );
+		}
 	}
 	if ( !args.empty() ) Error( "Unknown conversion option '%s'", args.takeFront() );
 	if ( brushOrderSpecified && ( !map_allowed || convertGame ) )
 		Error( "-brush-order requires map, map_bp or map_220 export" );
+	if ( detailPolicySpecified && ( !map_allowed || convertGame ) )
+		Error( "-detail-policy requires map, map_bp or map_220 export" );
+	if ( detailWorkSpecified && decompileOptions.detailPolicy != DecompileOptions::DetailPolicy::Cells )
+		Error( "-detail-max-work requires -detail-policy cells" );
+	if ( decompileOptions.detailPolicy == DecompileOptions::DetailPolicy::Cells ) {
+		if ( !g_game->write ) Error( "Cell detail inference requires a BSP-writing game profile" );
+		if ( g_decompile_wtf ) Error( "Cell detail inference cannot be combined with -wtf material replacement" );
+		if ( force_map || ( !force_bsp && path_extension_is( fileName, "map" ) ) ) Error( "Cell detail inference requires a compiled BSP input" );
+		decompileOptions.automaticReport = true;
+	}
 	if ( decompileOptions.brushOrder == DecompileOptions::BrushOrder::Rebuild ) {
 		if ( !g_game->write ) Error( "Rebuild brush order requires a BSP-writing game profile; native recovery-only profiles are unsupported" );
 		if ( g_decompile_wtf ) Error( "Rebuild brush order cannot be combined with -wtf material replacement" );

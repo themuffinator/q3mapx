@@ -27,6 +27,20 @@ struct VisibilityEvidence {
     uint64_t referencedClusters = 0, visiblePairs = 0, missingSelfBits = 0;
     uint64_t minVisible = 0, maxVisible = 0;
 };
+struct CellWitness {
+    bool available = false;
+    int leaf = -1, cluster = -1;
+    double clearance = 0;
+    std::array<double, 3> point{};
+};
+struct BrushCellEvidence {
+    const char* status = "not_world_geometry";
+    uint64_t leafFragments = 0, uncertainFragments = 0;
+    double brushVolume = 0, fragmentVolume = 0;
+    CellWitness open, opaque;
+    std::vector<int> interiorClusters;
+    uint64_t testedPVSPairs = 0, invisiblePVSPairs = 0;
+};
 struct BSPEvidence {
     int worldHead = 0;
     bool hasWorldHead = false, uniqueNodePaths = true;
@@ -34,8 +48,13 @@ struct BSPEvidence {
     std::vector<BrushEvidence> brushes;
     std::vector<RegionEvidence> regions;
     VisibilityEvidence visibility;
+    bool brushCellsRequested = false;
+    std::vector<BrushCellEvidence> brushCells;
 };
 // Requires LoadBSPFile + ParseEntities. Throws on budget exhaustion; no partial
 // result is returned. A shared node graph disables path/subtree observations.
 BSPEvidence analyzeBSPEvidence(unsigned regionDepth, uint64_t workLimit);
+// Convex brush interiors clipped through the world tree. Does not depend on
+// stored brush/leaf references or interpret source detail/material semantics.
+void analyzeBSPBrushCells(BSPEvidence& evidence, uint64_t workLimit);
 }

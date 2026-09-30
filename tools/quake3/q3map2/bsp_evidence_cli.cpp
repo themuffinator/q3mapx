@@ -85,7 +85,7 @@ void writeReport(FILE* output, const std::filesystem::path& source, const Identi
         throw std::runtime_error("Evidence source path cannot be represented as UTF-8");
     w.StartObject(); number(w,"schema_version",1);
     w.Key("report_kind"); w.String("bsp_evidence");
-    w.Key("scope"); w.String("normalized_geometry_partition_associations_and_stored_pvs");
+    w.Key("scope"); w.String(evidence.brushCellsRequested ? "normalized_geometry_partition_associations_brush_interiors_and_stored_pvs" : "normalized_geometry_partition_associations_and_stored_pvs");
     w.Key("source"); w.StartObject();
     w.Key("path"); w.String(reinterpret_cast<const char*>(path.c_str()));
     w.Key("sha256"); w.String(identity.sha256.c_str()); number(w,"bytes",identity.bytes);
@@ -97,6 +97,17 @@ void writeReport(FILE* output, const std::filesystem::path& source, const Identi
     w.Key("limits"); w.StartObject(); number(w,"analysis_records",2'000'000);
     number(w,"expanded_brush_sides",8'000'000); number(w,"work_units",workLimit);
     number(w,"work_units_used",evidence.workUsed); number(w,"report_bytes",maxReportBytes); w.EndObject();
+    if(evidence.brushCellsRequested) {
+        w.Key("brush_cell_analysis"); w.StartObject();
+        w.Key("method"); w.String("convex_brush_clipping_through_world_tree");
+        w.Key("uses_stored_leaf_brush_references"); w.Bool(false);
+        w.Key("author_classification_proven"); w.Bool(false);
+        number(w,"max_faces_per_cell",256); number(w,"max_points_per_cell",2048);
+        number(w,"max_pending_points_per_worker",8192); number(w,"max_active_workers",32);
+        w.Key("max_absolute_coordinate"); w.Double(1e7);
+        w.Key("minimum_witness_clearance"); w.Double(0.01);
+        w.Key("cap_vertex_merge_distance"); w.Double(1e-7); w.EndObject();
+    }
     w.Key("counts"); w.StartObject();
     number(w,"models",bspModels.size()); number(w,"brushes",bspBrushes.size());
     number(w,"brush_sides",bspBrushSides.size()); number(w,"planes",bspPlanes.size());
@@ -151,6 +162,25 @@ void writeReport(FILE* output, const std::filesystem::path& source, const Identi
         else { w.Key("leaf_path_partition_side_indices"); w.Null(); }
         if(data.axialEnclosureAvailable) bounds(w,"axial_plane_enclosure",data.mins,data.maxs);
         else { w.Key("axial_plane_enclosure"); w.Null(); }
+        if(evidence.brushCellsRequested) {
+            const auto& cells=evidence.brushCells[b];
+            w.Key("interior_cells"); w.StartObject(); w.Key("status"); w.String(cells.status);
+            number(w,"leaf_fragments",cells.leafFragments); number(w,"uncertain_fragments",cells.uncertainFragments);
+            w.Key("brush_volume"); if(cells.brushVolume>0) w.Double(cells.brushVolume); else w.Null();
+            w.Key("fragment_volume"); if(cells.brushVolume>0) w.Double(cells.fragmentVolume); else w.Null();
+            for(auto pair:{std::pair{"open_witness",&cells.open},{"opaque_witness",&cells.opaque}}) {
+                w.Key(pair.first); const auto& witness=*pair.second;
+                if(!witness.available) { w.Null(); continue; }
+                w.StartObject(); number(w,"leaf",witness.leaf); w.Key("cluster"); w.Int(witness.cluster);
+                w.Key("point"); w.StartArray(); for(double v:witness.point) w.Double(v); w.EndArray();
+                w.Key("clearance"); w.Double(witness.clearance); w.EndObject();
+            }
+            values(w,"interior_clusters",cells.interiorClusters);
+            for(auto pair:{std::pair{"tested_pvs_pairs",cells.testedPVSPairs},{"invisible_pvs_pairs",cells.invisiblePVSPairs}}) {
+                w.Key(pair.first); if(evidence.visibility.present) w.Uint64(pair.second); else w.Null();
+            }
+            w.EndObject();
+        }
         w.EndObject();
     }
     w.EndArray();
@@ -170,6 +200,11 @@ void writeReport(FILE* output, const std::filesystem::path& source, const Identi
     }
     w.EndArray();
     w.Key("limitations"); w.StartArray();
+    if(evidence.brushCellsRequested) {
+        w.String("Brush-cell clipping measures world-space convex interiors, independent of stored leaf-brush references. It does not identify source detail flags or material opacity; brushes in other models are excluded.");
+        w.String("Witnesses have at least 0.01 units of clearance from every brush/path plane. Missing witnesses, thin fragments, unavailable enclosures, geometric limits or volume mismatch are inconclusive, not proof of an empty or structural brush.");
+        w.String("Interior PVS pairs describe stored cluster visibility, including self/directed pairs. Missing VIS remains unknown; equal or different rows do not prove that a brush caused a split.");
+    }
     for(const char* note : {
         "Partition associations are exact unoriented plane matches, not proof that a brush created a portal or was originally structural. Nearby/scaled planes are not merged.",
         "Leaf-path matches restrict associations to ancestors of referenced world leaves. Matching detail faces and submodel faces are still possible; no detail/group/light inference is performed.",
@@ -192,11 +227,12 @@ void writeReport(FILE* output, const std::filesystem::path& source, const Identi
 int BSPEvidenceMain(Args& args) try {
     const char* report = nullptr;
     unsigned regionDepth=4; uint64_t workLimit=50'000'000;
+    const bool brushCells=args.takeArg("-brush-cells");
     if(args.takeArg("-report")) report=args.takeNext();
     if(args.takeArg("-region-depth")) regionDepth=ParseIntegerOption("-region-depth",args.takeNext(),0,8);
     if(args.takeArg("-max-work")) workLimit=ParseIntegerOption("-max-work",args.takeNext(),1,100'000'000);
     if(args.size()!=1 || args.getVector().front()[0]=='-')
-        throw std::runtime_error("Usage: q3mapx -game PROFILE -bsp-evidence [-report file.json] [-region-depth 0..8] [-max-work N] file.bsp");
+        throw std::runtime_error("Usage: q3mapx -game PROFILE -bsp-evidence [-brush-cells] [-report file.json] [-region-depth 0..8] [-max-work N] file.bsp");
     const char* input=args.takeFront();
     const auto source=std::filesystem::absolute(std::filesystem::path(reinterpret_cast<const char8_t*>(input))).lexically_normal();
     auto destination=source; destination.replace_extension(".evidence.json");
@@ -208,7 +244,8 @@ int BSPEvidenceMain(Args& args) try {
         throw std::runtime_error("BSP evidence output must not replace its input");
     const auto before=identify(source);
     LoadBSPFile(input); ParseEntities();
-    const auto evidence=q3mapx::analyzeBSPEvidence(regionDepth,workLimit);
+    auto evidence=q3mapx::analyzeBSPEvidence(regionDepth,workLimit);
+    if(brushCells) q3mapx::analyzeBSPBrushCells(evidence,workLimit);
     const auto after=identify(source);
     if(before.bytes!=after.bytes || before.sha256!=after.sha256) throw std::runtime_error("BSP changed during evidence analysis; report not published");
     q3mapx::OutputFiles outputs;

@@ -5,6 +5,7 @@ Development builds after 0.3.0 include a read-only analysis command:
 ```sh
 q3mapx -game quake3 -bsp-evidence example.bsp
 q3mapx -game ja -bsp-evidence -report evidence.json -region-depth 3 example.bsp
+q3mapx -game quake3 -threads 4 -bsp-evidence -brush-cells example.bsp
 ```
 
 The default output is `example.evidence.json`. Select the appropriate game
@@ -31,7 +32,8 @@ from the directory inspector and MAP recovery reports; their schemas are unchang
 | `counts` | Validated normalized records, entities, recovered terrain, unloaded static-model instances and recorded compatibility normalizations |
 | `world_graph` | Native world head (negative means `-leaf-1`), reachable node/leaf records and whether unique node paths permit local analysis |
 | `models` | Normalized brush/surface spans and stored bounds |
-| `brushes` | Ownership, contents, native brush provenance, side indices, partition associations, leaf-reference counts and optional axial-plane enclosure |
+| `brushes` | Ownership, contents, native brush provenance, side indices, partition associations, leaf-reference counts, optional axial-plane enclosure and requested `interior_cells` |
+| `brush_cell_analysis` | Optional clipping method, numerical limits and witness assumptions when `-brush-cells` is requested |
 | `visibility` | Presence, stored dimensions, number of referenced cluster IDs, visible-pair counts, row extrema, density, all-visible status and missing diagonal bits |
 | `regions` | Node subtree summaries ranked by descending subdivision count, with depths, bounds, brush/surface references, indexed triangles and patch references |
 | `limits` | Record, expanded-side, work and output ceilings, plus consumed work units |
@@ -76,6 +78,53 @@ Missing VIS produces null statistics, never a synthesized all-visible table.
 An empty table has no density/all-visible result. Fast VIS cannot be identified
 reliably from the stored bytes, so `compile_mode` remains `unknown`. A missing
 self bit is exposed as an observation, without silently modifying the table.
+
+## Brush interiors
+
+`-brush-cells` adds an opt-in geometric analysis without loading game assets. For
+each uniquely owned world brush, it clips its axial enclosure against every
+retained brush plane, then clips that convex solid through the actual world BSP
+tree. This does not use stored leaf-brush references to determine occupied cells.
+Planes are normalized in double precision; native early world heads and reversed
+plane records do not require a zero root or adjacent plane pairs.
+
+The `interior_cells` object reports:
+
+- `status`, fragment counts, original clipped volume and summed fragment volume.
+- `open_witness` and `opaque_witness`: a point, leaf/cluster and minimum clearance
+  from every original brush plane and every tree plane on that point's path.
+  The best-clearance witnessed point is retained for each category, with stable
+  traversal tie-breaking. Open means cluster at least zero, opaque means negative.
+- Sorted `interior_clusters` with witnessed open interiors. `tested_pvs_pairs`
+  includes all ordered pairs and self pairs; `invisible_pvs_pairs` counts absent
+  stored visibility bits. Both are null when VIS is absent.
+
+A witness needs at least 0.01 units of clearance. Its point is a fragment's
+vertex-average center, not a solved maximum-inscribed sphere. A missing witness
+therefore does not prove absence of interior volume. Thin fragments count as
+uncertain. A brush can have both open and opaque witnesses when it overlaps other
+structure. Translucent structural brushes can also have open interiors; these
+observations alone do not classify source detail flags or recover portal causality.
+The separate [`-detail-policy cells` exporter](DECOMPILATION.md#detail-inference-policy)
+combines them with current material semantics.
+
+Successful analysis has `status: "analyzed"` and volume conservation within
+`max(1e-6, brush_volume * 1e-6)`. Other statuses identify non-world/ambiguous
+ownership, unavailable world paths or axial enclosure, coordinate/geometry limits,
+invalid planes, empty/degenerate intersections or volume mismatch. Treat partial
+observations under any unsuccessful status as inconclusive. Native validation may
+reject malformed planes before this stage. Shared acyclic node graphs are not
+expanded; brush entities remain in model-local coordinates and are excluded.
+
+Geometry limits are 256 brush sides/cell faces, 2,048 face-vertex occurrences per
+cell, 8,192 pending face-vertex occurrences per worker and absolute axial bounds
+of 10,000,000 units. Cap vertices within 1e-7 units are merged. Up to 32 active
+tasks dynamically distribute brushes through the existing persistent job pool,
+subject to `-threads`. Geometric limits produce explicit per-brush fallback
+statuses; exhaustion of the shared work budget fails the entire analysis before
+publication. The work counter additionally covers clipping, cap deduplication,
+tree visits, witness validation and interior PVS pairs. These are implementation
+work units, not milliseconds or an exact accounting of CPU instructions.
 
 ## Regional investigation
 
@@ -133,6 +182,14 @@ failure. Source maps/BSPs and
 preexisting output are checked for preservation. See the
 [validation record](validation/bsp-evidence.json) for executed platforms and
 private native probes. No proprietary map geometry is committed.
+
+`tests/brush_cells.py` independently checks witness points against source planes
+and the tree, analytical volumes for oblique and overlapping solids, thin-fragment
+uncertainty, large translations, geometry limits, shared/single-leaf trees, native
+world heads and six recovery-only profiles. Removing detail-brush leaf references
+does not change geometric observations. Known-source recovery/rebuild controls,
+worker parity, exact budget boundaries and prior-output preservation are recorded
+in [the brush-cell validation record](validation/brush-cell-inference.json).
 
 Optional native probes use the existing private-input harness:
 

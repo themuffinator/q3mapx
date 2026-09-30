@@ -245,6 +245,16 @@ source flags. Redundant translucent sides, multiple brush-entity solids/origins,
 default/legacy parity, worker parity and option/profile rejection are covered.
 Evidence is written to `tests/recovery-order/validation.json` in each build tree.
 
+`brush_cells` checks independently evaluated interior witnesses, analytical convex
+volumes and 36 known-source rebuilds for optional cell detail inference. Removing
+detail references must leave geometric evidence unchanged and still permit correct
+fixture reconstruction. Material, VIS, geometry-limit and tree controls exercise
+fallbacks; exact work budgets, worker parity, invalid options and existing-output
+preservation cover failure paths. Six recovery-only readers and relocated early
+world roots exercise read-only evidence. Each build records
+`tests/brush-cells/validation.json`; these controls do not prove general authoring
+fidelity or portal causality.
+
 Workbench recovery checks cover saved/legacy brush-order settings, malformed
 project/catalog fields, the real decompile job/report and run snapshot, and
 absence of recovery arguments from other workflows. The offscreen window test

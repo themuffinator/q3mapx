@@ -1,0 +1,1003 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-30T09:04:52.379194+00:00",
+  "base_revision": "5ef09249342d650e04e9762edee1dadb70db8f52",
+  "scope": "Opt-in convex brush/tree interior evidence and material-protected detail inference; known-source synthetic rebuild controls",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "a7fd75798400fd35568f40611269b58e86cdf1455dcae584a3bf2fee3ea49f84",
+    "tools/quake3/q3map2/bsp_evidence.h": "a192dfc8cad9edf02c107e265989dc9666e860112866cac1391fe2a0691e41f9",
+    "tools/quake3/q3map2/bsp_evidence_cli.cpp": "817dea9415ff8c8df8c0e8c971ec93271464742f9a95cee2d5f140c8e9186372",
+    "tools/quake3/q3map2/bsp_brush_cells.cpp": "c9cdd8f5ce2b874a13ab36b49aee42bbcfc374625f2c5ff659ac8b37d6bbd10d",
+    "tools/quake3/q3map2/convert_bsp.cpp": "341fe2491c5f8f79e3fa568017f3f154531d45083b0a758c1964821672a662b6",
+    "tools/quake3/q3map2/convert_map.cpp": "8723d8db3e361f8fff2b10a00b032671a3239bfde9e4a879a2a6d316d9434743",
+    "tools/quake3/q3map2/decompile.h": "5f4ef5d31bde55a45acefcc4658d2cc20ba97edeb87196dcd7e097e375161b40",
+    "tools/quake3/q3map2/help.cpp": "b115acc03ed09c38d43aeb09b2751e1ef38aedf78f4b742cb7baa980fc4a9c42",
+    "tests/brush_cells.py": "4ce155e9f84f27fd89e78358b91f6132a162162fd37bf74faad85e454aea7f6b"
+  },
+  "release_platforms": [
+    {
+      "build": "release",
+      "compiler_sha256": "30fa5ac4f7d344df973ef2b25425450a72082c94814ac9ecf24f42caadfaae7a",
+      "regression_checks": {
+        "passed": [
+          {
+            "name": "compiler_pipeline",
+            "seconds": 0.63
+          },
+          {
+            "name": "bsp_evidence",
+            "seconds": 1.43
+          },
+          {
+            "name": "native_fakk",
+            "seconds": 0.96
+          },
+          {
+            "name": "native_mohaa",
+            "seconds": 0.68
+          },
+          {
+            "name": "native_early",
+            "seconds": 1.4
+          },
+          {
+            "name": "recovery_outputs",
+            "seconds": 0.37
+          },
+          {
+            "name": "decompile_recovery",
+            "seconds": 0.27
+          },
+          {
+            "name": "recovery_classification",
+            "seconds": 7.35
+          },
+          {
+            "name": "recovery_order",
+            "seconds": 13.52
+          }
+        ],
+        "log": ".agents/tmp/continuation/brush-cells-test-windows.log",
+        "log_sha256": "db06af42b4178af547c84699f9f0a0b34eb2042a83ed9007a965676db67e0705",
+        "note": "Nine existing groups passed; the new test in this initial run still had an incorrect assumption that -decompile on a .map basename loads MAP source. Its final corrected and extended run is recorded separately."
+      },
+      "new_feature_checks": {
+        "group": "brush_cells",
+        "seconds": 10.75,
+        "log": ".agents/tmp/continuation/brush-cells-final-windows.log",
+        "log_sha256": "68049deb1a448238fb9949e44c3157daf1c3812429319cab2b4cebab8946b0c1"
+      },
+      "validation_path": "build/release/tests/brush-cells/validation.json",
+      "validation_sha256": "a1b12fc99fa96c16ecf64a7d43160cc1624cd8738b5041c7b8ac833c5ad1112d",
+      "corpus": {
+        "known_source": [
+          {
+            "case": "detail",
+            "source_sha256": "33e9bec078750cb2f32db6b1696a0c2debb77fd1a453fa1b3392ab671f784625",
+            "bsp_sha256": "920b6cfd65327525770993bd3c69970fa03a761e375a9971c5d7c9949a592aa0",
+            "world_brushes": 15,
+            "removed_detail_references": 9,
+            "legacy_classification_errors": 9,
+            "cells_classification_errors": 0,
+            "formats": 3,
+            "fast_and_full": true,
+            "rebuild_geometry_order_material_contents_match": true,
+            "sampled_spatial_pvs_match": true
+          },
+          {
+            "case": "structural",
+            "source_sha256": "264fb57cd267e5eb351b90bd0cd4429d644d5865ebce0ee3d48ea4b337b63667",
+            "bsp_sha256": "a87d2d961d140caddc454be0c9101abcfdda56f612b010d7c1d296540e1e7aaf",
+            "world_brushes": 15,
+            "removed_detail_references": 0,
+            "legacy_classification_errors": 0,
+            "cells_classification_errors": 0,
+            "formats": 3,
+            "fast_and_full": true,
+            "rebuild_geometry_order_material_contents_match": true,
+            "sampled_spatial_pvs_match": true
+          },
+          {
+            "case": "mixed-group",
+            "source_sha256": "bfe95285a4446323e2ccfdb5cc09fa466e690d5ad7bf5a644b27ffc9be72855f",
+            "bsp_sha256": "3f4f93f8ff5869b1498d76280cf9b1d094c20ffb3721d4ec3d500066c4860d90",
+            "world_brushes": 15,
+            "removed_detail_references": 5,
+            "legacy_classification_errors": 5,
+            "cells_classification_errors": 0,
+            "formats": 3,
+            "fast_and_full": true,
+            "rebuild_geometry_order_material_contents_match": true,
+            "sampled_spatial_pvs_match": true
+          },
+          {
+            "case": "translucent-structural",
+            "source_sha256": "160aa498e1e90941be4f97721ecdebe6b3db5d508b11a341ff5c65066bbb99ae",
+            "bsp_sha256": "7ea67957bd22d201cddcb81a5ed712de1896d80b8a343f90ecee82b7d9c9a599",
+            "world_brushes": 15,
+            "removed_detail_references": 0,
+            "legacy_classification_errors": 0,
+            "cells_classification_errors": 0,
+            "formats": 3,
+            "fast_and_full": true,
+            "rebuild_geometry_order_material_contents_match": true,
+            "sampled_spatial_pvs_match": true
+          },
+          {
+            "case": "mixed-opacity",
+            "source_sha256": "26051284444f4faac7e20858e51f4c36f368a18a28569d816f73f98727b6107f",
+            "bsp_sha256": "0dd79833fcc6684c44d2b0af0c328a87e6ba0f86d9c56684bb09743b66e3f950",
+            "world_brushes": 15,
+            "removed_detail_references": 0,
+            "legacy_classification_errors": 0,
+            "cells_classification_errors": 0,
+            "formats": 3,
+            "fast_and_full": true,
+            "rebuild_geometry_order_material_contents_match": true,
+            "sampled_spatial_pvs_match": true
+          },
+          {
+            "case": "side-structural",
+            "source_sha256": "ff4c4b54f22926cdd5ee8fe040bc52aca1290754110eefac4e79c0f09626d8bf",
+            "bsp_sha256": "e5bb1b30025e78b98245790fef0b243b61d12f19bad8483603560119ccd66bf0",
+            "world_brushes": 15,
+            "removed_detail_references": 0,
+            "legacy_classification_errors": 5,
+            "cells_classification_errors": 0,
+            "formats": 3,
+            "fast_and_full": true,
+            "rebuild_geometry_order_material_contents_match": true,
+            "sampled_spatial_pvs_match": true
+          }
+        ],
+        "rebuilds": 36,
+        "sampled_points_per_rebuild": 594,
+        "ordered_pairs_per_rebuild": 352836,
+        "independently_verified_witnesses": 195,
+        "analytical_controls": [
+          {
+            "case": "oblique-half-cube",
+            "expected_volume": 6912.0,
+            "reported_volume": 6912.0
+          },
+          {
+            "case": "oblique-tetrahedron",
+            "expected_volume": 2304.0,
+            "reported_volume": 2304.000000000001
+          },
+          {
+            "case": "overlapping-floor",
+            "expected_volume": 9216,
+            "reported_volume": 9216.0
+          },
+          {
+            "case": "thin-sliver",
+            "expected_volume": 1.1520000000000001,
+            "reported_volume": 1.152000054717064
+          },
+          {
+            "case": "translated-cube",
+            "expected_volume": 13824,
+            "reported_volume": 13824.0
+          },
+          {
+            "case": "redundant-planes",
+            "expected_volume": 13824,
+            "reported_volume": 13824.0
+          }
+        ],
+        "native_evidence_profiles": [
+          "alice",
+          "fakk2",
+          "mohaa",
+          "q3-ihv",
+          "q3test44",
+          "q3test45"
+        ],
+        "invalid_cli_controls": 11,
+        "scope": "Synthetic known-source controls; no universal author-classification or rebuild guarantee"
+      },
+      "passed_groups_across_recorded_runs": 10
+    },
+    {
+      "build": "linux-release",
+      "compiler_sha256": "a020ede0dc54378d82205f71b3a38319203ef7781d07a751a63fe072551e9b82",
+      "regression_checks": {
+        "passed": [
+          {
+            "name": "compiler_pipeline",
+            "seconds": 3.7
+          },
+          {
+            "name": "bsp_evidence",
+            "seconds": 10.97
+          },
+          {
+            "name": "native_fakk",
+            "seconds": 11.88
+          },
+          {
+            "name": "native_mohaa",
+            "seconds": 4.05
+          },
+          {
+            "name": "native_early",
+            "seconds": 8.59
+          },
+          {
+            "name": "recovery_outputs",
+            "seconds": 1.28
+          },
+          {
+            "name": "decompile_recovery",
+            "seconds": 1.16
+          },
+          {
+            "name": "recovery_classification",
+            "seconds": 20.63
+          },
+          {
+            "name": "recovery_order",
+            "seconds": 30.75
+          }
+        ],
+        "log": ".agents/tmp/continuation/brush-cells-test-linux.log",
+        "log_sha256": "2f755c6a6110dc50b32d5fe54d799195bb0f25566989ed320113af5e4ffff0b3",
+        "note": "Nine existing groups passed; the new test in this initial run still had an incorrect assumption that -decompile on a .map basename loads MAP source. Its final corrected and extended run is recorded separately."
+      },
+      "new_feature_checks": {
+        "group": "brush_cells",
+        "seconds": 36.76,
+        "log": ".agents/tmp/continuation/brush-cells-final-linux.log",
+        "log_sha256": "3c479e63bc95f760809bf5294b8c7a862e2321a6bfe2f389383cc966bef00f4d"
+      },
+      "validation_path": "build/linux-release/tests/brush-cells/validation.json",
+      "validation_sha256": "befaf3e4be15c21ed120cde2462cde9668ed8acedbdda184015a0a90c2678911",
+      "corpus": {
+        "known_source": [
+          {
+            "case": "detail",
+            "source_sha256": "842f669bab274224fb687d23ba74b267f117aa192ef0e240c66f1ca3690d7fcc",
+            "bsp_sha256": "d59bc9c02093a08dd00ce7a34d7cf62868862ffb2592df33ba45d1729da4a1a0",
+            "world_brushes": 15,
+            "removed_detail_references": 9,
+            "legacy_classification_errors": 9,
+            "cells_classification_errors": 0,
+            "formats": 3,
+            "fast_and_full": true,
+            "rebuild_geometry_order_material_contents_match": true,
+            "sampled_spatial_pvs_match": true
+          },
+          {
+            "case": "structural",
+            "source_sha256": "12b395273982267931e5cf7f4954412dcafc1f8c1ff4e3f6098b5cec63a31519",
+            "bsp_sha256": "6bb61d97d76daee5fc0848b382981b249ffc155c751e0d79dbe6f5772eecb34d",
+            "world_brushes": 15,
+            "removed_detail_references": 0,
+            "legacy_classification_errors": 0,
+            "cells_classification_errors": 0,
+            "formats": 3,
+            "fast_and_full": true,
+            "rebuild_geometry_order_material_contents_match": true,
+            "sampled_spatial_pvs_match": true
+          },
+          {
+            "case": "mixed-group",
+            "source_sha256": "45ddd01848a383f8cdc94ca4a8a58c5bfbfea9139e2b3973f639dbedeb692fe4",
+            "bsp_sha256": "97af0bdaa892f0df729fbac7ee0e096a0f430c4c78b08bdf55eba10f3467bcdf",
+            "world_brushes": 15,
+            "removed_detail_references": 5,
+            "legacy_classification_errors": 5,
+            "cells_classification_errors": 0,
+            "formats": 3,
+            "fast_and_full": true,
+            "rebuild_geometry_order_material_contents_match": true,
+            "sampled_spatial_pvs_match": true
+          },
+          {
+            "case": "translucent-structural",
+            "source_sha256": "833d96f965227afde23ebdfc7e2649ecea633cf9bdb7075b3be44a19a8c72ebe",
+            "bsp_sha256": "95aff3bdd35e1e810bfebe5baa4ba305977695e9627d504fa86a0ebba73ecba5",
+            "world_brushes": 15,
+            "removed_detail_references": 0,
+            "legacy_classification_errors": 0,
+            "cells_classification_errors": 0,
+            "formats": 3,
+            "fast_and_full": true,
+            "rebuild_geometry_order_material_contents_match": true,
+            "sampled_spatial_pvs_match": true
+          },
+          {
+            "case": "mixed-opacity",
+            "source_sha256": "3e1d3b37301a5a89080345d2aee1dc466856d2f1170b55b46b058a36fed1bd2c",
+            "bsp_sha256": "4ee97bfe74f6d80534c6e6ce8ce15a1263ceb7b184c0cf7fff4fb269745d6ba7",
+            "world_brushes": 15,
+            "removed_detail_references": 0,
+            "legacy_classification_errors": 0,
+            "cells_classification_errors": 0,
+            "formats": 3,
+            "fast_and_full": true,
+            "rebuild_geometry_order_material_contents_match": true,
+            "sampled_spatial_pvs_match": true
+          },
+          {
+            "case": "side-structural",
+            "source_sha256": "1062f5bbfa091390d1da844f00cf2d960e1e1dfac8de8079a1a3a2c62215037d",
+            "bsp_sha256": "879e3a594bb2e1a2a3f72feace6c0e339ce935479603038845a6eca8122a22cb",
+            "world_brushes": 15,
+            "removed_detail_references": 0,
+            "legacy_classification_errors": 5,
+            "cells_classification_errors": 0,
+            "formats": 3,
+            "fast_and_full": true,
+            "rebuild_geometry_order_material_contents_match": true,
+            "sampled_spatial_pvs_match": true
+          }
+        ],
+        "rebuilds": 36,
+        "sampled_points_per_rebuild": 594,
+        "ordered_pairs_per_rebuild": 352836,
+        "independently_verified_witnesses": 195,
+        "analytical_controls": [
+          {
+            "case": "oblique-half-cube",
+            "expected_volume": 6912.0,
+            "reported_volume": 6912.0
+          },
+          {
+            "case": "oblique-tetrahedron",
+            "expected_volume": 2304.0,
+            "reported_volume": 2304.000000000001
+          },
+          {
+            "case": "overlapping-floor",
+            "expected_volume": 9216,
+            "reported_volume": 9216.0
+          },
+          {
+            "case": "thin-sliver",
+            "expected_volume": 1.1520000000000001,
+            "reported_volume": 1.152000054717064
+          },
+          {
+            "case": "translated-cube",
+            "expected_volume": 13824,
+            "reported_volume": 13824.0
+          },
+          {
+            "case": "redundant-planes",
+            "expected_volume": 13824,
+            "reported_volume": 13824.0
+          }
+        ],
+        "native_evidence_profiles": [
+          "alice",
+          "fakk2",
+          "mohaa",
+          "q3-ihv",
+          "q3test44",
+          "q3test45"
+        ],
+        "invalid_cli_controls": 11,
+        "scope": "Synthetic known-source controls; no universal author-classification or rebuild guarantee"
+      },
+      "passed_groups_across_recorded_runs": 10
+    }
+  ],
+  "sanitizer_validation": {
+    "status": "passed",
+    "build": "linux-sanitized",
+    "sanitizers": [
+      "ASan",
+      "UBSan"
+    ],
+    "asan_options": "detect_leaks=0:abort_on_error=1",
+    "groups_passed": 9,
+    "seconds": 581.92,
+    "log": ".agents/tmp/continuation/brush-cells-test-sanitized.log",
+    "log_sha256": "0ca4aab83aec016b8d749b68a44b33ee2ab2a5786bee6623aa737c0df826aa2f",
+    "compiler_sha256": "8724e8b21ba50544afddcc9b97d691bf510ed5f55a3224c2849e13f4d0dc9ce1",
+    "validation_path": "build/linux-sanitized/tests/brush-cells/validation.json",
+    "validation_sha256": "4a2b80bd8345bd924d6a04e09f9d8d620a07d549403a59493110d7f971fd187b",
+    "corpus": {
+      "known_source": [
+        {
+          "case": "detail",
+          "source_sha256": "842f669bab274224fb687d23ba74b267f117aa192ef0e240c66f1ca3690d7fcc",
+          "bsp_sha256": "855f77b893a140c4f2893d3ac5d0ec1bebc1746662f1a074e5b1007c3b55250e",
+          "world_brushes": 15,
+          "removed_detail_references": 9,
+          "legacy_classification_errors": 9,
+          "cells_classification_errors": 0,
+          "formats": 3,
+          "fast_and_full": true,
+          "rebuild_geometry_order_material_contents_match": true,
+          "sampled_spatial_pvs_match": true
+        },
+        {
+          "case": "structural",
+          "source_sha256": "12b395273982267931e5cf7f4954412dcafc1f8c1ff4e3f6098b5cec63a31519",
+          "bsp_sha256": "9a25f6e1ddfac387749d9570b1b6b05b1fa95d80e78c974f340520d25b2af221",
+          "world_brushes": 15,
+          "removed_detail_references": 0,
+          "legacy_classification_errors": 0,
+          "cells_classification_errors": 0,
+          "formats": 3,
+          "fast_and_full": true,
+          "rebuild_geometry_order_material_contents_match": true,
+          "sampled_spatial_pvs_match": true
+        },
+        {
+          "case": "mixed-group",
+          "source_sha256": "45ddd01848a383f8cdc94ca4a8a58c5bfbfea9139e2b3973f639dbedeb692fe4",
+          "bsp_sha256": "f60a8af9da07ab81637a2c4366b8834a45796237176bb2d63e17cf479fe0c622",
+          "world_brushes": 15,
+          "removed_detail_references": 5,
+          "legacy_classification_errors": 5,
+          "cells_classification_errors": 0,
+          "formats": 3,
+          "fast_and_full": true,
+          "rebuild_geometry_order_material_contents_match": true,
+          "sampled_spatial_pvs_match": true
+        },
+        {
+          "case": "translucent-structural",
+          "source_sha256": "833d96f965227afde23ebdfc7e2649ecea633cf9bdb7075b3be44a19a8c72ebe",
+          "bsp_sha256": "fdab4a4f7b06e27dcbbb2ae0534609d833c0b59e6b9f0a02533bf11f84353387",
+          "world_brushes": 15,
+          "removed_detail_references": 0,
+          "legacy_classification_errors": 0,
+          "cells_classification_errors": 0,
+          "formats": 3,
+          "fast_and_full": true,
+          "rebuild_geometry_order_material_contents_match": true,
+          "sampled_spatial_pvs_match": true
+        },
+        {
+          "case": "mixed-opacity",
+          "source_sha256": "3e1d3b37301a5a89080345d2aee1dc466856d2f1170b55b46b058a36fed1bd2c",
+          "bsp_sha256": "826e09d391519165b01ba3ac9367a31a58ce18d1f2b480d6f615bf1fdae15f34",
+          "world_brushes": 15,
+          "removed_detail_references": 0,
+          "legacy_classification_errors": 0,
+          "cells_classification_errors": 0,
+          "formats": 3,
+          "fast_and_full": true,
+          "rebuild_geometry_order_material_contents_match": true,
+          "sampled_spatial_pvs_match": true
+        },
+        {
+          "case": "side-structural",
+          "source_sha256": "1062f5bbfa091390d1da844f00cf2d960e1e1dfac8de8079a1a3a2c62215037d",
+          "bsp_sha256": "707f5fc26df5648f0b898a9ff3c2a265b87eccf8a4c44ff23da5a8c9cb25fe5f",
+          "world_brushes": 15,
+          "removed_detail_references": 0,
+          "legacy_classification_errors": 5,
+          "cells_classification_errors": 0,
+          "formats": 3,
+          "fast_and_full": true,
+          "rebuild_geometry_order_material_contents_match": true,
+          "sampled_spatial_pvs_match": true
+        }
+      ],
+      "rebuilds": 36,
+      "sampled_points_per_rebuild": 594,
+      "ordered_pairs_per_rebuild": 352836,
+      "independently_verified_witnesses": 195,
+      "analytical_controls": [
+        {
+          "case": "oblique-half-cube",
+          "expected_volume": 6912.0,
+          "reported_volume": 6912.0
+        },
+        {
+          "case": "oblique-tetrahedron",
+          "expected_volume": 2304.0,
+          "reported_volume": 2304.000000000001
+        },
+        {
+          "case": "overlapping-floor",
+          "expected_volume": 9216,
+          "reported_volume": 9216.0
+        },
+        {
+          "case": "thin-sliver",
+          "expected_volume": 1.1520000000000001,
+          "reported_volume": 1.152000054717064
+        },
+        {
+          "case": "translated-cube",
+          "expected_volume": 13824,
+          "reported_volume": 13824.0
+        },
+        {
+          "case": "redundant-planes",
+          "expected_volume": 13824,
+          "reported_volume": 13824.0
+        }
+      ],
+      "native_evidence_profiles": [
+        "alice",
+        "fakk2",
+        "mohaa",
+        "q3-ihv",
+        "q3test44",
+        "q3test45"
+      ],
+      "invalid_cli_controls": 11,
+      "scope": "Synthetic known-source controls; no universal author-classification or rebuild guarantee"
+    }
+  },
+  "default_compatibility": {
+    "baseline_revision": "39a8ec5448751641e8f98b2168cee649f065649a",
+    "baseline_sha256": "aa7ffb28b17ffef68b5eb7694406c32de16c8bda828aafa071fe9f8cd2f82b09",
+    "current_sha256": "30fa5ac4f7d344df973ef2b25425450a72082c94814ac9ecf24f42caadfaae7a",
+    "default_maps_byte_identical": true,
+    "comparisons": [
+      {
+        "case": "detail",
+        "fast": false,
+        "format": "map",
+        "map_sha256": "23ac727702f55ac2d614195f3edf42a11e1ca9b18373b990448c7d727247e8fa"
+      },
+      {
+        "case": "detail",
+        "fast": false,
+        "format": "map_bp",
+        "map_sha256": "fe5b16968d315f64a7fc8413b228000fed8711ea4b0b62f3d98214b1344e1b32"
+      },
+      {
+        "case": "detail",
+        "fast": false,
+        "format": "map_220",
+        "map_sha256": "14ff089b1116e7adf76d00eacef37832bc53ff9d8fe37f238314613ffa0bffb5"
+      },
+      {
+        "case": "detail",
+        "fast": true,
+        "format": "map",
+        "map_sha256": "2bf29066f75b06514ef5cf81e7420b5a49ce1dcfa912e211dd72535410653d06"
+      },
+      {
+        "case": "detail",
+        "fast": true,
+        "format": "map_bp",
+        "map_sha256": "376db748fb3091fb21a5fa4886edc7da4f628ab1363e408d7665c0df7720c9ce"
+      },
+      {
+        "case": "detail",
+        "fast": true,
+        "format": "map_220",
+        "map_sha256": "dbd8b035b9ca748c3417fae4f93de5467b84557a8f1765dcb25b9eee12fd487b"
+      },
+      {
+        "case": "structural",
+        "fast": false,
+        "format": "map",
+        "map_sha256": "5abc2d888c923c9515ecab186a2684787fab8f61256c8934c6505ced893a819a"
+      },
+      {
+        "case": "structural",
+        "fast": false,
+        "format": "map_bp",
+        "map_sha256": "6d6cd9f4377aedb39e3c1469d13da78d5d53ee97a6a584ff87e992620497c529"
+      },
+      {
+        "case": "structural",
+        "fast": false,
+        "format": "map_220",
+        "map_sha256": "6a9004d1c1363ed557ac0ee64447462a5263a69565e6878aed485801defea8c2"
+      },
+      {
+        "case": "structural",
+        "fast": true,
+        "format": "map",
+        "map_sha256": "1228bfe9fff245ea9281270a1c0e578eaf580cd6e701b82609079ebc6ed02c11"
+      },
+      {
+        "case": "structural",
+        "fast": true,
+        "format": "map_bp",
+        "map_sha256": "07bd82d9f495b2682abcc6190c6f8a3979d6092a070e6efe6b71c74a8b87ff35"
+      },
+      {
+        "case": "structural",
+        "fast": true,
+        "format": "map_220",
+        "map_sha256": "a499c8450713e2f7e7d1a41dfb0c3248d9cba81630589c5428ba1df085f029c2"
+      },
+      {
+        "case": "mixed-group",
+        "fast": false,
+        "format": "map",
+        "map_sha256": "5e6ab94297b9f56420c822e7204f07e9e8bcde8f9bd93847bf6811cd144a1758"
+      },
+      {
+        "case": "mixed-group",
+        "fast": false,
+        "format": "map_bp",
+        "map_sha256": "fcc363e3dc281e036c50bd1d185ae5766aa4a175e76c1ea36ce3939a1156417f"
+      },
+      {
+        "case": "mixed-group",
+        "fast": false,
+        "format": "map_220",
+        "map_sha256": "1da781bd8fb91741e380d41f09546a28411b230cf2f2ce99ee9c5b72666be9b8"
+      },
+      {
+        "case": "mixed-group",
+        "fast": true,
+        "format": "map",
+        "map_sha256": "66cb6363383a77705ac2b6e97b353df9f77c8d57d758298334f21ee54cb9a358"
+      },
+      {
+        "case": "mixed-group",
+        "fast": true,
+        "format": "map_bp",
+        "map_sha256": "234cdbb4ead2870ce9b404038d797172f403aab004cdee348d3ab9c378f59a96"
+      },
+      {
+        "case": "mixed-group",
+        "fast": true,
+        "format": "map_220",
+        "map_sha256": "a5ebbaa11d6f288a881af3514c771241a7c76f4556efcf4d33d09f00d2efb27e"
+      },
+      {
+        "case": "translucent-structural",
+        "fast": false,
+        "format": "map",
+        "map_sha256": "c79f6b5beea1084b95a8cfb9fc20a3d4e2e7a73487c23600d41519364599060e"
+      },
+      {
+        "case": "translucent-structural",
+        "fast": false,
+        "format": "map_bp",
+        "map_sha256": "516fb274c89349dd84ce4ab805f2347b9d29798e54f11be432940147b9a96f38"
+      },
+      {
+        "case": "translucent-structural",
+        "fast": false,
+        "format": "map_220",
+        "map_sha256": "8cb842632e88bbe33311ddaf74874a9d29f4a5edbd45614e72191c62e9d0a366"
+      },
+      {
+        "case": "translucent-structural",
+        "fast": true,
+        "format": "map",
+        "map_sha256": "f91070a8ff2757e10fe0bfa220a0aa9dcb914b503f3424add37b2d1400eba0d9"
+      },
+      {
+        "case": "translucent-structural",
+        "fast": true,
+        "format": "map_bp",
+        "map_sha256": "8cb1c4175f4632e869cc78c6920d7c6e8d4d3ecbb16d5e860620b3ca59b2e9da"
+      },
+      {
+        "case": "translucent-structural",
+        "fast": true,
+        "format": "map_220",
+        "map_sha256": "2f42e733b884f77044a6f11dd8c910b429748bc6f3fcaa5fc3fa4cde12624059"
+      },
+      {
+        "case": "mixed-opacity",
+        "fast": false,
+        "format": "map",
+        "map_sha256": "a8312459fdcb8fe188b22af1125719803d72fda6b0a0a47bde442272eba68af7"
+      },
+      {
+        "case": "mixed-opacity",
+        "fast": false,
+        "format": "map_bp",
+        "map_sha256": "425d0111b16e6d0d6b68d07bb0401a11acd22145b30ec1e646870c5ec73b0369"
+      },
+      {
+        "case": "mixed-opacity",
+        "fast": false,
+        "format": "map_220",
+        "map_sha256": "d18778470f0e0c6f06d210d28aa46fb3846d45879f37810a34dbd51af02426c5"
+      },
+      {
+        "case": "mixed-opacity",
+        "fast": true,
+        "format": "map",
+        "map_sha256": "e9d95e34c3aaac2fdba878a9e2da04bb45c46cd0f7048e31ae7990a1f85d17a0"
+      },
+      {
+        "case": "mixed-opacity",
+        "fast": true,
+        "format": "map_bp",
+        "map_sha256": "bd24940aba53938500509b4c95c1fd285a91a92a6da70acae5f1e500c2e87a29"
+      },
+      {
+        "case": "mixed-opacity",
+        "fast": true,
+        "format": "map_220",
+        "map_sha256": "022c4c9e44066eb34cc6fd69f8487e5ca3e397850e2a71b013139a4a3ffa5cb7"
+      },
+      {
+        "case": "side-structural",
+        "fast": false,
+        "format": "map",
+        "map_sha256": "6aaa7c5db8a291d97fdc09988e4feab148177533f2ba65b866f0c8a43d82c5f8"
+      },
+      {
+        "case": "side-structural",
+        "fast": false,
+        "format": "map_bp",
+        "map_sha256": "8097dfeeadf25d017f0129b8fffce56f8560a9f88fc9cc6d5480184b1ea862ce"
+      },
+      {
+        "case": "side-structural",
+        "fast": false,
+        "format": "map_220",
+        "map_sha256": "72b1755bb8f6c13f7e56070380269bca704c695bad4f1b3b515d1f77609029b7"
+      },
+      {
+        "case": "side-structural",
+        "fast": true,
+        "format": "map",
+        "map_sha256": "d5c38b3a40f761e034029a0cbb82f8c6958127aa8eef551335ca224ec1e6048d"
+      },
+      {
+        "case": "side-structural",
+        "fast": true,
+        "format": "map_bp",
+        "map_sha256": "ae3714b4702fc40b8066fd5e6002f92f9d007987fc2a7fa7e9d30803286198ee"
+      },
+      {
+        "case": "side-structural",
+        "fast": true,
+        "format": "map_220",
+        "map_sha256": "2549b9a0835be554c9bc4244c2d439fa32ea553a638a0ec249d8d16fc2a665bd"
+      }
+    ]
+  },
+  "parallel_probe": {
+    "fixture": "441 alternating structural/detail pillars plus six enclosing brushes and a brush entity; unlit and no VIS table",
+    "bsp_sha256": "974ae5b543476da1222bfc2ddf4746a4b9ee8a2bf9b67a638c6075805a9bec68",
+    "source_sha256": "0b01f6fe852ac322fd1966637bf1be57db36626fef776f5b8fef176fac37a914",
+    "compiler_sha256": "30fa5ac4f7d344df973ef2b25425450a72082c94814ac9ecf24f42caadfaae7a",
+    "reports_byte_identical": true,
+    "report_sha256": "921a8b250cd70f13f29ad9e640c8b3b31a997cfdf91babe56f4fcebb2556dc12",
+    "analysis_work_units": 449122,
+    "records": {
+      "models": 2,
+      "brushes": 448,
+      "brush_sides": 2688,
+      "planes": 248,
+      "nodes": 1095,
+      "leaves": 1098,
+      "surfaces": 2217,
+      "entities": 3,
+      "native_terrain_triangles": 0,
+      "unloaded_static_model_instances": 0,
+      "normalized_unused_lightmap_uv_pairs": 0,
+      "normalized_unused_flare_fogs": 0
+    },
+    "runs": [
+      {
+        "trial": 0,
+        "threads": 1,
+        "whole_command_seconds": 0.03549159999238327,
+        "phase": {
+          "name": "BrushCellEvidenceWorkers",
+          "items": 32,
+          "workers": 1,
+          "grain": 1,
+          "seconds": 0.0026957,
+          "seconds_with_setup": 0.0027
+        }
+      },
+      {
+        "trial": 0,
+        "threads": 4,
+        "whole_command_seconds": 0.03347990004112944,
+        "phase": {
+          "name": "BrushCellEvidenceWorkers",
+          "items": 32,
+          "workers": 4,
+          "grain": 1,
+          "seconds": 0.0018235,
+          "seconds_with_setup": 0.0019551
+        }
+      },
+      {
+        "trial": 1,
+        "threads": 4,
+        "whole_command_seconds": 0.029144200030714273,
+        "phase": {
+          "name": "BrushCellEvidenceWorkers",
+          "items": 32,
+          "workers": 4,
+          "grain": 1,
+          "seconds": 0.0015334,
+          "seconds_with_setup": 0.0016273
+        }
+      },
+      {
+        "trial": 1,
+        "threads": 1,
+        "whole_command_seconds": 0.028467099997214973,
+        "phase": {
+          "name": "BrushCellEvidenceWorkers",
+          "items": 32,
+          "workers": 1,
+          "grain": 1,
+          "seconds": 0.0027395,
+          "seconds_with_setup": 0.0027435
+        }
+      },
+      {
+        "trial": 2,
+        "threads": 1,
+        "whole_command_seconds": 0.03765370004111901,
+        "phase": {
+          "name": "BrushCellEvidenceWorkers",
+          "items": 32,
+          "workers": 1,
+          "grain": 1,
+          "seconds": 0.0027288,
+          "seconds_with_setup": 0.002733
+        }
+      },
+      {
+        "trial": 2,
+        "threads": 4,
+        "whole_command_seconds": 0.03226349997567013,
+        "phase": {
+          "name": "BrushCellEvidenceWorkers",
+          "items": 32,
+          "workers": 4,
+          "grain": 1,
+          "seconds": 0.0015851,
+          "seconds_with_setup": 0.0016719
+        }
+      },
+      {
+        "trial": 3,
+        "threads": 4,
+        "whole_command_seconds": 0.02953709999565035,
+        "phase": {
+          "name": "BrushCellEvidenceWorkers",
+          "items": 32,
+          "workers": 4,
+          "grain": 1,
+          "seconds": 0.0017573,
+          "seconds_with_setup": 0.0018442
+        }
+      },
+      {
+        "trial": 3,
+        "threads": 1,
+        "whole_command_seconds": 0.03286479995585978,
+        "phase": {
+          "name": "BrushCellEvidenceWorkers",
+          "items": 32,
+          "workers": 1,
+          "grain": 1,
+          "seconds": 0.0027483,
+          "seconds_with_setup": 0.002753
+        }
+      },
+      {
+        "trial": 4,
+        "threads": 1,
+        "whole_command_seconds": 0.029041699948720634,
+        "phase": {
+          "name": "BrushCellEvidenceWorkers",
+          "items": 32,
+          "workers": 1,
+          "grain": 1,
+          "seconds": 0.002755,
+          "seconds_with_setup": 0.002759
+        }
+      },
+      {
+        "trial": 4,
+        "threads": 4,
+        "whole_command_seconds": 0.027100999956019223,
+        "phase": {
+          "name": "BrushCellEvidenceWorkers",
+          "items": 32,
+          "workers": 4,
+          "grain": 1,
+          "seconds": 0.0015172,
+          "seconds_with_setup": 0.0015934
+        }
+      },
+      {
+        "trial": 5,
+        "threads": 4,
+        "whole_command_seconds": 0.03027930000098422,
+        "phase": {
+          "name": "BrushCellEvidenceWorkers",
+          "items": 32,
+          "workers": 4,
+          "grain": 1,
+          "seconds": 0.001668,
+          "seconds_with_setup": 0.0017496
+        }
+      },
+      {
+        "trial": 5,
+        "threads": 1,
+        "whole_command_seconds": 0.029811599990352988,
+        "phase": {
+          "name": "BrushCellEvidenceWorkers",
+          "items": 32,
+          "workers": 1,
+          "grain": 1,
+          "seconds": 0.0027147,
+          "seconds_with_setup": 0.0027185
+        }
+      },
+      {
+        "trial": 6,
+        "threads": 1,
+        "whole_command_seconds": 0.03149580000899732,
+        "phase": {
+          "name": "BrushCellEvidenceWorkers",
+          "items": 32,
+          "workers": 1,
+          "grain": 1,
+          "seconds": 0.0027368,
+          "seconds_with_setup": 0.0027412
+        }
+      },
+      {
+        "trial": 6,
+        "threads": 4,
+        "whole_command_seconds": 0.028176299994811416,
+        "phase": {
+          "name": "BrushCellEvidenceWorkers",
+          "items": 32,
+          "workers": 4,
+          "grain": 1,
+          "seconds": 0.0015157,
+          "seconds_with_setup": 0.0016074
+        }
+      }
+    ],
+    "medians_after_first_pair": {
+      "1": {
+        "whole_command_seconds": 0.030653699999675155,
+        "brush_cell_phase_seconds": 0.00274235
+      },
+      "4": {
+        "whole_command_seconds": 0.029340650013182312,
+        "brush_cell_phase_seconds": 0.0016496
+      }
+    },
+    "scope": "Local timing observation while unrelated Linux validation may run; not an end-to-end decompilation speedup or representative map corpus"
+  },
+  "checks": [
+    "independent brush-plane and BSP-path witness checks",
+    "exact analytic volume controls with scaled oblique planes, tetrahedra, translated cubes and overlaps",
+    "195 verified witnesses and 90 known-source world labels",
+    "19 legacy classification errors repaired in controlled missing-reference/side-material cases",
+    "36 fast/full three-format rebuilds preserve exact geometry/materials/contents/order and surviving entities",
+    "594 corresponding world samples and 352836 ordered partition/PVS pairs per rebuild",
+    "strict 0.01 witness clearance; 0.002-wide sliver remains uncertain",
+    "explicit structural, hint, sky and nonopaque material protection",
+    "absent/all-visible/padded/self-inconsistent PVS handling",
+    "geometry/coordinate/enclosure bounds, shared graph and one-leaf world",
+    "six native recovery readers and relocated early world root",
+    "1/4-worker report and MAP parity",
+    "exact/insufficient work budgets; real 64 MiB recovery-report ceiling",
+    "11 invalid CLI/input controls and atomic prior MAP/report preservation",
+    "36 default MAP byte comparisons against preserved 39a8ec5 executable"
+  ],
+  "limitations": [
+    "Original author flags, portal causality and universal rebuild equivalence are not proven",
+    "Current shaders are evaluated but original asset identities are not verified",
+    "Brush entities, unsupported geometry and ambiguous opaque interiors retain legacy classification",
+    "PRT/complete leaf adjacency, func_group/light inference, saved overrides and GUI review remain planned",
+    "Parallel probe timing is a small local observation during other validation, not a representative speedup claim",
+    "Portable 0.3.0 archive is unchanged"
+  ],
+  "unrelated_findings": [
+    "No new unrelated issue; existing conditionally-supported UnsortedSet offsetof warnings remain"
+  ],
+  "external_code_or_dependencies_added": false,
+  "fidelity_metrics_and_analytical_values_match_all_three_builds": true
+}

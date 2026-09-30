@@ -8,6 +8,8 @@ This roadmap was added on 2026-09-30. The first shared
 implemented with bounded geometry and per-brush decisions. Optional
 [`-group-policy surfaces`](DECOMPILATION.md#group-inference-policy) now exports
 surface-supported assemblies with explicit ambiguity and loader-order constraints.
+Both policies and their work budgets are now selectable in the workbench, saved
+in projects/run snapshots and checked against compiler/profile capabilities.
 Broader grouping, light and review tools below remain planned. Recover the closest supported
 recreation of the author's MAP: editable geometry, organization, materials,
 visibility behavior and source lighting. Keep exact extraction available alongside
@@ -67,7 +69,8 @@ cases retain the legacy baseline. A 36-rebuild corpus includes deliberately
 removed references and non-first-side structural materials, alongside analytical
 geometry, VIS, budget and worker controls. It does not yet reconstruct complete
 leaf adjacency, accept PRTs, prove portal causality, save user overrides or expose
-GUI proposal review. Broader real-map classification calibration remains open.
+GUI proposal review. The workbench exposes policy/budget selection, not per-brush
+accept/reject review. Broader real-map classification calibration remains open.
 
 1. Relate brush faces to BSP partition planes, adjacent leaf cells, opaque space,
    cluster boundaries and PVS changes. When a compatible PRT is supplied, use its
@@ -98,7 +101,7 @@ evidence of correct classification.
 
 ## func_group inference
 
-The first optional CLI policy associates closely coplanar brush faces with shared
+The first optional policy associates closely coplanar brush faces with shared
 BSP draw surfaces, then emits supported world assemblies only when their collapse
 can preserve compiled opaque/translucent brush order. It keeps group membership
 independent of detail flags, preserves model/patch ownership, protects sensitive

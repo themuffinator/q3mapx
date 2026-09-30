@@ -122,8 +122,9 @@ independently of detail classification: one group can contain structural and
 detail brushes, and can use either detail policy. It supports fast/full recovery,
 all three MAP formats and legacy `-convert`. A report is mandatory. It automatically
 selects rebuild brush order; an explicit `-brush-order bsp` conflicts with it.
-It requires compiled BSP input and a BSP-writing profile, excludes `-wtf`, and
-is not yet exposed in the workbench.
+It requires compiled BSP input and a BSP-writing profile and excludes `-wtf`.
+The workbench's Recovery tab exposes this policy and its work limit, selects the
+required rebuild order, and checks the compiler's advertised support before queuing.
 
 The analysis matches current side materials and closely coplanar, positive-area
 triangle overlap. Brushes linked through shared surfaces form deterministic
@@ -191,7 +192,8 @@ using [convex brush/tree intersections](BSP-EVIDENCE.md#brush-interiors). It sup
 all three MAP formats, fast/full export and legacy `-convert`, and always writes
 a recovery report. It requires a BSP-writing profile and excludes `-wtf` material
 replacement. Native recovery-only profiles support read-only cell evidence, but
-not this classification/export policy. The workbench does not yet expose it.
+not this classification/export policy. The workbench's Recovery tab saves the
+policy and work limit independently of grouping and checks advertised support.
 
 The policy starts from each brush's legacy flag. It only considers uniquely owned
 world geometry with successful cell analysis and usable exported windings. It

@@ -10,6 +10,8 @@ struct Project {
     QString source, gameRoot, outputRoot, compiler;
     QString game = "quake3", mod, quality = "balanced", backend = "auto", mapFormat = "map_220";
     QString brushOrder = "bsp";
+    QString detailPolicy = "legacy", groupPolicy = "none";
+    int detailWorkLimit = 50'000'000, groupWorkLimit = 50'000'000;
     int workers = 0, gpuDevice = -1, minimapSize = 1024, minimapSamples = 4, meshPatchSteps = 8;
     bool reproducibleVis = true;
     QStringList bspOptions, visOptions, lightOptions;

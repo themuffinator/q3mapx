@@ -24,12 +24,23 @@
 #include <QtEndian>
 #include <QDir>
 #include <QTimer>
+#include <QToolButton>
 #include <iostream>
 
 static void require(bool condition, const char* message) {
     if (!condition) { std::cerr << message << '\n'; std::exit(1); }
 }
 int main(int argc, char** argv) {
+    if(argc==2 && QString::fromLocal8Bit(argv[1])=="-games") {
+        QCoreApplication app(argc,argv);
+        // Older compiler: writable and rebuild-order capable, but no inference metadata.
+        const QJsonObject profile{{"id","quake3"},{"title","Older compiler fixture"},{"base_directory","baseq3"},
+            {"shader_directory","scripts"},{"bsp_ident","IBSP"},{"bsp_version",46},{"native_write",true},
+            {"aliases",QJsonArray()},{"workflows",QJsonArray{"build","decompile"}},
+            {"recovery_brush_orders",QJsonArray{"bsp","rebuild"}}};
+        std::cout << QJsonDocument(QJsonObject{{"schema_version",1},{"profiles",QJsonArray{profile}}}).toJson().constData();
+        return 0;
+    }
     QApplication app(argc, argv);
     require(argc == 4, "Expected project, isolated settings directory and device-query fixture executable");
     require(QDir().mkpath(argv[2]),"Cannot create isolated window test output directory");
@@ -37,7 +48,17 @@ int main(int argc, char** argv) {
     QFile source(project.source); require(source.open(QIODevice::ReadOnly), "Cannot read fixture source");
     const auto original = source.readAll(); source.close();
     workbench::Window window(argv[2]);
-    window.loadProject(argv[1]);
+    const auto editableProject=QDir(argv[2]).filePath("editable-project.q3mapx.json");
+    project.save(editableProject); window.loadProject(editableProject);
+    window.show(); // The offscreen platform never creates a visible desktop window.
+    const auto settleLayouts=[] {
+        QCoreApplication::sendPostedEvents(nullptr,QEvent::LayoutRequest);
+        QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+    };
+    const auto renderPreview=[&](const QString& path) {
+        settleLayouts();
+        return window.renderPreview(path);
+    };
     auto* queue = window.findChild<workbench::JobQueue*>();
     require(queue, "Window has no build queue");
     bool launched = false;
@@ -63,7 +84,7 @@ int main(int argc, char** argv) {
         require(QJsonDocument::fromJson(deviceJson->toPlainText().toUtf8()).object()==inventory->report(),"Raw device report changed");
         require(refreshDevices->isEnabled() && !cancelDevices->isEnabled(),"Finished query left incorrect controls");
         if(devicePhase==1) {
-            require(window.renderPreview(QDir(argv[2]).filePath("hardware-native.png")),"Native hardware page did not render");
+            require(renderPreview(QDir(argv[2]).filePath("hardware-native.png")),"Native hardware page did not render");
             devicePhase=2;
             compilerPath->setText(argv[3]);
             require(inventory->report().isEmpty() && devices->rowCount()==0 && deviceJson->toPlainText().isEmpty(),"Changed compiler retained stale devices");
@@ -72,13 +93,13 @@ int main(int argc, char** argv) {
             require(devices->rowCount()==2 && devices->item(1,1)->text().contains("<b>plain text</b>"),"Device names were not preserved as text");
             devices->selectRow(1);
             require(deviceDetails->toPlainText().contains("OpenCL 1.2") && deviceDetails->toPlainText().contains("shared with the host"),"Device selection did not update capabilities");
-            require(window.renderPreview(QDir(argv[2]).filePath("hardware-devices.png")),"Hardware page did not render");
+            require(renderPreview(QDir(argv[2]).filePath("hardware-devices.png")),"Hardware page did not render");
             window.resize(1024,720);
-            require(window.renderPreview(QDir(argv[2]).filePath("hardware-compact.png")),"Compact hardware page did not render");
+            require(renderPreview(QDir(argv[2]).filePath("hardware-compact.png")),"Compact hardware page did not render");
             require(devices->viewport()->height()>=3*devices->verticalHeader()->defaultSectionSize(),"Compact hardware page cannot show three complete rows");
             require(devices->horizontalScrollBar()->maximum()==0,"Compact hardware columns exceed the viewport");
             for(auto* action:window.findChildren<QAction*>()) if(action->text().startsWith("Toggle &light")) action->trigger();
-            require(window.renderPreview(QDir(argv[2]).filePath("hardware-light.png")),"Light hardware page did not render");
+            require(renderPreview(QDir(argv[2]).filePath("hardware-light.png")),"Light hardware page did not render");
             devicePhase=3;
             qputenv("Q3MAPX_TEST_DEVICES_MODE","slow"); refreshDevices->click();
             require(inventory->loading() && !refreshDevices->isEnabled() && cancelDevices->isEnabled(),"Active query controls incorrect");
@@ -95,7 +116,7 @@ int main(int argc, char** argv) {
                     {"inventory_json",true},{"compact_columns_fit",true},{"compact_three_rows",true},{"light_theme",true},
                     {"cancellation",true},{"compiler_change_cancels",true},{"stale_ui_results_cleared",true}});
                 std::cout << "Actual window build, inspection, hardware devices, cancellation and compiler changes passed without input injection\n";
-                app.quit();
+                app.exit(0); // End this test without invoking the window's unsaved-project close prompt.
             });
         }
     });
@@ -106,9 +127,9 @@ int main(int argc, char** argv) {
         require(inspector->error().isEmpty(),"Window inspection query failed");
         if(inspectionPhase==1) {
             require(inspector->report()["valid"].toBool() && lumpTable->rowCount()==17,"Valid directory missing from window");
-            require(window.renderPreview(QDir(argv[2]).filePath("bsp-inspection.png")),"Inspector did not render");
+            require(renderPreview(QDir(argv[2]).filePath("bsp-inspection.png")),"Inspector did not render");
             const auto fullSize=window.size(); window.resize(1024,720);
-            require(window.renderPreview(QDir(argv[2]).filePath("bsp-inspection-compact.png")),"Compact inspector did not render");
+            require(renderPreview(QDir(argv[2]).filePath("bsp-inspection-compact.png")),"Compact inspector did not render");
             require(lumpTable->viewport()->height()>=3*lumpTable->rowHeight(0),"Compact inspection cannot show three complete directory rows");
             window.resize(fullSize);
             const auto saved=QDir(argv[2]).filePath("inspection.json"); inspectionPage->saveReport(saved);
@@ -156,44 +177,112 @@ int main(int argc, char** argv) {
         auto* preview=window.findChild<QPlainTextEdit*>("commandPreview");
         auto* workflow=window.findChild<QComboBox*>("workflow");
         auto* projectTabs=window.findChild<QTabWidget*>("projectOptions");
-        require(order && orderHint && preview && workflow && projectTabs,"Recovery controls missing");
+        auto* flags=window.findChild<QComboBox*>("recoveryDetailPolicy");
+        auto* groups=window.findChild<QComboBox*>("recoveryGroupPolicy");
+        auto* detailBudget=window.findChild<QSpinBox*>("recoveryDetailWorkLimit");
+        auto* groupBudget=window.findChild<QSpinBox*>("recoveryGroupWorkLimit");
+        auto* limitsToggle=window.findChild<QToolButton*>("recoveryLimitsToggle");
+        require(order && orderHint && preview && workflow && projectTabs && flags && groups && detailBudget && groupBudget && limitsToggle,"Recovery controls missing");
         require(order->currentData().toString()==project.brushOrder && project.brushOrder=="rebuild","Saved recovery setting did not reach the window");
+        require(flags->currentData()=="cells" && groups->currentData()=="surfaces"
+            && detailBudget->value()==project.detailWorkLimit && groupBudget->value()==project.groupWorkLimit,"Saved inference choices/limits did not reach the window");
         const auto available=[&]{ return order->model()->flags(order->model()->index(order->findData("rebuild"),0)).testFlag(Qt::ItemIsEnabled); };
+        const auto policyAvailable=[](QComboBox* combo,const char* value){ return combo->model()->flags(combo->model()->index(combo->findData(value),0)).testFlag(Qt::ItemIsEnabled); };
         workflow->setCurrentIndex(workflow->findData("decompile"));
         require(available() && button->isEnabled() && preview->toPlainText().contains("-brush-order rebuild"),"Writable profile did not enable rebuild order");
+        require(policyAvailable(flags,"cells") && policyAvailable(groups,"surfaces") && !policyAvailable(order,"bsp")
+            && preview->toPlainText().contains("-detail-policy cells") && preview->toPlainText().contains("-group-policy surfaces"),"Inference options/dependency missing");
         profiles->setCurrentText("alice");
         require(!available() && !button->isEnabled() && order->currentData()=="rebuild","Unsupported profile silently changed or accepted saved recovery order");
-        require(orderHint->text().contains("Select BSP order"),"Recovery-only restriction has no explanation");
+        require(!policyAvailable(flags,"cells") && !policyAvailable(groups,"surfaces")
+            && flags->currentData()=="cells" && groups->currentData()=="surfaces","Native profile changed or enabled inference selections");
+        require(orderHint->text().contains("Select Flat world geometry"),"Recovery-only restriction has no usable explanation");
         // The menu/shortcut action must enforce the same rule as the button.
         // Dismiss this isolated offscreen test dialog directly, without input events.
         QAction* runAction=nullptr;
         for(auto* action:window.findChildren<QAction*>()) if(action->shortcut()==QKeySequence(Qt::Key_F5)) runAction=action;
         require(runAction,"Run workflow action missing");
-        bool rejectedRecovery=false;
-        QTimer::singleShot(0,&app,[&]{
-            auto* dialog=qobject_cast<QMessageBox*>(QApplication::activeModalWidget());
-            require(dialog && dialog->text().contains("BSP writing support"),"Unsupported recovery was not rejected before staging");
-            rejectedRecovery=true; dialog->accept();
-        });
-        runAction->trigger();
-        require(rejectedRecovery && queue->jobs().isEmpty(),"Unsupported recovery enqueued compiler work");
+        const auto rejectRecovery=[&](const QString& reason){
+            bool rejected=false;
+            const auto outputs=QDir(project.outputRoot).entryList(QDir::Dirs|QDir::NoDotAndDotDot);
+            QTimer::singleShot(0,&app,[&]{
+                auto* dialog=qobject_cast<QMessageBox*>(QApplication::activeModalWidget());
+                require(dialog && dialog->text().contains(reason),"Unsupported recovery was not rejected before staging");
+                rejected=true; dialog->accept();
+            });
+            runAction->trigger();
+            require(rejected && queue->jobs().isEmpty(),"Unsupported recovery enqueued compiler work");
+            require(QDir(project.outputRoot).entryList(QDir::Dirs|QDir::NoDotAndDotDot)==outputs,"Unsupported recovery created an output folder");
+        };
+        rejectRecovery("Surface group inference");
+        groups->setCurrentIndex(groups->findData("none"));
         order->setCurrentIndex(order->findData("bsp"));
+        require(!button->isEnabled() && orderHint->text().contains("Cell detail inference"),"Unsupported detail inference was accepted");
+        rejectRecovery("Cell detail inference");
+        flags->setCurrentIndex(flags->findData("legacy"));
         require(button->isEnabled() && !preview->toPlainText().contains("-brush-order"),"Default native recovery was blocked or changed");
         profiles->setCurrentText("unknown-profile"); require(!available() && !button->isEnabled(),"Unknown profile enabled rebuild order");
         profiles->setCurrentText(project.game); order->setCurrentIndex(order->findData("rebuild"));
         require(available() && button->isEnabled(),"Writable profile did not restore recovery controls");
+        order->setCurrentIndex(order->findData("bsp")); flags->setCurrentIndex(flags->findData("cells"));
+        groups->setCurrentIndex(groups->findData("surfaces"));
+        require(order->currentData()=="rebuild" && !policyAvailable(order,"bsp"),"Group selection did not choose/require rebuild order");
+        detailBudget->setValue(3'456'789); groupBudget->setValue(4'567'890);
+        require(preview->toPlainText().contains("-detail-max-work 3456789") && preview->toPlainText().contains("-group-max-work 4567890"),"Analysis limits absent from command preview");
+        QAction* saveAction=nullptr;
+        for(auto* action:window.findChildren<QAction*>()) if(action->shortcut()==QKeySequence::Save) saveAction=action;
+        require(saveAction,"Save action missing"); saveAction->trigger();
+        const auto saved=workbench::Project::load(editableProject);
+        require(saved.detailPolicy=="cells" && saved.groupPolicy=="surfaces" && saved.brushOrder=="rebuild"
+            && saved.detailWorkLimit==3'456'789 && saved.groupWorkLimit==4'567'890,"Window save lost inference choices/limits");
+        auto* catalog=window.findChild<workbench::GameCatalog*>(); require(catalog,"Window catalog missing");
+        const auto switchCompiler=[&](const QString& path){
+            QEventLoop loop; QTimer timeout; timeout.setSingleShot(true); bool finished=false;
+            QObject::connect(catalog,&workbench::GameCatalog::changed,&loop,[&]{ if(!catalog->loading()) { finished=true; loop.quit(); } });
+            QObject::connect(&timeout,&QTimer::timeout,&loop,&QEventLoop::quit);
+            compilerPath->setText(path); require(!button->isEnabled(),"Pending compiler change allowed inference");
+            timeout.start(10000); loop.exec(); require(finished,"Replacement compiler catalog timed out");
+        };
+        switchCompiler(QCoreApplication::applicationFilePath());
+        require(!policyAvailable(flags,"cells") && !policyAvailable(groups,"surfaces") && !button->isEnabled()
+            && flags->currentData()=="cells" && groups->currentData()=="surfaces","Older compiler enabled or replaced inference choices");
+        groups->setCurrentIndex(groups->findData("none")); flags->setCurrentIndex(flags->findData("legacy"));
+        require(button->isEnabled(),"Older compiler blocked ordinary supported recovery");
+        groups->setCurrentIndex(groups->findData("surfaces"));
+        require(!button->isEnabled() && orderHint->text().contains("Surface group inference"),"Older compiler advertised unimplemented grouping");
+        rejectRecovery("Surface group inference");
+        flags->setCurrentIndex(flags->findData("cells")); switchCompiler(QDir::toNativeSeparators(project.compiler));
+        require(button->isEnabled() && policyAvailable(flags,"cells") && policyAvailable(groups,"surfaces"),"Current compiler did not restore inference");
         require(projectTabs->tabText(2)=="Recovery","Recovery tab missing"); projectTabs->setCurrentIndex(2);
         const auto originalSize=window.size();
         for(int theme=0;theme<2;++theme) {
             const auto themeName=window.styleSheet().contains("#141a21") ? "dark" : "light";
             window.resize(1380,920);
-            require(window.renderPreview(QDir(argv[2]).filePath(QString("recovery-%1.png").arg(themeName))),"Recovery options did not render");
+            require(renderPreview(QDir(argv[2]).filePath(QString("recovery-%1.png").arg(themeName))),"Recovery options did not render");
             window.resize(1024,720);
-            require(window.renderPreview(QDir(argv[2]).filePath(QString("recovery-%1-compact.png").arg(themeName))),"Compact recovery options did not render");
+            require(renderPreview(QDir(argv[2]).filePath(QString("recovery-%1-compact.png").arg(themeName))),"Compact recovery options did not render");
             require(order->geometry().right()<order->parentWidget()->width(),"Compact recovery order exceeds the page width");
             auto* recoveryPage=qobject_cast<QScrollArea*>(projectTabs->widget(2));
             require(recoveryPage && recoveryPage->horizontalScrollBar()->maximum()==0
                     && recoveryPage->verticalScrollBar()->maximum()==0,"Compact recovery page clips options or guidance");
+            limitsToggle->setChecked(true);
+            require(renderPreview(QDir(argv[2]).filePath(QString("recovery-%1-limits.png").arg(themeName))),"Analysis limits did not render");
+            for(auto* combo:{window.findChild<QComboBox*>("recoveryFormat"),order,flags,groups}) {
+                if(combo->height()<combo->sizeHint().height()) std::cerr << combo->objectName().toStdString()
+                    << " height=" << combo->height() << " hint=" << combo->sizeHint().height()
+                    << " page=" << recoveryPage->widget()->height() << " minimum=" << recoveryPage->widget()->minimumHeight() << '\n';
+                require(combo->height()>=combo->sizeHint().height(),"Expanded limits compressed recovery choices below readable height");
+            }
+            require(recoveryPage->horizontalScrollBar()->maximum()==0 && detailBudget->isEnabled() && groupBudget->isEnabled(),"Analysis limits clipped horizontally or unavailable");
+            // ensureWidgetVisible follows a spin box's edit cursor, which can
+            // be visible while its frame is partly outside the viewport.
+            recoveryPage->verticalScrollBar()->setValue(recoveryPage->verticalScrollBar()->maximum()); settleLayouts();
+            require(groupBudget->mapTo(recoveryPage->viewport(),QPoint(0,groupBudget->height())).y()<=recoveryPage->viewport()->height(),"Cannot scroll to group work limit");
+            require(renderPreview(QDir(argv[2]).filePath(QString("recovery-%1-limits-scrolled.png").arg(themeName))),"Scrolled limits did not render");
+            window.resize(1380,920);
+            require(renderPreview(QDir(argv[2]).filePath(QString("recovery-%1-limits-full.png").arg(themeName))),"Full-size limits did not render");
+            require(recoveryPage->verticalScrollBar()->maximum()==0,"Full-size expanded limits need unnecessary scrolling");
+            limitsToggle->setChecked(false);
             for(auto* action:window.findChildren<QAction*>()) if(action->text().startsWith("Toggle &light")) action->trigger();
         }
         window.resize(originalSize); projectTabs->setCurrentIndex(0);
@@ -201,6 +290,11 @@ int main(int argc, char** argv) {
             {"saved_policy_loaded",true},{"compatible_profile_enabled",true},{"native_rebuild_disabled",true},
             {"incompatible_selection_retained",true},{"native_default_enabled",true},{"unknown_profile_disabled",true},
             {"command_preview_policy",true},{"menu_action_rejected_before_staging",true},
+            {"saved_inference_policies_and_limits",true},{"grouping_selects_rebuild_order",true},{"limits_command_preview",true},
+            {"older_compiler_inference_disabled",true},{"older_compiler_defaults_available",true},{"older_compiler_menu_rejected",true},
+            {"expanded_limits_accessible",true},{"compiler_switch_restores_support",true},
+            {"unsupported_inference_creates_no_output_folders",true},{"native_cell_menu_rejected",true},
+            {"expanded_choice_text_readable",true},{"full_size_limits_without_scrolling",true},
             {"both_themes",true},{"compact_page_without_clipping",true},{"os_input_or_capture_used",false}});
         workflow->setCurrentIndex(workflow->findData("build"));
         profiles->setCurrentText("alice");
@@ -218,7 +312,7 @@ int main(int argc, char** argv) {
             if(tabs->count()>1 && tabs->tabText(1).contains("Quality")) options=tabs;
         require(options,"Project options tabs missing");
         options->setCurrentIndex(1);
-        require(window.renderPreview(QDir(argv[2]).filePath("mesh-options.png")),"Mesh options did not render");
+        require(renderPreview(QDir(argv[2]).filePath("mesh-options.png")),"Mesh options did not render");
         options->setCurrentIndex(0); workflow->setCurrentIndex(workflow->findData("build"));
         profiles->setCurrentText(project.game);
         require(button->isEnabled(), "Returning to a writable profile did not enable build");
@@ -231,7 +325,8 @@ int main(int argc, char** argv) {
         // No mouse/keyboard events or operating-system input are synthesized.
         run->trigger();
         require(queue->jobs().size() == 3, "Window failed to enqueue the full pipeline");
-        for(const auto& job:queue->jobs()) require(!job.arguments.contains("-brush-order"),"Window applied recovery settings to compilation");
+        for(const auto& job:queue->jobs()) for(const auto* option:{"-brush-order","-detail-policy","-group-policy","-detail-max-work","-group-max-work"})
+            require(!job.arguments.contains(option),"Window applied recovery settings to compilation");
     });
     QObject::connect(queue, &workbench::JobQueue::idle, &app, [&] {
         if (!launched) return;

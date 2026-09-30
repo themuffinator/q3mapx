@@ -280,6 +280,17 @@ exercises compatible/native-only profiles, retained incompatible selections,
 menu-action rejection before staging and direct QWidget rendering of the Recovery
 tab at 1380×920 and 1024×720 in both themes. No OS capture or input injection is used.
 
+The same workbench tests now cover optional detail/group policies and independent
+work budgets, strict JSON validation and migration defaults. The real queue recovers
+two labelled assemblies and verifies the compiler report and saved run snapshot.
+Window actions check native and older-compiler rejection, retained choices,
+automatic rebuild-order selection, saved budget edits, command preview, and no
+directory creation on rejection. Compact/full renders cover collapsed/expanded
+limits; explicit widget-height checks prevent dropdown text from disappearing
+when the expanded section needs scrolling. Capability tests validate all three
+optional policy arrays and grouping's rebuild-order dependency. See
+[the validation record](validation/workbench-inference-controls.json).
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

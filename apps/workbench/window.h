@@ -28,8 +28,8 @@ private:
     QStringList recordedGroups_;
     QMap<int,QString> logs_;
     QLineEdit *name_, *source_, *gameRoot_, *outputRoot_, *compiler_, *mod_, *search_;
-    QComboBox *game_, *quality_, *backend_, *format_, *brushOrder_, *workflow_, *reports_;
-    QSpinBox *workers_, *gpu_, *size_, *samples_, *patchSteps_;
+    QComboBox *game_, *quality_, *backend_, *format_, *brushOrder_, *detailPolicy_, *groupPolicy_, *workflow_, *reports_;
+    QSpinBox *workers_, *gpu_, *size_, *samples_, *patchSteps_, *detailWork_, *groupWork_;
     QCheckBox* reproducibleVis_;
     QPlainTextEdit *bspOptions_, *visOptions_, *lightOptions_, *preview_, *logView_, *reportView_;
     QTableWidget *jobs_, *historyView_;

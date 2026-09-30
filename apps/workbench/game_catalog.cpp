@@ -69,20 +69,42 @@ QVector<GameProfile> parseGameCatalog(const QByteArray& bytes) {
                 || profile.workflows.contains(workflow.toString())) invalid();
             profile.workflows << workflow.toString();
         }
-        if (source.contains("recovery_brush_orders")) {
-            if (!source["recovery_brush_orders"].isArray()) invalid();
-            const auto orders=source["recovery_brush_orders"].toArray();
-            if (orders.size()>32) invalid();
-            profile.recoveryBrushOrders.clear();
-            for (const auto& order:orders) {
-                if (!order.isString() || !identifier.match(order.toString()).hasMatch()
-                    || profile.recoveryBrushOrders.contains(order.toString())) invalid();
-                profile.recoveryBrushOrders << order.toString();
+        const auto policies=[&](const char* key, QStringList& destination) {
+            if (!source.contains(key)) return;
+            if (!source[key].isArray()) invalid();
+            const auto values=source[key].toArray();
+            if (values.size()>32) invalid();
+            destination.clear();
+            for (const auto& policy:values) {
+                if (!policy.isString() || !identifier.match(policy.toString()).hasMatch()
+                    || destination.contains(policy.toString())) invalid();
+                destination << policy.toString();
             }
-        }
+        };
+        policies("recovery_brush_orders",profile.recoveryBrushOrders);
+        policies("recovery_detail_policies",profile.recoveryDetailPolicies);
+        policies("recovery_group_policies",profile.recoveryGroupPolicies);
         profiles.append(profile);
     }
     return profiles;
+}
+
+QString recoverySupportError(const GameProfile* profile, const QString& order, const QString& detail, const QString& groups) {
+    // Resolve grouping first: its active UI selection locks BSP order out.
+    if (groups=="surfaces") {
+        if (!profile || !profile->supportsSurfaceGroups())
+            return "Surface group inference is unavailable for this compiler and profile. Select Flat world geometry or a supported compiler/profile.";
+        if (order!="rebuild") return "Surface grouping requires Rebuild brush order.";
+    }
+    if (detail=="cells" && (!profile || !profile->supportsCellDetail()))
+        return "Cell detail inference is unavailable for this compiler and profile. Select Legacy detail flags or a supported compiler/profile.";
+    if (order=="rebuild") {
+        if (!profile || !profile->nativeWrite)
+            return "Rebuild brush order requires a verified game profile with BSP writing support. Select BSP order for this recovery.";
+        if (!profile->supportsRebuildOrder())
+            return "The selected compiler does not advertise rebuild-order recovery. Update the compiler or select BSP order.";
+    }
+    return {};
 }
 
 const GameProfile* GameCatalog::find(const QString& name) const {

@@ -24,6 +24,8 @@ QJsonObject Project::toJson() const {
         {"workers",workers},{"gpu_device",gpuDevice},{"minimap_size",minimapSize},{"minimap_samples",minimapSamples},
         {"reproducible_vis",reproducibleVis},
         {"mesh_patch_steps",meshPatchSteps},{"brush_order",brushOrder},
+        {"detail_policy",detailPolicy},{"group_policy",groupPolicy},
+        {"detail_work_limit",detailWorkLimit},{"group_work_limit",groupWorkLimit},
         {"bsp_options",QJsonArray::fromStringList(bspOptions)},{"vis_options",QJsonArray::fromStringList(visOptions)},
         {"light_options",QJsonArray::fromStringList(lightOptions)}};
 }
@@ -39,6 +41,7 @@ Project Project::fromJson(const QJsonObject& o){
     string("compiler",p.compiler); string("game",p.game); string("mod",p.mod); string("quality",p.quality);
     string("backend",p.backend); string("map_format",p.mapFormat);
     string("brush_order",p.brushOrder);
+    string("detail_policy",p.detailPolicy); string("group_policy",p.groupPolicy);
     const auto integer=[&](const char* key,int& value,int low,int high){
         if (!o.contains(key)) return;
         if (!o[key].isDouble() || o[key].toDouble()!=o[key].toInt() || o[key].toInt()<low || o[key].toInt()>high)
@@ -48,6 +51,8 @@ Project Project::fromJson(const QJsonObject& o){
     integer("workers",p.workers,0,1024); integer("gpu_device",p.gpuDevice,-1,1023);
     integer("minimap_size",p.minimapSize,1,8192); integer("minimap_samples",p.minimapSamples,1,256);
     integer("mesh_patch_steps",p.meshPatchSteps,1,32);
+    integer("detail_work_limit",p.detailWorkLimit,1,100'000'000);
+    integer("group_work_limit",p.groupWorkLimit,1,100'000'000);
     const auto list=[&](const char* key,QStringList& values){
         if (!o.contains(key)) return;
         if (!o[key].isArray()) fail(QString("Invalid option list: ")+key);
@@ -61,6 +66,9 @@ Project Project::fromJson(const QJsonObject& o){
     if (!QStringList{"auto","cpu","gpu","reference"}.contains(p.backend)) fail("Unknown compute backend");
     if (!QStringList{"map","map_bp","map_220"}.contains(p.mapFormat)) fail("Unknown map format");
     if (!QStringList{"bsp","rebuild"}.contains(p.brushOrder)) fail("Unknown recovery brush order");
+    if (!QStringList{"legacy","cells"}.contains(p.detailPolicy)) fail("Unknown recovery detail policy");
+    if (!QStringList{"none","surfaces"}.contains(p.groupPolicy)) fail("Unknown recovery group policy");
+    if (p.groupPolicy=="surfaces" && p.brushOrder!="rebuild") fail("Surface grouping requires rebuild brush order");
     return p;
 }
 Project Project::load(const QString& path){
@@ -90,6 +98,11 @@ QStringList Project::validate(const QString& workflow) const {
     if (!QStringList{"build","bsp","vis","light","minimap","decompile","obj","ase"}.contains(workflow)) errors << "Unknown workflow.";
     if (meshPatchSteps<1 || meshPatchSteps>32) errors << "Mesh curve detail must be between 1 and 32.";
     if (!QStringList{"bsp","rebuild"}.contains(brushOrder)) errors << "Unknown recovery brush order.";
+    if (!QStringList{"legacy","cells"}.contains(detailPolicy)) errors << "Unknown recovery detail policy.";
+    if (!QStringList{"none","surfaces"}.contains(groupPolicy)) errors << "Unknown recovery group policy.";
+    if (groupPolicy=="surfaces" && brushOrder!="rebuild") errors << "Surface grouping requires rebuild brush order.";
+    if (detailWorkLimit<1 || detailWorkLimit>100'000'000 || groupWorkLimit<1 || groupWorkLimit>100'000'000)
+        errors << "Recovery analysis work limits must be between 1 and 100000000.";
     if (workers<0 || workers>1024 || minimapSize<1 || minimapSize>8192 || minimapSamples<1 || minimapSamples>256)
         errors << "Invalid worker count or minimap dimensions.";
     return errors;
@@ -127,6 +140,8 @@ QVector<Job> buildPlan(const Project& p,const QString& workflow,const QString& d
         QStringList options{"-decompile","-format",p.mapFormat,"-o",output.filePath("recovered.map")};
         // Preserve the previous command for default and older saved projects.
         if (p.brushOrder=="rebuild") options << "-brush-order" << "rebuild";
+        if (p.detailPolicy=="cells") options << "-detail-policy" << "cells" << "-detail-max-work" << QString::number(p.detailWorkLimit);
+        if (p.groupPolicy=="surfaces") options << "-group-policy" << "surfaces" << "-group-max-work" << QString::number(p.groupWorkLimit);
         add("DECOMPILE",options,staged,output.filePath("recovered.map"));
     }
     if (workflow=="obj" || workflow=="ase")

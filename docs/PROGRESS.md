@@ -1414,3 +1414,57 @@ existing `UnsortedSet` warnings remain. No external code/dependency was added, a
 the 0.3.0 packaged archive is unchanged. Broader grouping/parameter inference,
 light reconstruction, saved overrides, workbench review and the independent
 intelligent VIS/geometry optimizers remain active roadmap work.
+
+## 2026-09-30 — Saved workbench inference controls and capability checks
+
+The Recovery tab now saves independent detail and group policies plus separate
+analysis budgets. Legacy detail and flat world geometry remain the defaults.
+Selecting surface-supported groups chooses rebuild order and prevents a conflicting
+BSP-order selection until grouping is turned off. Expanded work-limit controls
+retain their values when inactive, while only active inference options reach
+decompile jobs. Project schema 1 validates the optional fields and group/order
+relationship; older projects keep their prior command. Run snapshots retain the
+selected policies and exact work limits.
+
+The compiler's schema 1 catalog now advertises optional detail and group policy
+arrays alongside brush ordering. All 19 writable profiles advertise the new
+policies; six recovery-only readers advertise the baselines. The client validates
+bounded identifier arrays and treats missing metadata as no inference support.
+Grouping also requires advertised rebuild order. A shared capability check drives
+both control state and execution guards. Unsupported saved selections remain
+visible, guidance gives a usable next action, and menu/run/queue paths reject the
+combination before creating a run directory. Switching back to a compatible
+compiler restores availability.
+
+The actual Qt queue now builds a fixture containing two labelled assemblies,
+recovers both using the saved inference settings, and checks the real compiler's
+report and staged project snapshot. Tests cover migration, malformed policy and
+budget fields, numeric boundaries, conflicting settings, 25 catalog mutations,
+and absence of inference arguments from other workflows. Offscreen window actions
+verify persistence, previewed budgets, automatic ordering, native and older
+compiler rejection, retained selections, and no output-directory creation on
+rejection. Ordinary recovery remains available with older catalogs.
+
+Visual inspection at 1380×920 and 1024×720 in both themes found that the initial
+stacked controls did not fit and expanded limits could squeeze dropdown text
+away. The final layout pairs the choices in two columns and propagates its content
+minimum to the scroll area, keeping dropdowns readable. Main choices fit the
+compact view; expanded limits scroll there and fit together at full size. Tests
+check control height and access to the complete last field, settle Qt layout
+events, and render the application's own widget tree. No OS capture or input
+injection is used. The existing 5 MiB report-preview limit now has a visible note
+pointing to the complete files in the run folder.
+
+Six affected test groups pass on Windows and Linux across the recorded phases.
+The final three GUI/queue checks pass in 4.34 and 7.83 seconds respectively;
+catalog checks and unchanged inspection/device clients have separate successful
+records. [Validation identities, reports and renders](validation/workbench-inference-controls.json)
+retain the exact source/binary hashes and distinguish final checks from superseded
+layout/test-harness failures. Logs and the recording helper remain in
+`.agents/tmp/continuation`; generated projects, queued outputs and direct renders
+remain under each build's `tests/workbench` directory.
+
+No new unrelated issue was found and no external code/dependency was added. The
+0.3.0 archive is unchanged. These controls expose inference export; proposal
+overlays, saved per-brush corrections, broader reconstruction and the independent
+intelligent compiler workstreams remain active roadmap work.

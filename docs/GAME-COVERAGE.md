@@ -21,6 +21,14 @@ unique policy identifiers and treats an absent field in older catalogs as ordina
 BSP order only. Native writing support alone does not imply the compiler has the
 new option. Unknown future policy identifiers do not enable a known policy.
 
+Optional `recovery_detail_policies` and `recovery_group_policies` arrays advertise
+`legacy`/`cells` and `none`/`surfaces`, respectively. Writable profiles expose both
+choices; recovery-only readers expose the baseline policies. The same bounded,
+unique identifier validation applies to all three arrays. Missing inference
+fields default to legacy/none in the client; group support additionally requires
+advertised rebuild order. The workbench preserves unsupported saved selections
+and rejects their execution before creating a run directory.
+
 Profile names and aliases are case-insensitive. Useful aliases include `q3`,
 `ql`, `rtcw-sp`, `rtcw-mp`, `wolfet`, `stvef-sp`, `stvef-mp`, `jk2-sp`,
 `jk2-mp`, `jka-sp` and `jka-mp`. Unknown names fail instead of silently selecting

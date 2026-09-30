@@ -11,7 +11,7 @@ remains a separate executable and can be built without Qt using
    directory, then select the game profile. Set a mod directory if needed.
 3. Choose an output folder and confirm the compiler path.
 4. Choose quality, workers and a workflow. GPU settings apply to minimaps;
-   **Recovery** contains the MAP format and brush-order choices for decompilation.
+   **Recovery** contains MAP format, brush order, detail flags and group inference.
 5. Inspect the command preview. Press **F5** to queue and run, or add several
    workflows before starting the queue.
 6. Review stage results, searchable logs, diagnostics and JSON reports. Open the
@@ -42,7 +42,8 @@ with its discovery failure shown beside the selection.
   saved projects without this setting retain their previous behavior.
 - Minimap: automatic/CPU/GPU/reference backend, device index, size and samples.
 - Recovery tab: Valve 220, brush primitives or classic coordinates, saved BSP/rebuild
-  brush order, and an automatic report of recovery assumptions and limitations.
+  brush order, optional detail/group inference and expandable analysis work limits.
+  Recovery produces a JSON report of decisions, assumptions and limitations.
 - Mesh export: OBJ/MTL or ASE, including curves and native MOHAA terrain. Curve
   detail is 1–32 samples per span (default 8); higher values create larger meshes.
 - Advanced: separate extra arguments for BSP, VIS and LIGHT, one argument per
@@ -62,6 +63,8 @@ with its discovery failure shown beside the selection.
 **Ctrl+N/O/S** create/open/save projects, **Ctrl+Shift+S** saves a copy,
 **Ctrl+Enter** queues a workflow, **F5** runs it, and **Shift+Escape** cancels the
 active job. Logs are bounded in the live view; complete child output stays on disk.
+Report previews show up to 5 MiB and say so below the preview; complete JSON files
+remain in the run folder.
 
 Projects use schema version 1, store argument arrays rather than shell commands,
 and reject invalid field types, unknown schema versions and invalid numeric limits.
@@ -83,6 +86,38 @@ Run, queue and menu actions reject that combination before staging inputs.
 The project schema's optional `brush_order` field accepts `bsp` or `rebuild`.
 Projects without it retain BSP order and the previous command; only decompile
 jobs receive the new CLI argument, and run snapshots retain the choice.
+
+The Recovery tab now also offers **Infer from brush interiors** for detail flags
+and **Infer func_group assemblies** for grouping. They are independent choices:
+groups can contain both detail and structural brushes. Legacy flags and flat
+world geometry remain the defaults. Group inference selects Rebuild order and
+disables BSP order until grouping is turned off; turning grouping off retains
+Rebuild order, which can then be changed normally. These are proposals with
+explicit uncertainty, not recovery of uniquely proven authoring metadata. See
+[detail behavior](DECOMPILATION.md#detail-inference-policy) and
+[group behavior](DECOMPILATION.md#group-inference-policy).
+
+**Analysis work limits** expands separate budgets for detail and group analysis.
+Each defaults to 50,000,000 work units and accepts 1–100,000,000. These are bounded
+analysis-operation counts, not time estimates. Exhaustion fails the recovery job;
+previous MAP/report outputs are preserved. Controls are enabled only for active,
+supported policies. Budgets remain saved while their policies are off, but only
+active inference arguments reach decompile jobs. Other workflows receive none.
+
+The selected compiler must advertise each inference policy for the selected
+profile. Grouping also requires advertised rebuild-order support. Older catalogs
+without inference metadata cannot enable it just because the profile can write
+BSPs. Saved choices remain visible across incompatible compiler/profile changes;
+guidance explains how to return to supported settings, and run/menu/queue actions
+reject incompatible inference before staging any input. Switching back restores
+availability. Full-size windows show expanded limits together; the compact view
+keeps the main choices visible and allows scrolling through expanded limits.
+
+Schema 1 adds optional `detail_policy` (`legacy` or `cells`), `group_policy` (`none`
+or `surfaces`), `detail_work_limit` and `group_work_limit` fields. Projects without
+them keep legacy/flat behavior and default budgets. Invalid types, policies and
+out-of-range budgets are rejected. A saved surface-group choice requires
+`brush_order: "rebuild"`; the UI maintains this relationship automatically.
 
 The inspection page is available in development builds after 0.3.0. It shows
 invalid-directory diagnostics as well as successful results and supports cancelling
@@ -118,6 +153,13 @@ skipping and cancellation. An offscreen window test also discovers the compiler'
 profiles and invokes its build action directly, without input injection. Catalog
 tests exercise malformed replies, exact combined-output boundaries, overflow on
 either stream, timeouts, stale responses and cleanup of superseded child processes.
+Inference tests also recover two known source assemblies through the queue, check
+the compiler's actual policy/budget report and run snapshot, and exercise saved
+settings and absent/malformed capability metadata. Direct offscreen widget actions
+verify old/current compiler switches, retained choices, rejection before directory
+creation and light/dark rendering at both supported window sizes. These settings
+do not yet provide proposal overlays, saved per-brush overrides or an interactive
+authoring reconstruction review. See [validation evidence](validation/workbench-inference-controls.json).
 The window test also checks recovery-only mesh capabilities and curve-detail
 command construction, and directly renders the quality controls without input
 events. Mesh export limitations are in the [recovery guide](DECOMPILATION.md).

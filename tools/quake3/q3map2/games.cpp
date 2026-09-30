@@ -1079,6 +1079,18 @@ int PrintGameCatalog(){
 			if ( game.write ) writer.String( "rebuild" );
 		}
 		writer.EndArray();
+		writer.Key( "recovery_detail_policies" ); writer.StartArray();
+		if ( game.load ) {
+			writer.String( "legacy" );
+			if ( game.write ) writer.String( "cells" );
+		}
+		writer.EndArray();
+		writer.Key( "recovery_group_policies" ); writer.StartArray();
+		if ( game.load ) {
+			writer.String( "none" );
+			if ( game.write ) writer.String( "surfaces" );
+		}
+		writer.EndArray();
 		writer.Key( "workflows" ); writer.StartArray();
 		if ( game.write ) {
 			writer.String( "build" ); writer.String( "bsp" ); writer.String( "vis" ); writer.String( "light" );

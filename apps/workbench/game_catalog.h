@@ -11,11 +11,15 @@ struct GameProfile {
     QString id, title, baseDirectory, shaderDirectory, bspIdent;
     QStringList aliases, workflows;
     QStringList recoveryBrushOrders{"bsp"}; // Catalogs before this option retain ordinary export.
+    QStringList recoveryDetailPolicies{"legacy"}, recoveryGroupPolicies{"none"};
     int bspVersion = 0;
     bool nativeWrite = false;
     bool supportsRebuildOrder() const { return nativeWrite && recoveryBrushOrders.contains("rebuild"); }
+    bool supportsCellDetail() const { return nativeWrite && recoveryDetailPolicies.contains("cells"); }
+    bool supportsSurfaceGroups() const { return supportsRebuildOrder() && recoveryGroupPolicies.contains("surfaces"); }
 };
 QVector<GameProfile> parseGameCatalog(const QByteArray& bytes);
+QString recoverySupportError(const GameProfile* profile, const QString& order, const QString& detail, const QString& groups);
 
 class GameCatalog : public QObject {
     Q_OBJECT

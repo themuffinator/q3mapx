@@ -1,0 +1,429 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-30T10:27:41.474690+00:00",
+  "base_revision": "493014d3980ec4b3943f7bf907b7271dea00e129",
+  "scope": "Workbench detail/group inference policies and budgets, project persistence, capability checks and accessible recovery controls",
+  "source_sha256_lf": {
+    "apps/workbench/project.h": "efd7d071a7f60b8bf0286fa5d4c17c5997d74be2e72ddfc87bcb9fd5dda0688f",
+    "apps/workbench/project.cpp": "8e334f6461576f485852fb859727fee214b3634e19ec884b221b7a0958191093",
+    "apps/workbench/game_catalog.h": "96ef79b75aa04ffe6d7aa35ba95dd67da58ac90ebc1116e52e3f34c47a6b64bf",
+    "apps/workbench/game_catalog.cpp": "235f21a14f21a865c1275ebcbee49d203214a6ae67185077300ff4982be7dfea",
+    "apps/workbench/window.h": "226e68d58437849e8b974aac1969d376ca431c6cb6549ec558aff2392d4f9609",
+    "apps/workbench/window.cpp": "bae88fea757cf5faff1b1518fd1c3f09ec17d3a242bedde975d1806b34fc787b",
+    "tools/quake3/q3map2/games.cpp": "7b78296dc16e0a6c20298ca27da376fca562f55fe3b1d38ff326660e91a1f2e1",
+    "tests/game_catalog.cpp": "3f3f54b9213980419b8224fcca4b8c403dd275150964e898c3f00c05833712c7",
+    "tests/workbench.cpp": "b12f5cff63bb0ec319c519772f8c7ad8b56d711d68204f3878c2ba4777887fd2",
+    "tests/workbench.py": "f5ad36652f9ac4121782afffcd6364abc39aab3f4e4ae7e48de8dd67403a1b30",
+    "tests/workbench_window.cpp": "542b7561e234c92ca24f72653f5da798ebee810e935cf28b47eeec67aa18e9fa",
+    "tests/recovery_groups.py": "db4162d05d08ac43dc7ffb801a8a76c94e1327ba9077139db2645f859979b551"
+  },
+  "optional_project_fields": {
+    "detail_policy": [
+      "legacy",
+      "cells"
+    ],
+    "group_policy": [
+      "none",
+      "surfaces"
+    ],
+    "detail_work_limit": {
+      "default": 50000000,
+      "range": [
+        1,
+        100000000
+      ]
+    },
+    "group_work_limit": {
+      "default": 50000000,
+      "range": [
+        1,
+        100000000
+      ]
+    }
+  },
+  "catalog_schema": 1,
+  "project_schema": 1,
+  "legacy_defaults_and_command_preserved": true,
+  "malformed_recovery_policy_cases": 15,
+  "malformed_work_limit_cases": 14,
+  "invalid_group_order_combination_rejected": true,
+  "valid_work_limit_boundaries": 4,
+  "malformed_catalog_cases": 25,
+  "platforms": [
+    {
+      "build": "release",
+      "binaries": {
+        "q3mapx": {
+          "path": "build/release/bin/q3mapx.exe",
+          "sha256": "70a0385392376a704e59a10d9d4e6ed3b657909d55a596e467f27561b59e9973"
+        },
+        "q3mapx-workbench": {
+          "path": "build/release/bin/q3mapx-workbench.exe",
+          "sha256": "241a75033ae99c56caad6c3289cd67cb8fd3110fc26fefe07fc1a693ca7bfcd5"
+        },
+        "game_catalog_test": {
+          "path": "build/release/bin/game_catalog_test.exe",
+          "sha256": "e758f815924e362243e507d096d9bc284afa00a7292528d665118d71b3d46d0f"
+        },
+        "workbench_test": {
+          "path": "build/release/bin/workbench_test.exe",
+          "sha256": "3b19718f711461d4fbdf68884b9a6e241ab52bc512693ed8c6b2955c01fc072c"
+        },
+        "workbench_window_test": {
+          "path": "build/release/bin/workbench_window_test.exe",
+          "sha256": "31f08f1f95aad73a17246999af67b44512d06f22aa04d8f66079e2b767cefd72"
+        }
+      },
+      "support_client_checks": {
+        "log": {
+          "path": ".agents/tmp/continuation/workbench-inference-test-windows.log",
+          "sha256": "55d6b7f1c3fd4a972fafc64b3f800b3bba1873f94972c21ab54ffbfe224db014"
+        },
+        "passed": [
+          {
+            "name": "workbench_inspector",
+            "seconds": 0.68
+          },
+          {
+            "name": "workbench_devices",
+            "seconds": 1.13
+          }
+        ]
+      },
+      "capability_checks": {
+        "log": {
+          "path": ".agents/tmp/continuation/workbench-inference-final-windows.log",
+          "sha256": "10a6b074182a7fbc1d5653a9466ede238c5cccd469bbfe07f414bbbed61832d1"
+        },
+        "passed": [
+          {
+            "name": "game_catalog",
+            "seconds": 0.6
+          }
+        ]
+      },
+      "final_gui_checks": {
+        "log": {
+          "path": ".agents/tmp/continuation/workbench-inference-accepted-windows.log",
+          "sha256": "92ece28418193974be338552d03863498ab45cdafa03ea9defe68de44aefcb8c"
+        },
+        "passed": [
+          {
+            "name": "workbench",
+            "seconds": 1.81
+          },
+          {
+            "name": "workbench_window",
+            "seconds": 2.26
+          },
+          {
+            "name": "workbench_preview",
+            "seconds": 0.26
+          }
+        ]
+      },
+      "window_checks_file": {
+        "path": "build/release/tests/workbench/window-state/recovery-checks.json",
+        "sha256": "0d79ab1323f56345c13252ef34f4dde894389d93354810476ec88cc84c2ef60e"
+      },
+      "window_checks": {
+        "both_themes": true,
+        "command_preview_policy": true,
+        "compact_page_without_clipping": true,
+        "compatible_profile_enabled": true,
+        "compiler_switch_restores_support": true,
+        "expanded_choice_text_readable": true,
+        "expanded_limits_accessible": true,
+        "full_size_limits_without_scrolling": true,
+        "grouping_selects_rebuild_order": true,
+        "incompatible_selection_retained": true,
+        "limits_command_preview": true,
+        "menu_action_rejected_before_staging": true,
+        "native_cell_menu_rejected": true,
+        "native_default_enabled": true,
+        "native_rebuild_disabled": true,
+        "older_compiler_defaults_available": true,
+        "older_compiler_inference_disabled": true,
+        "older_compiler_menu_rejected": true,
+        "os_input_or_capture_used": false,
+        "saved_inference_policies_and_limits": true,
+        "saved_policy_loaded": true,
+        "unknown_profile_disabled": true,
+        "unsupported_inference_creates_no_output_folders": true
+      },
+      "real_queue_inference": {
+        "evidence": {
+          "path": "build/release/tests/workbench/inference-run.json",
+          "sha256": "5569d885667ac4fc934cf6941f4bba58759f9e4957effdb3c335cb5dcf4de0d1"
+        },
+        "groups_exported": 2,
+        "detail_work_limit": 1234567,
+        "group_work_limit": 2345678,
+        "input_source": "E:/Repositories/q3mapx/build/release/tests/workbench/outputs with spaces/fixture-20260930-112536-640-691680/fixture.bsp",
+        "source_sha256": "65a07e5c63e0f4b613806845b6b5f375b1407ce73c6f056d51c014737a189cb8"
+      },
+      "window_saved_project": {
+        "path": "build/release/tests/workbench/window-state/editable-project.q3mapx.json",
+        "sha256": "ed1a087cdd6c5c826260ca382170ad1b2bbe525cd183b53c3575b61b9a3b4341"
+      },
+      "direct_widget_renders": [
+        {
+          "path": "build/release/tests/workbench/window-state/recovery-dark.png",
+          "sha256": "38ee368eaffcacf5ae71575e36ed160f146f0e164b0cf7ce2072a6d9a299dfe0"
+        },
+        {
+          "path": "build/release/tests/workbench/window-state/recovery-dark-compact.png",
+          "sha256": "4f8ab5d4323eb8e31f0fcba537d43c02b7de05e5d90435ea1661b4545ca58cb7"
+        },
+        {
+          "path": "build/release/tests/workbench/window-state/recovery-dark-limits.png",
+          "sha256": "e7c64d132cd21d25c6ef9d71ac0ffb1c8537512433f2bcb50d004ec17527de06"
+        },
+        {
+          "path": "build/release/tests/workbench/window-state/recovery-dark-limits-scrolled.png",
+          "sha256": "3bf0c133875c953b787d575339ff6c0cb1ca9bbf437420fa3e26aa1ded9eeed8"
+        },
+        {
+          "path": "build/release/tests/workbench/window-state/recovery-dark-limits-full.png",
+          "sha256": "19faf492d8c1e66de663198a7bc49ad4a2ebc44bb1afb477a93d0e9a8f4edafc"
+        },
+        {
+          "path": "build/release/tests/workbench/window-state/recovery-light.png",
+          "sha256": "6bc6bd2155e398fdb018bfefc988d373e14974812d71ee2c0e41edca054ca6f3"
+        },
+        {
+          "path": "build/release/tests/workbench/window-state/recovery-light-compact.png",
+          "sha256": "02186e0b0f249079dfb635b38984a88ae085464a09ed27a42d495797e780b78b"
+        },
+        {
+          "path": "build/release/tests/workbench/window-state/recovery-light-limits.png",
+          "sha256": "46b3f2c702b784185a0ee8817481b8ce3949e11f55567fd5ffc4bdbab5cbab70"
+        },
+        {
+          "path": "build/release/tests/workbench/window-state/recovery-light-limits-scrolled.png",
+          "sha256": "ec28f24767001ab4f887327b802c379397595418b70ec8ce1cc8e4a4339d7e4e"
+        },
+        {
+          "path": "build/release/tests/workbench/window-state/recovery-light-limits-full.png",
+          "sha256": "8db982453fbc98e43eb09497b818fb1733550be365b36de1ed8e6e77463360bd"
+        }
+      ],
+      "build_logs": [
+        {
+          "path": ".agents/tmp/continuation/workbench-inference-build-windows.log",
+          "sha256": "66ec8740e9d7397396c2cabc5771e8fd0adf93761781fd93b5fa6de75eaf91a3"
+        },
+        {
+          "path": ".agents/tmp/continuation/workbench-inference-final-build-windows.log",
+          "sha256": "48cc22ddd12d756a8821d29de48199b14ca90e7b372aeaca11f5d0a8d7e9249d"
+        },
+        {
+          "path": ".agents/tmp/continuation/workbench-inference-scroll-build-windows.log",
+          "sha256": "1c8d8979874718cd9b83d6d20426e6aa00122067a79d3733d474111c0e3185f0"
+        },
+        {
+          "path": ".agents/tmp/continuation/workbench-inference-accepted-build-windows.log",
+          "sha256": "bfd733a8959b251552624a9b93fac0680258905876cce86ee5f116c6c7f24a65"
+        }
+      ]
+    },
+    {
+      "build": "linux-release",
+      "binaries": {
+        "q3mapx": {
+          "path": "build/linux-release/bin/q3mapx",
+          "sha256": "184d5c423d7fa5afa47328eca7c648a3645dc35d141ad964e77330b2e22511d9"
+        },
+        "q3mapx-workbench": {
+          "path": "build/linux-release/bin/q3mapx-workbench",
+          "sha256": "0fcfbd4fa1d9c86c819f24fa83f83bedb55834c1578974453ebdb48dc4add6d6"
+        },
+        "game_catalog_test": {
+          "path": "build/linux-release/bin/game_catalog_test",
+          "sha256": "f34f5d1e84f5170769055d9560161dd31126726f1cb0772059f29aa24f822c03"
+        },
+        "workbench_test": {
+          "path": "build/linux-release/bin/workbench_test",
+          "sha256": "9ff868f91405fba9af75faf4beb7bb6b276adb298654220e811e03a0d0e4f49e"
+        },
+        "workbench_window_test": {
+          "path": "build/linux-release/bin/workbench_window_test",
+          "sha256": "dab19c3cea7c2c4b2fccd0503243ff1bed2e5b479e2ad82d5332e93cd3501f0e"
+        }
+      },
+      "support_client_checks": {
+        "log": {
+          "path": ".agents/tmp/continuation/workbench-inference-test-linux.log",
+          "sha256": "1f8599ae854f40c1c7f14406fab45e161666446d313ccd2fedc8748cef3bc1ce"
+        },
+        "passed": [
+          {
+            "name": "workbench_inspector",
+            "seconds": 2.24
+          },
+          {
+            "name": "workbench_devices",
+            "seconds": 1.51
+          }
+        ]
+      },
+      "capability_checks": {
+        "log": {
+          "path": ".agents/tmp/continuation/workbench-inference-final-linux.log",
+          "sha256": "e4818d83e4234174e6fcd13d01d49ce0120cd3da1c41aa52c55228faa487be3c"
+        },
+        "passed": [
+          {
+            "name": "game_catalog",
+            "seconds": 0.99
+          }
+        ]
+      },
+      "final_gui_checks": {
+        "log": {
+          "path": ".agents/tmp/continuation/workbench-inference-accepted-linux.log",
+          "sha256": "1704206ef316083d3088c898b0df77395deddaacb4b8aeb64f7b8980651471af"
+        },
+        "passed": [
+          {
+            "name": "workbench",
+            "seconds": 3.26
+          },
+          {
+            "name": "workbench_window",
+            "seconds": 3.91
+          },
+          {
+            "name": "workbench_preview",
+            "seconds": 0.47
+          }
+        ]
+      },
+      "window_checks_file": {
+        "path": "build/linux-release/tests/workbench/window-state/recovery-checks.json",
+        "sha256": "0d79ab1323f56345c13252ef34f4dde894389d93354810476ec88cc84c2ef60e"
+      },
+      "window_checks": {
+        "both_themes": true,
+        "command_preview_policy": true,
+        "compact_page_without_clipping": true,
+        "compatible_profile_enabled": true,
+        "compiler_switch_restores_support": true,
+        "expanded_choice_text_readable": true,
+        "expanded_limits_accessible": true,
+        "full_size_limits_without_scrolling": true,
+        "grouping_selects_rebuild_order": true,
+        "incompatible_selection_retained": true,
+        "limits_command_preview": true,
+        "menu_action_rejected_before_staging": true,
+        "native_cell_menu_rejected": true,
+        "native_default_enabled": true,
+        "native_rebuild_disabled": true,
+        "older_compiler_defaults_available": true,
+        "older_compiler_inference_disabled": true,
+        "older_compiler_menu_rejected": true,
+        "os_input_or_capture_used": false,
+        "saved_inference_policies_and_limits": true,
+        "saved_policy_loaded": true,
+        "unknown_profile_disabled": true,
+        "unsupported_inference_creates_no_output_folders": true
+      },
+      "real_queue_inference": {
+        "evidence": {
+          "path": "build/linux-release/tests/workbench/inference-run.json",
+          "sha256": "cc231596235ad4afa59b9cf79696b087193946547e094722695d1175bc5c8e23"
+        },
+        "groups_exported": 2,
+        "detail_work_limit": 1234567,
+        "group_work_limit": 2345678,
+        "input_source": "/mnt/e/Repositories/q3mapx/build/linux-release/tests/workbench/outputs with spaces/fixture-20260930-112546-159-fcdb29/fixture.bsp",
+        "source_sha256": "3c68c8589ad14543cc1bd461ac9919aea8a411c63e7122e0a6130a02b0ff8671"
+      },
+      "window_saved_project": {
+        "path": "build/linux-release/tests/workbench/window-state/editable-project.q3mapx.json",
+        "sha256": "4bc945c7c61d6847b5ab3c0ca12e3289bac246cfcc05a5fa8f716ab699eabde8"
+      },
+      "direct_widget_renders": [
+        {
+          "path": "build/linux-release/tests/workbench/window-state/recovery-dark.png",
+          "sha256": "ef23395ad6b517cfeb0f1fbdc3ec7c405c90a6d31b4370c1d7ce8740807c5146"
+        },
+        {
+          "path": "build/linux-release/tests/workbench/window-state/recovery-dark-compact.png",
+          "sha256": "e017f221083a23ffc23f4bb4e9ea14c68fc616ee92e0070f57d65434d4c1114a"
+        },
+        {
+          "path": "build/linux-release/tests/workbench/window-state/recovery-dark-limits.png",
+          "sha256": "a6761e668c4c210b4c8d05ad8843cf77de32ae28655ace6fcee06b1f0975a955"
+        },
+        {
+          "path": "build/linux-release/tests/workbench/window-state/recovery-dark-limits-scrolled.png",
+          "sha256": "a6b9902ecbbfd56790719019c554da89896fd135e233e2feb016798f29faa462"
+        },
+        {
+          "path": "build/linux-release/tests/workbench/window-state/recovery-dark-limits-full.png",
+          "sha256": "1069ce13622dd965448e40b79189787e67a2801a627e92d7c8d5e672917c55f5"
+        },
+        {
+          "path": "build/linux-release/tests/workbench/window-state/recovery-light.png",
+          "sha256": "b4d62d291bc4966f8612e1041742d919c12e6fb6e13e41188648f225224db8e5"
+        },
+        {
+          "path": "build/linux-release/tests/workbench/window-state/recovery-light-compact.png",
+          "sha256": "b663309d733bbe99140646ba8466ca38440ad324496598024b924c69ae767059"
+        },
+        {
+          "path": "build/linux-release/tests/workbench/window-state/recovery-light-limits.png",
+          "sha256": "e7002168bdaf116d30ba4afab9da70e999396ae903d1535f8ee92babb3e98737"
+        },
+        {
+          "path": "build/linux-release/tests/workbench/window-state/recovery-light-limits-scrolled.png",
+          "sha256": "5a7497b35a13cca3b04c22381dc50d1748152c2bdfa343de0e6bd223cafc19a3"
+        },
+        {
+          "path": "build/linux-release/tests/workbench/window-state/recovery-light-limits-full.png",
+          "sha256": "741ad8b926fbb998d04ca0120e5852349cbcbf12981c97249f97e81ac55f8ba3"
+        }
+      ],
+      "build_logs": [
+        {
+          "path": ".agents/tmp/continuation/workbench-inference-build-linux.log",
+          "sha256": "cb5ace4f7657855ce82f2600bf46f258f08663b4990f7ad53166eb710efa61e0"
+        },
+        {
+          "path": ".agents/tmp/continuation/workbench-inference-final-build-linux.log",
+          "sha256": "aacc62c235ef6b880ce494429bf174417c3bddaceaffe8e23b2099d18042bec6"
+        },
+        {
+          "path": ".agents/tmp/continuation/workbench-inference-scroll-build-linux.log",
+          "sha256": "1b9bad65585e7c3615c47729dbb964d5da3ce4fde4a15e72a4cfaf7809bdf3c6"
+        },
+        {
+          "path": ".agents/tmp/continuation/workbench-inference-accepted-build-linux.log",
+          "sha256": "026e1d9f73cb48948e0e6d405b5c364fdeb5f1eef9f0a3b8101da6458872df32"
+        }
+      ]
+    }
+  ],
+  "catalog": {
+    "capture": {
+      "path": ".agents/tmp/continuation/workbench-inference-games.json",
+      "sha256": "45d1df2743137b8b79e462f0c92066addd74adaf10363f7e92b9d5d7a75dcd2f"
+    },
+    "profiles": 25,
+    "cell_detail_profiles": 19,
+    "surface_group_profiles": 19,
+    "recovery_only_baseline_profiles": 6,
+    "missing_metadata_disables_inference": true,
+    "groups_require_advertised_rebuild_order": true
+  },
+  "validation_notes": [
+    "Six distinct affected test groups pass on both platforms across recorded phases. Earlier failed window/layout iterations are superseded by the final accepted GUI tests, not counted as passes.",
+    "Visual inspection exposed disappearing dropdown text when limits expanded. The layout now propagates a minimum content size and scrolls instead; tests require readable dropdown heights and access to the full work-limit control.",
+    "The offscreen harness uses shown widgets and settles layout events without user input. Its scroll assertion checks the complete field at the end of the scroll range; Qt ensureWidgetVisible can follow a spin-box edit cursor rather than its entire frame.",
+    "The test exits its event loop directly after success to avoid an unsaved-project close prompt from the shown offscreen window. No keyboard/mouse injection or OS screen capture was used.",
+    "Catalog/project/GUI integration only in this round. No compiler geometry or inference algorithm changed; the previous inference/rebuild corpus remains separately documented.",
+    "Raw report previews remain bounded to 5 MiB; the UI now makes that limit explicit and complete reports stay in the run folder.",
+    "No proposal overlays, per-brush accept/reject controls or saved manual overrides yet. Original source grouping and light arrangements are not proven recovered. Portable 0.3.0 packaging is unchanged."
+  ]
+}

@@ -71,8 +71,16 @@ Window::Window(const QString& stateDirectory):stateDirectory_(stateDirectory),qu
         status_->setText(QString("Queue stopped · %1 succeeded · %2 failed / cancelled · %3 queued").arg(succeeded).arg(failed).arg(remaining)); recordHistory();
     });
     for(auto* edit:{name_,source_,gameRoot_,outputRoot_,compiler_,mod_}) connect(edit,&QLineEdit::textChanged,this,&Window::updatePreview);
-    for(auto* combo:{game_,quality_,backend_,format_,brushOrder_,workflow_}) connect(combo,&QComboBox::currentTextChanged,this,&Window::updatePreview);
-    for(auto* spin:{workers_,gpu_,size_,samples_,patchSteps_}) connect(spin,&QSpinBox::valueChanged,this,&Window::updatePreview);
+    for(auto* combo:{game_,quality_,backend_,format_,brushOrder_,detailPolicy_,workflow_}) connect(combo,&QComboBox::currentTextChanged,this,&Window::updatePreview);
+    connect(groupPolicy_,&QComboBox::currentTextChanged,this,[this]{
+        if(populating_) return;
+        if(groupPolicy_->currentData()=="surfaces") {
+            const QSignalBlocker blocker(brushOrder_);
+            brushOrder_->setCurrentIndex(brushOrder_->findData("rebuild"));
+        }
+        updatePreview();
+    });
+    for(auto* spin:{workers_,gpu_,size_,samples_,patchSteps_,detailWork_,groupWork_}) connect(spin,&QSpinBox::valueChanged,this,&Window::updatePreview);
     for(auto* edit:{bspOptions_,visOptions_,lightOptions_}) connect(edit,&QPlainTextEdit::textChanged,this,&Window::updatePreview);
     connect(&catalog_,&GameCatalog::changed,this,[this]{
         if(!catalog_.loading() && !catalog_.profiles().isEmpty()) {
@@ -165,22 +173,55 @@ QWidget* Window::configuration(){
     patchSteps_=new QSpinBox; patchSteps_->setObjectName("meshPatchSteps"); patchSteps_->setRange(1,32); options->addRow("Mesh curve &detail",patchSteps_);
     patchSteps_->setToolTip("Samples along each curve span for OBJ/ASE export. Higher values create smoother, larger meshes. Default: 8.");
     auto* note=new QLabel("GPU selection here affects minimaps. Lighting defaults to CPU workers. Recovery includes a JSON report of retained and approximated data."); note->setWordWrap(true); note->setObjectName("notice"); options->addRow(note); tabs->addTab(scrollable(tuning),"Quality && compute");
-    auto* recovery=new QWidget; auto* recoveryOptions=new QFormLayout(recovery);
-    recoveryOptions->setContentsMargins(16,12,16,12); recoveryOptions->setVerticalSpacing(10);
-    recoveryOptions->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-    auto* recoveryIntro=new QLabel("Recover editable MAP geometry from a BSP. These settings apply to Decompile BSP.");
-    recoveryIntro->setWordWrap(true); recoveryOptions->addRow(recoveryIntro);
+    auto* recovery=new QWidget; auto* recoveryOptions=new QVBoxLayout(recovery);
+    recoveryOptions->setContentsMargins(16,10,16,10); recoveryOptions->setSpacing(8);
+    // Propagate newly visible limits to the scroll area's content minimum, so
+    // Qt scrolls instead of squeezing the dropdown text out of its controls.
+    recoveryOptions->setSizeConstraint(QLayout::SetMinimumSize);
+    auto* choices=new QGridLayout; choices->setHorizontalSpacing(18); choices->setVerticalSpacing(5);
+    choices->setColumnStretch(0,1); choices->setColumnStretch(1,1);
+    const auto choice=[&](const QString& text,QComboBox* combo,int row,int column){
+        combo->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
+        auto* label=new QLabel(text); label->setBuddy(combo);
+        choices->addWidget(label,row,column); choices->addWidget(combo,row+1,column);
+    };
     format_=new QComboBox; format_->setObjectName("recoveryFormat");
-    format_->addItem("Valve 220 · recommended for texture recovery","map_220"); format_->addItem("Brush primitives","map_bp"); format_->addItem("Classic Quake texture coordinates","map");
-    recoveryOptions->addRow("Recovery &format",format_);
+    format_->addItem("Valve 220 · recommended","map_220"); format_->addItem("Brush primitives","map_bp"); format_->addItem("Classic Quake coordinates","map");
+    choice("Recovery &format",format_,0,0);
     brushOrder_=new QComboBox; brushOrder_->setObjectName("recoveryBrushOrder"); brushOrder_->setAccessibleName("Recovery brush order");
     brushOrder_->addItem("BSP order · default","bsp"); brushOrder_->addItem("Rebuild order","rebuild");
     brushOrder_->setToolTip("Rebuild order can reduce partition changes when recompiling the recovered MAP with matching game and shader assets.");
-    recoveryOptions->addRow("Brush &order",brushOrder_);
+    choice("Brush &order",brushOrder_,0,1);
+    detailPolicy_=new QComboBox; detailPolicy_->setObjectName("recoveryDetailPolicy"); detailPolicy_->setAccessibleName("Recovery detail flags");
+    detailPolicy_->addItem("Legacy detail flags · default","legacy"); detailPolicy_->addItem("Infer from brush interiors","cells");
+    detailPolicy_->setToolTip("Use bounded brush/tree intersections and current material semantics to propose detail flags. Ambiguous cases retain the baseline.");
+    choice("&Detail flags",detailPolicy_,2,0);
+    groupPolicy_=new QComboBox; groupPolicy_->setObjectName("recoveryGroupPolicy"); groupPolicy_->setAccessibleName("Recovery brush groups");
+    groupPolicy_->addItem("Flat world geometry · default","none"); groupPolicy_->addItem("Infer func_group assemblies","surfaces");
+    groupPolicy_->setToolTip("Shared rendered surfaces propose brush assemblies independently of detail flags. Requires Rebuild order; incompatible proposals stay flat.");
+    choice("Brush &groups",groupPolicy_,2,1);
+    recoveryOptions->addLayout(choices);
     recoveryHint_=new QLabel; recoveryHint_->setObjectName("recoveryOrderHint"); recoveryHint_->setTextFormat(Qt::PlainText); recoveryHint_->setWordWrap(true);
-    recoveryOptions->addRow(recoveryHint_);
-    auto* recoveryNote=new QLabel("A JSON recovery report records assumptions and losses. Original groups, order and stripped flags may be unavailable.");
-    recoveryNote->setObjectName("recoveryLimitations"); recoveryNote->setWordWrap(true); recoveryOptions->addRow(recoveryNote);
+    recoveryOptions->addWidget(recoveryHint_);
+    auto* limitsToggle=new QToolButton; limitsToggle->setObjectName("recoveryLimitsToggle"); limitsToggle->setText("Analysis work limits");
+    limitsToggle->setCheckable(true); limitsToggle->setArrowType(Qt::RightArrow); limitsToggle->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    auto* recoveryFooter=new QHBoxLayout; recoveryFooter->addWidget(limitsToggle);
+    auto* recoveryNote=new QLabel("Review inferred choices in the recovery report.");
+    recoveryNote->setObjectName("recoveryLimitations"); recoveryNote->setWordWrap(true);
+    recoveryFooter->addWidget(recoveryNote,1); recoveryOptions->addLayout(recoveryFooter);
+    auto* limits=new QWidget; limits->setObjectName("recoveryLimits"); auto* limitsForm=new QFormLayout(limits); limitsForm->setContentsMargins(0,0,0,0);
+    detailWork_=new QSpinBox; detailWork_->setObjectName("recoveryDetailWorkLimit");
+    groupWork_=new QSpinBox; groupWork_->setObjectName("recoveryGroupWorkLimit");
+    for(auto* spin:{detailWork_,groupWork_}) {
+        spin->setRange(1,100'000'000); spin->setSingleStep(1'000'000); spin->setGroupSeparatorShown(true);
+        spin->setToolTip("Maximum additional analysis work units, not elapsed time. Exhaustion fails recovery and preserves previous outputs. Default: 50,000,000.");
+    }
+    limitsForm->addRow("Detail work limit",detailWork_); limitsForm->addRow("Group work limit",groupWork_);
+    recoveryOptions->addWidget(limits); limits->hide();
+    connect(limitsToggle,&QToolButton::toggled,this,[limits,limitsToggle](bool expanded){
+        limits->setVisible(expanded); limitsToggle->setArrowType(expanded ? Qt::DownArrow : Qt::RightArrow);
+    });
+    recoveryOptions->addStretch();
     tabs->addTab(scrollable(recovery),"Recovery");
     auto* advanced=new QWidget; auto* advancedLayout=new QVBoxLayout(advanced);
     auto* tip=new QLabel("Additional arguments · one argument per line. Values containing spaces stay a single argument; do not add shell quotes."); tip->setWordWrap(true); advancedLayout->addWidget(tip);
@@ -220,6 +261,8 @@ QWidget* Window::queuePage(){
     diagnostics_=new QTreeWidget; diagnostics_->setHeaderLabels({"Severity","Stage","Message"}); diagnostics_->setRootIsDecorated(false); diagnostics_->header()->setSectionResizeMode(2,QHeaderView::Stretch);
     connect(diagnostics_,&QTreeWidget::itemActivated,this,[this,tabs](QTreeWidgetItem* item,int){ jobs_->selectRow(item->data(0,Qt::UserRole).toInt()); search_->setText(item->text(2)); tabs->setCurrentIndex(0); logView_->find(item->text(2)); }); tabs->addTab(diagnostics_,"Diagnostics");
     auto* reportsPage=new QWidget; auto* reportLayout=new QVBoxLayout(reportsPage); reports_=new QComboBox; reports_->setAccessibleName("Generated report"); reportView_=codeView(); reportLayout->addWidget(reports_); reportLayout->addWidget(reportView_);
+    auto* reportLimit=new QLabel("Preview shows up to 5 MiB. Open the run folder for complete report files.");
+    reportLimit->setWordWrap(true); reportLayout->addWidget(reportLimit);
     connect(reports_,&QComboBox::currentIndexChanged,this,[this]{ QFile file(reports_->currentData().toString()); reportView_->clear(); if(file.open(QIODevice::ReadOnly)) reportView_->setPlainText(QString::fromUtf8(file.read(5*1024*1024))); }); tabs->addTab(reportsPage,"Profiles && recovery reports");
     layout->addWidget(tabs,1); return page;
 }
@@ -237,6 +280,8 @@ Project Window::project() const {
     p.outputRoot=QDir::fromNativeSeparators(outputRoot_->text()); p.compiler=QDir::fromNativeSeparators(compiler_->text());
     p.game=game_->currentText(); p.mod=mod_->text(); p.quality=quality_->currentData().toString(); p.backend=backend_->currentText(); p.mapFormat=format_->currentData().toString();
     p.brushOrder=brushOrder_->currentData().toString();
+    p.detailPolicy=detailPolicy_->currentData().toString(); p.groupPolicy=groupPolicy_->currentData().toString();
+    p.detailWorkLimit=detailWork_->value(); p.groupWorkLimit=groupWork_->value();
     p.workers=workers_->value(); p.gpuDevice=gpu_->value(); p.minimapSize=size_->value(); p.minimapSamples=samples_->value();
     p.meshPatchSteps=patchSteps_->value();
     p.reproducibleVis=reproducibleVis_->isChecked();
@@ -248,6 +293,8 @@ void Window::setProject(const Project& p){
     outputRoot_->setText(QDir::toNativeSeparators(p.outputRoot)); compiler_->setText(QDir::toNativeSeparators(p.compiler));
     game_->setCurrentText(p.game); mod_->setText(p.mod); quality_->setCurrentIndex(quality_->findData(p.quality)); backend_->setCurrentText(p.backend); format_->setCurrentIndex(format_->findData(p.mapFormat));
     brushOrder_->setCurrentIndex(brushOrder_->findData(p.brushOrder));
+    detailPolicy_->setCurrentIndex(detailPolicy_->findData(p.detailPolicy)); groupPolicy_->setCurrentIndex(groupPolicy_->findData(p.groupPolicy));
+    detailWork_->setValue(p.detailWorkLimit); groupWork_->setValue(p.groupWorkLimit);
     workers_->setValue(p.workers); gpu_->setValue(p.gpuDevice); size_->setValue(p.minimapSize); samples_->setValue(p.minimapSamples);
     patchSteps_->setValue(p.meshPatchSteps);
     reproducibleVis_->setChecked(p.reproducibleVis);
@@ -277,10 +324,10 @@ void Window::enqueue(bool start){
         const auto p=project(); const QString workflow=workflow_->currentData().toString();
         if(catalog_.loading() || catalogCompiler_!=compiler_->text()) throw std::runtime_error("Wait for the compiler's game profiles to finish loading.");
         const auto* profile=catalog_.find(p.game);
-        if(workflow=="decompile" && p.brushOrder=="rebuild" && (!profile || !profile->nativeWrite))
-            throw std::runtime_error("Rebuild brush order requires a verified game profile with BSP writing support. Select BSP order for this recovery.");
-        if(workflow=="decompile" && p.brushOrder=="rebuild" && !profile->supportsRebuildOrder())
-            throw std::runtime_error("The selected compiler does not advertise rebuild-order recovery. Update the compiler or select BSP order.");
+        if(workflow=="decompile") {
+            const auto error=recoverySupportError(profile,p.brushOrder,p.detailPolicy,p.groupPolicy);
+            if(!error.isEmpty()) throw std::runtime_error(error.toStdString());
+        }
         if(!catalog_.profiles().isEmpty()) {
             if(!profile) throw std::runtime_error("Select a game profile supported by this compiler.");
             if(!profile->workflows.contains(workflow)) throw std::runtime_error("This game profile does not support the selected workflow.");
@@ -355,11 +402,21 @@ void Window::refreshGames(){
 void Window::refreshGameHint(){
     const bool current=!catalog_.loading() && catalogCompiler_==compiler_->text();
     const auto* profile=current ? catalog_.find(game_->currentText()) : nullptr;
-    const bool rebuild=workflow_->currentData()=="decompile" && brushOrder_->currentData()=="rebuild";
     const bool canRebuild=profile && profile->supportsRebuildOrder();
-    if(auto* model=qobject_cast<QStandardItemModel*>(brushOrder_->model()))
-        model->item(brushOrder_->findData("rebuild"))->setEnabled(canRebuild);
-    if(!profile) recoveryHint_->setText("Rebuild order becomes available when the compiler confirms support for the selected game profile.");
+    const bool canDetail=profile && profile->supportsCellDetail(), canGroup=profile && profile->supportsSurfaceGroups();
+    const bool grouped=groupPolicy_->currentData()=="surfaces", cells=detailPolicy_->currentData()=="cells";
+    const auto enable=[](QComboBox* combo,const char* value,bool available){
+        if(auto* model=qobject_cast<QStandardItemModel*>(combo->model())) model->item(combo->findData(value))->setEnabled(available);
+    };
+    enable(brushOrder_,"rebuild",canRebuild); enable(brushOrder_,"bsp",!grouped);
+    enable(detailPolicy_,"cells",canDetail); enable(groupPolicy_,"surfaces",canGroup);
+    detailWork_->setEnabled(cells && canDetail); groupWork_->setEnabled(grouped && canGroup);
+    const auto recoveryError=recoverySupportError(profile,brushOrder_->currentData().toString(),detailPolicy_->currentData().toString(),groupPolicy_->currentData().toString());
+    const bool recoveryAllowed=workflow_->currentData()!="decompile" || recoveryError.isEmpty();
+    if(!recoveryError.isEmpty()) recoveryHint_->setText(recoveryError);
+    else if(grouped) recoveryHint_->setText("Groups require Rebuild order. Shared surfaces suggest assemblies; detail flags are evaluated separately.");
+    else if(cells) recoveryHint_->setText("Brush interiors and materials guide detail proposals. Uncertain cases retain legacy flags; rebuilt visibility is not guaranteed.");
+    else if(!profile) recoveryHint_->setText("Inference becomes available when the compiler confirms support for the selected profile.");
     else if(!profile->nativeWrite) recoveryHint_->setText("This profile supports recovery only. Select BSP order to decompile; native BSP rebuilding is unavailable.");
     else if(!canRebuild) recoveryHint_->setText("The selected compiler does not advertise rebuild-order recovery. Update the compiler or select BSP order.");
     else if(brushOrder_->currentData()=="rebuild") recoveryHint_->setText("Use matching game assets and compiler settings. Rebuild order can reduce partition changes; identical visibility is not guaranteed.");
@@ -371,13 +428,13 @@ void Window::refreshGameHint(){
         gameHint_->setText(QString("%1 · %2 %3\nAssets: %4/%5 · Workflows: %6")
             .arg(profile->title,profile->bspIdent).arg(profile->bspVersion)
             .arg(profile->baseDirectory,profile->shaderDirectory,profile->workflows.join(", ")));
-        run_->setEnabled(profile->workflows.contains(workflow_->currentData().toString()) && (!rebuild || canRebuild));
+        run_->setEnabled(profile->workflows.contains(workflow_->currentData().toString()) && recoveryAllowed);
     }
     else if(!catalog_.profiles().isEmpty()) {
         gameHint_->setText("This compiler does not recognize the selected game profile."); run_->setEnabled(false);
     }
     else {
-        gameHint_->setText(catalog_.error()+". Enter a legacy profile manually or choose another compiler."); run_->setEnabled(!rebuild);
+        gameHint_->setText(catalog_.error()+". Enter a legacy profile manually or choose another compiler."); run_->setEnabled(recoveryAllowed);
     }
 }
 void Window::applyTheme(){
@@ -389,7 +446,8 @@ void Window::applyTheme(){
         QLabel#brand { font-size:28pt; font-weight:700; } QLabel#eyebrow { color:%4; font-size:8pt; letter-spacing:2px; }
         QLabel#projectTitle { font-size:15pt; font-weight:600; } QLabel#pageTitle { font-size:21pt; font-weight:600; margin-bottom:6px; }
         QLabel#muted { color:%4; margin-bottom:12px; } QLabel#sectionTitle { font-size:11pt; font-weight:600; margin:8px 0; }
-        QLabel#notice,QLabel#recoveryLimitations { background:%2; border-left:3px solid #37b99c; padding:12px; color:%4; }
+        QLabel#notice { background:%2; border-left:3px solid #37b99c; padding:12px; color:%4; }
+        QLabel#recoveryLimitations { color:%4; padding-left:12px; }
         QLineEdit,QSpinBox,QComboBox,QPlainTextEdit,QTableWidget,QTreeWidget { background:%2; border:1px solid %5; border-radius:5px; padding:7px; selection-background-color:#276b64; selection-color:white; }
         QPlainTextEdit { padding:10px; font-family:'Consolas','Liberation Mono',monospace; } QLineEdit:focus,QSpinBox:focus,QComboBox:focus { border:1px solid #4fd1bb; }
         QPushButton { background:%2; border:1px solid %5; border-radius:5px; padding:8px 14px; font-weight:600; }

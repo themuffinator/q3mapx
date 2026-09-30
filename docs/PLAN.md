@@ -231,10 +231,14 @@ limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md
   Thirty-six additional rebuilds cover missing detail references, non-first-side
   structural semantics and positive/negative controls. Complete leaf adjacency,
   PRT integration, wider calibration, saved overrides and GUI review remain open.
+  The workbench now saves independent detail/group policies and their budgets,
+  checks advertised support and rejects incompatible jobs before staging. Known
+  assemblies exercise actual queue export; compact/full light/dark window checks
+  cover saved settings, old compiler fallback and accessible controls.
 - [ ] Infer useful `func_group` membership from geometry, materials, repeated
   assemblies and compile-property evidence, independently of detail classification.
   Preserve entity ownership and distinguish inferred groups from surviving metadata.
-  The initial CLI surface-association policy now proposes and exports bounded
+  The initial CLI/workbench surface-association policy now proposes and exports bounded
   world assemblies, copies recovered baseline compile settings, preserves brush
   insertion/collapse order and reports exclusions and ambiguity. Forty-two rebuilds,
   three lighting controls and 6,000 generated ordering layouts cover this policy.

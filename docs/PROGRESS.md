@@ -2065,3 +2065,69 @@ Existing `UnsortedSet` layout, patch-group aggregate and meta-vertex initializat
 warnings remain. Previously recorded VIS merge omissions, raw sidecar writers,
 recursive clipping fallback and intermittent Windows delays remain open. Earlier
 policy-blocked cleanup targets were not retried.
+
+## 2026-09-30 — Bounded MAP patches and tokenizer failure paths
+
+Repaired the patch-dimension issue identified in the preceding round. Width and
+height now validate as exact odd decimal integers in 3..31 before integer
+conversion, multiplication or mesh allocation. Integral decimal/scientific
+spellings remain accepted, while even dimensions, fractional/oversized values,
+non-finite numbers and trailing junk fail with entity/primitive/line diagnostics.
+Exact decimal normalization catches fractional suffixes that would otherwise
+round to an integer even through a double. The three legacy ignored header fields
+remain ignored but must be numeric.
+
+Control points now parse complete finite numbers into position and texture arrays
+separately, without writing five floats through the three-component position
+subobject. Positions use the existing compiler world range; texture coordinates
+must fit finite binary32 storage without nonzero-to-zero underflow. Initialized
+unused channels from the preceding repair remain intact. Closing delimiters and
+EOF are checked explicitly even when curves are skipped or only light entities
+are being loaded.
+
+The malformed-source matrix exposed two additional tokenizer memory errors in
+the preceding ASan binary: a lone opening quote caused a heap-buffer read past
+EOF, and a 1,024-byte token ending at EOF caused a global-buffer terminator write.
+Both reproductions are retained. Token writes now reserve the terminator first,
+quoted reads stay inside the source buffer, and unterminated quotes/comments
+produce diagnostics. Quoted NUL bytes are rejected: the initial strict-number
+implementation could still accept `"3\0junk"` because a C string view hid its
+suffix. Four bounded before/after controls reproduce rejection of inputs the
+preceding compiler accepted, including fractional, rounded-fraction, suffix and
+quoted-NUL dimensions. No huge allocation was requested from the unsafe binary.
+
+An early failure test also demonstrated loss of the previous PRT during source
+rejection. BSP compilation now delays PRT/LIN/saved-REG cleanup until MAP loading
+returns successfully. Entity-only updates retain these geometry sidecars on
+success as well. This extends parse-failure protection without claiming a
+transaction across every output or changing later raw writer guarantees.
+
+The new `patch_input` group passes on Windows Release, Linux Release and Linux
+ASan/UBSan: 44 valid IBSP/RBSP builds and 201 malformed sources/modes per platform.
+Valid cases include minimum/maximum/rectangular patches, ordinary and meta paths,
+decimal/scientific spellings, comments, legacy metadata and maximum-length tokens.
+All 44 Windows cases match every stored BSP lump against `e96901d`; both Release
+platforms also agree with each other. Rejected cases preserve source and prior
+BSP/PRT/LIN/SRF/REG/OBJ/MTL outputs where applicable, including entity-only, LIGHT,
+MAP/OBJ conversion, region and editor-temporary input. A successful entity-only
+control retains every non-entity BSP lump and sidecar.
+
+The existing 63-group Windows suite passes in addition to that reference matrix.
+The complete 64-group Linux sweep passes 63 and skips the unavailable GPU
+`area_factors` test. Eight relevant groups pass under ASan/UBSan, including all
+new malformed cases, native validation/publication and complete compile/recovery
+pipelines. Established process-lifetime leak exclusions are unchanged.
+
+See [accepted MAP inputs](MAP-INPUT.md), [test instructions](DEVELOPMENT.md#map-patch-input-validation)
+and [validation identities and failure evidence](validation/patch-input.json).
+Useful probes, the preceding Windows executable and logs remain under
+`.agents/tmp/continuation/patch-input/`; detailed cases/reports remain in each
+build's `tests/patch-input/`. No compile-speed claim or new portable archive is
+made. Earlier blocked cleanup targets were not retried.
+
+The source audit also found that brush matrices retain permissive `atof` parsing,
+outer entity syntax can warn and continue on missing braces, and recursive
+includes have no explicit depth budget. These remain separate planned work.
+Inherited `UnsortedSet`, patch aggregate and intentional clone-brush allocation
+warnings remain, along with the previously documented VIS, raw-sidecar and
+Windows-delay issues. The broader inference/optimization workstreams remain active.

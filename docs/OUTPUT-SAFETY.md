@@ -20,6 +20,13 @@ saved, the preceding BSP and PRT remain available for retry; `-saveprt` also kee
 the PRT after a successful run. A profile is a separate output: a failure saving
 it does not roll back a BSP already published by that command.
 
+BSP compilation defers deletion of previous PRT, LIN and saved REG files until
+source loading succeeds. Patch parse errors therefore retain them for inspection
+or retry; successful `-onlyents` updates leave geometry sidecars in place too.
+The [patch-input checks](MAP-INPUT.md) cover prior BSP/SRF and mesh outputs as well,
+including LIGHT/conversion, region files and editor temporary sources. Failures
+later in compilation and other raw sidecar writes remain separate concerns.
+
 MAP/recovery-report and OBJ/MTL exports already use the same output owner. Their
 ordered publication and rollback behavior are described in the
 [decompilation guide](DECOMPILATION.md). This change does not turn all files from

@@ -213,8 +213,12 @@ skipspace:
 	// /* */ comments
 	if ( script.it[0] == '/' && script.it[1] == '*' ) {
 		script.it += 2;
-		while ( script.it[0] != '*' || script.it[1] != '/' )
+		for ( ;; )
 		{
+			if ( script.end - script.it < 2 ) {
+				Error( "Unterminated comment on line %i in file %s", scriptline, script.filename.c_str() );
+			}
+			if ( script.it[0] == '*' && script.it[1] == '/' ) break;
 			if ( *script.it == '\n' ) {
 				if ( !crossline ) {
 					Error( "Line %i is incomplete\nFile location be: %s\n", scriptline, g_loadedScriptLocation.c_str() );
@@ -223,9 +227,6 @@ skipspace:
 				scriptline = script.line;
 			}
 			script.it++;
-			if ( script.it >= script.end ) {
-				return EndOfScript( crossline );
-			}
 		}
 		script.it += 2;
 		goto skipspace;
@@ -239,28 +240,29 @@ skipspace:
 	if ( *script.it == '"' ) {
 		// quoted token
 		script.it++;
-		while ( *script.it != '"' )
+		while ( script.it < script.end && *script.it != '"' )
 		{
-			*token_p++ = *script.it++;
-			if ( script.it == script.end ) {
-				break;
+			if ( *script.it == '\0' ) {
+				Error( "NUL in quoted token on line %i in file %s", scriptline, script.filename.c_str() );
 			}
-			if ( token_p == token + MAXTOKEN ) {
+			// Reserve the terminator before every write, including at file EOF.
+			if ( token_p == token + MAXTOKEN - 1 ) {
 				Error( "Token too large on line %i\nFile location be: %s\n", scriptline, g_loadedScriptLocation.c_str() );
 			}
+			*token_p++ = *script.it++;
+		}
+		if ( script.it == script.end ) {
+			Error( "Unterminated quote on line %i in file %s", scriptline, script.filename.c_str() );
 		}
 		script.it++;
 	}
 	else{   // regular token
-		while ( *script.it > 32 && *script.it != ';' )
+		while ( script.it < script.end && *script.it > 32 && *script.it != ';' )
 		{
-			*token_p++ = *script.it++;
-			if ( script.it == script.end ) {
-				break;
-			}
-			if ( token_p == token + MAXTOKEN ) {
+			if ( token_p == token + MAXTOKEN - 1 ) {
 				Error( "Token too large on line %i\nFile location be: %s\n", scriptline, g_loadedScriptLocation.c_str() );
 			}
+			*token_p++ = *script.it++;
 		}
 	}
 

@@ -30,6 +30,8 @@
 
 /* dependencies */
 #include "q3map2.h"
+#include <charconv>
+#include <limits>
 
 
 
@@ -194,46 +196,125 @@ static void ExpandMaxIterations( int *maxIterations, int maxError, const Vector3
    creates a mapDrawSurface_t from the patch text
  */
 
+namespace {
+struct PatchReader
+{
+	int entity, primitive;
+
+	[[noreturn]] void fail( const char *expected ) const {
+		Error( "Invalid MAP patch (entity %d, primitive %d) at line %d in %s: expected %s, got '%s'",
+		       entity, primitive, scriptline, g_loadedScriptLocation.c_str(), expected, token );
+	}
+	void next( bool crossline, const char *expected ) const {
+		if ( !GetToken( crossline ) ) {
+			Error( "Incomplete MAP patch (entity %d, primitive %d) at line %d in %s: expected %s before EOF",
+			       entity, primitive, scriptline, g_loadedScriptLocation.c_str(), expected );
+		}
+	}
+	void match( const char *expected ) const {
+		next( true, expected );
+		if ( !strEqual( token, expected ) ) fail( expected );
+	}
+	double number( const char *field ) const {
+		next( false, field );
+		const char *begin = token + ( token[0] == '+' );
+		const char *end = token + strlen( token );
+		double value = 0;
+		const auto result = std::from_chars( begin, end, value );
+		if ( result.ec != std::errc{} || result.ptr != end || !std::isfinite( value )
+		  || ( token[0] == '+' && *begin == '-' ) ) fail( field );
+		return value;
+	}
+	int dimension( const char *field ) const {
+		const double value = number( field );
+		// Validate before float-to-int conversion, multiplication or allocation.
+		if ( value < 3 || value > MAX_PATCH_SIZE || std::trunc( value ) != value ) fail( field );
+		const int size = int( value );
+		if ( size % 2 == 0 ) fail( field );
+		// A long fractional spelling can round to an integer even in double.
+		// Normalize the decimal digits exactly; retain integral 3.0 / 3e0 forms.
+		const char *exponent = strpbrk( token, "eE" );
+		const char *end = exponent ? exponent : token + strlen( token );
+		int scale = 0;
+		if ( exponent ) {
+			const char *begin = exponent + 1 + ( exponent[1] == '+' );
+			const auto parsed = std::from_chars( begin, token + strlen( token ), scale );
+			if ( parsed.ec != std::errc{} ) fail( field );
+		}
+		std::string digits;
+		bool fractional = false;
+		for ( const char *p = token + ( token[0] == '+' ); p != end; ++p ) {
+			if ( *p == '.' ) fractional = true;
+			else {
+				digits += *p;
+				if ( fractional ) --scale;
+			}
+		}
+		digits.erase( 0, digits.find_first_not_of( '0' ) );
+		while ( !digits.empty() && digits.back() == '0' ) {
+			digits.pop_back();
+			++scale;
+		}
+		if ( scale != 0 || digits != std::to_string( size ) ) fail( field );
+		return size;
+	}
+	float coordinate( const char *field, double limit ) const {
+		const double value = number( field );
+		if ( std::fabs( value ) > limit ) fail( field );
+		const float stored = float( value );
+		if ( value != 0 && stored == 0 ) fail( field );
+		return stored;
+	}
+};
+}
+
 void ParsePatch( bool onlyLights, entity_t& mapEnt, int mapPrimitiveNum ){
-	float info[ 5 ];
+	const PatchReader reader{ mapEnt.mapEntityNum, mapPrimitiveNum };
 	bool degenerate;
 	float longestCurve;
 	int maxIterations;
 
-	MatchToken( "{" );
+	reader.match( "{" );
 
 	/* get shader name */
-	GetToken( true );
+	reader.next( true, "material name" );
+	if ( strEmpty( token ) ) reader.fail( "nonempty material name" );
 	const String64 shader( "textures/", token );
 
-	Parse1DMatrix( 5, info );
-	mesh_t m( info[0], info[1] );
+	reader.match( "(" );
+	const int width = reader.dimension( "odd integer patch width in 3..31" );
+	const int height = reader.dimension( "odd integer patch height in 3..31" );
+	// The three legacy header fields are unused, but must still be numeric.
+	for ( int i = 0; i < 3; ++i ) reader.number( "finite patch header number" );
+	reader.match( ")" );
+	mesh_t m( width, height );
 	const int numVerts = m.numVerts();
 
-	if ( m.width < 0 || m.width > MAX_PATCH_SIZE || m.height < 0 || m.height > MAX_PATCH_SIZE ) {
-		Error( "ParsePatch: bad size" );
-	}
-
-	MatchToken( "(" );
+	reader.match( "(" );
 	for ( int j = 0; j < m.width; ++j )
 	{
-		MatchToken( "(" );
+		reader.match( "(" );
 		for ( int i = 0; i < m.height; ++i )
 		{
 			// MAP patches supply positions and texture coordinates only. Initialize
 			// the remaining channels before mesh interpolation or BSP publication.
 			m[ i ][ j ] = c_bspDrawVert_t0;
-			Parse1DMatrix( 5, m[ i ][ j ].xyz.data() );
+			reader.match( "(" );
+			for ( int axis = 0; axis < 3; ++axis )
+				m[ i ][ j ].xyz[axis] = reader.coordinate( "finite patch position in -65536..65536", MAX_WORLD_COORD );
+			for ( int axis = 0; axis < 2; ++axis )
+				m[ i ][ j ].st[axis] = reader.coordinate( "finite representable patch texture coordinate", std::numeric_limits<float>::max() );
+			reader.match( ")" );
 
 			/* ydnar: fix colors */
 			m[ i ][ j ].color.fill( Color4b( 255 ) );
 		}
-		MatchToken( ")" );
+		reader.match( ")" );
 	}
-	MatchToken( ")" );
+	reader.match( ")" );
 
 	// if brush primitives format, we may have some epairs to ignore here
-	GetToken( true );
+	reader.next( true, "closing brace or patch metadata" );
 	if ( !strEqual( token, "}" ) && ( g_brushType == EBrushType::Bp || g_brushType == EBrushType::Undefined ) ) {
 		std::list<epair_t> dummy;
 		ParseEPair( dummy );
@@ -242,8 +323,8 @@ void ParsePatch( bool onlyLights, entity_t& mapEnt, int mapPrimitiveNum ){
 		UnGetToken();
 	}
 
-	MatchToken( "}" );
-	MatchToken( "}" );
+	reader.match( "}" );
+	reader.match( "}" );
 
 	/* short circuit */
 	if ( noCurveBrushes || onlyLights ) {

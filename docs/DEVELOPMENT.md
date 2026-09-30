@@ -433,6 +433,24 @@ It records the preceding parser's uninitialized-coordinate counts separately.
 A changed-vertex negative control verifies that geometry remains significant.
 `validation.json` and command logs stay in the specified test directory.
 
+## MAP patch input validation
+
+`patch_input` covers dimensions before allocation, strict patch numbers, matrix
+shape/truncation, shared-tokenizer EOF limits and preservation of previous outputs.
+It also exercises valid native/converted patches and successful entity-only
+updates. Run it with the matching Windows/Linux/sanitizer build:
+
+```sh
+ctest --test-dir build/release -R '^patch_input$' -V
+python tests/patch_input.py --compiler build/release/bin/q3mapx --reference /path/to/preceding/q3mapx --work-dir build/release/tests/patch-input
+```
+
+Use `.exe` on Windows. Optional reference comparison requires identical stored
+BSP lumps for every valid case; it never runs huge allocation requests through
+the preceding unsafe parser. Failed inputs must exit normally with diagnostics
+and preserve existing files. Reports and individual command logs remain in the
+test directory. See [accepted input and limits](MAP-INPUT.md).
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

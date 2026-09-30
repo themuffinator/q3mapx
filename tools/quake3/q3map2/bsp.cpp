@@ -875,15 +875,6 @@ int BSPMain( Args& args ){
 	/* ydnar: set default sample size */
 	SetDefaultSampleSize( sampleSize );
 
-	/* delete portal, line and surface files */
-	remove( StringStream( source, ".prt" ) );
-	remove( StringStream( source, ".lin" ) );
-	//%	remove( StringStream( source, ".srf" ) );	/* ydnar */
-
-	/* if we are doing a full map, delete the last saved region map */
-	if ( !path_extension_is( fileName, "reg" ) )
-		remove( StringStream( source, ".reg" ) );
-
 	/* expand mapname */
 	StringOutputStream mapFileName( 256 );
 	if ( path_extension_is( fileName, "reg" ) || ( onlyents && path_extension_is( fileName, "ent" ) ) )
@@ -907,6 +898,13 @@ int BSPMain( Args& args ){
 	else{
 		LoadMapFile( mapFileName, false, g_autocaulk );
 	}
+
+	// Keep previous geometry sidecars if source parsing fails. Entity-only
+	// updates above do not rebuild geometry and must retain these files as well.
+	remove( StringStream( source, ".prt" ) );
+	remove( StringStream( source, ".lin" ) );
+	if ( !path_extension_is( fileName, "reg" ) )
+		remove( StringStream( source, ".reg" ) );
 
 	/* div0: inject command line parameters */
 	InjectCommandLine( "-bsp", argsToInject );

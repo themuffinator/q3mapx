@@ -195,9 +195,13 @@ not a redefinition of the overall goal around the existing release:
   reordered and duplicate shader definitions, worker parity, native IBSP/RBSP
   patches and complete compile pipelines; preserve geometry/ownership semantics.
   See [compiler reproducibility](PERFORMANCE.md#stable-meta-surfaces-and-patch-data).
-- [ ] Validate MAP patch dimensions before conversion/allocation. The source audit
-  found that `ParsePatch` constructs its mesh before checking the dimensions;
-  add bounded malformed-source regressions when repairing that separate path.
+- [x] Validate MAP patch dimensions before conversion/allocation, parse complete
+  finite numeric tokens, reject incomplete matrices and preserve previous outputs
+  on parse failure. Malformed-source tests also exposed and repaired quoted-EOF
+  reads, token-terminator writes and quoted-NUL bypasses in the shared tokenizer.
+  See [MAP patch checks](MAP-INPUT.md) for accepted inputs and validation limits.
+- [ ] Extend the source-parser audit to brush matrices, outer entity syntax and
+  recursive includes. Strict patch parsing does not make every MAP reader strict.
 - [ ] Profile larger recovery workloads and address measured costs with geometry,
   UV/material and worker-count parity evidence before claiming speedups.
   Initial whole-command comparisons now cover a dense generated room and private

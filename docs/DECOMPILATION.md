@@ -44,6 +44,7 @@ builds; they do not silently alter the decompiler's reconstruction objective.
 ```sh
 q3mapx -decompile -game quake3 -fs_basepath /path/to/game -o recovered.map maps/example.bsp
 q3mapx -decompile -format map_bp -report recovery.json maps/example.bsp
+q3mapx -decompile -brush-order rebuild -o recovered.map maps/example.bsp
 q3mapx -convert -format map_220 maps/example.bsp
 ```
 
@@ -75,6 +76,35 @@ such approximations. `-fast` skips texture reconstruction and reports fallback a
 Development builds after 0.3.0 use the same detail-flag policy for fast and full
 recovery in all three MAP formats. Earlier fast recovery wrote zero detail flags,
 which could turn detail geometry into structural splitters when rebuilt.
+
+### Brush order for rebuilding
+
+`-brush-order bsp|rebuild` selects MAP brush order in development builds after
+0.3.0. `bsp` is the default and retains the existing BSP-record export order.
+`rebuild` reverses opaque brushes within each model while preserving translucent
+brush order. This compensates for the q3mapx MAP loader prepending opaque brushes
+and appending translucent brushes. Preserving compiled brush order can prevent
+different tied splitter choices during a subsequent BSP build.
+
+Opacity comes from the current shader definitions of exported sides, including
+mixed-material brushes. Redundant sides with empty windings do not participate.
+The mode supports fast/full recovery and all three MAP writers, including legacy
+`-convert`. It requires a profile with BSP writing support and excludes `-wtf`,
+which can replace materials. Native recovery-only profiles retain ordinary BSP
+order; native round-trip fidelity is not implied. This option is currently CLI-only.
+
+Use the same shader assets and compatible compiler settings for recovery and
+recompilation. This is an attempt to preserve compiled ordering, not recovery of
+the author's editor sequence or a guarantee of equivalent BSP/VIS. Lost source
+flags, plane/side ordering, other compiler differences and missing assets can
+still affect the result. In particular, contradictory authored detail bits on
+explicitly structural sides can change splitter priorities even though the brush
+itself becomes structural; standard BSP brush data does not retain those numeric
+source bits. The option does not invent them.
+
+The optional version 1 `brush_order` report object records `policy`, `basis`,
+`author_order_proven: false` and `rebuild_equivalence_proven: false`. The report
+names shader/loader assumptions when rebuilding order is requested.
 
 ## Recovery details
 
@@ -131,10 +161,26 @@ Source-versus-rebuild partition/PVS differences are recorded, not hidden behind
 successful recompilation. In the current opaque structural fixture, full and fast
 recovery both change 71 nodes to 73 and add/remove 32/8 sampled visibility pairs;
 brush geometry and sampled opaque space still match. These are fidelity
-differences to investigate, not evidence by themselves of incorrect rendering.
+differences, not evidence by themselves of incorrect rendering. The rebuild-order
+option now removes the observed differences in the opaque structural, ordinary
+detail and mixed-group controls by compensating for loader insertion order.
 The mixed group is flattened by compilation; this fixture does not implement group
 inference. Finite samples and this small axial-brush corpus do not prove general
 visibility or classifier correctness. See [the fast-recovery audit](validation/fast-detail-recovery.json).
+
+`recovery_order` adds 38 rebuilds. Five positive source cases cover detail,
+structural, mixed-group, translucent structural and mixed-opacity geometry,
+including multiple brushes in an entity with a nonzero origin. All three formats
+in fast/full mode retain per-model compiled brush order, geometry/materials/contents,
+node counts, surviving entities and sampled partition/PVS relationships. Two
+additional builds cover a redundant translucent side that is not exported.
+Default/legacy output equivalence, 1/4-worker parity and 12 invalid option/profile
+combinations are checked. A sixth source case deliberately retains contradictory
+detail/structural flags: its 69 source nodes rebuild as 74 with 4,494 sampled
+partition-pair differences and no sampled PVS differences. An independent source
+control with those conflicting bits removed matches the rebuilt output. This
+separates discarded authoring flags from ordering effects. See the bounded
+[rebuild-order validation](validation/recovery-brush-order.json).
 
 ## Implemented validation
 

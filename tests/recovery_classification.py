@@ -29,7 +29,12 @@ def create_case(root, mode):
         authored = original
         if detail or mode == "structural-override":
             authored = authored.replace(" 0 0 0\n", f" {DETAIL} 0 0\n")
-        if mode == "structural-override":
+        if mode in ("structural-override", "translucent-structural"):
+            authored = authored.replace("q3mapx/stone", "q3mapx/structural")
+        if mode == "mixed-opacity" and i % 2 == 0:
+            # Only the last side is translucent: using the brush's first shader
+            # instead of the exported sides would misclassify its insertion order.
+            authored = authored.replace("q3mapx/stone", "q3mapx/opaque_structural", 5)
             authored = authored.replace("q3mapx/stone", "q3mapx/structural")
         if mode == "mixed-group":
             groups.append(authored)
@@ -38,10 +43,12 @@ def create_case(root, mode):
         labels[(*lo, *hi)] = detail
     if groups:
         text += '{\n"classname" "func_group"\n"name" "mixed authoring assembly"\n' + "".join(groups) + '}\n'
-    if mode == "structural-override":
+    if mode in ("structural-override", "translucent-structural", "mixed-opacity"):
         shader = source.parent.parent / "scripts/q3mapx_tests.shader"
         with shader.open("a", encoding="utf-8") as out:
             out.write("\ntextures/q3mapx/structural\n{\nsurfaceparm structural\nsurfaceparm trans\n"
+                      "{ map textures/q3mapx/checker.tga }\n}\n"
+                      "\ntextures/q3mapx/opaque_structural\n{\nsurfaceparm structural\n"
                       "{ map textures/q3mapx/checker.tga }\n}\n")
     source.write_text(text, encoding="utf-8")
     return source, labels
@@ -116,7 +123,7 @@ def spatial_signature(bsp, points):
     return bytes(c >= 0 for c in clusters), partition, pvs
 
 
-def geometry_signature(bsp):
+def geometry_signature(bsp, *, ordered=False):
     """Exact authored boxes, contents/materials and brush-model geometry in this corpus."""
     planes = list(struct.iter_unpack("<4f", bsp.lump(2)))
     sides = list(struct.iter_unpack("<2i", bsp.lump(9)))
@@ -129,7 +136,7 @@ def geometry_signature(bsp):
         for start, size, shader in brushes[first:first+count]:
             faces = tuple(sorted((planes[plane], shaders[material]) for plane, material in sides[start:start+size]))
             solids.append((faces, shaders[shader]))
-        result.append(tuple(sorted(solids)))
+        result.append(tuple(solids if ordered else sorted(solids)))
     return result
 
 

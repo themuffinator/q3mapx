@@ -1226,3 +1226,41 @@ MAP did not; that flag does not establish source metadata. Both remain part of
 the inference/rebuild-comparison work. Original groups still cannot be extracted
 from the compiled fixtures. Existing `UnsortedSet` compiler warnings remain
 unchanged. No external code/dependency was added; the 0.3.0 package stays unchanged.
+
+## 2026-09-30 — Compensate for brush insertion order during recovery
+
+Added explicit `-brush-order bsp|rebuild` to all MAP recovery formats and the legacy
+conversion interface. The default BSP-record order stays unchanged. Rebuild order
+reverses opaque brushes and preserves translucent sequence within each model,
+compensating for the MAP loader's front/back insertion. Classification uses the
+exported sides' current shader definitions, excluding redundant sides with no
+winding. Native recovery-only profiles and `-wtf` material replacement are rejected
+for this option. Optional report metadata names the policy and its assumptions
+without claiming original editor order or guaranteed rebuild equivalence.
+
+The earlier ordinary partition/PVS differences were caused by tied splitter
+choices after brush-order reversal. The new corpus checks 38 rebuilds across
+fast/full and three MAP formats, including mixed opacity, brush-entity origins,
+redundant translucent sides, missing/invalid options and unsupported profiles.
+Five positive cases preserve compiled brush order, exact brush geometry/materials/
+contents, surviving entities, node counts and sampled partition/PVS relationships
+at 594 points. Thirty-six default MAP exports also match the previous executable
+byte for byte; legacy and worker-count parity checks pass.
+
+A deliberately contradictory structural/detail fixture still changes 69 nodes to
+74, with 4,494 sampled partition-pair differences and unchanged sampled PVS. An
+independent source control proves this residual comes from discarded numeric detail
+bits on structural sides affecting splitter priorities, rather than insertion
+order. The option does not guess these lost flags. Brush-model detail ambiguity
+and broader inference/review work remain open.
+
+Validation: eight release regression groups pass on Windows (23.88 seconds) and
+Linux (81.48 seconds); seven pass under Linux ASan/UBSan (359.77 seconds). Measured
+fidelity results agree across platforms; source BSP byte identity is not assumed.
+[The validation record](validation/recovery-brush-order.json) retains source/binary
+hashes, corpus results, baseline output comparisons and the investigative controls.
+Useful logs and baseline/probe artifacts remain in `.agents/tmp/continuation`, with
+the reusable corpus under each build's `tests/recovery-order` directory. No new
+unrelated issue was found; existing `UnsortedSet` warnings remain. No external code
+or dependency was added. Workbench exposure follows as a separate round, and the
+0.3.0 archive remains unchanged.

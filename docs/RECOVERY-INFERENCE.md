@@ -47,6 +47,15 @@ differences despite exact brush geometry, plus the ambiguity of brush-model
 detail flags. These controls precede any replacement classifier; they do not
 establish accuracy on arbitrary BSPs or recover original group membership.
 
+The explicit [`-brush-order rebuild` option](DECOMPILATION.md#brush-order-for-rebuilding)
+now removes the ordinary fixture partition/PVS differences caused by opaque
+brush insertion reversing stored order. A second corpus checks 38 rebuilds,
+including mixed opacity and discarded redundant sides. Contradictory numeric
+detail flags on structural source sides remain a distinct limitation: the
+compiler retains their splitter-priority effects without preserving those flags
+as recoverable source metadata. Known-source controls isolate this effect rather
+than interpreting every partition difference as a classification error.
+
 1. Relate brush faces to BSP partition planes, adjacent leaf cells, opaque space,
    cluster boundaries and PVS changes. When a compatible PRT is supplied, use its
    portal graph directly. Otherwise investigate reconstructing bounded leaf-cell

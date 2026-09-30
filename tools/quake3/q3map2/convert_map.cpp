@@ -901,20 +901,52 @@ static void ConvertPatch( FILE *f, int num, const bspDrawSurface_t& ds, const Ve
    exports a bsp model to a map file
  */
 
+static bool OpaqueBrushForRebuild( int brushNum ){
+	// Use exactly the side selection used by both MAP writers, including the
+	// modelclip option. Native material inference and -wtf are excluded by the CLI.
+	bspBrush_to_buildBrush( bspBrushes[brushNum] );
+	const auto translucent = []( const side_t& side ){
+		return side.shaderInfo && ( side.shaderInfo->compileFlags & C_TRANSLUCENT );
+	};
+	if ( std::none_of( buildBrush.sides.begin(), buildBrush.sides.end(), translucent ) )
+		return true;
+	// Redundant/bevel sides with no winding are not written to the MAP. Their
+	// material must not determine its opacity when that MAP is loaded again.
+	if ( !CreateBrushWindings( buildBrush ) ) return true;
+	return std::none_of( buildBrush.sides.begin(), buildBrush.sides.end(), [&]( const side_t& side ){
+		return !side.winding.empty() && translucent( side );
+	} );
+}
+
 static void ConvertModel( FILE *f, const bspModel_t& model, const Vector3& origin, EBrushType brushType ){
 	if ( origin != g_vector3_identity ) {
 		ConvertOriginBrush( f, -1, origin, brushType );
 	}
 
+	std::vector<int> brushes;
+	if ( decompileOptions.brushOrder == DecompileOptions::BrushOrder::Rebuild ) {
+		brushes.reserve( model.numBSPBrushes );
+		std::vector<int> translucent;
+		for ( int i = 0; i < model.numBSPBrushes; ++i ) {
+			const int brush = model.firstBSPBrush + i;
+			( OpaqueBrushForRebuild( brush ) ? brushes : translucent ).push_back( brush );
+		}
+		// LoadMapFile prepends opaque brushes and appends translucent brushes.
+		// Invert that insertion to retain the compiled order where recoverable.
+		std::reverse( brushes.begin(), brushes.end() );
+		brushes.insert( brushes.end(), translucent.begin(), translucent.end() );
+	}
+	const auto brushAt = [&]( int i ){
+		return brushes.empty() ? model.firstBSPBrush + i : brushes[i];
+	};
+
 	/* go through each brush in the model */
 	if( fast ){
-		for ( int i = 0; i < model.numBSPBrushes; ++i )
-			ConvertBrushFast( f, model.firstBSPBrush + i, origin, brushType );
+		for ( int i = 0; i < model.numBSPBrushes; ++i ) ConvertBrushFast( f, brushAt( i ), origin, brushType );
 	}
 	else{
 		ModelTriangles modelTriangles( model );
-		for ( int i = 0; i < model.numBSPBrushes; ++i )
-			ConvertBrush( f, model.firstBSPBrush + i, origin, brushType, modelTriangles );
+		for ( int i = 0; i < model.numBSPBrushes; ++i ) ConvertBrush( f, brushAt( i ), origin, brushType, modelTriangles );
 	}
 
 	/* go through each drawsurf in the model */
@@ -1066,6 +1098,13 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		writer.Key( "output" ); writer.String( name.c_str() );
 		writer.Key( "format" ); writer.String( brushType == EBrushType::Valve220 ? "map_220" : brushType == EBrushType::Bp ? "map_bp" : "map" );
 		writer.Key( "fast" ); writer.Bool( fast );
+		writer.Key( "brush_order" ); writer.StartObject();
+		const bool rebuildOrder = decompileOptions.brushOrder == DecompileOptions::BrushOrder::Rebuild;
+		writer.Key( "policy" ); writer.String( rebuildOrder ? "rebuild" : "bsp" );
+		writer.Key( "basis" ); writer.String( rebuildOrder ? "q3mapx_map_loader_side_shader_opacity" : "bsp_brush_record_order" );
+		writer.Key( "author_order_proven" ); writer.Bool( false );
+		writer.Key( "rebuild_equivalence_proven" ); writer.Bool( false );
+		writer.EndObject();
 		writer.Key( "game" ); writer.String( g_game->arg );
 		writer.Key( "native_write_supported" ); writer.Bool( g_game->write != nullptr );
 		writer.Key( "native_losses" ); writer.StartArray();
@@ -1174,6 +1213,7 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		if(bspEarlyVersion==43 || bspEarlyVersion==44) writer.String("This format has no brush-side material names. Visible face names and UVs are inferred from rendered triangles; unmatched faces use common/caulk and fallback UVs. Raw brush contents and side flags remain in source order in this report.");
 		writer.String( "Triangle soup geometry is not exported separately; collision brushes may approximate it." );
 		writer.String( "Fallback texture axes are used on faces without a usable rendered triangle, including hidden faces." );
+		if ( rebuildOrder ) writer.String( "Rebuild brush order depends on the current shader assets and q3mapx loader semantics. Discarded source flags, plane/side ordering and other compiler differences can still change partitions or visibility." );
 		writer.EndArray();
 		writer.EndObject();
 		if ( std::fwrite( buffer.GetString(), 1, buffer.GetSize(), reportFile ) != buffer.GetSize() )

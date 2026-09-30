@@ -1037,6 +1037,7 @@ static void PseudoCompileBSP( bool need_tree ){
 int ConvertBSPMain( Args& args, bool decompile ){
 	int meshPatchSteps=8;
 	bool patchStepsSpecified=false;
+	bool brushOrderSpecified=false;
 	int ( *convertFunc )( char * );
 	const game_t  *convertGame;
 	bool map_allowed, force_bsp, force_map;
@@ -1144,8 +1145,21 @@ int ConvertBSPMain( Args& args, bool decompile ){
 			decompileOptions.report = args.takeNext();
 			if ( !path_extension_is( decompileOptions.report, "json" ) ) Error( "Recovery report must have a .json extension" );
 		}
+		while ( args.takeArg( "-brush-order" ) ) {
+			brushOrderSpecified = true;
+			const char* order = args.takeNext();
+			if ( striEqual( order, "bsp" ) ) decompileOptions.brushOrder = DecompileOptions::BrushOrder::Bsp;
+			else if ( striEqual( order, "rebuild" ) ) decompileOptions.brushOrder = DecompileOptions::BrushOrder::Rebuild;
+			else Error( "Brush order must be bsp or rebuild" );
+		}
 	}
 	if ( !args.empty() ) Error( "Unknown conversion option '%s'", args.takeFront() );
+	if ( brushOrderSpecified && ( !map_allowed || convertGame ) )
+		Error( "-brush-order requires map, map_bp or map_220 export" );
+	if ( decompileOptions.brushOrder == DecompileOptions::BrushOrder::Rebuild ) {
+		if ( !g_game->write ) Error( "Rebuild brush order requires a BSP-writing game profile; native recovery-only profiles are unsupported" );
+		if ( g_decompile_wtf ) Error( "Rebuild brush order cannot be combined with -wtf material replacement" );
+	}
 	const bool meshExport=!convertGame && (convertFunc==ConvertBSPToOBJ || convertFunc==ConvertBSPToASE);
 	if(patchStepsSpecified && !meshExport) Error("-patchsteps requires OBJ or ASE export");
 	if (convertGame && (!convertGame->write || !g_game->write))

@@ -217,6 +217,10 @@ if(BUILD_TESTING)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/recovery_classification.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/recovery-classification)
     set_tests_properties(recovery_classification PROPERTIES TIMEOUT 300)
+    add_test(NAME recovery_order COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/recovery_order.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_CURRENT_BINARY_DIR}/tests/recovery-order)
+    set_tests_properties(recovery_order PROPERTIES TIMEOUT 360)
     add_executable(job_pool_test tests/job_pool.cpp)
     target_link_libraries(job_pool_test PRIVATE q3mapx_jobs)
     add_test(NAME job_pool COMMAND job_pool_test)

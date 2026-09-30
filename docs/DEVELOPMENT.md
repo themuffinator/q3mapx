@@ -238,6 +238,13 @@ assuming cluster indices survive rebuilding. Source/rebuild differences are
 reported separately from required fast/full parity; this is a bounded generated
 corpus, not a proof of general decompiler inference accuracy.
 
+`recovery_order` checks 38 additional rebuilds with explicit loader-order
+compensation. Five positive cases require original compiled brush order and
+spatial relationships; a contradictory structural/detail control isolates lost
+source flags. Redundant translucent sides, multiple brush-entity solids/origins,
+default/legacy parity, worker parity and option/profile rejection are covered.
+Evidence is written to `tests/recovery-order/validation.json` in each build tree.
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

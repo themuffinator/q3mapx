@@ -1468,3 +1468,75 @@ No new unrelated issue was found and no external code/dependency was added. The
 0.3.0 archive is unchanged. These controls expose inference export; proposal
 overlays, saved per-brush corrections, broader reconstruction and the independent
 intelligent compiler workstreams remain active roadmap work.
+
+## 2026-09-30 — VIS merge repairs and compact working bitsets
+
+The M9 baseline audit found that reverse PRT directions lost hint/sky flags,
+leaf unions could overrun their 1,024-entry arrays, and portal joins used the
+opposite normal for convexity. Both directions now retain the file flags, hints
+cannot be bypassed through a second opening, and capacity is checked before
+either leaf is changed. Polygon joins require compatible planes/flags and the
+correct winding normal; a union exceeding 512 points remains separate, while a
+valid 512-point result can use larger combined input counts. Self-edges fail
+before traversal, and already merged leaves are not revisited by `-hint`.
+`-hint` and `-merge` now have the same documented behavior.
+
+Live portal directions receive dense working-bit indices after the selected
+merges. Front/flood/flow/passage vectors and their scans omit removed bits, while
+portal objects, sort order and original job slots remain unchanged. This retains
+the fixed publication batches used for deterministic pruning. Cluster mapping
+and runtime VIS layout are preserved. The fast path releases its unused flow
+buffer; statistics count self visibility once, and passage diagnostics count all
+live directions with wide arithmetic. PRT removal now follows successful BSP
+publication, preserving the retry input on an output error.
+
+Thirty-one graph controls cover both hint orientations, multiple openings, sky
+distance-cull exceptions, convex/concave/noncoplanar joins, point/leaf bounds,
+complete contraction and every solver. Two self-edge failures preserve the BSP.
+Windows sharing locks and Linux file-size limits verify failed-publication
+preservation and successful retry. Matched poor-detail/manual-detail MAPs add
+120 checks across four solvers, default/merge/mergeportals/hint plus unsorted
+merging, and 1/4/20 workers. Non-entity/non-VIS lumps remain unchanged. The complete
+graph and visibility matrices agree on Windows, Linux and Linux ASan/UBSan.
+
+Every final Windows graph/map case also matches a preserved repaired-but-unpacked
+compiler byte-for-byte. An earlier 96-run matrix includes 32 runs at 70 workers,
+also with reference parity. A committed source patch reconstructs the unpacked
+reference from `7aaa22b`; applying it was independently checked against the saved
+source. Five probes reproduce preceding-executable defects in sky visibility,
+hint protection, folded and concave joins, and a valid winding union rejected by
+the old allocation count. These repairs are distinct from bit compaction's
+unchanged-output contract.
+
+The alternating grid=9 benchmark covers 48 configurations, one warmup/five
+measured runs, and the preceding executable. In structural `-merge`, 1,348 of
+1,436 directions survive: working bitsets shrink 184→176 bytes, and requested
+passage storage falls 3,469,600→3,330,816 bytes (4.0%). One-worker whole-command
+medians are 2.0696→2.0533 seconds, and 20-worker medians 0.3406→0.3392 seconds.
+There is no broad speedup claim. All measured compact/uncompressed VIS bytes
+agree, while legacy merge/hint still omit 27 default PVS pairs on grid=9 (two
+on grid=5). This does not satisfy the intelligent optimizer's baseline-inclusion
+gate, so automatic regional merging remains planned rather than enabled.
+
+Eight relevant release groups pass on each platform across the recorded phases;
+six ASan/UBSan groups pass in 304.96 seconds with the established process-lifetime
+leak exclusion. The expanded sanitizer VIS matrix takes 169.97 seconds; its CTest
+timeout is now 360 seconds to leave headroom. The final added graph control and
+unsorted/reference matrices have separate successful records. See the
+[validation identities/results](validation/vis-portals.json), [raw benchmark](benchmarks/vis-portals-win-x64.json)
+and [VIS guide](VIS.md). Useful logs, reference binaries/source and probes remain
+under `.agents/tmp/continuation/vis-portals-*`; reusable generated fixtures remain
+in each build's `tests/vis-merge` directory. The disposable patch-check tree and
+test-created partial staging files were verified and removed.
+
+Two additional findings remain open. Windows commands sometimes spend 5–21
+seconds outside their named VIS passes at 20/70 workers, including preceding
+executables; a 90-second stress timeout was followed by successful isolated and
+full-matrix retries. Raw slow benchmark samples are retained. Separately, Linux
+fatal BSP writes can leave a partial staging file because `SafeWrite` exits before
+the staging destructor. The first test's no-leftovers assertion exposed this;
+final tests record and remove only their own partial file while requiring the
+BSP/PRT preservation provided here. Shared writer cleanup and localization of the
+Windows delays are explicit follow-ups in the plan. Existing `UnsortedSet` build
+warnings remain. No external code/dependency was added, no game/input/capture
+automation was used, and the 0.3.0 archive is unchanged.

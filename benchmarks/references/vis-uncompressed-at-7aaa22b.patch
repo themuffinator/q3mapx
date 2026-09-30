@@ -1,0 +1,100 @@
+--- a/tools/quake3/q3map2/vis.cpp
++++ b/tools/quake3/q3map2/vis.cpp
+@@ -171,7 +171,7 @@
+ 
+ //	uncompressed[leafnum >> 3] |= ( 1 << ( leafnum & 7 ) );
+ 
+-	numvis++;       // count the leaf itself
++	// LeafVectorFromPortalVector already counts the self bit and merged members.
+ 
+ 	//Sys_FPrintf( SYS_VRB, "cluster %4i : %4i visible\n", leafnum, numvis );
+ 	++clustersizehistogram[numvis];
+@@ -426,6 +426,25 @@
+  */
+ static bool TryMergeLeaves( int l1num, int l2num ){
+ 	vportal_t *portals[MAX_PORTALS_ON_LEAF];
++	if ( l1num == l2num || leafs[l1num].merged >= 0 || leafs[l2num].merged >= 0 ) {
++		return false;
++	}
++	// Check both lists before changing either. A valid input leaf can have up to
++	// MAX_PORTALS_ON_LEAF faces/portals; their union need not fit the same storage.
++	for ( const leaf_t *lfs : { faceleafs, leafs } ) {
++		int count = 0;
++		for ( const int source : { l1num, l2num } ) {
++			const int other = source == l1num ? l2num : l1num;
++			for ( const vportal_t *p : Span( lfs[source].portals, lfs[source].numportals ) ) {
++				if ( p->removed ) continue;
++				if ( p->leaf == other ) {
++					// Another opening between these same leaves may be a hint.
++					if ( p->hint ) return false;
++				}
++				else if ( ++count > MAX_PORTALS_ON_LEAF ) return false;
++			}
++		}
++	}
+ 
+ 	for ( const leaf_t *l1 : { &faceleafs[l1num], &leafs[l1num] } )
+ 	{
+@@ -509,7 +528,7 @@
+ 			//if this leaf is merged already
+ 
+ 			/* ydnar: vmods: merge all non-hint portals */
+-			if ( leaf.merged >= 0 && !hint ) {
++			if ( leaf.merged >= 0 ) {
+ 				continue;
+ 			}
+ 
+@@ -609,7 +628,9 @@
+ 	//
+ 	// build the new polygon
+ 	//
+-	newf = NewFixedWinding( f1->numpoints + f2->numpoints );
++	const int count = f1->numpoints + f2->numpoints - 2 - !keep1 - !keep2;
++	if ( count < 3 || count > MAX_POINTS_ON_WINDING ) return nullptr;
++	newf = NewFixedWinding( count );
+ 
+ 	// copy first polygon
+ 	for ( k = ( i + 1 ) % f1->numpoints; k != i; k = ( k + 1 ) % f1->numpoints )
+@@ -666,8 +687,14 @@
+ 				if ( p2->removed ) {
+ 					continue;
+ 				}
+-				if ( p1->leaf == p2->leaf ) {
+-					w = TryMergeWinding( p1->winding, p2->winding, p1->plane.normal() );
++				// A shared edge alone does not establish coplanarity. Preserve hint
++				// and sky semantics instead of combining differently flagged openings.
++				if ( p1->leaf == p2->leaf && p1->hint == p2->hint && p1->sky == p2->sky
++				  && vector3_length_squared( p1->plane.normal() - p2->plane.normal() ) < 1e-10f
++				  && std::fabs( p1->plane.dist() - p2->plane.dist() ) < 0.005f ) {
++					// The convexity test expects the winding plane; VIS stores its
++					// opposite, pointing into the neighboring leaf.
++					w = TryMergeWinding( p1->winding, p2->winding, -p1->plane.normal() );
+ 					if ( w ) {
+ 						free( p1->winding );    //% FreeWinding( p1->winding );
+ 						p1->winding = w;
+@@ -785,6 +812,7 @@
+ 		numpoints=ReadPortalInteger(f,"portal point count",3,MAX_POINTS_ON_WINDING);
+ 		leafnums[0]=ReadPortalInteger(f,"portal leaf index",0,portalclusters-1);
+ 		leafnums[1]=ReadPortalInteger(f,"portal leaf index",0,portalclusters-1);
++		if (leafnums[0] == leafnums[1]) Error("LoadPortals: portal %i connects a leaf to itself", i);
+ 		flags=ReadPortalInteger(f,"portal flags",0,INT_MAX);
+ 
+ 		fixedWinding_t *w = NewFixedWinding( numpoints );
+@@ -827,7 +855,8 @@
+ 		{
+ 			vportal_t& p = portals[i * 2 + 1];
+ 			p.num = i + 1;
+-			p.hint = hint;
++			p.hint = ( ( flags & 1 ) != 0 );
++			p.sky = ( ( flags & 2 ) != 0 );
+ 			p.winding = NewFixedWinding( w->numpoints );
+ 			p.winding->numpoints = w->numpoints;
+ 			std::reverse_copy( w->points, w->points + w->numpoints, p.winding->points );
+@@ -847,6 +876,7 @@
+ 
+ 	faces = safe_calloc( numfaces * sizeof( vportal_t ) );
+ 	faceleafs = safe_calloc( portalclusters * sizeof( leaf_t ) );
++	for ( leaf_t& leaf : Span( faceleafs, portalclusters ) ) leaf.merged = -1;
+ 
+ 	for ( int i = 0; i < numfaces; ++i )
+ 	{

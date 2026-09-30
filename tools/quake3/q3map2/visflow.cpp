@@ -433,7 +433,7 @@ static void RecursiveLeafFlow( int leafnum, threaddata_t *thread, pstack_t *prev
 		if ( p->removed ) {
 			continue;
 		}
-		const int pnum = p - portals;
+		const int pnum = p->visIndex;
 
 		/* MrE: portal trace debug code
 		   {
@@ -633,7 +633,7 @@ void PortalFlow( int portalnum ){
 
 	p->setStatus( EVStatus::Working );
 
-	c_might = CountBits( p->portalflood, numportals * 2 );
+	c_might = CountBits( p->portalflood, visPortalBits );
 
 	data.base = p;
 
@@ -647,7 +647,7 @@ void PortalFlow( int portalnum ){
 
 	p->setStatus( EVStatus::Done );
 
-	c_can = CountBits( p->portalvis, numportals * 2 );
+	c_can = CountBits( p->portalvis, visPortalBits );
 
 	Sys_FPrintf( SYS_VRB, "portal:%4i  mightsee:%4i  cansee:%4i (%i chains)\n",
 	             (int)( p - portals ), c_might, c_can, data.c_chains );
@@ -685,7 +685,7 @@ static void RecursivePassageFlow( vportal_t *portal, threaddata_t *thread, pstac
 			continue;
 		}
 		nextpassage = passage->next;
-		const int pnum = p - portals;
+		const int pnum = p->visIndex;
 
 		if ( !bit_is_enabled( prevstack->mightsee, pnum ) ) {
 			continue;   // can't possibly see it
@@ -745,7 +745,7 @@ void PassageFlow( int portalnum ){
 
 	p->setStatus( EVStatus::Working );
 
-//	c_might = CountBits( p->portalflood, numportals * 2 );
+//	c_might = CountBits( p->portalflood, visPortalBits );
 
 	data.base = p;
 
@@ -760,7 +760,7 @@ void PassageFlow( int portalnum ){
 	p->setStatus( EVStatus::Done );
 
 	/*
-	   c_can = CountBits( p->portalvis, numportals * 2 );
+	   c_can = CountBits( p->portalvis, visPortalBits );
 
 	   Sys_FPrintf( SYS_VRB, "portal:%4i  mightsee:%4i  cansee:%4i (%i chains)\n",
 	    (int)( p - portals ), c_might, c_can, data.c_chains );
@@ -810,7 +810,7 @@ static void RecursivePassagePortalFlow( vportal_t *portal, threaddata_t *thread,
 			continue;
 		}
 		nextpassage = passage->next;
-		const int pnum = p - portals;
+		const int pnum = p->visIndex;
 
 		if ( !bit_is_enabled( prevstack->mightsee, pnum ) ) {
 			continue;   // can't possibly see it
@@ -986,7 +986,7 @@ void PassagePortalFlow( int portalnum ){
 
 	p->setStatus( EVStatus::Working );
 
-//	c_might = CountBits( p->portalflood, numportals * 2 );
+//	c_might = CountBits( p->portalflood, visPortalBits );
 
 	data.base = p;
 
@@ -1001,7 +1001,7 @@ void PassagePortalFlow( int portalnum ){
 	p->setStatus( EVStatus::Done );
 
 	/*
-	   c_can = CountBits( p->portalvis, numportals * 2 );
+	   c_can = CountBits( p->portalvis, visPortalBits );
 
 	   Sys_FPrintf( SYS_VRB, "portal:%4i  mightsee:%4i  cansee:%4i (%i chains)\n",
 	    (int)( p - portals ), c_might, c_can, data.c_chains );
@@ -1274,12 +1274,9 @@ void CreatePassages( int portalnum ){
 
 		numsee = 0;
 		//create the passage->cansee
-		for ( j = 0; j < numportals * 2; ++j )
+		for ( j = 0; j < visPortalBits; ++j )
 		{
-			p = &portals[j];
-			if ( p->removed ) {
-				continue;
-			}
+			p = activePortals[j];
 			if ( !bit_is_enabled( target->portalflood, j ) ) {
 				continue;
 			}
@@ -1348,24 +1345,19 @@ void CreatePassages( int portalnum ){
 }
 
 void PassageMemory(){
-	int totalmem = 0, totalportals = 0;
-
-	for ( const vportal_t *portal : Span( sorted_portals, numportals ) )
-	{
-		if ( portal->removed ) {
-			continue;
-		}
-		for ( const vportal_t *target : Span( leafs[portal->leaf].portals, leafs[portal->leaf].numportals ) )
-		{
-			if ( target->removed ) {
-				continue;
-			}
-			totalmem += sizeof( passage_t ) + portalbytes;
-			totalportals++;
-		}
+	// Count all directed portals, including when sorting puts removed ones first.
+	// A large valid graph can need more than 2 GiB: keep the estimate unsigned/wide.
+	std::vector<size_t> degree( portalclusters );
+	for ( int i = 0; i < portalclusters; ++i ) {
+		if ( leafs[i].merged >= 0 ) continue;
+		for ( const vportal_t *p : Span( leafs[i].portals, leafs[i].numportals ) )
+			degree[i] += !p->removed;
 	}
-	Sys_Printf( "%7i average number of passages per leaf\n", totalportals / numportals );
-	Sys_Printf( "%7i MB required passage memory\n", totalmem >> 10 >> 10 );
+	size_t passages = 0;
+	for ( const vportal_t *p : activePortals ) passages += degree[p->leaf];
+	const size_t bytes = passages * ( sizeof( passage_t ) + portalbytes );
+	Sys_Printf( "%7zu average number of passages per active portal\n", visPortalBits ? passages / visPortalBits : 0 );
+	Sys_Printf( "%7zu bytes required passage memory (%zu passages)\n", bytes, passages );
 }
 
 /*
@@ -1431,7 +1423,7 @@ static void SimpleFlood( vportal_t *srcportal, int leafnum ){
 		const leaf_t& leaf = leafs[pending.back()];
 		pending.pop_back();
 		for (const vportal_t* p : Span(leaf.portals, leaf.numportals)) {
-			const int pnum = p - portals;
+			const int pnum = p->visIndex;
 			if (p->removed || !bit_is_enabled(srcportal->portalfront, pnum)) continue;
 			bit_enable(srcportal->portalflood, pnum);
 			if (!visited[p->leaf]) {
@@ -1463,12 +1455,10 @@ void BasePortalVis( int portalnum ){
 	p->portalflood = safe_calloc( portalbytes );
 	p->portalvis = safe_calloc( portalbytes );
 
-	for ( j = 0, tp = portals; j < numportals * 2; ++j, ++tp )
+	for ( j = 0; j < visPortalBits; ++j )
 	{
-		if ( j == portalnum ) {
-			continue;
-		}
-		if ( tp->removed ) {
+		tp = activePortals[j];
+		if ( tp == p ) {
 			continue;
 		}
 
@@ -1528,7 +1518,7 @@ void BasePortalVis( int portalnum ){
 
 	SimpleFlood( p, p->leaf );
 
-	p->nummightsee = CountBits( p->portalflood, numportals * 2 );
+	p->nummightsee = CountBits( p->portalflood, visPortalBits );
 //	Sys_Printf( "portal %i: %i mightsee\n", portalnum, p->nummightsee );
 }
 
@@ -1564,7 +1554,7 @@ static void RecursiveLeafBitFlow( int leafnum, byte *mightsee, byte *cansee, int
 		if ( p->removed ) {
 			continue;
 		}
-		const int pnum = p - portals;
+		const int pnum = p->visIndex;
 
 		// if some previous portal can't see it, skip
 		if ( !bit_is_enabled( mightsee, pnum ) ) {
@@ -1606,5 +1596,5 @@ void BetterPortalVis( int portalnum ){
 	RecursiveLeafBitFlow( p->leaf, p->portalflood, p->portalvis );
 
 	// build leaf vis information
-	p->nummightsee = CountBits( p->portalvis, numportals * 2 );
+	p->nummightsee = CountBits( p->portalvis, visPortalBits );
 }

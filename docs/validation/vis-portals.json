@@ -1,0 +1,541 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-30T11:21:58.305842+00:00",
+  "base_revision": "7aaa22b326aafe2debee033f0e8701fa7a36ada3",
+  "scope": "VIS merge safety and convexity repairs, dense live-portal bitsets with preserved publication order, and PRT preservation on BSP publication failure",
+  "source_sha256_lf": {
+    ".gitattributes": "6d631cf83b0f460cda9960d701b74649e5449bc2766637e5ca9fadcecf5d71dd",
+    "CMakeLists.txt": "f918f322e909a504a9f82f3810102dde781f3d8d529b8e1314f24471a8487349",
+    "tools/quake3/q3map2/vis.cpp": "94a379729817a45823cf2612863b06cb7987345f89d08aadda9432ff3a04c727",
+    "tools/quake3/q3map2/vis.h": "5e13b52213e72dcb111311d7bfc0ff9923abb5ae06572f0aeca39548237e16b9",
+    "tools/quake3/q3map2/visflow.cpp": "c0e2c5904f6aecd87f6ad8cdfeaa944445a49ff9c24261aeadcab1823e964ab8",
+    "tools/quake3/q3map2/help.cpp": "f61c263a1d039584340c5bb1a8cb954a3105bae32a274c4d5a5486c10c4e024b",
+    "tests/vis_merge.py": "4c213e301151e8f925eca13c8fab9ea30345615f7c893c7029a308a926ee334c",
+    "tests/vis_fixtures.py": "536d1767fd7781ff9fb9da78d44b7418aa424bf8e3ad1d968de785fc93d9626d",
+    "tests/fixtures.py": "5cc300117041bc22a719451f9915bca17cc5af10094521408538b850284436c7",
+    "tests/integration.py": "3bb8e703e9e898a4c079f6a52321941aeb54876a7eac7804b8e1069c1541dfb3",
+    "tests/portal_validation.py": "5f41a2c316f2d9abe6b87d26218e1d211b287ef8659314f18e7e75e7a272da81",
+    "tests/vis_reproducible.py": "a0d15074abc268f43a2ed0c69070f4946f73417f34dab08ed6d5b9e6cbb18475",
+    "benchmarks/vis_portals.py": "3f27b815e18bdaff9b5e3cc08aa6cc9aaceba627ec9973d223f4b3a991f560e9",
+    "benchmarks/references/vis-uncompressed-at-7aaa22b.patch": "8318f74c8cc1e96a2912dcd93cca5e4d192f950161bda7e8952171a21c12fb7d"
+  },
+  "uncompressed_reference": {
+    "binary": {
+      "path": ".agents/tmp/continuation/vis-portals-reference/q3mapx.exe",
+      "sha256": "daf5f74beb440500ef4da131fbb2c85a7ebdfaa501e598b866a33c68215e71d9"
+    },
+    "source": {
+      "path": ".agents/tmp/continuation/vis-portals-reference/vis.cpp",
+      "sha256": "23fc51020f5fc74b3b65c10438428f0f4f23a4754303c5b4e64b5ff271f8a1ec"
+    },
+    "patch": {
+      "path": "benchmarks/references/vis-uncompressed-at-7aaa22b.patch",
+      "sha256": "8318f74c8cc1e96a2912dcd93cca5e4d192f950161bda7e8952171a21c12fb7d"
+    },
+    "patch_verification": {
+      "base_revision": "7aaa22b326aafe2debee033f0e8701fa7a36ada3",
+      "patch_sha256": "8318f74c8cc1e96a2912dcd93cca5e4d192f950161bda7e8952171a21c12fb7d",
+      "reconstructed_source_sha256_lf": "adb99090a9255b80d0b65c8a9ec3c0fa873580f3b7ac8f2828e0d6ef3b3f8b0f",
+      "matches_tested_reference": true
+    },
+    "contract": "Same merge repairs, original bit layout and job order; predates PRT cleanup ordering. All reference comparisons use -saveprt."
+  },
+  "preceding_binary": {
+    "path": ".agents/tmp/continuation/vis-portals-baseline/q3mapx.exe",
+    "sha256": "70a0385392376a704e59a10d9d4e6ed3b657909d55a596e467f27561b59e9973"
+  },
+  "preceding_regressions": [
+    {
+      "case": "sky-0",
+      "runs": {
+        "legacy": {
+          "exit_code": 0,
+          "compiler_sha256": "70a0385392376a704e59a10d9d4e6ed3b657909d55a596e467f27561b59e9973",
+          "pvs_rows": [
+            31,
+            31,
+            30,
+            28,
+            24
+          ],
+          "visibility_sha256": "ffa251dfb9a22499212bc8ee3a379bc8e0368e8d846e2ef338c77d5a740c6813",
+          "active_directions": 8,
+          "printed_visible_pairs": 24,
+          "actual_visible_pairs": 19
+        },
+        "current": {
+          "exit_code": 0,
+          "compiler_sha256": "695c9f73e2d93a9a7796d5c38301f5551a366c89a738170a9ae8c5f7c8037beb",
+          "pvs_rows": [
+            31,
+            31,
+            31,
+            31,
+            31
+          ],
+          "visibility_sha256": "185163f5b5e5f312873b597291be172220d5bdda43e2c67187cc08b57fad003b",
+          "active_directions": 8,
+          "printed_visible_pairs": 25,
+          "actual_visible_pairs": 25
+        }
+      }
+    },
+    {
+      "case": "hint-False--merge",
+      "runs": {
+        "legacy": {
+          "exit_code": 0,
+          "compiler_sha256": "70a0385392376a704e59a10d9d4e6ed3b657909d55a596e467f27561b59e9973",
+          "pvs_rows": [
+            1023,
+            1023,
+            1023,
+            1023,
+            1023,
+            1023,
+            1023,
+            1023,
+            1023,
+            1023
+          ],
+          "visibility_sha256": "bf1a5a71c8bf90374486d8b30efecb78da893b86db7804d5cd872672e3f64038",
+          "active_directions": 0,
+          "printed_visible_pairs": 110,
+          "actual_visible_pairs": 100
+        },
+        "current": {
+          "exit_code": 0,
+          "compiler_sha256": "695c9f73e2d93a9a7796d5c38301f5551a366c89a738170a9ae8c5f7c8037beb",
+          "pvs_rows": [
+            1023,
+            1023,
+            1023,
+            1023,
+            1023,
+            1023,
+            1023,
+            1023,
+            1023,
+            1023
+          ],
+          "visibility_sha256": "bf1a5a71c8bf90374486d8b30efecb78da893b86db7804d5cd872672e3f64038",
+          "active_directions": 2,
+          "printed_visible_pairs": 100,
+          "actual_visible_pairs": 100
+        }
+      }
+    },
+    {
+      "case": "noncoplanar",
+      "runs": {
+        "legacy": {
+          "exit_code": 0,
+          "compiler_sha256": "70a0385392376a704e59a10d9d4e6ed3b657909d55a596e467f27561b59e9973",
+          "pvs_rows": [
+            3,
+            3
+          ],
+          "visibility_sha256": "9c22b27ed3c81bbb5af19cecdd88e0b2ff9b4413a86f31424adfd3e8111b60e4",
+          "active_directions": 2,
+          "printed_visible_pairs": 6,
+          "actual_visible_pairs": 4
+        },
+        "current": {
+          "exit_code": 0,
+          "compiler_sha256": "695c9f73e2d93a9a7796d5c38301f5551a366c89a738170a9ae8c5f7c8037beb",
+          "pvs_rows": [
+            3,
+            3
+          ],
+          "visibility_sha256": "9c22b27ed3c81bbb5af19cecdd88e0b2ff9b4413a86f31424adfd3e8111b60e4",
+          "active_directions": 4,
+          "printed_visible_pairs": 4,
+          "actual_visible_pairs": 4
+        }
+      }
+    },
+    {
+      "case": "concave-union",
+      "runs": {
+        "legacy": {
+          "exit_code": 0,
+          "compiler_sha256": "70a0385392376a704e59a10d9d4e6ed3b657909d55a596e467f27561b59e9973",
+          "pvs_rows": [
+            3,
+            3
+          ],
+          "visibility_sha256": "9c22b27ed3c81bbb5af19cecdd88e0b2ff9b4413a86f31424adfd3e8111b60e4",
+          "active_directions": 2,
+          "printed_visible_pairs": 6,
+          "actual_visible_pairs": 4
+        },
+        "current": {
+          "exit_code": 0,
+          "compiler_sha256": "695c9f73e2d93a9a7796d5c38301f5551a366c89a738170a9ae8c5f7c8037beb",
+          "pvs_rows": [
+            3,
+            3
+          ],
+          "visibility_sha256": "9c22b27ed3c81bbb5af19cecdd88e0b2ff9b4413a86f31424adfd3e8111b60e4",
+          "active_directions": 4,
+          "printed_visible_pairs": 4,
+          "actual_visible_pairs": 4
+        }
+      }
+    },
+    {
+      "case": "collinear-input-cap",
+      "runs": {
+        "legacy": {
+          "exit_code": 1,
+          "compiler_sha256": "70a0385392376a704e59a10d9d4e6ed3b657909d55a596e467f27561b59e9973",
+          "error_tail": "ion batches\r\nmergeportals = true\r\nsaveprt = true\r\nLoading E:\\Repositories\\q3mapx\\.agents\\tmp\\continuation\\vis-portals-legacy-probe\\graph.bsp\r\nLoading E:\\Repositories\\q3mapx\\.agents\\tmp\\continuation\\vis-portals-legacy-probe\\graph.prt\r\n     2 portalclusters\r\n     2 numportals\r\n     0 numfaces\r\n************ ERROR ************\r\nNewWinding: 516 points\r\n",
+          "original_preserved": true
+        },
+        "current": {
+          "exit_code": 0,
+          "compiler_sha256": "695c9f73e2d93a9a7796d5c38301f5551a366c89a738170a9ae8c5f7c8037beb",
+          "pvs_rows": [
+            3,
+            3
+          ],
+          "visibility_sha256": "9c22b27ed3c81bbb5af19cecdd88e0b2ff9b4413a86f31424adfd3e8111b60e4",
+          "active_directions": 2,
+          "printed_visible_pairs": 4,
+          "actual_visible_pairs": 4
+        }
+      }
+    }
+  ],
+  "preceding_regression_report": {
+    "path": ".agents/tmp/continuation/vis-portals-legacy-probe/report.json",
+    "sha256": "aab5a5aa66d7f39a4dd60b0408fa9a3a14bdac244f981c5d8e82790bf86c733d"
+  },
+  "platforms": [
+    {
+      "build": "release",
+      "binary": {
+        "path": "build/release/bin/q3mapx.exe",
+        "sha256": "695c9f73e2d93a9a7796d5c38301f5551a366c89a738170a9ae8c5f7c8037beb"
+      },
+      "report": {
+        "path": "build/release/tests/vis-merge/report.json",
+        "sha256": "6b4a645b81fa486e7106400f24fedac1a28c8266c279c44a3945c233596d2d3a"
+      },
+      "test_logs": [
+        {
+          "path": ".agents/tmp/continuation/vis-portals-windows-tests.log",
+          "sha256": "7119232196f1f322dbac7974496898083a5935a382963ea4be06b7377f494265"
+        },
+        {
+          "path": ".agents/tmp/continuation/vis-portals-windows-integration.log",
+          "sha256": "096be0e075bfb11cbe889aab31b69dff151fc0fbc664a68cb0aaa2913611a134"
+        }
+      ],
+      "passed_groups": [
+        {
+          "name": "bsp_evidence",
+          "seconds": 1.88
+        },
+        {
+          "name": "brush_cells",
+          "seconds": 15.09
+        },
+        {
+          "name": "recovery_groups",
+          "seconds": 16.4
+        },
+        {
+          "name": "portal_validation",
+          "seconds": 3.23
+        },
+        {
+          "name": "vis_merge",
+          "seconds": 15.63
+        },
+        {
+          "name": "vis_reproducible",
+          "seconds": 42.1
+        },
+        {
+          "name": "compiler_pipeline",
+          "seconds": 0.67
+        },
+        {
+          "name": "job_pool",
+          "seconds": 0.14
+        }
+      ],
+      "graph_cases": 31,
+      "real_map_runs": 120,
+      "matrix_sha256": "873f484755ad87fdaf0ad1ff4baeb0cbe8fbf1f02162d5352f82ab1bcb36cea0",
+      "bsp_and_prt_preserved_on_failed_publication": true,
+      "successful_retry_consumes_prt": true,
+      "recorded_staging_files_removed_by_test": [],
+      "final_fixed_reference_checks": 151,
+      "final_reference_log": {
+        "path": ".agents/tmp/continuation/vis-portals-windows-final-parity.log",
+        "sha256": "b86b21d2209a8c2d61d5a6d15b6e293a2b405e2481f4aee09fc3cc9afa2071ea"
+      }
+    },
+    {
+      "build": "linux-release",
+      "binary": {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "9b7266324d16897f81c506beb67fec9d7d841f2e385d020c79b0c58e0cf25320"
+      },
+      "report": {
+        "path": "build/linux-release/tests/vis-merge/report.json",
+        "sha256": "5365a56a5a9c3eea2436ff30a96b41e190b9f0d2c622ff21f7db29b4bc9706c3"
+      },
+      "test_logs": [
+        {
+          "path": ".agents/tmp/continuation/vis-portals-linux-tests.log",
+          "sha256": "c47cb698906ea21bebebc49f4a7630304912b858e68a96c6b5182f4ecc3d84a1"
+        },
+        {
+          "path": ".agents/tmp/continuation/vis-portals-linux-final.log",
+          "sha256": "7f4ec36abf6928bbd8e90d12b7856ac481c6bfebbd19bd3793c03cc0350790b1"
+        }
+      ],
+      "passed_groups": [
+        {
+          "name": "compiler_pipeline",
+          "seconds": 6.8
+        },
+        {
+          "name": "bsp_evidence",
+          "seconds": 10.98
+        },
+        {
+          "name": "brush_cells",
+          "seconds": 46.31
+        },
+        {
+          "name": "recovery_groups",
+          "seconds": 39.74
+        },
+        {
+          "name": "job_pool",
+          "seconds": 0.17
+        },
+        {
+          "name": "portal_validation",
+          "seconds": 6.59
+        },
+        {
+          "name": "vis_reproducible",
+          "seconds": 16.72
+        },
+        {
+          "name": "vis_merge",
+          "seconds": 20.51
+        }
+      ],
+      "graph_cases": 31,
+      "real_map_runs": 120,
+      "matrix_sha256": "873f484755ad87fdaf0ad1ff4baeb0cbe8fbf1f02162d5352f82ab1bcb36cea0",
+      "bsp_and_prt_preserved_on_failed_publication": true,
+      "successful_retry_consumes_prt": true,
+      "recorded_staging_files_removed_by_test": [
+        {
+          "name": "graph.bsp.q3mapx-2363-0.tmp",
+          "bytes": 1024,
+          "sha256": "f2316574ca278e36ff0deba2dd5025cdc7baa9368e74697a8423feb1fbd4e96a"
+        }
+      ]
+    },
+    {
+      "build": "linux-sanitized",
+      "binary": {
+        "path": "build/linux-sanitized/bin/q3mapx",
+        "sha256": "e3d0dc9fa5e88b217f76abbbed2b17b954c3eef6767d554c33b0b7f7e763d6f2"
+      },
+      "report": {
+        "path": "build/linux-sanitized/tests/vis-merge/report.json",
+        "sha256": "94496fdfb16706ee25f3d1b5d08156561661b1d19f047afdb9ceab6afbba30f6"
+      },
+      "test_logs": [
+        {
+          "path": ".agents/tmp/continuation/vis-portals-sanitized-tests.log",
+          "sha256": "e1096b5f3ec4e81d19139c16c37f03d763861f9805bbf6d32ba9a17d26ca3a43"
+        }
+      ],
+      "passed_groups": [
+        {
+          "name": "compiler_pipeline",
+          "seconds": 18.21
+        },
+        {
+          "name": "bsp_evidence",
+          "seconds": 36.27
+        },
+        {
+          "name": "job_pool",
+          "seconds": 0.24
+        },
+        {
+          "name": "portal_validation",
+          "seconds": 59.92
+        },
+        {
+          "name": "vis_merge",
+          "seconds": 169.97
+        },
+        {
+          "name": "vis_reproducible",
+          "seconds": 20.24
+        }
+      ],
+      "graph_cases": 31,
+      "real_map_runs": 120,
+      "matrix_sha256": "873f484755ad87fdaf0ad1ff4baeb0cbe8fbf1f02162d5352f82ab1bcb36cea0",
+      "bsp_and_prt_preserved_on_failed_publication": true,
+      "successful_retry_consumes_prt": true,
+      "recorded_staging_files_removed_by_test": [
+        {
+          "name": "graph.bsp.q3mapx-2169-0.tmp",
+          "bytes": 1024,
+          "sha256": "837f00f48dd3f17403c90eab57b0a5aa9604c09655c8c9ef53697f88330a5f7e"
+        }
+      ],
+      "sanitizers": "ASan and UBSan; inherited process-lifetime leak exclusion (detect_leaks=0), abort_on_error=1; nonrecovering instrumentation"
+    }
+  ],
+  "cross_platform_graph_and_visibility_matrix_parity": true,
+  "graph_cases": [
+    "sky-0",
+    "distance-1",
+    "sky-2",
+    "distance-3",
+    "sky-4",
+    "distance-5",
+    "sky-6",
+    "distance-7",
+    "hint-False--merge",
+    "hint-False--hint",
+    "hint-parallel-False",
+    "hint-True--merge",
+    "hint-True--hint",
+    "hint-parallel-True",
+    "all-merged-14",
+    "all-merged-15",
+    "all-merged-16",
+    "all-merged-17",
+    "coplanar",
+    "mixed-hint",
+    "mixed-sky",
+    "noncoplanar",
+    "concave-single-end",
+    "concave-union",
+    "winding-257",
+    "winding-258",
+    "collinear-input-cap",
+    "face-cap-0",
+    "portal-cap-0",
+    "face-cap-1",
+    "portal-cap-1"
+  ],
+  "map_matrix": {
+    "fixtures": [
+      "poor-detail",
+      "manual-detail"
+    ],
+    "grid": 5,
+    "merge_options": [
+      [],
+      [
+        "-merge"
+      ],
+      [
+        "-mergeportals"
+      ],
+      [
+        "-hint"
+      ],
+      [
+        "-merge",
+        "-nosort"
+      ]
+    ],
+    "solver_options": [
+      [],
+      [
+        "-nopassage"
+      ],
+      [
+        "-passageOnly"
+      ],
+      [
+        "-fast"
+      ]
+    ],
+    "workers": [
+      1,
+      4,
+      20
+    ],
+    "non_entity_non_vis_lumps_unchanged": true
+  },
+  "earlier_stress_matrix": {
+    "report": {
+      "path": ".agents/tmp/continuation/vis-portals-70-parity.json",
+      "sha256": "c9022559b4d958608738a627d2ef73ae409de8c21436ccc9cb9fecd71f85e505"
+    },
+    "map_runs": 96,
+    "workers": [
+      1,
+      4,
+      70
+    ],
+    "runs_at_70_workers": 32,
+    "fixed_reference_parity": true,
+    "scope": "Four merge selections and four solvers, before adding nosort and final publication controls"
+  },
+  "benchmark": {
+    "report": {
+      "path": "docs/benchmarks/vis-portals-win-x64.json",
+      "sha256": "0bf699f63c5ba27cc445a7898df57d536927fc0fca5058f322a1a326b1dcf5ce"
+    },
+    "samples_per_configuration": 5,
+    "warmups_per_configuration": 1,
+    "configurations": 48,
+    "matched_compact_uncompressed_run_pairs_including_warmup": 96,
+    "whole_process_vis": true,
+    "other_task_builds_tests_or_compilers_running_alongside": false,
+    "renderer_or_full_bsp_vis_light_performance_claim": false,
+    "general_speedup_claim": false,
+    "structural_grid9_merge_bitset_bytes": [
+      184,
+      176
+    ],
+    "structural_grid9_merge_passage_allocation_bytes": [
+      3469600,
+      3330816
+    ],
+    "structural_grid9_merge_vs_default_pvs": {
+      "added_pairs": 84,
+      "omitted_pairs": 27
+    },
+    "same_pvs_before_after_compaction": true
+  },
+  "limitations_and_followups": [
+    "Regional intelligent VIS transformations, budgeted conservative validation, full-build reclassification and workbench controls remain planned.",
+    "Legacy merge/hint can omit default PVS pairs (2 on grid5; 27 on grid9). These are not independently proven safe tightening and fail the planned baseline-inclusion gate.",
+    "Windows total-process delays outside measured VIS passes occur at 20 and 70 workers in preceding and current executables; raw benchmark outliers are retained.",
+    "One earlier 70-worker uncompressed comparison timed out at 90 seconds during a concurrent Linux build. An isolated retry and later full 70-worker matrix passed. The initial subprocess stdout was not saved by the older harness.",
+    "The first Linux test failed an overbroad no-staging-leftovers assertion. BSP and PRT were preserved; inherited SafeWrite fatal exit bypasses staging destruction. Final tests record and safely remove their own partial file. Shared writer cleanup remains open.",
+    "PRT/BSP spatial correspondence is not certified by these existing readers; graph-only fixtures intentionally test VIS contracts independently of their carrier BSP.",
+    "No game launch, OS capture, input injection, new dependency or external code import; 0.3.0 archive remains unchanged."
+  ],
+  "superseded_linux_test_log": {
+    "path": ".agents/tmp/continuation/vis-portals-linux-tests.log",
+    "sha256": "c47cb698906ea21bebebc49f4a7630304912b858e68a96c6b5182f4ecc3d84a1"
+  },
+  "evidence_locations": [
+    ".agents/tmp/continuation/vis-portals-*",
+    "build/release/tests/vis-merge",
+    "build/linux-release/tests/vis-merge",
+    "build/linux-sanitized/tests/vis-merge"
+  ]
+}

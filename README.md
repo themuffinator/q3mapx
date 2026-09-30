@@ -82,6 +82,7 @@ native validation of 242 installed-map entries without distributing game assets.
 - [Game profiles, format coverage and native-map evidence](docs/GAME-COVERAGE.md)
 - [Asset-independent BSP inspection](docs/BSP-INSPECTION.md)
 - [BSP geometry, regional costs and visibility evidence](docs/BSP-EVIDENCE.md)
+- [VIS modes, merge repairs and compact working data](docs/VIS.md)
 - [Measured performance and backend options](docs/PERFORMANCE.md)
 - [Installation, packaging and known limits](docs/RELEASE.md)
 - [BSP decompilation design](docs/DECOMPILATION.md)

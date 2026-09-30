@@ -24,6 +24,7 @@
 #pragma once
 #include <atomic>
 #include <cstdint>
+#include <vector>
 
 /* vis structures */
 
@@ -57,6 +58,7 @@ struct vportal_t
 {
 	int num;
 	int flowOrder;                     /* deterministic sorted job index */
+	int visIndex;                      /* dense live-portal bit index, assigned after merging */
 	bool hint;                          /* true if this portal was created from a hint splitter */
 	bool sky;                           /* true if this portal belongs to a sky leaf */
 	bool removed;
@@ -129,7 +131,6 @@ inline bool nosort;
 inline bool saveprt;
 inline bool reproducibleVis;
 inline int publishedPortalCount;          /* changed only between joined job batches */
-inline bool hint;             /* ydnar */
 
 inline float farPlaneDist;                /* rr2do2, rf, mre, ydnar all contributed to this one... */
 inline int farPlaneDistMode;
@@ -140,6 +141,8 @@ inline int numportals;
 inline int portalclusters;
 
 inline vportal_t          *portals;
+inline std::vector<vportal_t*> activePortals;
+inline int visPortalBits;
 inline leaf_t             *leafs;
 
 inline vportal_t          *faces;

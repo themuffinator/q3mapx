@@ -197,6 +197,13 @@ not a redefinition of the overall goal around the existing release:
   reconstruction profiling and scheduling changes remain open.
 - [ ] Continue native-format, input-validation and GUI improvements found by those
   checks, update the guides and validate the resulting release on Windows/Linux.
+- [ ] Localize intermittent Windows process delays outside the measured VIS
+  passes. They occur with both preceding and current executables at 20/70 workers;
+  preserve complete-command timing evidence while investigating serial work,
+  publication and worker shutdown separately.
+- [ ] Make fatal BSP/SaveFile write failures clean staged files as well as protect
+  the old destination. A Linux VIS file-size-limit test preserves the BSP/PRT but
+  exposes the inherited `SafeWrite` exit path bypassing the staging destructor.
 
 Each task must have its own implementation, validation evidence and commit.
 Publication of several filesystem names cannot be advertised as one crash-atomic
@@ -268,10 +275,16 @@ information; the objective is the closest supported, editable recreation.
 
 Separate compiler workstream; see [compiler optimization design](COMPILER-OPTIMIZATION.md).
 
+- [x] Audit the existing VIS merge foundation: retain directional hint/sky flags,
+  bound leaf/winding unions, repair convex joins, preserve PRT on output failure,
+  and compact live working bits while retaining deterministic job order. Compare
+  the repaired uncompressed solver and default/merge/hint modes on matched
+  structural/manual-detail inputs. This does not complete the intelligent pass.
 - [ ] Diagnose regional over-portalling, inefficient splits and poor detail usage,
   attributing costs to source geometry and comparing current merge/hint options.
   `-bsp-evidence` now ranks subtree subdivision/reference costs for investigation;
-  portal adjacency, inefficiency decisions and merge/hint comparisons remain open.
+  matched merge/hint baselines now exist; regional portal adjacency/provenance
+  and actionable inefficiency decisions remain open.
 - [ ] Add a VIS-only option for conservative graph simplification with correct
   cluster mapping and bounded increases in runtime visibility work.
 - [ ] Add a coordinated full-build option that examines regional structure and

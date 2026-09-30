@@ -291,6 +291,29 @@ when the expanded section needs scrolling. Capability tests validate all three
 optional policy arrays and grouping's rebuild-order dependency. See
 [the validation record](validation/workbench-inference-controls.json).
 
+`vis_merge` exercises hint/sky directions, parallel openings, far-plane culling,
+convex/concave/folded joins, winding and leaf capacity boundaries, complete
+contraction and self-edge rejection. Real publication failures must preserve the
+input BSP and PRT; a successful retry consumes the PRT. Its matched generated
+structural/manual-detail maps cover all four solvers and default/merge/mergeportals/
+hint selections at 1/4/20 workers. `--workers` can select additional stress counts.
+The merge matrix also checks `-nosort` without changing its job-slot ordering.
+The graph-only fixtures intentionally isolate PRT contracts and are not claimed
+spatial matches to their carrier BSP. All real-map checks retain non-entity,
+non-VIS lumps and require worker-independent visibility bytes.
+
+Pass `--reference /path/to/uncompressed/q3mapx` to require exact VIS bytes against
+a compiler with the same merge repairs and original bitset layout. The round
+retains that executable and its source identity under `.agents/tmp/continuation`.
+The [reference patch](../benchmarks/references/vis-uncompressed-at-7aaa22b.patch)
+recreates its source from `7aaa22b` in a separate test checkout. It intentionally
+predates the PRT cleanup-order fix; comparisons keep the PRT in both executables.
+`benchmarks/vis_portals.py` alternates those binaries with an optional preceding
+legacy executable, records whole-process medians, requested passage storage and
+per-cluster visible surface/triangle distributions. Existing merge-mode PVS
+differences are recorded separately from required compaction parity; this is not
+a renderer benchmark or validation of the planned intelligent transformation.
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

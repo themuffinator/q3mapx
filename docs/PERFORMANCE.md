@@ -85,6 +85,58 @@ Image sizes are limited to 1..8192, fixed samples to 1..256, random samples to
 
 ## CPU jobs
 
+### VIS merge foundation and live bitsets
+
+The [merge audit](VIS.md) fixes hint/sky direction loss, incorrect convexity,
+unchecked leaf unions and oversized winding allocation. After merging, live
+portal bits are packed while original jobs and reproducible publication batches
+remain unchanged. Complete visibility bytes match a preserved compiler containing
+the same merge repairs with uncompressed bitsets. No new automatic regional
+optimizer is enabled by these changes.
+
+On a generated 9×9 structural-pillar room, `-merge` leaves 1,348 of 1,436 portal
+directions active. Each working bitset falls from **184 to 176 bytes**. Requested
+passage storage falls from **3,469,600 to 3,330,816 bytes** (4.0%); this excludes
+allocator overhead and other process memory. Runtime VIS remains 7,048 bytes for
+220 original clusters. Whole-command medians from one warmup and five alternating
+measurements are:
+
+| Mode | Uncompressed, 1 worker | Compact, 1 worker | Uncompressed, 20 workers | Compact, 20 workers |
+| --- | ---: | ---: | ---: | ---: |
+| Default | 2.4217 s | 2.3698 s | 0.4030 s | 0.3573 s |
+| Merge | 2.0696 s | 2.0533 s | 0.3406 s | 0.3392 s |
+| Merge portals | 2.4281 s | 2.4042 s | 0.3721 s | 0.3708 s |
+| Hint | 2.0758 s | 2.0222 s | 0.3319 s | 0.3277 s |
+
+These results do **not** establish a broad speedup. There is no packing reduction
+in the default/mergeportals runs of this fixture, most differences are small, and
+Windows samples include intermittent delays outside the named VIS passes.
+Those delays also occur in the preceding executable: some complete commands take
+5–21 seconds despite about 0.3 seconds of measured VIS work. All slow samples are
+retained. Serial work, output and worker shutdown need separate investigation.
+
+The matched manually detailed source has four clusters/eight directed portals;
+default compact VIS takes 0.0383 seconds at one worker. This is a reference built
+with known authored detail flags, not an automatic optimization result. Every
+cluster sees the same 834 leaf-referenced world triangles in this open-room corpus.
+Those world-surface counts do not prove entity visibility or general map fidelity.
+
+The structural fixture's existing merge/hint result adds 84 and omits 27 cluster
+pairs relative to default VIS, identically before and after packing. Thus these
+modes do not meet the intelligent optimizer's planned baseline-inclusion gate.
+The omissions are not independently established as safe tightening. Regional
+changes still require the separate geometry and runtime-cost checks in the plan.
+
+[Raw timings, profiles, identities and per-cluster costs](benchmarks/vis-portals-win-x64.json)
+cover both fixtures, all four merge selections and the preceding executable.
+The task ran no other compiler/build/test processes alongside these measurements.
+Reproduce with `benchmarks/vis_portals.py --compiler ... --reference ... --legacy ...
+--work-dir ...`; `reference` must contain the merge repairs before bitset packing.
+This benchmark covers complete VIS commands, not complete BSP/VIS/LIGHT builds
+or renderer FPS.
+
+### Earlier scheduling and VIS measurements
+
 Persistent workers and batched atomic range dispatch reduce tiny-job overhead.
 The scheduler microbenchmark improved roughly 49.6x, but the initial full-stage
 comparison did **not** show a general BSP/VIS/LIGHT speedup. One-worker VIS was

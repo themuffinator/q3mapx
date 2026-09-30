@@ -146,9 +146,9 @@ static void HelpVis()
 	const std::vector<HelpOption> options = {
 		{ "-vis [options] <filename.map>", "Switch that enters this stage" },
 		{ "-fast", "Very fast and crude vis calculation" },
-		{ "-hint", "Merge all but hint portals" },
-		{ "-mergeportals", "The less crude half of `-merge`, makes vis sometimes much faster but doesn't hurt fps usually" },
-		{ "-merge", "Faster but still okay vis calculation" },
+		{ "-hint", "Alias for -merge; preserve hint boundaries" },
+		{ "-mergeportals", "Merge compatible coplanar portal polygons before VIS; retain runtime cluster IDs" },
+		{ "-merge", "Merge convex neighboring leaves and compatible portals; preserve hints, but PVS may change" },
 		{ "-nopassage", "Just use PortalFlow vis (usually less fps)" },
 		{ "-nosort", "Do not sort the portals before calculating vis (usually slower)" },
 		{ "-passageOnly", "Just use PassageFlow vis (usually less fps)" },

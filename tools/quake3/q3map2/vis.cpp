@@ -102,10 +102,10 @@ static void SortPortals(){
    ==============
  */
 static int LeafVectorFromPortalVector( byte *portalbits, byte *leafbits ){
-	for ( int i = 0; i < numportals * 2; ++i )
+	for ( int i = 0; i < visPortalBits; ++i )
 	{
 		if ( bit_is_enabled( portalbits, i ) ) {
-			const vportal_t& p = portals[i];
+			const vportal_t& p = *activePortals[i];
 			bit_enable( leafbits, p.leaf );
 		}
 	}
@@ -157,7 +157,7 @@ static void ClusterMerge( int leafnum ){
 		}
 		for ( int j = 0; j < portalwords; ++j )
 			( (VisWord *)portalvector )[j] |= ( (VisWord *)p->portalvis )[j];
-		bit_enable( portalvector, p - portals );
+		bit_enable( portalvector, p->visIndex );
 	}
 
 	memset( uncompressed, 0, leafbytes );
@@ -171,7 +171,7 @@ static void ClusterMerge( int leafnum ){
 
 //	uncompressed[leafnum >> 3] |= ( 1 << ( leafnum & 7 ) );
 
-	numvis++;       // count the leaf itself
+	// LeafVectorFromPortalVector already counts the self bit and merged members.
 
 	//Sys_FPrintf( SYS_VRB, "cluster %4i : %4i visible\n", leafnum, numvis );
 	++clustersizehistogram[numvis];
@@ -273,10 +273,11 @@ static void CalcPassagePortalVis(){
  */
 static void CalcFastVis(){
 	// fastvis just uses mightsee for a very loose bound
-	for ( vportal_t& p : Span( portals, numportals * 2 ) )
+	for ( vportal_t *p : activePortals )
 	{
-		p.portalvis = p.portalflood;
-		p.setStatus( EVStatus::Done );
+		free( p->portalvis );
+		p->portalvis = p->portalflood;
+		p->setStatus( EVStatus::Done );
 	}
 }
 
@@ -426,6 +427,25 @@ static bool Winding_PlanesConcave( const fixedWinding_t *w1, const fixedWinding_
  */
 static bool TryMergeLeaves( int l1num, int l2num ){
 	vportal_t *portals[MAX_PORTALS_ON_LEAF];
+	if ( l1num == l2num || leafs[l1num].merged >= 0 || leafs[l2num].merged >= 0 ) {
+		return false;
+	}
+	// Check both lists before changing either. A valid input leaf can have up to
+	// MAX_PORTALS_ON_LEAF faces/portals; their union need not fit the same storage.
+	for ( const leaf_t *lfs : { faceleafs, leafs } ) {
+		int count = 0;
+		for ( const int source : { l1num, l2num } ) {
+			const int other = source == l1num ? l2num : l1num;
+			for ( const vportal_t *p : Span( lfs[source].portals, lfs[source].numportals ) ) {
+				if ( p->removed ) continue;
+				if ( p->leaf == other ) {
+					// Another opening between these same leaves may be a hint.
+					if ( p->hint ) return false;
+				}
+				else if ( ++count > MAX_PORTALS_ON_LEAF ) return false;
+			}
+		}
+	}
 
 	for ( const leaf_t *l1 : { &faceleafs[l1num], &leafs[l1num] } )
 	{
@@ -509,7 +529,7 @@ static void MergeLeaves(){
 			//if this leaf is merged already
 
 			/* ydnar: vmods: merge all non-hint portals */
-			if ( leaf.merged >= 0 && !hint ) {
+			if ( leaf.merged >= 0 ) {
 				continue;
 			}
 
@@ -609,7 +629,9 @@ static fixedWinding_t *TryMergeWinding( fixedWinding_t *f1, fixedWinding_t *f2, 
 	//
 	// build the new polygon
 	//
-	newf = NewFixedWinding( f1->numpoints + f2->numpoints );
+	const int count = f1->numpoints + f2->numpoints - 2 - !keep1 - !keep2;
+	if ( count < 3 || count > MAX_POINTS_ON_WINDING ) return nullptr;
+	newf = NewFixedWinding( count );
 
 	// copy first polygon
 	for ( k = ( i + 1 ) % f1->numpoints; k != i; k = ( k + 1 ) % f1->numpoints )
@@ -666,8 +688,14 @@ static void MergeLeafPortals(){
 				if ( p2->removed ) {
 					continue;
 				}
-				if ( p1->leaf == p2->leaf ) {
-					w = TryMergeWinding( p1->winding, p2->winding, p1->plane.normal() );
+				// A shared edge alone does not establish coplanarity. Preserve hint
+				// and sky semantics instead of combining differently flagged openings.
+				if ( p1->leaf == p2->leaf && p1->hint == p2->hint && p1->sky == p2->sky
+				  && vector3_length_squared( p1->plane.normal() - p2->plane.normal() ) < 1e-10f
+				  && std::fabs( p1->plane.dist() - p2->plane.dist() ) < 0.005f ) {
+					// The convexity test expects the winding plane; VIS stores its
+					// opposite, pointing into the neighboring leaf.
+					w = TryMergeWinding( p1->winding, p2->winding, -p1->plane.normal() );
 					if ( w ) {
 						free( p1->winding );    //% FreeWinding( p1->winding );
 						p1->winding = w;
@@ -712,6 +740,27 @@ static int CountActivePortals(){
 	Sys_Printf( "%6d active portals\n", num );
 	Sys_Printf( "%6d hint portals\n", hints );
 	return num;
+}
+
+// Relabel only live visibility bits. Keep portal objects, sort keys, and job
+// slots unchanged: removing jobs would shift reproducible publication batches
+// and could change which completed results a portal is allowed to use for pruning.
+static void IndexActivePortals(){
+	activePortals.clear();
+	activePortals.reserve( numportals * 2 );
+	for ( vportal_t& p : Span( portals, numportals * 2 ) ) {
+		p.visIndex = -1;
+		if ( !p.removed ) {
+			p.visIndex = static_cast<int>( activePortals.size() );
+			activePortals.push_back( &p );
+		}
+	}
+	visPortalBits = static_cast<int>( activePortals.size() );
+	const int oldBytes = portalbytes;
+	portalbytes = ( ( visPortalBits + 63 ) & ~63 ) >> 3;
+	portalwords = portalbytes / sizeof( VisWord );
+	Sys_Printf( "VIS portal bitsets: %d live / %d input directions; %d -> %d bytes each\n",
+	            visPortalBits, numportals * 2, oldBytes, portalbytes );
 }
 
 /*
@@ -785,6 +834,7 @@ static void LoadPortals( char *name ){
 		numpoints=ReadPortalInteger(f,"portal point count",3,MAX_POINTS_ON_WINDING);
 		leafnums[0]=ReadPortalInteger(f,"portal leaf index",0,portalclusters-1);
 		leafnums[1]=ReadPortalInteger(f,"portal leaf index",0,portalclusters-1);
+		if (leafnums[0] == leafnums[1]) Error("LoadPortals: portal %i connects a leaf to itself", i);
 		flags=ReadPortalInteger(f,"portal flags",0,INT_MAX);
 
 		fixedWinding_t *w = NewFixedWinding( numpoints );
@@ -827,7 +877,8 @@ static void LoadPortals( char *name ){
 		{
 			vportal_t& p = portals[i * 2 + 1];
 			p.num = i + 1;
-			p.hint = hint;
+			p.hint = ( ( flags & 1 ) != 0 );
+			p.sky = ( ( flags & 2 ) != 0 );
 			p.winding = NewFixedWinding( w->numpoints );
 			p.winding->numpoints = w->numpoints;
 			std::reverse_copy( w->points, w->points + w->numpoints, p.winding->points );
@@ -847,6 +898,7 @@ static void LoadPortals( char *name ){
 
 	faces = safe_calloc( numfaces * sizeof( vportal_t ) );
 	faceleafs = safe_calloc( portalclusters * sizeof( leaf_t ) );
+	for ( leaf_t& leaf : Span( faceleafs, portalclusters ) ) leaf.merged = -1;
 
 	for ( int i = 0; i < numfaces; ++i )
 	{
@@ -947,7 +999,6 @@ int VisMain( Args& args ){
 		/* ydnar: -hint to merge all but hint portals */
 		while ( args.takeArg( "-hint" ) ) {
 			Sys_Printf( "hint = true\n" );
-			hint = true;
 			mergevis = true;
 		}
 
@@ -992,18 +1043,19 @@ int VisMain( Args& args ){
 	}
 
 	CountActivePortals();
+	IndexActivePortals();
 
 	Sys_Printf( "visdatasize:%zu\n", bspVisBytes.size() );
 
 	CalcVis();
 
-	/* delete the prt file */
+	/* write the bsp file */
+	WriteBSPFile( source );
+
+	// Preserve the retry input if BSP publication fails.
 	if ( !saveprt ) {
 		remove( portalfile );
 	}
-
-	/* write the bsp file */
-	WriteBSPFile( source );
 
 	return 0;
 }

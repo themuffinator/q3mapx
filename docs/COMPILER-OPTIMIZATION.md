@@ -9,6 +9,12 @@ existing paths as baselines before adding new behavior. CLI and workbench will u
 the same analysis/results, with explicit enablement, deterministic decisions,
 regional exclusions, bounded effort and a report explaining accepted/rejected edits.
 
+The [VIS foundation audit](VIS.md) now repairs directional flags, merge bounds and
+convexity, and packs live working bits without changing deterministic job order.
+Matched poor-detail/manual-detail workloads compare default, merge, mergeportals
+and hint modes. These are safer and more compact existing solver paths; they do
+not yet select regional transformations or enforce a runtime visibility budget.
+
 The first [BSP evidence command](BSP-EVIDENCE.md) now reports regional subdivision
 and reference costs, local brush-plane associations and stored PVS statistics.
 It supplies observations for this work; it does not identify safe portal or

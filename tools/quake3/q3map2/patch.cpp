@@ -30,6 +30,7 @@
 
 /* dependencies */
 #include "q3map2.h"
+#include "map_input.h"
 #include <charconv>
 #include <limits>
 
@@ -197,34 +198,9 @@ static void ExpandMaxIterations( int *maxIterations, int maxError, const Vector3
  */
 
 namespace {
-struct PatchReader
+struct PatchReader : MapInputReader
 {
-	int entity, primitive;
-
-	[[noreturn]] void fail( const char *expected ) const {
-		Error( "Invalid MAP patch (entity %d, primitive %d) at line %d in %s: expected %s, got '%s'",
-		       entity, primitive, scriptline, g_loadedScriptLocation.c_str(), expected, token );
-	}
-	void next( bool crossline, const char *expected ) const {
-		if ( !GetToken( crossline ) ) {
-			Error( "Incomplete MAP patch (entity %d, primitive %d) at line %d in %s: expected %s before EOF",
-			       entity, primitive, scriptline, g_loadedScriptLocation.c_str(), expected );
-		}
-	}
-	void match( const char *expected ) const {
-		next( true, expected );
-		if ( !TokenIs( expected ) ) fail( expected );
-	}
-	double number( const char *field ) const {
-		next( false, field );
-		const char *begin = token + ( token[0] == '+' );
-		const char *end = token + strlen( token );
-		double value = 0;
-		const auto result = std::from_chars( begin, end, value );
-		if ( result.ec != std::errc{} || result.ptr != end || !std::isfinite( value )
-		  || ( token[0] == '+' && *begin == '-' ) ) fail( field );
-		return value;
-	}
+	PatchReader( int entity, int primitive ) : MapInputReader{ "patch", entity, primitive } {}
 	int dimension( const char *field ) const {
 		const double value = number( field );
 		// Validate before float-to-int conversion, multiplication or allocation.
@@ -257,13 +233,6 @@ struct PatchReader
 		}
 		if ( scale != 0 || digits != std::to_string( size ) ) fail( field );
 		return size;
-	}
-	float coordinate( const char *field, double limit ) const {
-		const double value = number( field );
-		if ( std::fabs( value ) > limit ) fail( field );
-		const float stored = float( value );
-		if ( value != 0 && stored == 0 ) fail( field );
-		return stored;
 	}
 };
 }

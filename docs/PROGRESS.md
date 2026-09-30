@@ -2208,3 +2208,68 @@ delivery; workbench options alone cannot fulfill the requested editor workflow.
 Validation: checked the supplied image against both planned features, reviewed
 the documentation links and ran `git diff --check`. No runtime code changed or
 runtime tests were needed. No new unrelated issues were discovered.
+
+## 2026-09-30 — Brush numeric validation and degenerate plane safety
+
+Quake, brush-primitive and Valve 220 source readers now require complete finite
+numbers for plane points and texture parameters. Texture values must survive
+binary32 storage, and all three optional legacy fields require complete 32-bit
+decimal integers, including signed/unsigned editor spellings. Zero and negative
+texture scales retain their established behavior. Patch and brush parsing share
+the finite-number reader; exact patch-dimension validation remains unchanged.
+
+The audit reproduced an invalid `mapplanes[-1]` access when a degenerate Quake
+side reached texture projection before the later side-removal pass. It now
+validates the side's syntax, bypasses projection and lets the existing warning
+and removal complete. Six valid degenerate-side fixtures preserve every BSP lump
+against their clean-geometry controls. Separate bounded sanitizer probes retain
+the preceding invalid-access report and demonstrate the repaired path. Five
+malformed-number probes that previously completed now fail normally, with no
+sanitizer report.
+
+Plane arithmetic is checked before storing its distance; large finite distances
+are hashed without out-of-range float-to-integer conversion. Defining points are
+not clamped to world bounds, since they describe infinite planes. A valid brush
+with distant tangential points remains supported. Two large-distance entity-only
+controls exercise hashing while preserving geometry; they make no giant-world
+BSP claim. Derived texture axes and actual brush-winding UVs must be finite, and
+surface emission checks its final coordinates as well. A shared evaluator keeps
+the preflight and normal emission arithmetic consistent. Winding checks occur
+only when source geometry is constructed, and later emission errors are separate
+from initial source-failure sidecar preservation.
+
+The Windows brush matrix passes 116 valid native builds, 242 rejected
+inputs/modes and two hash controls. All 110 cases safe for the preceding compiler
+match every stored BSP lump; the remaining six use the clean degenerate controls.
+The Linux Release matrix passes the same cases and matches all 116 Windows lump
+sets. Rejected cases retain source and previous BSP/PRT/LIN/SRF/REG/OBJ/MTL outputs
+where applicable. The shared-reader patch matrix also passes 44 valid builds and
+201 rejected cases on Windows, with all 44 valid results matching the preceding
+compiler. The other 64 Windows CTest groups pass; the full 66-group Linux sweep
+passes 65 and skips the unavailable GPU `area_factors` group.
+
+All 11 selected ASan/UBSan groups pass, including the same complete brush matrix,
+patch/script inputs, native BSP validation and recovery, binary publication,
+lighting, geometry optimization and the compiler pipeline. Established
+process-lifetime leak exclusions remain unchanged. Final review removed a
+misleading side index from winding diagnostics: degenerate/duplicate side removal
+can change indices, so that error names the original entity/primitive instead.
+All recorded builds and matrices include this adjustment.
+
+See [input behavior and limits](MAP-INPUT.md), [test instructions](DEVELOPMENT.md#map-brush-input-validation)
+and [validation evidence](validation/brush-input.json). Bounded before/after
+probes, the preceding Windows executable, build/suite logs and the evidence
+generator remain under `.agents/tmp/continuation/brush-input/`; generated cases
+and detailed reports remain in each build's `tests/brush-input/`. No performance
+claim or refreshed portable archive is made. Earlier policy-blocked cleanup
+targets were not retried.
+
+Unrelated source review found that CLI numeric helpers strip a leading `+` before
+passing a remaining `-` to `from_chars`, allowing malformed double signs when the
+resulting value fits the option's range. This is queued for a separate real-CLI
+reproduction and repair; this round does not claim that reproduction. Include
+lookahead across source files and multiline quoted-token line accounting also
+remain open. Existing `UnsortedSet`, patch aggregate and clone-brush lifetime
+warnings remain, together with the documented VIS, raw-sidecar and intermittent
+Windows-delay issues. Light inference, intelligent VIS/geometry optimization and
+the newly planned Radiant authoring work remain active.

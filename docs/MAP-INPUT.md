@@ -42,6 +42,41 @@ include ends, including the archive member name.
 directive text is ordinary data; an unquoted directive where an entity opening
 brace is expected is rejected without loading its named file.
 
+## Brushes
+
+Quake, brush-primitive and Valve 220 brush readers require complete finite decimal
+numbers for plane points and texture parameters. Signs, decimal fractions,
+scientific notation and quoted numeric tokens remain accepted. Numeric prefixes,
+NaN, infinity, hexadecimal spellings and out-of-range values are errors. Texture
+parameters must fit finite binary32 storage without nonzero values underflowing
+to zero. The Valve rotation field remains unused but is validated too.
+
+Plane points are read in double precision. They define infinite planes and are
+not clamped to the world bounds: distant points can describe a perfectly ordinary
+in-bounds brush. The resulting cross product, normalization and plane distance
+must remain finite, and the distance must fit binary32 storage. Hashing large
+finite plane distances avoids an out-of-range integer conversion; this does not
+extend the compiler's supported world size.
+
+Zero Quake/Valve texture scales retain their historical fallback to one. Negative
+scales and zero brush-primitive matrices remain supported. Derived texture axes
+must be finite. When constructing brush geometry, the compiler also checks UVs
+on the actual brush windings before source loading completes. Flat mapping and
+shader-generated coordinates bypass this source-mapping preflight. Final surface
+emission checks the coordinates it actually produces, including those other
+mapping paths and any later geometry transformations.
+
+The optional three legacy flag/value fields must all be present together. They
+accept decimal integers in **−2,147,483,648 through 4,294,967,295**, accommodating
+signed and unsigned editor spellings of 32-bit values. Fractional/exponent forms,
+overflow and trailing text are errors. Only the historical detail bit in the
+first field affects compilation; the other fields retain their ignored meaning.
+
+Degenerate sides are still reported and removed after their syntax is validated.
+Quake texture projection no longer indexes a nonexistent plane before that
+removal. Raw numeric errors identify the entity, primitive, source side and
+detection line/location; derived winding errors identify the source primitive.
+
 ## Patches
 
 Development builds after 0.3.0 validate `patchDef2` dimensions before converting
@@ -89,14 +124,33 @@ after compilation has begun; this is not a transaction over every compiler outpu
 
 The strict patch reader also applies during `-nocurves`, entity-only updates,
 LIGHT's source-entity load and MAP-input conversion. Skipping patch geometry does
-not bypass structural/numeric validation. Brush numeric matrices and texture
-parameters still use permissive legacy parsing and need a separate audit.
+not bypass structural/numeric validation. Brush raw-number checks likewise apply
+to entity-only, LIGHT, MAP-input conversion and discarded detail geometry. Winding
+UV checks run when source brush geometry is constructed; LIGHT's entity-only
+source load does not construct it. A later surface-emission failure remains
+outside the guarantee for errors during initial source loading.
 Optional-token lookahead across included files and line accounting inside
 multiline quoted tokens also remain outside this round's validation.
 Remaining raw sidecar writers also retain their documented limits. No general
 untrusted-MAP sandbox or complete parser-safety claim is made.
 
 ## Validation
+
+The `brush_input` regression covers 116 valid native IBSP/RBSP builds with Quake,
+brush-primitive and Valve 220 input, ordinary/meta compilation, decimal/scientific
+and quoted numbers, legacy flags, zero/negative scales and distant defining
+points. Optional `--reference` compares all stored BSP lumps for 110 cases. Six
+degenerate-side cases instead compare against their clean-geometry controls so
+the preceding unsafe access is never invoked by reference comparison.
+
+Another 242 cases reject malformed point/texture/flag fields, arithmetic overflow
+and affected command modes. They require controlled errors, unchanged sources
+and previous BSP/PRT/LIN/SRF/REG/OBJ/MTL outputs where applicable. Two entity-only
+controls exercise large finite plane hashes while preserving every non-entity
+BSP lump and geometry sidecar. They are not giant-world compilation tests.
+
+See [brush test instructions](DEVELOPMENT.md#map-brush-input-validation) and
+[recorded evidence](validation/brush-input.json).
 
 The `script_input` regression covers 24 valid native-source cases across IBSP/RBSP,
 Quake/brush-primitive/Valve 220 syntax, loose/packed includes, fragments, shader

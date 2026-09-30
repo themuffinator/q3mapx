@@ -24,9 +24,12 @@ BSP compilation defers deletion of previous PRT, LIN and saved REG files until
 source loading succeeds. Source parse errors therefore retain them for inspection
 or retry; successful `-onlyents` updates leave geometry sidecars in place too.
 The [MAP/script-input checks](MAP-INPUT.md) cover prior BSP/SRF and mesh outputs as
-well, including patch, entity/brush-structure and include errors during
-LIGHT/conversion, region files and editor temporary sources. Failures
-later in compilation and other raw sidecar writes remain separate concerns.
+well, including patch, brush numeric/texture, entity-structure and include errors
+during LIGHT/conversion, region files and editor temporary sources. Brush winding
+UV preflight occurs during source loading when geometry is constructed. A final
+surface UV check can still fail later, after source loading has succeeded;
+failures later in compilation and other raw sidecar writes remain separate
+concerns.
 
 MAP/recovery-report and OBJ/MTL exports already use the same output owner. Their
 ordered publication and rollback behavior are described in the

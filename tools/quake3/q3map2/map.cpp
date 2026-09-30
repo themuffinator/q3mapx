@@ -30,6 +30,8 @@
 
 /* dependencies */
 #include "q3map2.h"
+#include "map_input.h"
+#include "brush_texture.h"
 
 
 
@@ -84,8 +86,17 @@ bool PlaneEqual( const plane_t& p, const Plane3f& plane ){
    AddPlaneToHash()
  */
 
+inline int PlaneHash( float distance ){
+	if ( !std::isfinite( distance ) ) Error( "Cannot hash a non-finite brush plane distance" );
+	const float magnitude = std::fabs( distance );
+	// Preserve the common fast path, without an out-of-range float-to-int cast.
+	if ( magnitude < float( std::numeric_limits<int>::max() ) )
+		return ( PLANE_HASHES - 1 ) & int( magnitude );
+	return int( std::fmod( double( magnitude ), double( PLANE_HASHES ) ) );
+}
+
 inline void AddPlaneToHash( plane_t& p ){
-	const int hash = ( PLANE_HASHES - 1 ) & (int) std::fabs( p.dist() );
+	const int hash = PlaneHash( p.dist() );
 
 	p.hash_chain = planehash[hash];
 	planehash[hash] = &p - mapplanes.data() + 1;
@@ -349,7 +360,7 @@ int FindFloatPlane___( const Plane3f& inplane, const Span<const BasicVector3<T>>
 	SnapPlane( plane );
 #endif
 	/* hash the plane */
-	const int hash = ( PLANE_HASHES - 1 ) & (int) std::fabs( plane.dist() );
+	const int hash = PlaneHash( plane.dist() );
 
 	/* search the border bins as well */
 	for ( int i = -1; i <= 1; ++i )
@@ -436,9 +447,14 @@ int FindFloatPlane( const Plane3f& inplane, const Span<const DoubleVector3>& poi
    takes 3 points and finds the plane they lie in
  */
 
-inline std::pair<int, Plane3> MapPlaneFromPoints( const DoubleVector3 (&p)[3] ){
+inline std::pair<int, Plane3> MapPlaneFromPoints( const DoubleVector3 (&p)[3], const MapInputReader& reader ){
 	Plane3 plane;
-	PlaneFromPoints( plane, p );
+	plane.normal() = vector3_cross( p[2] - p[0], p[1] - p[0] );
+	const double length = VectorNormalize( plane.normal() );
+	if ( !std::isfinite( length ) ) reader.fail( "finite brush plane calculation (point arithmetic overflow)" );
+	plane.dist() = length == 0 ? 0 : vector3_dot( p[0], plane.normal() );
+	if ( !std::isfinite( plane.dist() ) || std::fabs( plane.dist() ) > std::numeric_limits<float>::max() )
+		reader.fail( "finite representable brush plane distance" );
 	// TODO: A 32 bit float for the plane distance isn't enough resolution
 	// if the plane is 2^16 units away from the origin (the "epsilon" approaches
 	// 0.01 in that case).
@@ -787,6 +803,21 @@ static void FinishBrush( bool noCollapseGroups, entity_t& mapEnt ){
 		return;
 	}
 
+	// Check the actual bounded brush, not its arbitrary plane-definition points.
+	// This runs before successful MAP loading permits old sidecars to be removed.
+	for ( const side_t& side : buildBrush.sides ) {
+		if ( flat || side.shaderInfo->tcGen ) continue;
+		Vector3 texX( 0 ), texY( 0 );
+		if ( g_brushType == EBrushType::Bp ) ComputeAxisBase( mapplanes[side.planenum].normal(), texX, texY );
+		for ( const Vector3& point : side.winding ) {
+			const Vector2 st = BrushTextureCoordinates( side, point, texX, texY, *side.shaderInfo );
+			if ( !std::isfinite( st[0] ) || !std::isfinite( st[1] ) ) {
+				Error( "Invalid MAP brush (entity %d, primitive %d) at line %d in %s: non-finite texture coordinates on brush winding",
+				       buildBrush.entityNum, buildBrush.brushNum, scriptline, g_loadedScriptLocation.c_str() );
+			}
+		}
+	}
+
 	/* origin brushes are removed, but they set the rotation origin for the rest of the brushes in the entity.
 	   after the entire entity is parsed, the planenums and texinfos will be adjusted for the origin brush */
 	if ( buildBrush.compileFlags & C_ORIGIN ) {
@@ -960,13 +991,14 @@ static void QuakeTextureVecs( const plane_t& plane, float shift[ 2 ], float rota
  */
 
 static void ParseRawBrush( bool onlyLights ){
+	MapInputReader reader{ "brush", buildBrush.entityNum, buildBrush.brushNum };
 	/* initial setup */
 	buildBrush.sides.clear();
 	buildBrush.detail = false;
 
 	/* bp */
 	if ( g_brushType == EBrushType::Bp ) {
-		MatchToken( "{" );
+		reader.match( "{" );
 	}
 
 	/* parse sides */
@@ -992,23 +1024,33 @@ static void ParseRawBrush( bool onlyLights ){
 
 		/* add side */
 		side_t& side = buildBrush.sides.emplace_back();
+		reader.side = int( buildBrush.sides.size() ) - 1;
 
 		/* read the three point plane definition */
 		DoubleVector3 planePoints[ 3 ];
-		Parse1DMatrix( 3, planePoints[ 0 ].data() );
-		Parse1DMatrix( 3, planePoints[ 1 ].data() );
-		Parse1DMatrix( 3, planePoints[ 2 ].data() );
+		for ( DoubleVector3& point : planePoints ) {
+			reader.match( "(" );
+			for ( int axis = 0; axis < 3; ++axis ) point[axis] = reader.number( "finite plane point" );
+			reader.match( ")" );
+		}
 
 		/* find the plane number */
-		std::tie( side.planenum, side.plane ) = MapPlaneFromPoints( planePoints );
+		std::tie( side.planenum, side.plane ) = MapPlaneFromPoints( planePoints, reader );
 
 		/* bp: read the texture matrix */
 		if ( g_brushType == EBrushType::Bp ) {
-			Parse2DMatrix( 2, 3, side.texMat->data() );
+			reader.match( "(" );
+			for ( Vector3& row : side.texMat ) {
+				reader.match( "(" );
+				for ( int column = 0; column < 3; ++column ) row[column] = reader.coordinate( "finite representable texture matrix component" );
+				reader.match( ")" );
+			}
+			reader.match( ")" );
 		}
 
 		/* read shader name */
-		GetToken( false );
+		reader.next( false, "material name" );
+		if ( token[0] == '\0' || TokenIs( "{" ) || TokenIs( "}" ) ) reader.fail( "nonempty material name" );
 		const String64 shader( "textures/", token );
 
 		/* set default flags and values */
@@ -1023,7 +1065,7 @@ static void ParseRawBrush( bool onlyLights ){
 		/* AP or 220? */
 		if ( g_brushType == EBrushType::Undefined ){
 			GetToken( false );
-			if ( strEqual( token, "[" ) ){
+			if ( TokenIs( "[" ) ){
 				g_brushType = EBrushType::Valve220;
 				Sys_FPrintf( SYS_VRB, "detected brushType = VALVE 220\n" );
 			}
@@ -1037,16 +1079,9 @@ static void ParseRawBrush( bool onlyLights ){
 		if ( g_brushType == EBrushType::Quake ) {
 			float shift[ 2 ], rotate, scale[ 2 ];
 
-			GetToken( false );
-			shift[ 0 ] = atof( token );
-			GetToken( false );
-			shift[ 1 ] = atof( token );
-			GetToken( false );
-			rotate = atof( token );
-			GetToken( false );
-			scale[ 0 ] = atof( token );
-			GetToken( false );
-			scale[ 1 ] = atof( token );
+			for ( float& value : shift ) value = reader.coordinate( "finite representable texture shift" );
+			rotate = reader.coordinate( "finite representable texture rotation" );
+			for ( float& value : scale ) value = reader.coordinate( "finite representable texture scale" );
 
 			/* ydnar: gs mods: bias texture shift */
 			if ( !si.globalTexture ) {
@@ -1055,28 +1090,30 @@ static void ParseRawBrush( bool onlyLights ){
 			}
 
 			/* get the texture mapping for this texturedef / plane combination */
-			QuakeTextureVecs( mapplanes[ side.planenum ], shift, rotate, scale, side.vecs );
+			if ( side.planenum >= 0 ) QuakeTextureVecs( mapplanes[ side.planenum ], shift, rotate, scale, side.vecs );
+			else for ( Vector4& row : side.vecs ) row.set( 0 ); // removed after the complete side is validated
 		}
 		else if ( g_brushType == EBrushType::Valve220 ){
 			for ( int axis = 0; axis < 2; ++axis ){
-				MatchToken( "[" );
+				reader.match( "[" );
 				for ( int comp = 0; comp < 4; ++comp ){
-					GetToken( false );
-					side.vecs[axis][comp] = atof( token );
+					side.vecs[axis][comp] = reader.coordinate( "finite representable Valve texture axis/shift" );
 				}
-				MatchToken( "]" );
+				reader.match( "]" );
 			}
-			GetToken( false ); // rotate
+			reader.coordinate( "finite representable Valve texture rotation" ); // legacy ignored field
 			float scale[2];
-			GetToken( false );
-			scale[ 0 ] = atof( token );
-			GetToken( false );
-			scale[ 1 ] = atof( token );
+			for ( float& value : scale ) value = reader.coordinate( "finite representable texture scale" );
 
 			if ( !scale[0] ) scale[0] = 1;
 			if ( !scale[1] ) scale[1] = 1;
 			for ( int axis = 0; axis < 2; ++axis )
 				side.vecs[axis].vec3() /= scale[axis];
+		}
+		if ( g_brushType != EBrushType::Bp ) {
+			for ( const Vector4& row : side.vecs )
+				for ( int component = 0; component < 4; ++component )
+					if ( !std::isfinite( row[component] ) ) reader.fail( "finite derived texture mapping" );
 		}
 
 		/*
@@ -1092,23 +1129,20 @@ static void ParseRawBrush( bool onlyLights ){
 
 		if ( TokenAvailable() ) {
 			/* get detail bit from map content flags */
-			GetToken( false );
-			const int flags = atoi( token );
+			const std::uint32_t flags = reader.flags( "32-bit decimal content flags" );
 			if ( flags & C_DETAIL ) {
 				side.compileFlags |= C_DETAIL;
 			}
 
 			/* historical */
-			GetToken( false );
-			//% td.flags = atoi( token );
-			GetToken( false );
-			//% td.value = atoi( token );
+			reader.flags( "32-bit decimal surface flags" );
+			reader.flags( "32-bit decimal surface value" );
 		}
 	}
 
 	/* bp */
 	if ( g_brushType == EBrushType::Bp ) {
-		MatchToken( "}" );
+		reader.match( "}" );
 	}
 }
 

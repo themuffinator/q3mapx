@@ -472,6 +472,27 @@ input. Native reports and command logs remain in `tests/script-input/` beneath
 the selected build; this group has its own generated game VFS and needs no assets.
 See [input behavior and limits](MAP-INPUT.md).
 
+## MAP brush input validation
+
+`brush_input` exercises finite whole-token numbers, 32-bit legacy flags,
+degenerate planes, large-distance hashing and derived texture overflow in all
+three supported brush syntaxes. Valid cases cover ordinary/meta IBSP and RBSP
+builds; rejected cases must retain the source and previous outputs, including
+entity-only, LIGHT, conversion, region and editor-temporary paths.
+
+```sh
+ctest --test-dir build/release -R '^brush_input$' -V
+python tests/brush_input.py --compiler build/release/bin/q3mapx --reference /path/to/preceding/q3mapx --work-dir build/release/tests/brush-input
+```
+
+Use `.exe` on Windows and the matching build directory for Linux/sanitizers.
+The optional reference compares all stored BSP lumps on supported valid input.
+Degenerate-side fixtures compare against clean controls in the new compiler;
+the preceding compiler is not given the invalid-index reproduction. Large-plane
+controls test only entity updates, without constructing giant-world BSP geometry.
+The group has a 600-second CTest timeout. Reports and per-command logs remain in
+`tests/brush-input/` under the selected build. See [accepted input](MAP-INPUT.md).
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

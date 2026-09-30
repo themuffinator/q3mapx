@@ -204,9 +204,18 @@ not a redefinition of the overall goal around the existing release:
   entity data, bound iterative include expansion and disable includes in BSP
   entity text. Validate native syntax, include limits and previous-output safety;
   see [MAP and script checks](MAP-INPUT.md).
-- [ ] Extend the source-parser audit to brush numeric matrices and texture
-  parameters, optional-token lookahead across includes and multiline quoted-token
-  line accounting. Strict structure/patch parsing does not make every reader strict.
+- [x] Validate brush plane points, texture matrices/parameters and legacy flags;
+  guard degenerate Quake sides before texture projection, bound derived numeric
+  results and hash large finite distances safely. Check valid IBSP/RBSP lump
+  parity, malformed inputs and previous-output preservation; see
+  [brush input checks](MAP-INPUT.md#brushes).
+- [ ] Continue the source-parser audit with optional-token lookahead across
+  includes and multiline quoted-token line accounting. Strict primitive parsing
+  does not make every shared script consumer strict.
+- [ ] Audit CLI numeric helpers for malformed leading signs; source review found
+  that stripping `+` can leave a second `-` accepted by `from_chars` when the
+  resulting value is within the option's range. Reproduce through real options
+  and preserve valid signed/scientific forms before changing behavior.
 - [ ] Profile larger recovery workloads and address measured costs with geometry,
   UV/material and worker-count parity evidence before claiming speedups.
   Initial whole-command comparisons now cover a dense generated room and private

@@ -30,6 +30,7 @@
 
 /* dependencies */
 #include "q3map2.h"
+#include "brush_texture.h"
 
 
 
@@ -616,7 +617,6 @@ static mapDrawSurface_t& DrawSurfaceForShader( const char *shader );
 mapDrawSurface_t *DrawSurfaceForSide( const entity_t& e, const brush_t& b, const side_t& s, const winding_t& w ){
 	shaderInfo_t        *si, *parent;
 	Vector3 texX, texY;
-	float x, y;
 	Vector3 vTranslated;
 	byte shaderIndexes[ 256 ];
 	float offsets[ 256 ];
@@ -708,22 +708,12 @@ mapDrawSurface_t *DrawSurfaceForSide( const entity_t& e, const brush_t& b, const
 			dv.st[ 1 ] = vector3_dot( si->vecs[ 1 ], vTranslated );
 		}
 
-		/* brush primitive texturing */
-		else if ( g_brushType == EBrushType::Bp ) {
-			/* calculate texture s/t from brush primitive texture matrix */
-			x = vector3_dot( vTranslated, texX );
-			y = vector3_dot( vTranslated, texY );
-			dv.st[ 0 ] = s.texMat[ 0 ][ 0 ] * x + s.texMat[ 0 ][ 1 ] * y + s.texMat[ 0 ][ 2 ];
-			dv.st[ 1 ] = s.texMat[ 1 ][ 0 ] * x + s.texMat[ 1 ][ 1 ] * y + s.texMat[ 1 ][ 2 ];
-		}
-
-		/* old quake-style or valve 220 texturing */
+		/* source brush texture mapping */
 		else {
-			/* nearest-axial projection */
-			dv.st[ 0 ] = s.vecs[ 0 ][ 3 ] + vector3_dot( s.vecs[ 0 ].vec3(), vTranslated );
-			dv.st[ 1 ] = s.vecs[ 1 ][ 3 ] + vector3_dot( s.vecs[ 1 ].vec3(), vTranslated );
-			dv.st[ 0 ] /= si->shaderWidth;
-			dv.st[ 1 ] /= si->shaderHeight;
+			dv.st = BrushTextureCoordinates( s, vTranslated, texX, texY, *si );
+		}
+		if ( !std::isfinite( dv.st[0] ) || !std::isfinite( dv.st[1] ) ) {
+			Error( "Non-finite brush texture coordinates in entity %d, brush %d", b.entityNum, b.brushNum );
 		}
 
 		/* copy normal */

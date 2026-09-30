@@ -319,6 +319,10 @@ if(BUILD_TESTING)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/script_input.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/script-input)
     set_tests_properties(script_input PROPERTIES TIMEOUT 360)
+    add_test(NAME brush_input COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/brush_input.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/brush-input)
+    set_tests_properties(brush_input PROPERTIES TIMEOUT 600)
     add_test(NAME cell_adjacency COMMAND ${Python3_EXECUTABLE}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/cell_adjacency.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/cell-adjacency)

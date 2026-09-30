@@ -32,6 +32,7 @@
 #include "q3map2.h"
 #include "vis.h"
 #include "visflow.h"
+#include "q3mapx/portal_graph.h"
 
 vportal_t          *sorted_portals[ MAX_MAP_PORTALS * 2 ];
 
@@ -768,177 +769,71 @@ static void IndexActivePortals(){
    LoadPortals
    ============
  */
-static int ReadPortalInteger(FILE* file,const char* field,int minimum,int maximum){
-	char token[64];
-	if ( fscanf(file,"%63s ",token)!=1 ) Error("LoadPortals: missing %s",field);
-	return ParseIntegerOption(field,token,minimum,maximum);
-}
-
-static void LoadPortals( char *name ){
-	char magic[80];
-	FILE        *f;
-	int numpoints, leafnums[2], flags;
-
-	if ( strEqual( name, "-" ) ) {
-		f = stdin;
-	}
-	else
-	{
-		f = SafeOpenRead( name, "rt" );
-	}
-
-	if ( fscanf( f, "%79s ", magic ) != 1 ) {
-		Error( "LoadPortals: failed to read header" );
-	}
-	if ( !strEqual( magic, PORTALFILE ) ) {
-		Error( "LoadPortals: not a portal file" );
-	}
-	portalclusters=ReadPortalInteger(f,"portal cluster count",1,MAX_MAP_VISCLUSTERS);
-	for (const auto& leaf:bspLeafs) if (leaf.cluster>=portalclusters) Error("Portal clusters do not cover BSP leaf clusters");
-	// Every file portal has two directed bits in the fixed flow scratch buffers.
-	numportals=ReadPortalInteger(f,"portal count",0,MAX_PORTALS / 2);
-	numfaces=ReadPortalInteger(f,"portal face count",0,MAX_MAP_PORTALS * 2);
-
-	Sys_Printf( "%6i portalclusters\n", portalclusters );
-	Sys_Printf( "%6i numportals\n", numportals );
-	Sys_Printf( "%6i numfaces\n", numfaces );
-
-	if ( numportals > MAX_PORTALS ) {
-		Error( "MAX_PORTALS" );
-	}
-
-	// these counts should take advantage of 64 bit systems automatically
-	leafbytes = ( ( portalclusters + 63 ) & ~63 ) >> 3;
-
-	portalbytes = ( ( numportals * 2 + 63 ) & ~63 ) >> 3;
-	portalwords = portalbytes / sizeof( VisWord );
-
-	// each file portal is split into two memory portals
-	portals = safe_calloc( 2 * numportals * sizeof( vportal_t ) );
-	leafs = safe_calloc( portalclusters * sizeof( leaf_t ) );
-
-	for ( leaf_t& leaf : Span( leafs, portalclusters ) )
-		leaf.merged = -1;
-
-	bspVisBytes.resize( VIS_HEADER_SIZE + portalclusters * leafbytes );
-
-	if ( bspVisBytes.size() > MAX_MAP_VISIBILITY ) {
-		Error( "MAX_MAP_VISIBILITY exceeded" );
-	}
-
-	( (int *)bspVisBytes.data() )[0] = portalclusters;
-	( (int *)bspVisBytes.data() )[1] = leafbytes;
-
-	for ( int i = 0; i < numportals; ++i )
-	{
-		numpoints=ReadPortalInteger(f,"portal point count",3,MAX_POINTS_ON_WINDING);
-		leafnums[0]=ReadPortalInteger(f,"portal leaf index",0,portalclusters-1);
-		leafnums[1]=ReadPortalInteger(f,"portal leaf index",0,portalclusters-1);
-		if (leafnums[0] == leafnums[1]) Error("LoadPortals: portal %i connects a leaf to itself", i);
-		flags=ReadPortalInteger(f,"portal flags",0,INT_MAX);
-
-		fixedWinding_t *w = NewFixedWinding( numpoints );
-		w->numpoints = numpoints;
-
-		for ( Vector3& point : Span( w->points, w->numpoints ) )
-		{
-			if ( fscanf( f, "(%f %f %f ) ",
-			             &point[0], &point[1], &point[2] ) != 3 || !std::isfinite(point[0]) || !std::isfinite(point[1]) || !std::isfinite(point[2]) ) {
-				Error( "LoadPortals: reading portal %i", i );
-			}
+static void LoadPortals( const char *name ) try {
+	static_assert(q3mapx::PortalLimits{}.clusters == MAX_MAP_VISCLUSTERS);
+	static_assert(q3mapx::PortalLimits{}.portals == MAX_PORTALS / 2);
+	static_assert(q3mapx::PortalLimits{}.faces == MAX_MAP_PORTALS * 2);
+	static_assert(q3mapx::PortalLimits{}.pointsPerWinding == MAX_POINTS_ON_WINDING);
+	static_assert(q3mapx::PortalLimits{}.windingsPerCluster == MAX_PORTALS_ON_LEAF);
+	const auto graph = q3mapx::readPortalGraph(name);
+	portalclusters = graph.clusters;
+	for (const auto& leaf : bspLeafs)
+		if (leaf.cluster >= portalclusters) Error("Portal clusters do not cover BSP leaf clusters");
+	numportals = int(graph.portals.size());
+	numfaces = int(graph.faces.size());
+	Sys_Printf("%6i portalclusters\n%6i numportals\n%6i numfaces\n", portalclusters, numportals, numfaces);
+	leafbytes = ((portalclusters + 63) & ~63) >> 3;
+	portalbytes = ((numportals * 2 + 63) & ~63) >> 3;
+	portalwords = portalbytes / sizeof(VisWord);
+	portals = safe_calloc(2 * numportals * sizeof(vportal_t));
+	leafs = safe_calloc(portalclusters * sizeof(leaf_t));
+	for (leaf_t& leaf : Span(leafs,portalclusters)) leaf.merged = -1;
+	bspVisBytes.resize(VIS_HEADER_SIZE + size_t(portalclusters) * leafbytes);
+	if (bspVisBytes.size() > MAX_MAP_VISIBILITY) Error("MAX_MAP_VISIBILITY exceeded");
+	((int*)bspVisBytes.data())[0] = portalclusters;
+	((int*)bspVisBytes.data())[1] = leafbytes;
+	const auto winding = [](const auto& polygon, bool reverse) {
+		auto* w = NewFixedWinding(int(polygon.points.size()));
+		w->numpoints = int(polygon.points.size());
+		for (size_t j=0; j<polygon.points.size(); ++j) {
+			const auto& point = polygon.points[reverse ? polygon.points.size()-1-j : j];
+			w->points[j] = Vector3(point[0],point[1],point[2]);
 		}
-		if ( fscanf( f, "\n" ) != 0 ) {
-			// silence gcc warning
-		}
-
-		// calc plane
-		const visPlane_t plane = PlaneFromWinding( w );
-
-		// create forward portal
-		{
-			vportal_t& p = portals[i * 2];
-			p.num = i + 1;
-			p.hint = ( ( flags & 1 ) != 0 );
-			p.sky = ( ( flags & 2 ) != 0 );
-			p.winding = w;
-			p.plane = plane3_flipped( plane );
-			p.leaf = leafnums[1];
-			SetPortalSphere( p );
-
-			leaf_t& l = leafs[leafnums[0]];
-			if ( l.numportals == MAX_PORTALS_ON_LEAF ) {
-				Error( "Leaf with too many portals" );
-			}
-			l.portals[l.numportals] = &p;
-			l.numportals++;
-		}
-
-		// create backwards portal
-		{
-			vportal_t& p = portals[i * 2 + 1];
-			p.num = i + 1;
-			p.hint = ( ( flags & 1 ) != 0 );
-			p.sky = ( ( flags & 2 ) != 0 );
-			p.winding = NewFixedWinding( w->numpoints );
-			p.winding->numpoints = w->numpoints;
-			std::reverse_copy( w->points, w->points + w->numpoints, p.winding->points );
-
-			p.plane = plane;
-			p.leaf = leafnums[0];
-			SetPortalSphere( p );
-
-			leaf_t& l = leafs[leafnums[1]];
-			if ( l.numportals == MAX_PORTALS_ON_LEAF ) {
-				Error( "Leaf with too many portals" );
-			}
-			l.portals[l.numportals] = &p;
-			l.numportals++;
+		return w;
+	};
+	for (int i=0; i<numportals; ++i) {
+		const auto& polygon = graph.portals[i];
+		auto* forward = winding(polygon,false);
+		const auto plane = PlaneFromWinding(forward);
+		for (int direction=0; direction<2; ++direction) {
+			auto& p = portals[i*2+direction];
+			p.num = i+1;
+			p.hint = (polygon.flags & 1) != 0;
+			p.sky = (polygon.flags & 2) != 0;
+			p.winding = direction ? winding(polygon,true) : forward;
+			p.plane = direction ? plane : plane3_flipped(plane);
+			p.leaf = direction ? polygon.front : polygon.back;
+			SetPortalSphere(p);
+			auto& leaf = leafs[direction ? polygon.back : polygon.front];
+			leaf.portals[leaf.numportals++] = &p;
 		}
 	}
-
-	faces = safe_calloc( numfaces * sizeof( vportal_t ) );
-	faceleafs = safe_calloc( portalclusters * sizeof( leaf_t ) );
-	for ( leaf_t& leaf : Span( faceleafs, portalclusters ) ) leaf.merged = -1;
-
-	for ( int i = 0; i < numfaces; ++i )
-	{
-		numpoints=ReadPortalInteger(f,"face point count",3,MAX_POINTS_ON_WINDING);
-		leafnums[0]=ReadPortalInteger(f,"face leaf index",0,portalclusters-1);
-
-		fixedWinding_t *w = NewFixedWinding( numpoints );
-		w->numpoints = numpoints;
-
-		for ( Vector3& point : Span( w->points, w->numpoints ) )
-		{
-			if ( fscanf( f, "(%f %f %f ) ",
-			             &point[0], &point[1], &point[2] ) != 3 || !std::isfinite(point[0]) || !std::isfinite(point[1]) || !std::isfinite(point[2]) ) {
-				Error( "LoadPortals: reading portal %i", i );
-			}
-		}
-		if ( fscanf( f, "\n" ) != 0 ) {
-			// silence gcc warning
-		}
-
-		vportal_t& p = faces[i];
-		p.num = i + 1;
-		p.winding = w;
-		// normal pointing out of the leaf
-		p.plane = plane3_flipped( PlaneFromWinding( w ) );
+	faces = safe_calloc(numfaces * sizeof(vportal_t));
+	faceleafs = safe_calloc(portalclusters * sizeof(leaf_t));
+	for (leaf_t& leaf : Span(faceleafs,portalclusters)) leaf.merged = -1;
+	for (int i=0; i<numfaces; ++i) {
+		const auto& polygon = graph.faces[i];
+		auto& p = faces[i];
+		p.num = i+1;
+		p.winding = winding(polygon,false);
+		p.plane = plane3_flipped(PlaneFromWinding(p.winding));
 		p.leaf = -1;
-		SetPortalSphere( p );
-
-		leaf_t& l = faceleafs[leafnums[0]];
-		l.merged = -1;
-		if ( l.numportals == MAX_PORTALS_ON_LEAF ) {
-			Error( "Leaf with too many faces" );
-		}
-		l.portals[l.numportals] = &p;
-		l.numportals++;
+		SetPortalSphere(p);
+		auto& leaf = faceleafs[polygon.front];
+		leaf.portals[leaf.numportals++] = &p;
 	}
-
-	fclose( f );
 }
-
+catch(const std::exception& error) { Error("LoadPortals: %s",error.what()); }
 
 
 /*

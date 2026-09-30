@@ -15,10 +15,14 @@ Matched poor-detail/manual-detail workloads compare default, merge, mergeportals
 and hint modes. These are safer and more compact existing solver paths; they do
 not yet select regional transformations or enforce a runtime visibility budget.
 
-The first [BSP evidence command](BSP-EVIDENCE.md) now reports regional subdivision
-and reference costs, local brush-plane associations and stored PVS statistics.
-It supplies observations for this work; it does not identify safe portal or
-triangle transformations, or implement either planned compiler option.
+The [BSP evidence command](BSP-EVIDENCE.md) reports regional subdivision and
+reference costs, local brush-plane associations and stored PVS statistics.
+With an explicit matching PRT, [portal diagnostics](PORTAL-ANALYSIS.md) now add
+regional passage-pair bounds, shape/protection/bridge observations, structural
+brush samples and deduplicated stored-PVS world triangle costs. Matched known-source
+detail controls and independent graph/geometry/PVS oracles validate these reports.
+They do not yet identify proven-safe transformations or implement either planned
+automatic compiler option.
 
 Start with reports and proposals. Once a transformation meets its correctness
 gates, the selected optimization mode may apply validated changes automatically

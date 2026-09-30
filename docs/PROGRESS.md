@@ -1582,3 +1582,58 @@ passes, remaining raw sidecar writers, and inherited ZIP uninitialized-value,
 This round does not provide crash recovery or a transaction spanning every
 compiler output. No external code/dependency was added, no game/input/capture
 automation was used, and the packaged 0.3.0 archive remains unchanged.
+
+## 2026-09-30 — Regional portal and stored-visibility diagnostics
+
+Added optional `-bsp-evidence -portals matching.prt` analysis, linking an explicitly
+supplied PRT graph with the BSP's existing regional frontier. Reports rank regions
+by candidate passage-pair work, distinguish internal/boundary openings, expose
+hint/sky/unknown flags and graph bridges, measure small/slender windings, and
+retain bounded local world-brush associations. Stored PVS rows union world surface
+IDs before counting indexed triangles and patch surfaces. Repeated leaf and
+surface references do not inflate these costs; padding bits are ignored.
+
+The CLI and normal VIS now share a bounded PRT1 reader with checked counts,
+indices, self-edges, finite coordinates, parentheses, total points/bytes and
+complete records. Directed winding order and existing VIS solvers remain intact.
+The parser's 7,970 seeded decimal/scientific comparisons match legacy `scanf`
+binary32 results; 2,094 truncated, malformed and over-budget inputs are rejected.
+PRT/BSP identities are checked before/after analysis, input aliases are protected,
+and work exhaustion preserves the previous report without leaving staging files.
+
+Independent graph edge-removal, regional traversal, triangle-fan shape and PVS
+set-union oracles cover Quake 3 and Raven controls. Additional cases exercise
+shared nodes, 512 paths to one leaf, parallel openings, flags, stale geometry,
+unusable windings, missing/mismatched VIS, exact/exhausted work limits and combined
+brush-cell analysis. Reports agree exactly at one/four workers. The nine-column
+structural controls have 40 clusters, 94 openings and 816 candidate ordered pairs;
+manual detail reduces these to 4, 4 and 8. An 81-column Windows control reports
+220, 718 and 13,586 versus the same detail counts. These are diagnostic contrasts,
+not claimed speedups or automatically accepted transformations.
+
+Six relevant release CTest groups pass on Windows (41.71 seconds) and Linux
+(53.46 seconds); six ASan/UBSan groups pass (308.98 seconds), including the full
+VIS matrix, with the established process-lifetime leak exclusion.
+The 31-graph/120-map VIS reference
+matrices match the preceding `2295427` executable on both release platforms, and
+their graph/PVS semantics agree across platforms. The Windows reference phase
+precedes only expansion of the evidence warning message; the final Windows
+release groups and larger control use the final executable. Detailed final
+sanitizer results and identities are recorded in
+[the validation record](validation/portal-evidence.json).
+
+See [regional portal diagnostics](PORTAL-ANALYSIS.md) for usage, field definitions,
+thresholds and limits. Center probes cannot prove BSP/PRT correspondence; brush
+samples do not identify the source cause of a cut. Reports expose unavailable
+mapping and disagreements, and warn about misleading inputs. Automatic regional
+rectification, validated source changes and workbench overlays remain open in
+M9. Useful logs and preceding binaries remain under
+`.agents/tmp/continuation/portal-evidence-*`; generated fixtures remain under
+`build/*/tests/portal-evidence*` and `build/*/tests/vis-merge`.
+
+Separate findings remain open: intermittent Windows delays outside VIS passes,
+remaining raw sidecar writers and inherited build warnings. This build also
+reports a GCC bounds warning when inlining the pre-existing copied argument
+vector in `BSPEvidenceMain`; the relevant argument and sanitizer controls pass.
+No external code/dependency was added, no game/input/capture automation was used,
+and the packaged 0.3.0 archive remains unchanged.

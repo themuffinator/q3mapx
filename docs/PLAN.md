@@ -287,8 +287,12 @@ Separate compiler workstream; see [compiler optimization design](COMPILER-OPTIMI
 - [ ] Diagnose regional over-portalling, inefficient splits and poor detail usage,
   attributing costs to source geometry and comparing current merge/hint options.
   `-bsp-evidence` now ranks subtree subdivision/reference costs for investigation;
-  matched merge/hint baselines now exist; regional portal adjacency/provenance
-  and actionable inefficiency decisions remain open.
+  matched merge/hint baselines now exist. Its optional `-portals` analysis now
+  maps graph costs to regions, reports protected/bridge/shape observations,
+  samples local world-brush associations and counts stored-PVS world triangles.
+  Independent graph/shape/PVS oracles and matched source-detail controls cover
+  these diagnostics. Proven portal causality, validated inefficiency decisions,
+  workbench overlays and automatic rectification remain open.
 - [ ] Add a VIS-only option for conservative graph simplification with correct
   cluster mapping and bounded increases in runtime visibility work.
 - [ ] Add a coordinated full-build option that examines regional structure and

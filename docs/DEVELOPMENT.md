@@ -291,6 +291,22 @@ when the expanded section needs scrolling. Capability tests validate all three
 optional policy arrays and grouping's rebuild-order dependency. See
 [the validation record](validation/workbench-inference-controls.json).
 
+`portal_graph` exercises bounded PRT syntax, complete records, finite coordinates,
+indices, self-edges, winding/byte/point limits, every record truncation and a
+seeded malformed corpus. Seeded decimal and scientific floats must have the
+same binary32 values as the preceding `scanf` reader.
+
+`portal_evidence` compares Quake 3 and Raven structural/manual-detail fixtures
+before and after VIS. Independent oracles remove individual edges to find
+bridges, traverse the BSP frontier, triangulate polygon fans and union world
+surface IDs from stored PVS. Worker parity, shared nodes, 512 paths to one leaf,
+padding, stale pairs, protected/unknown flags, bad winding geometry, missing VIS,
+combined brush-cell analysis, work exhaustion and preserved report/input bytes
+have separate controls. Each build writes `tests/portal-evidence/validation.json`;
+pass `--grid N` to the Python harness for a larger generated control. These are
+diagnostic checks, not validation of an automatic structural transformation.
+See [regional diagnostics](PORTAL-ANALYSIS.md).
+
 `vis_merge` exercises hint/sky directions, parallel openings, far-plane culling,
 convex/concave/folded joins, winding and leaf capacity boundaries, complete
 contraction and self-edge rejection. Real publication failures must preserve the

@@ -1,0 +1,580 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-30T12:40:04.709805+00:00",
+  "base_revision": "229542776aeac4189c87ecd5c53fe1c56e2f4e54",
+  "scope": "Optional regional portal diagnostics and a shared bounded PRT1 reader, without automatic BSP/PRT/PVS or source transformations",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "f37902765bf5a0547914973d095349b0b7ba757e750004dd0ce5f3643f37ea8f",
+    "libs/q3mapx/portal_graph.h": "7de44639848a9a23efd0a2752f11bf2e25c23b15dc07246f7e90b3af4159424a",
+    "libs/q3mapx/portal_graph.cpp": "833eb648588d1e39b006248e6ee0267f04daad938b864c13e8e102898080b136",
+    "tools/quake3/q3map2/portal_evidence.h": "a79aa737dcbba3125f1c3f2fd16501d06a266470a55c9bd3a2d841cd6239f568",
+    "tools/quake3/q3map2/portal_evidence.cpp": "02c38ebf56f93cf1b789a9f9bab526146059f5f40c43b78cc955372061226368",
+    "tools/quake3/q3map2/bsp_evidence_cli.cpp": "576dfdb7e056897c453c7b38bac6fd8a3c3edde38de4f789bdae6eaa125c33ae",
+    "tools/quake3/q3map2/vis.cpp": "2169d5fed4dcdcfa1d93ca2770e2cf2bbd619e767e262d2f35f0b74c8c969090",
+    "tools/quake3/q3map2/help.cpp": "942d1b2eb2b9b5904b4a478c35f25ad110f985bb38e937401f9a89ca2b5b81c4",
+    "tools/quake3/q3map2/bsp_evidence.h": "a192dfc8cad9edf02c107e265989dc9666e860112866cac1391fe2a0691e41f9",
+    "tools/quake3/q3map2/bsp_evidence.cpp": "831c030a81d29fa15078a5ea31b1bc270221e0f3df5a5f64df1761ab9432002b",
+    "tests/portal_graph.cpp": "04e9871262817bc0b8d6c7f427356c060bca266b8560ac0be5904f558adbd3f7",
+    "tests/portal_evidence.py": "1ca3333a8f498d71ee0ba2836ecb517f670d74addbfab71a4bd0c3dfea95261e",
+    "tests/portal_validation.py": "5f41a2c316f2d9abe6b87d26218e1d211b287ef8659314f18e7e75e7a272da81",
+    "tests/bsp_evidence.py": "2c34b9e07e8e8309d0cb4921e841e268c9a721a4dfe6bdf3314cce1424b548a7",
+    "tests/vis_merge.py": "b089e98612c16cc4306630cb2b98d1462de00446a97f6bc3d044ad7646dd2503",
+    "tests/vis_fixtures.py": "536d1767fd7781ff9fb9da78d44b7418aa424bf8e3ad1d968de785fc93d9626d",
+    "tests/integration.py": "3bb8e703e9e898a4c079f6a52321941aeb54876a7eac7804b8e1069c1541dfb3"
+  },
+  "platforms": {
+    "windows": {
+      "toolchain": "MSYS2 GCC 15.2.0, x64 Release",
+      "compiler": {
+        "path": "build/release/bin/q3mapx.exe",
+        "sha256": "07625f8abf88b1b4cd0dbb98f6cdcabe4d21a9dafec0fe4911b0925c049b9e83"
+      },
+      "ctest": {
+        "path": ".agents/tmp/continuation/portal-evidence-tests-win-final.log",
+        "sha256": "e68f125159fb89d9027ad2bb5279efff5d8f65c4f9dce9420be39a7fe1b04887",
+        "groups": [
+          {
+            "name": "compiler_pipeline",
+            "seconds": 1.23
+          },
+          {
+            "name": "bsp_evidence",
+            "seconds": 1.54
+          },
+          {
+            "name": "portal_validation",
+            "seconds": 3.63
+          },
+          {
+            "name": "portal_graph",
+            "seconds": 0.04
+          },
+          {
+            "name": "portal_evidence",
+            "seconds": 3.47
+          },
+          {
+            "name": "vis_reproducible",
+            "seconds": 31.78
+          }
+        ],
+        "total_seconds": 41.71
+      },
+      "portal_evidence": {
+        "schema_version": 1,
+        "compiler_sha256": "07625f8abf88b1b4cd0dbb98f6cdcabe4d21a9dafec0fe4911b0925c049b9e83",
+        "known_source_pairs": [
+          {
+            "game": "quake3",
+            "detail": false,
+            "clusters": 40,
+            "portals": 94,
+            "pair_work": 816,
+            "probes": {
+              "normal_offset_units": 0.02,
+              "agree": 94,
+              "disagree": 0,
+              "unavailable": 0,
+              "unusable_windings": 0
+            }
+          },
+          {
+            "game": "quake3",
+            "detail": true,
+            "clusters": 4,
+            "portals": 4,
+            "pair_work": 8,
+            "probes": {
+              "normal_offset_units": 0.02,
+              "agree": 4,
+              "disagree": 0,
+              "unavailable": 0,
+              "unusable_windings": 0
+            }
+          },
+          {
+            "game": "ja",
+            "detail": false,
+            "clusters": 40,
+            "portals": 94,
+            "pair_work": 816,
+            "probes": {
+              "normal_offset_units": 0.02,
+              "agree": 94,
+              "disagree": 0,
+              "unavailable": 0,
+              "unusable_windings": 0
+            }
+          },
+          {
+            "game": "ja",
+            "detail": true,
+            "clusters": 4,
+            "portals": 4,
+            "pair_work": 8,
+            "probes": {
+              "normal_offset_units": 0.02,
+              "agree": 4,
+              "disagree": 0,
+              "unavailable": 0,
+              "unusable_windings": 0
+            }
+          }
+        ],
+        "checks": [
+          "graph edge-removal bridge oracle",
+          "regional membership and degree work oracle",
+          "fan-area/perimeter/shape oracle",
+          "unique world surface/triangle PVS oracle",
+          "missing VIS",
+          "1/4-worker exact reports",
+          "combined brush-cell analysis",
+          "exact and exhausted work limits",
+          "hint/sky/unknown flags",
+          "parallel openings and isolated clusters",
+          "mismatched probe disagreement",
+          "shared nodes and 512 references to one leaf",
+          "PVS padding and row-dimension mismatch",
+          "nonplanar quads and repeated contours",
+          "strict syntax failures and input/output preservation"
+        ],
+        "result": "passed"
+      },
+      "vis_matrix": {
+        "path": "build/release/tests/vis-merge/report.json",
+        "sha256": "dcf0bbc59226a9d04c90598fcf100b5ab80939fb0a346640a93b45cb5db92832",
+        "groups": {
+          "graph_checks": {
+            "count": 31,
+            "semantic_sha256": "e2c1ebb081bbfc09917844cec5065ebf7445f9df99b60085a2d8bc57adca6add",
+            "all_reference_byte_parity": true
+          },
+          "map_checks": {
+            "count": 120,
+            "semantic_sha256": "517b7d501389741889eeff58878720bbfd60782af17a3c7d1a5574216d154400",
+            "all_reference_byte_parity": true
+          }
+        },
+        "publication_failure_preserves_bsp_and_prt": true,
+        "publication_failure_cleans_staging": true,
+        "successful_retry_consumes_prt": true,
+        "reference_compiler": {
+          "path": ".agents/tmp/continuation/portal-evidence-baseline/q3mapx.exe",
+          "sha256": "1439e6524546bbafbef5f958bd84983ad63598264cf929f802dfe54cc4aeb066"
+        },
+        "log": {
+          "path": ".agents/tmp/continuation/portal-evidence-vis-parity-win.log",
+          "sha256": "b86b21d2209a8c2d61d5a6d15b6e293a2b405e2481f4aee09fc3cc9afa2071ea"
+        },
+        "tested_compiler_sha256": "3d328bc985f89ccc7abec34159aec265fa2373dc72b5f3c974164df6594d7666",
+        "phase": "Before final warning-only expansion in BSPEvidenceMain; no reader, analysis or VIS solver changes followed. Final release CTest and grid-9 controls use the final compiler identity above."
+      },
+      "large_grid_9": {
+        "schema_version": 1,
+        "compiler_sha256": "07625f8abf88b1b4cd0dbb98f6cdcabe4d21a9dafec0fe4911b0925c049b9e83",
+        "known_source_pairs": [
+          {
+            "game": "quake3",
+            "detail": false,
+            "clusters": 220,
+            "portals": 718,
+            "pair_work": 13586,
+            "probes": {
+              "normal_offset_units": 0.02,
+              "agree": 718,
+              "disagree": 0,
+              "unavailable": 0,
+              "unusable_windings": 0
+            }
+          },
+          {
+            "game": "quake3",
+            "detail": true,
+            "clusters": 4,
+            "portals": 4,
+            "pair_work": 8,
+            "probes": {
+              "normal_offset_units": 0.02,
+              "agree": 4,
+              "disagree": 0,
+              "unavailable": 0,
+              "unusable_windings": 0
+            }
+          },
+          {
+            "game": "ja",
+            "detail": false,
+            "clusters": 220,
+            "portals": 718,
+            "pair_work": 13586,
+            "probes": {
+              "normal_offset_units": 0.02,
+              "agree": 718,
+              "disagree": 0,
+              "unavailable": 0,
+              "unusable_windings": 0
+            }
+          },
+          {
+            "game": "ja",
+            "detail": true,
+            "clusters": 4,
+            "portals": 4,
+            "pair_work": 8,
+            "probes": {
+              "normal_offset_units": 0.02,
+              "agree": 4,
+              "disagree": 0,
+              "unavailable": 0,
+              "unusable_windings": 0
+            }
+          }
+        ],
+        "checks": [
+          "graph edge-removal bridge oracle",
+          "regional membership and degree work oracle",
+          "fan-area/perimeter/shape oracle",
+          "unique world surface/triangle PVS oracle",
+          "missing VIS",
+          "1/4-worker exact reports",
+          "combined brush-cell analysis",
+          "exact and exhausted work limits",
+          "hint/sky/unknown flags",
+          "parallel openings and isolated clusters",
+          "mismatched probe disagreement",
+          "shared nodes and 512 references to one leaf",
+          "PVS padding and row-dimension mismatch",
+          "nonplanar quads and repeated contours",
+          "strict syntax failures and input/output preservation"
+        ],
+        "result": "passed"
+      }
+    },
+    "linux": {
+      "toolchain": "Ubuntu 24.04 WSL, GCC 13.3.0, x64 Release",
+      "compiler": {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "e138cbac814882879aff830faafdcd231b8637bde5b51d5ad2989858227cd652"
+      },
+      "ctest": {
+        "path": ".agents/tmp/continuation/portal-evidence-tests-linux.log",
+        "sha256": "a59d375bb33c550658cdcc8bc8c204ff3cbc7a1fbeb781069da5acfac2addcf4",
+        "groups": [
+          {
+            "name": "compiler_pipeline",
+            "seconds": 3.45
+          },
+          {
+            "name": "bsp_evidence",
+            "seconds": 9.56
+          },
+          {
+            "name": "portal_validation",
+            "seconds": 8.05
+          },
+          {
+            "name": "portal_graph",
+            "seconds": 0.08
+          },
+          {
+            "name": "portal_evidence",
+            "seconds": 15.96
+          },
+          {
+            "name": "vis_reproducible",
+            "seconds": 16.23
+          }
+        ],
+        "total_seconds": 53.46
+      },
+      "portal_evidence": {
+        "schema_version": 1,
+        "compiler_sha256": "e138cbac814882879aff830faafdcd231b8637bde5b51d5ad2989858227cd652",
+        "known_source_pairs": [
+          {
+            "game": "quake3",
+            "detail": false,
+            "clusters": 40,
+            "portals": 94,
+            "pair_work": 816,
+            "probes": {
+              "normal_offset_units": 0.02,
+              "agree": 94,
+              "disagree": 0,
+              "unavailable": 0,
+              "unusable_windings": 0
+            }
+          },
+          {
+            "game": "quake3",
+            "detail": true,
+            "clusters": 4,
+            "portals": 4,
+            "pair_work": 8,
+            "probes": {
+              "normal_offset_units": 0.02,
+              "agree": 4,
+              "disagree": 0,
+              "unavailable": 0,
+              "unusable_windings": 0
+            }
+          },
+          {
+            "game": "ja",
+            "detail": false,
+            "clusters": 40,
+            "portals": 94,
+            "pair_work": 816,
+            "probes": {
+              "normal_offset_units": 0.02,
+              "agree": 94,
+              "disagree": 0,
+              "unavailable": 0,
+              "unusable_windings": 0
+            }
+          },
+          {
+            "game": "ja",
+            "detail": true,
+            "clusters": 4,
+            "portals": 4,
+            "pair_work": 8,
+            "probes": {
+              "normal_offset_units": 0.02,
+              "agree": 4,
+              "disagree": 0,
+              "unavailable": 0,
+              "unusable_windings": 0
+            }
+          }
+        ],
+        "checks": [
+          "graph edge-removal bridge oracle",
+          "regional membership and degree work oracle",
+          "fan-area/perimeter/shape oracle",
+          "unique world surface/triangle PVS oracle",
+          "missing VIS",
+          "1/4-worker exact reports",
+          "combined brush-cell analysis",
+          "exact and exhausted work limits",
+          "hint/sky/unknown flags",
+          "parallel openings and isolated clusters",
+          "mismatched probe disagreement",
+          "shared nodes and 512 references to one leaf",
+          "PVS padding and row-dimension mismatch",
+          "nonplanar quads and repeated contours",
+          "strict syntax failures and input/output preservation"
+        ],
+        "result": "passed"
+      },
+      "vis_matrix": {
+        "path": "build/linux-release/tests/vis-merge/report.json",
+        "sha256": "bdb52acb4ee4c30ccc697bfb1c05f8508dc828b0180092405d9a80fb0cba92d4",
+        "groups": {
+          "graph_checks": {
+            "count": 31,
+            "semantic_sha256": "e2c1ebb081bbfc09917844cec5065ebf7445f9df99b60085a2d8bc57adca6add",
+            "all_reference_byte_parity": true
+          },
+          "map_checks": {
+            "count": 120,
+            "semantic_sha256": "517b7d501389741889eeff58878720bbfd60782af17a3c7d1a5574216d154400",
+            "all_reference_byte_parity": true
+          }
+        },
+        "publication_failure_preserves_bsp_and_prt": true,
+        "publication_failure_cleans_staging": true,
+        "successful_retry_consumes_prt": true,
+        "reference_compiler": {
+          "path": ".agents/tmp/continuation/portal-evidence-baseline/q3mapx-linux",
+          "sha256": "84b18af79e5e9812712c8d68586c42078885b5a03cda68e39834f8b8a35a4dbd"
+        },
+        "log": {
+          "path": ".agents/tmp/continuation/portal-evidence-vis-parity-linux.log",
+          "sha256": "84bb4ac74a1a65d7baf2c6979fa18cd9682134e22545dfcf9a764b94ae1012a6"
+        }
+      }
+    },
+    "sanitized": {
+      "toolchain": "Ubuntu 24.04 WSL, GCC 13.3.0, ASan/UBSan",
+      "compiler": {
+        "path": "build/linux-sanitized/bin/q3mapx",
+        "sha256": "d1d121526fa093934e1aa45fe792a271e8a0ecd0d04da83de80dfa1be2fe50d2"
+      },
+      "ctest": {
+        "path": ".agents/tmp/continuation/portal-evidence-tests-sanitized.log",
+        "sha256": "b2902d54d1261ee7979f02ac6b07d9ebbebfbdf95dc592a195e070d64ab59b6f",
+        "groups": [
+          {
+            "name": "compiler_pipeline",
+            "seconds": 21.25
+          },
+          {
+            "name": "bsp_evidence",
+            "seconds": 40.71
+          },
+          {
+            "name": "portal_validation",
+            "seconds": 44.38
+          },
+          {
+            "name": "portal_graph",
+            "seconds": 0.17
+          },
+          {
+            "name": "portal_evidence",
+            "seconds": 48.87
+          },
+          {
+            "name": "vis_merge",
+            "seconds": 153.47
+          }
+        ],
+        "total_seconds": 308.98
+      },
+      "portal_evidence": {
+        "schema_version": 1,
+        "compiler_sha256": "d1d121526fa093934e1aa45fe792a271e8a0ecd0d04da83de80dfa1be2fe50d2",
+        "known_source_pairs": [
+          {
+            "game": "quake3",
+            "detail": false,
+            "clusters": 40,
+            "portals": 94,
+            "pair_work": 816,
+            "probes": {
+              "normal_offset_units": 0.02,
+              "agree": 94,
+              "disagree": 0,
+              "unavailable": 0,
+              "unusable_windings": 0
+            }
+          },
+          {
+            "game": "quake3",
+            "detail": true,
+            "clusters": 4,
+            "portals": 4,
+            "pair_work": 8,
+            "probes": {
+              "normal_offset_units": 0.02,
+              "agree": 4,
+              "disagree": 0,
+              "unavailable": 0,
+              "unusable_windings": 0
+            }
+          },
+          {
+            "game": "ja",
+            "detail": false,
+            "clusters": 40,
+            "portals": 94,
+            "pair_work": 816,
+            "probes": {
+              "normal_offset_units": 0.02,
+              "agree": 94,
+              "disagree": 0,
+              "unavailable": 0,
+              "unusable_windings": 0
+            }
+          },
+          {
+            "game": "ja",
+            "detail": true,
+            "clusters": 4,
+            "portals": 4,
+            "pair_work": 8,
+            "probes": {
+              "normal_offset_units": 0.02,
+              "agree": 4,
+              "disagree": 0,
+              "unavailable": 0,
+              "unusable_windings": 0
+            }
+          }
+        ],
+        "checks": [
+          "graph edge-removal bridge oracle",
+          "regional membership and degree work oracle",
+          "fan-area/perimeter/shape oracle",
+          "unique world surface/triangle PVS oracle",
+          "missing VIS",
+          "1/4-worker exact reports",
+          "combined brush-cell analysis",
+          "exact and exhausted work limits",
+          "hint/sky/unknown flags",
+          "parallel openings and isolated clusters",
+          "mismatched probe disagreement",
+          "shared nodes and 512 references to one leaf",
+          "PVS padding and row-dimension mismatch",
+          "nonplanar quads and repeated contours",
+          "strict syntax failures and input/output preservation"
+        ],
+        "result": "passed"
+      },
+      "vis_matrix": {
+        "path": "build/linux-sanitized/tests/vis-merge/report.json",
+        "sha256": "c7df88fc2cc55e4d1f91bdb1a485d56b777e1944af6185a08974bc16706bfcda",
+        "groups": {
+          "graph_checks": {
+            "count": 31,
+            "semantic_sha256": "e2c1ebb081bbfc09917844cec5065ebf7445f9df99b60085a2d8bc57adca6add"
+          },
+          "map_checks": {
+            "count": 120,
+            "semantic_sha256": "517b7d501389741889eeff58878720bbfd60782af17a3c7d1a5574216d154400"
+          }
+        },
+        "publication_failure_preserves_bsp_and_prt": true,
+        "publication_failure_cleans_staging": true,
+        "successful_retry_consumes_prt": true
+      },
+      "sanitizer_environment": {
+        "ASAN_OPTIONS": "detect_leaks=0:abort_on_error=1",
+        "UBSAN_OPTIONS": "print_stacktrace=1"
+      },
+      "leak_exclusion": "Inherited process-lifetime compiler allocations; address and undefined behavior diagnostics remain enabled."
+    }
+  },
+  "parser_unit": {
+    "legacy_binary32_comparisons": 7970,
+    "rejected_inputs": 2094,
+    "controls": [
+      "decimal and scientific syntax",
+      "optional plus signs and negative zero",
+      "finite binary32 values",
+      "CRLF and other ASCII whitespace",
+      "complete parentheses and records",
+      "count/index/self-edge limits",
+      "byte/point/degree limits",
+      "every truncation before closing the final point",
+      "seeded malformed corpus"
+    ]
+  },
+  "cross_platform_semantic_parity": {
+    "graph_checks": 31,
+    "map_checks": 120,
+    "platforms": [
+      "windows",
+      "linux",
+      "sanitized"
+    ],
+    "passed": true
+  },
+  "limitations": [
+    "PRT center probes and matching dimensions do not prove correspondence with the BSP.",
+    "Brush samples are bounded plane/path associations, not causal source brush attribution.",
+    "Graph work and bitset figures are pre-pruning upper bounds, not measured time or peak memory.",
+    "Stored-PVS triangle counts exclude runtime patch tessellation, submodels, external meshes, foliage expansion and shader passes.",
+    "No automatic graph, geometry, detail, source MAP or PVS transformation is applied.",
+    "These are generated diagnostic and parity controls; they do not prove general safe optimization."
+  ],
+  "unrelated_findings": [
+    "Intermittent Windows process delays outside named VIS passes remain open.",
+    "Raw sidecar writers and inherited ZIP initialization, UnsortedSet layout, u8path and lightmap path-format warnings remain open.",
+    "Linux GCC emits a bounds diagnostic while inlining the pre-existing Args::getVector copy in BSPEvidenceMain; relevant argument and sanitizer controls pass."
+  ],
+  "retained_evidence": ".agents/tmp/continuation/portal-evidence-* and build/*/tests/{portal-evidence*,vis-merge}",
+  "no_external_code_added": true,
+  "packaged_0_3_0_unchanged": true
+}

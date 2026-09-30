@@ -2,6 +2,7 @@
 #include "q3map2.h"
 #include "arguments.h"
 #include "bsp_evidence.h"
+#include "portal_evidence.h"
 #include "bsp_formats.h"
 #include "bspfile_abstract.h"
 #include "bspfile_early.h"
@@ -12,16 +13,18 @@
 #include <filesystem>
 #include <fstream>
 #include <memory>
+#include <optional>
 #include <stdexcept>
 
 namespace {
 constexpr uint64_t maxReportBytes = 64 * 1024 * 1024;
 struct Identity { uint64_t bytes; std::string sha256; };
-Identity identify(const std::filesystem::path& path) {
+Identity identify(const std::filesystem::path& path, bool bsp = true) {
     std::ifstream input(path, std::ios::binary | std::ios::ate);
-    if (!input || input.tellg() < 0) throw std::runtime_error("Cannot read evidence source BSP");
+    if (!input || input.tellg() < 0) throw std::runtime_error("Cannot read evidence source");
     const uint64_t size = uint64_t(input.tellg());
-    if (size < 8 || size > 0x7fffffff) throw std::runtime_error("Evidence source must contain 8..2147483647 bytes");
+    if (size < 8 || size > (bsp ? uint64_t(0x7fffffff) : q3mapx::PortalLimits{}.bytes))
+        throw std::runtime_error("Evidence source exceeds its input byte limits");
     input.seekg(0);
     std::array<unsigned char, 64 * 1024> buffer{};
     std::unique_ptr<GChecksum, decltype(&g_checksum_free)> checksum(g_checksum_new(G_CHECKSUM_SHA256), g_checksum_free);
@@ -29,7 +32,7 @@ Identity identify(const std::filesystem::path& path) {
     while (input) {
         input.read(reinterpret_cast<char*>(buffer.data()), buffer.size());
         const auto bytes = input.gcount();
-        if (read == 0 && (bytes < 8 || std::memcmp(buffer.data(), g_game->bspIdent, 4) != 0
+        if (bsp && read == 0 && (bytes < 8 || std::memcmp(buffer.data(), g_game->bspIdent, 4) != 0
                 || q3mapx::bspLittleInt(buffer.data()+4) != g_game->bspVersion))
             throw std::runtime_error("Selected game profile does not match evidence source signature/version (also required with -force)");
         if (bytes > 0) g_checksum_update(checksum.get(), buffer.data(), size_t(bytes));
@@ -77,15 +80,113 @@ void flag(Writer& w, const char* key, int contents, const surfaceParm_t* parm) {
     else w.Bool((contents & parm->contentFlags) == parm->contentFlags);
 }
 
+void writePortals(Writer& w, const q3mapx::PortalGraph& graph, const q3mapx::PortalEvidence& data,
+                  const std::filesystem::path& source, const Identity& identity) {
+    w.Key("portal_analysis"); w.StartObject();
+    w.Key("source"); w.StartObject();
+    const auto path=source.generic_u8string();
+    if(!g_utf8_validate(reinterpret_cast<const char*>(path.data()),path.size(),nullptr))
+        throw std::runtime_error("Portal evidence source path cannot be represented as UTF-8");
+    w.Key("path"); w.String(reinterpret_cast<const char*>(path.c_str()));
+    w.Key("sha256"); w.String(identity.sha256.c_str()); number(w,"bytes",identity.bytes);
+    w.Key("format"); w.String("PRT1"); w.Key("pairing_proven"); w.Bool(false); w.EndObject();
+    number(w,"clusters",graph.clusters); number(w,"portals",graph.portals.size()); number(w,"faces",graph.faces.size());
+    number(w,"point_occurrences",graph.pointCount); number(w,"components",data.components); number(w,"bridge_portals",data.bridges);
+    w.Key("world_mapping_available"); w.Bool(data.worldMapping); number(w,"unmapped_clusters",data.unmappedClusters);
+    w.Key("stored_pvs_costs_available"); w.Bool(data.pvsCosts);
+    number(w,"ordered_portal_pairs_upper_bound",data.passagePairs);
+    const uint64_t portalBytes=((graph.portals.size()*2+63)/64)*8;
+    number(w,"portal_bitset_bytes",portalBytes);
+    number(w,"three_portal_bitsets_bytes",3*graph.portals.size()*2*portalBytes);
+    number(w,"passage_bitsets_bytes_upper_bound",data.passagePairs*portalBytes);
+    w.Key("pair_probes"); w.StartObject(); w.Key("normal_offset_units"); w.Double(0.02);
+    number(w,"agree",data.probeMatches); number(w,"disagree",data.probeDisagreements);
+    number(w,"unavailable",graph.portals.size()-data.probeMatches-data.probeDisagreements);
+    number(w,"unusable_windings",data.invalidGeometry); w.EndObject();
+    w.Key("limits"); w.StartObject(); number(w,"input_bytes",q3mapx::PortalLimits{}.bytes);
+    number(w,"point_occurrences",q3mapx::PortalLimits{}.points); number(w,"brush_sample_per_region",64);
+    w.Key("coordinate_magnitude"); w.Double(10'000'000); w.Key("plane_edge_tolerance"); w.Double(0.01); w.EndObject();
+    w.Key("regional_mapping"); w.String("exclusive_frontier_membership_with_remainder_for_spanning_or_unmapped_clusters");
+    w.Key("region_order"); w.String("descending_ordered_portal_pairs_then_frontier_index");
+    w.Key("regions"); w.StartArray();
+    for(int index:data.rankedRegions) {
+        const auto& r=data.regions[index]; w.StartObject(); number(w,"frontier_index",index);
+        w.Key("node"); if(r.node>=0) w.Int(r.node); else w.Null();
+        w.Key("kind"); w.String(r.node>=0?"subtree":"remainder_or_spanning");
+        values(w,"clusters",r.clusters); number(w,"cluster_count",r.clusters.size());
+        number(w,"ordered_portal_pairs_upper_bound",r.passagePairs);
+        number(w,"incident_portals",r.incident); number(w,"internal_portals",r.internal); number(w,"boundary_portals",r.boundary);
+        number(w,"hint_portals",r.hints); number(w,"sky_portals",r.skies); number(w,"unknown_flag_portals",r.unknownFlags);
+        number(w,"bridge_portals",r.bridges); number(w,"small_portals",r.small); number(w,"slender_portals",r.slender);
+        number(w,"extra_parallel_openings",r.parallelOpenings);
+        values(w,"associated_world_brush_sample",r.associatedBrushSample);
+        w.Key("brush_sample_is_complete"); w.Bool(false);
+        const bool hasCosts=data.pvsCosts && !r.clusters.empty();
+        const double density=hasCosts?double(r.visibleInternalPairs)/(uint64_t(r.clusters.size())*r.clusters.size()):0;
+        w.Key("stored_internal_pvs_density"); if(hasCosts) w.Double(density); else w.Null();
+        w.Key("mean_visible_world_indexed_triangles"); if(hasCosts) w.Double(double(r.sumVisibleTriangles)/r.clusters.size()); else w.Null();
+        w.Key("max_visible_world_indexed_triangles"); if(hasCosts) w.Uint64(r.maxVisibleTriangles); else w.Null();
+        w.Key("investigation_reasons"); w.StartArray();
+        if(r.clusters.size()>=8 && r.passagePairs>=128) w.String("high_local_portal_pair_count");
+        if(hasCosts && r.clusters.size()>=8 && density>=0.9) w.String("weak_stored_occlusion_within_region");
+        if(r.parallelOpenings) w.String("multiple_openings_between_same_clusters");
+        if(r.slender>=4 && r.slender*4>=r.incident) w.String("many_slender_openings");
+        w.EndArray(); w.EndObject();
+    }
+    w.EndArray();
+    w.Key("cluster_costs"); w.StartArray();
+    for(size_t i=0;i<data.clusters.size();++i) {
+        const auto& c=data.clusters[i]; w.StartObject(); number(w,"cluster",i); number(w,"frontier_index",c.region);
+        number(w,"component",c.component); number(w,"reachable_leaf_records",c.leaves); number(w,"degree",c.degree);
+        number(w,"unique_world_surfaces",c.worldSurfaces); number(w,"unique_world_indexed_triangles",c.worldTriangles);
+        for(auto pair:{std::pair{"visible_world_surfaces",c.visibleSurfaces},
+                       {"visible_world_indexed_triangles",c.visibleTriangles},{"visible_world_patch_surfaces",c.visiblePatches}}) {
+            w.Key(pair.first); if(data.pvsCosts) w.Uint64(pair.second); else w.Null();
+        }
+        w.EndObject();
+    }
+    w.EndArray();
+    w.Key("openings"); w.StartArray();
+    for(size_t i=0;i<graph.portals.size();++i) {
+        const auto& p=graph.portals[i]; const auto& m=data.portals[i]; w.StartObject(); number(w,"portal",i);
+        number(w,"front_cluster",p.front); number(w,"back_cluster",p.back); number(w,"flags",p.flags);
+        w.Key("planar_convex_within_tolerance"); w.Bool(m.planarConvex); w.Key("graph_bridge"); w.Bool(m.bridge);
+        w.Key("cluster_probe"); w.String(m.probe); w.Key("center");
+        if(m.planarConvex) { w.StartArray(); for(double v:m.center) w.Double(v); w.EndArray(); } else w.Null();
+        for(auto pair:{std::pair{"area",m.area},{"perimeter",m.perimeter},
+                       {"compactness",m.compactness},{"area_perimeter_width",m.width}}) {
+            w.Key(pair.first); if(m.planarConvex) w.Double(pair.second); else w.Null();
+        }
+        w.EndObject();
+    }
+    w.EndArray();
+    w.Key("limitations"); w.StartArray();
+    for(const char* note:{
+        "PRT dimensions and center probes cannot prove that these inputs belong together. Probe disagreement can indicate stale inputs or thin cells; inspect the pair before drawing conclusions.",
+        "A region is ranked by sum(degree*(degree-1)), before orientation/PVS pruning. This is a traversal/storage upper bound, not measured VIS time or memory. Bitset estimates omit objects, scratch and allocation overhead.",
+        "Small means area below 64 square units; slender means 4*pi*area/perimeter^2 below 0.1. These are observations, not proof of unnecessary splits. Bridge, hint, sky and unknown-flag openings are exposed for protection/review.",
+        "World triangle costs deduplicate surface IDs over stored PVS rows and exclude submodels, runtime patch tessellation, external meshes and shader passes. They describe the existing BSP, not a hypothetical transformation.",
+        "Brush samples retain up to 64 lowest-index world brushes referenced by regional leaves, then require a local node-plane/leaf-path association. They are incomplete and do not establish which source brush caused a cut.",
+        "Repeated cluster neighbors may be separate doorways; similar PVS rows may hide meaningful occlusion. Findings justify source/geometry investigation and controlled trial rebuilds, never automatic deletion or detail conversion.",
+        "Opaque face syntax/indices are checked, but their geometry is not analyzed here. No graph, BSP, MAP or PVS transformation is applied."}) w.String(note);
+    w.EndArray(); w.EndObject();
+}
+
 void writeReport(FILE* output, const std::filesystem::path& source, const Identity& identity,
-                 const q3mapx::BSPEvidence& evidence, unsigned regionDepth, uint64_t workLimit) {
+                 const q3mapx::BSPEvidence& evidence, unsigned regionDepth, uint64_t workLimit,
+                 const q3mapx::PortalGraph* portals, const q3mapx::PortalEvidence* portalEvidence,
+                 const std::filesystem::path& portalSource, const Identity& portalIdentity) {
     ReportStream stream(output); Writer w(stream);
     const auto path = source.generic_u8string();
     if (!g_utf8_validate(reinterpret_cast<const char*>(path.data()), path.size(), nullptr))
         throw std::runtime_error("Evidence source path cannot be represented as UTF-8");
     w.StartObject(); number(w,"schema_version",1);
     w.Key("report_kind"); w.String("bsp_evidence");
-    w.Key("scope"); w.String(evidence.brushCellsRequested ? "normalized_geometry_partition_associations_brush_interiors_and_stored_pvs" : "normalized_geometry_partition_associations_and_stored_pvs");
+    std::string scope="normalized_geometry_partition_associations";
+    if(evidence.brushCellsRequested) scope+="_brush_interiors";
+    if(portals) scope+="_portal_graph";
+    scope+="_and_stored_pvs";
+    w.Key("scope"); w.String(scope.c_str());
     w.Key("source"); w.StartObject();
     w.Key("path"); w.String(reinterpret_cast<const char*>(path.c_str()));
     w.Key("sha256"); w.String(identity.sha256.c_str()); number(w,"bytes",identity.bytes);
@@ -199,6 +300,7 @@ void writeReport(FILE* output, const std::filesystem::path& source, const Identi
         w.EndObject();
     }
     w.EndArray();
+    if(portals) writePortals(w,*portals,*portalEvidence,portalSource,portalIdentity);
     w.Key("limitations"); w.StartArray();
     if(evidence.brushCellsRequested) {
         w.String("Brush-cell clipping measures world-space convex interiors, independent of stored leaf-brush references. It does not identify source detail flags or material opacity; brushes in other models are excluded.");
@@ -226,13 +328,15 @@ void writeReport(FILE* output, const std::filesystem::path& source, const Identi
 
 int BSPEvidenceMain(Args& args) try {
     const char* report = nullptr;
+    const char* portalFile = nullptr;
     unsigned regionDepth=4; uint64_t workLimit=50'000'000;
     const bool brushCells=args.takeArg("-brush-cells");
     if(args.takeArg("-report")) report=args.takeNext();
+    if(args.takeArg("-portals")) portalFile=args.takeNext();
     if(args.takeArg("-region-depth")) regionDepth=ParseIntegerOption("-region-depth",args.takeNext(),0,8);
     if(args.takeArg("-max-work")) workLimit=ParseIntegerOption("-max-work",args.takeNext(),1,100'000'000);
     if(args.size()!=1 || args.getVector().front()[0]=='-')
-        throw std::runtime_error("Usage: q3mapx -game PROFILE -bsp-evidence [-brush-cells] [-report file.json] [-region-depth 0..8] [-max-work N] file.bsp");
+        throw std::runtime_error("Usage: q3mapx -game PROFILE -bsp-evidence [-brush-cells] [-portals matching.prt] [-report file.json] [-region-depth 0..8] [-max-work N] file.bsp");
     const char* input=args.takeFront();
     const auto source=std::filesystem::absolute(std::filesystem::path(reinterpret_cast<const char8_t*>(input))).lexically_normal();
     auto destination=source; destination.replace_extension(".evidence.json");
@@ -243,13 +347,36 @@ int BSPEvidenceMain(Args& args) try {
         || std::filesystem::equivalent(source,destination,ec))
         throw std::runtime_error("BSP evidence output must not replace its input");
     const auto before=identify(source);
+    std::filesystem::path portalSource;
+    Identity portalIdentity{};
+    std::optional<q3mapx::PortalGraph> portals;
+    std::optional<q3mapx::PortalEvidence> portalEvidence;
+    if(portalFile) {
+        portalSource=std::filesystem::absolute(std::filesystem::path(reinterpret_cast<const char8_t*>(portalFile))).lexically_normal();
+        if(std::filesystem::weakly_canonical(portalSource)==std::filesystem::weakly_canonical(destination)
+            || std::filesystem::equivalent(portalSource,destination,ec))
+            throw std::runtime_error("BSP evidence output must not replace its PRT input");
+        portalIdentity=identify(portalSource,false);
+        portals=q3mapx::readPortalGraph(portalSource);
+    }
     LoadBSPFile(input); ParseEntities();
     auto evidence=q3mapx::analyzeBSPEvidence(regionDepth,workLimit);
     if(brushCells) q3mapx::analyzeBSPBrushCells(evidence,workLimit);
+    if(portals) {
+        portalEvidence=q3mapx::analyzePortalEvidence(evidence,*portals,workLimit);
+        if(!portalEvidence->worldMapping || portalEvidence->unmappedClusters || portalEvidence->probeDisagreements || portalEvidence->invalidGeometry)
+            Sys_Warning("Portal evidence: world paths %s, %llu unmapped clusters, %llu cluster-probe disagreements, %llu unusable windings; review input correspondence and geometry before using regional findings\n",
+                portalEvidence->worldMapping?"available":"unavailable",(unsigned long long)portalEvidence->unmappedClusters,
+                (unsigned long long)portalEvidence->probeDisagreements,(unsigned long long)portalEvidence->invalidGeometry);
+        const auto after=identify(portalSource,false);
+        if(portalIdentity.bytes!=after.bytes || portalIdentity.sha256!=after.sha256)
+            throw std::runtime_error("PRT changed during evidence analysis; report not published");
+    }
     const auto after=identify(source);
     if(before.bytes!=after.bytes || before.sha256!=after.sha256) throw std::runtime_error("BSP changed during evidence analysis; report not published");
     q3mapx::OutputFiles outputs;
-    writeReport(outputs.open(destination),source,before,evidence,regionDepth,workLimit);
+    writeReport(outputs.open(destination),source,before,evidence,regionDepth,workLimit,
+        portals?&*portals:nullptr,portalEvidence?&*portalEvidence:nullptr,portalSource,portalIdentity);
     outputs.commit();
     Sys_Printf("BSP evidence: %zu brushes, %llu world nodes, %zu regional summaries; PVS %s\n",
         evidence.brushes.size(),(unsigned long long)evidence.reachableNodes,evidence.regions.size(),evidence.visibility.present?"present":"absent");

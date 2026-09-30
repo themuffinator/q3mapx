@@ -36,7 +36,7 @@ find_package(Threads REQUIRED)
 add_library(q3mapx_jobs STATIC libs/q3mapx/job_pool.cpp)
 target_include_directories(q3mapx_jobs PUBLIC libs)
 target_link_libraries(q3mapx_jobs PUBLIC Threads::Threads)
-add_library(q3mapx_io STATIC libs/q3mapx/atomic_file.cpp)
+add_library(q3mapx_io STATIC libs/q3mapx/atomic_file.cpp libs/q3mapx/portal_graph.cpp)
 target_include_directories(q3mapx_io PUBLIC libs)
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/libs/q3mapx/columns.cl Q3MAPX_COLUMN_KERNEL)
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS libs/q3mapx/columns.cl)
@@ -278,6 +278,13 @@ if(BUILD_TESTING)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/portal_validation.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/portals)
     set_tests_properties(portal_validation PROPERTIES TIMEOUT 90)
+    add_executable(portal_graph_test tests/portal_graph.cpp)
+    target_link_libraries(portal_graph_test PRIVATE q3mapx_io)
+    add_test(NAME portal_graph COMMAND portal_graph_test)
+    add_test(NAME portal_evidence COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/portal_evidence.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/portal-evidence)
+    set_tests_properties(portal_evidence PROPERTIES TIMEOUT 180)
     add_test(NAME vis_merge COMMAND ${Python3_EXECUTABLE}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/vis_merge.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/vis-merge)

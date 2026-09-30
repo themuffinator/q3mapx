@@ -23,6 +23,10 @@ publication errors. See [output safety and limits](OUTPUT-SAFETY.md).
 
 ## Existing merge options
 
+Use `-bsp-evidence -portals matching.prt map.bsp` for read-only
+[regional portal and stored-PVS cost diagnostics](PORTAL-ANALYSIS.md). This shares
+VIS's bounded PRT1 parser, retains both inputs and does not run a transformation.
+
 `-merge` combines neighboring convex cells without crossing hint boundaries,
 then combines compatible coplanar portal polygons. `-hint` is an alias for this
 mode. `-mergeportals` performs only polygon merging. All remain explicit options;

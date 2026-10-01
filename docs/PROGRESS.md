@@ -3202,3 +3202,78 @@ order dependency is now tracked in the plan. Existing raw-sidecar publication,
 parser/CLI audits and compiler warnings remain open. Continue with the native
 Radiant paint model, persistence and painting controls, followed by preview and
 runtime qualification; the broader project goal remains active.
+
+## 2026-10-01 — Native Radiant patch painting
+
+Added experimental patch painting to the maintained NRC integration. Source
+controls now own RGBA bytes, and patch copy/undo state owns the lighting/material
+mode and subdivision setting. `q3mapxPatchDef2` imports/exports through mapq3 and
+native XML clipboard transfer. Strict paint bytes, finite coordinates, dimensions,
+mode restrictions and mesh budgets are checked before accepting versioned input.
+The patch module API is version 2 because `PatchControl` changed layout; rebuild
+the editor and all patch-using modules together. The pinned upstream checkout is
+unchanged and the maintained patch/overlays reproduce in a fresh prepared tree.
+
+The Surface Inspector opens a native paint panel with separate RGB/alpha controls,
+color picking, radius/strength/falloff, fill/reset, vertex selection masks and
+subdivision choices. A parameter-space checker previews the raw Bezier RGBA field.
+Strokes calculate maximum control coverage over swept segments, avoiding repeated
+opacity accumulation from mouse-event frequency. Their preview is independent of
+the live model; release validates the retained node, source snapshot and mask,
+then commits one native undo command. Escape, focus loss, hiding or changing the
+target cancels a stroke. Default opaque-alpha strokes preserve unpainted primitives.
+
+Duplication, transpose/inversion and insertion retain associations. Insertions
+round new color controls once; repeated subdivision can accumulate quantization.
+Painted row reduction and cap creation are guarded pending reconstruction support.
+Thickened opposite surfaces retain color and density; wall color transport is
+implemented but the wall's native GL-dependent texture path remains unqualified.
+Malformed XML paint is diagnosed without partially changing the current paint;
+the inherited API cannot reject an entire XML document. See the updated
+[paint guide](PATCH-PAINT.md) and [evidence](validation/radiant-paint.json).
+
+Validation:
+
+- Windows GCC 15.2.0 / Qt 5.15.18 Release builds the editor, native format modules
+  and optional harness. All 670 native checks pass, retaining the previous density
+  checks and adding both paint modes, every subdivision setting, MAP/XML round
+  trips, clone independence, real undo/redo, stale/cancelled strokes, channel masks,
+  event-rate invariance, analytic samples, insertion error bounds and reset behavior.
+- Fourteen malformed paint MAP variants are rejected; invalid XML paint and
+  excessive grid settings leave the existing paint/settings unchanged.
+- Full worldspawn graphs round-trip through the actual mapq3 module for axial,
+  brush-primitive and Valve 220 projections. Saved curved material-color patches
+  retain analytic RGBA after BSP and LIGHT. A saved lighting-mode patch retains
+  analytic alpha after both stages. Generated point/door entities are appended
+  only for CLI checks because their native editor labels require GL textures.
+- The real panel renders into its own QImage and its layout was inspected. The
+  harness constructs the otherwise absent Entity List window to satisfy native
+  selection callbacks; it does not run queued MainFrame callbacks, inject input,
+  take OS screenshots or launch a game. No compiler source changed in this round.
+- Fresh preparation in `build/nrc-paint-verified` matches all 12 patched upstream
+  files and seven overlays in the tested source tree; the manifest records hashes.
+
+Shader-aware camera/material preview, runtime/LOD seams, interactive input
+qualification, Linux editor testing, a distributable editor package, third-party
+topology plugins and paint recovery remain open. The panel's smooth raw field is
+not a claim of finite-triangle or runtime pixel equivalence. This round does not
+complete M11 or the continuing optimization/recovery/GUI project goal.
+
+Logs and the evidence recorder remain under `.agents/tmp/radiant-paint/`; the
+reusable native harness lives in `integrations/nrc/tests/`. Test results and the
+widget image are in `build/release/tests/nrc-paint/`. The existing isolated native
+build is reused under `.agents/tmp/radiant-density/editor/`. No installed editor,
+real profile or source-reference checkout was modified.
+
+Automatic approval review rejected the requested cleanup with "blocked by
+policy". The superseded `build/nrc-paint-authoring` preparation, disposable
+`.agents/tmp/radiant-paint/edit_native.py` helper and
+`.agents/tmp/radiant-density/editor/install/q3mapx-authoring-test-debug.exe`
+remain in the project. Cleanup was not retried through another mechanism.
+
+Unrelated inherited issues found during review: `Patch::setDims` changes the stored
+height instead of its even-height argument, and row removal advances its source
+pointer using the destination stride. Both are recorded for targeted legacy
+operation checks. Existing LIGHT shader-initialization, raw-sidecar publication
+and earlier parser/CLI audits remain open. Continue with native paint/material
+preview and the remaining authoring/editor robustness work.

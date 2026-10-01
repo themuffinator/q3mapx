@@ -1,16 +1,70 @@
-# Patch RGBA compiler foundation
+# Patch RGBA authoring
 
 q3mapx accepts experimental **RGBA paint on patch controls** through
 `q3mapxPatchDef2`. Alpha does not require `alphaMod` brushes. RGB can remain normal
 vertex lighting or become explicit material color. The compiler evaluates the
 paint together with the patch and preserves it through BSP assembly and LIGHT.
 
-This is the compiler foundation for [M11](PLAN.md#m11--radiant-painting-and-per-surface-lighting-controls).
-The maintained NRC integration currently supplies density controls only; it
-**cannot yet open or paint this new primitive**. Native paint tools, source
-editing/undo support and editor/material/runtime preview qualification remain
-required before calling the Radiant painting feature complete. Keep experimental
-source separate from maps edited with the current companion editor.
+The maintained [NRC integration](RADIANT-AUTHORING.md#prepare-and-build-the-companion-editor)
+now provides native paint storage, a painting panel, undo and save/reopen support.
+This is experimental M11 functionality. The panel previews raw RGBA in patch
+parameter space; shader-accurate camera preview and runtime qualification remain
+open. Use the matching editor and compiler with these versioned MAP primitives.
+
+## Painting in Radiant
+
+1. Select one Quake III patch, open the Surface Inspector and choose
+   **q3mapx patch paint…**. Axial, brush-primitive and Valve 220 MAP profiles work.
+2. Enable **RGB (material color)**, **Alpha**, or both. Pick RGB and/or an alpha
+   byte. RGB authoring switches that patch to material mode, including when
+   explicitly painting white; alpha-only authoring retains baked vertex RGB.
+3. Drag on the parameter-space canvas. Radius is measured in normalized patch
+   parameter units, strength is the maximum blend per stroke, and falloff ranges
+   from a hard brush at zero to softer profiles at higher values. A control's
+   strongest coverage wins within each stroke, so overlapping mouse events do
+   not repeatedly accumulate opacity. Start another stroke to build up color.
+4. Use Radiant's vertex component selection to restrict the editable controls;
+   an empty component selection paints nothing. Primitive selection enables all
+   controls. **Fill enabled channels** uses the exact chosen bytes, independently
+   of brush strength; **Reset enabled channels** restores white/opaque values.
+5. Choose segments per quadratic span and save the MAP. Choices exceeding the
+   compiler's vertex limit are disabled. Compile and relight with q3mapx.
+
+Each completed stroke/fill/reset is one native undo operation. Strokes edit an
+independent preview until release; Escape, focus loss, hiding the panel or a
+changed target cancels them. Commit rechecks patch identity, controls, settings
+and selection mask. No patch pointer is retained after its node is released.
+Painting default opaque alpha on an unpainted patch keeps its legacy representation.
+Resetting all RGB/alpha returns to a density-only or ordinary patch primitive.
+Reset RGB alone restores lighting mode only after every RGB control is white.
+
+The checker displays alpha and the circles show authored controls. The smooth
+field is the continuous quadratic control field, rounded to bytes; actual BSP
+triangles approximate it at the chosen resolution. Control colors are generally
+not interpolated through by the curve. The preview does not evaluate textures,
+shader stages, lighting, fog or blending/depth rules. The regular camera renderer
+does not yet display these authored colors. This round does not qualify brush
+ergonomics through automated mouse input or claim a shader-accurate material preview.
+
+MAP and native XML clipboard transfer preserve RGBA, mode and subdivisions,
+alongside position/UV/density. XML uses an ordered `q3mapxPaint2` child after the
+control matrix. Malformed paint in that child is diagnosed and leaves the current
+paint unchanged; the inherited XML API cannot reject the whole document, so an
+otherwise new patch can remain unpainted. MAP is the supported interchange format.
+Cross-game XML migration and third-party topology plugins remain unqualified.
+
+Duplication, undo, transpose and inversion retain control associations. Row/column
+insertion subdivides geometry, UVs and paint together; new color controls round
+once to bytes, so repeated insertions can accumulate quantization error. Painted
+row removal and cap creation are refused with diagnostics until there is a
+color-aware reconstruction. Reset paint on a copy to use those operations.
+Thickened opposite surfaces copy paint; wall color transport is implemented but
+its native `NaturalTexture`/GL path still needs qualification. Arbitrary external
+plugins which reconstruct patches can discard authoring metadata.
+
+Adding RGBA to `PatchControl` changes its layout. The integration bumps the patch
+module API to **version 2**. Rebuild the editor and all patch-using modules/plugins
+together; do not mix these with an existing NRC installation's binaries.
 
 ## Source contract
 
@@ -148,3 +202,11 @@ Optional reference checks compare ordinary legacy BSP/SRF and LIGHT output.
 See [recorded evidence](validation/patch-paint.json) for actual platforms and
 test counts. Compiler bytes do not establish editor usability or runtime raster
 equivalence; no such claim is made by this round.
+
+The optional `tests/nrc_authoring.py` harness additionally exercises the actual
+Windows editor model, MAP/XML serializers, selection, undo stack and Qt actions.
+It renders its own widget into a QImage without OS capture or injected input.
+Editor-saved axial/BP/Valve maps and an alpha-only patch are compiled and lit;
+painted output is compared with independent analytic channel values. See
+[native paint evidence](validation/radiant-paint.json). Linux native editor,
+camera/runtime raster tests, interactive input testing and packaging remain open.

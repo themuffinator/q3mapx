@@ -9,6 +9,7 @@ static int Q3mapxAuthoringTestRun();
 #include "patch.h"
 #include "patchmanip.h"
 #include "surfacedialog.h"
+#include "entitylist.h"
 #include "map.h"
 #include "maplib.h"
 #include "plugin.h"
@@ -187,17 +188,18 @@ static void graphChecks( const char* name, EBrushType format ) {
     require( GlobalBrushCreator().getFormat()==format, "mapq3 projection detection" );
     class Count final : public scene::Traversable::Walker {
     public:
-        mutable int faces = 0, patches = 0;
+        mutable int faces = 0, patches = 0, painted = 0;
         bool pre( scene::Node& node ) const override {
             if ( auto* brush = Node_getBrush( node ) ) {
                 for ( const auto& face : *brush ) if ( face->lightmapSampleSize()==8 ) ++faces;
             }
             if ( auto* patch = Node_getPatch( node ) ) if ( patch->lightmapSampleSize()==12 ) ++patches;
+            if ( auto* patch = Node_getPatch( node ) ) if ( patch->paintMode()==2 ) ++painted;
             return true;
         }
     } count;
     Node_getTraversable( root )->traverse( count );
-    require( count.faces==1 && count.patches==1, "mapq3 preserves brush and patch associations" );
+    require( count.faces==1 && count.patches==1 && count.painted==1, "mapq3 preserves brush, patch and paint associations" );
     StringOutputStream text;
     module->writeGraph( root, Map_Traverse, text );
     output( QString( "native-" )+name+".map", text.c_str() );
@@ -207,6 +209,181 @@ static void graphChecks( const char* name, EBrushType format ) {
     StringOutputStream textAgain;
     module->writeGraph( reopened, Map_Traverse, textAgain );
     require( string_equal( text.c_str(), textAgain.c_str() ), "full map round trip is stable" );
+}
+
+static bool importPaint( Patch& patch, const QByteArray& contents ) {
+    BufferInputStream stream( contents.constData(), std::size_t( contents.size() ) );
+    Tokeniser& reader = NewMapTokeniser( stream );
+    reader.nextLine();
+    bool good = Tokeniser_parseToken( reader, "{" ) && PatchTokenImporter( patch ).importTokens( reader );
+    reader.release();
+    return good;
+}
+
+static void paintChecks() {
+    GlobalBrushCreator().toggleFormat( eBrushTypeQuake3 );
+    NodeSmartReference node( g_patchCreator->createPatch() );
+    Patch& patch = *Node_getPatch( node );
+    const auto contents = input( "paint.txt" );
+    require( importPaint( patch, contents ), "paint MAP parser" );
+    Q3mapxPaintData original( patch );
+    require( original.valid() && original.mode == 2 && original.subdivisions == 8 && patch.lightmapSampleSize() == 8, "paint metadata" );
+    require( original.sample(0.5,0.5) == std::array<unsigned char,4>{138,125,64,191}, "analytic tensor paint sample" );
+    require( original.sample(0,0) == original.controls[0].m_color && original.sample(1,1) == original.controls[8].m_color, "paint endpoints" );
+    NodeSmartReference copy( NodeTypeCast<scene::Cloneable>::cast( node )->clone() );
+    require( original.matches( *Node_getPatch(copy) ), "duplicate retains paint and geometry" );
+    Node_getPatch(copy)->ctrlAt(0,0).m_color[0] = 0;
+    require( original.matches(patch), "duplicate paint is independent" );
+    StringOutputStream text;
+    { SimpleTokenWriter writer(text); PatchTokenExporter(patch).exportTokens(writer); }
+    output("roundtrip-paint.txt",text.c_str());
+    NodeSmartReference reopen(g_patchCreator->createPatch());
+    require(importPaint(*Node_getPatch(reopen),QByteArray(text.c_str())) && original.matches(*Node_getPatch(reopen)),"paint save/reopen");
+    NodeSmartReference xml(g_patchCreator->createPatch());
+    patch.exportXML(*Node_getPatch(xml));
+    require(original.matches(*Node_getPatch(xml)),"paint XML transfer preserves geometry/color/metadata");
+    require(!Q3mapxPaint_importXML(*Node_getPatch(xml),"material 8 1 2 3 999") && original.matches(*Node_getPatch(xml)),"invalid XML paint is atomic");
+    NodeSmartReference alphaNode(g_patchCreator->createPatch());
+    require(importPaint(*Node_getPatch(alphaNode),input("paint-alpha.txt")),"lighting-mode native paint import");
+    Q3mapxPaintData alphaData(*Node_getPatch(alphaNode));
+    require(alphaData.mode==1 && alphaData.sample(0.5,0.5)==std::array<unsigned char,4>{255,255,255,191},"lighting-mode alpha field");
+    StringOutputStream alphaText;
+    { SimpleTokenWriter writer(alphaText); PatchTokenExporter(*Node_getPatch(alphaNode)).exportTokens(writer); }
+    output("roundtrip-paint-alpha.txt",alphaText.c_str());
+    for(int segments: {1,2,4,8,16,32}) {
+        require(patch.setPaintSettings(2,segments),"supported paint quality setting");
+        StringOutputStream encoded;
+        {SimpleTokenWriter writer(encoded); PatchTokenExporter(patch).exportTokens(writer);}
+        NodeSmartReference quality(g_patchCreator->createPatch());
+        require(importPaint(*Node_getPatch(quality),QByteArray(encoded.c_str())) && Node_getPatch(quality)->paintSubdivisions()==segments,"quality round trip");
+    }
+    patch.setPaintSettings(2,8);
+    NodeSmartReference large(g_patchCreator->createPatch()); Node_getPatch(large)->setDims(31,31);
+    require(!Node_getPatch(large)->setPaintSettings(2,32) && Node_getPatch(large)->paintMode()==0,"reject over-budget paint grid without mutation");
+    const std::pair<QByteArray,QByteArray> invalid[] = {
+        {"vertexRGB material","vertexRGB unknown"}, {"vertexRGB material","vertexRGB lighting"},
+        {"paintSubdivisions 8","paintSubdivisions 3"}, {"paintSubdivisions 8","paintSubdivisions -8"},
+        {"( 3 3 0 0 0 )","( 4 3 0 0 0 )"}, {"( 3 3 0 0 0 )","( 3 32 0 0 0 )"},
+        {"10 20 0 255","256 20 0 255"}, {"10 20 0 255","10 20 0 -1"},
+        {"10 20 0 255","10.5 20 0 255"}, {"10 20 0 255","1e1 20 0 255"},
+        {"lightmapSampleSize 8","lightmapSampleSize 8.0"},
+        {"-224.0","nan"}, {"-224.0","1e1000"},
+        {"10 20 0 255","0010 20 0 255"}
+    };
+    for (const auto& replacement: invalid) {
+        auto bad = contents;
+        require(bad.contains(replacement.first),"negative fixture has target token");
+        bad.replace(replacement.first,replacement.second);
+        NodeSmartReference rejected(g_patchCreator->createPatch());
+        require(!importPaint(*Node_getPatch(rejected),bad),"reject malformed paint MAP");
+    }
+    // Stroke coverage is evaluated over line segments, independent of event rate.
+    Q3mapxPaintBrush brush;
+    brush.color={4,8,16,0}; brush.rgb=true; brush.alpha=false; brush.radius=0.3; brush.strength=0.5;
+    Q3mapxPaintStroke sparse,dense;
+    const std::vector<bool> all(9,true);
+    require(sparse.begin(original,all,brush) && dense.begin(original,all,brush),"start RGB strokes");
+    sparse.move(0,0.5); sparse.move(1,0.5);
+    for(int i=0;i<=100;++i) dense.move(i/100.0,0.5);
+    for(std::size_t i=0;i<9;++i) {
+        require(sparse.result().controls[i].m_color==dense.result().controls[i].m_color,"stroke event-rate invariance");
+        require(sparse.result().controls[i].m_color[3]==original.controls[i].m_color[3],"RGB stroke preserves alpha");
+    }
+    require(sparse.result().controls[4].m_color==std::array<unsigned char,4>{127,104,136,0},"center brush strength rounds once");
+    brush.rgb=false; brush.alpha=true;
+    brush.color[3]=255;
+    std::vector<bool> mask(9,false); mask[4]=true;
+    Q3mapxPaintStroke masked;
+    require(masked.begin(original,mask,brush),"masked alpha brush"); masked.move(0.5,0.5);
+    for(std::size_t i=0;i<9;++i) if(i!=4) require(original.controls[i].m_color==masked.result().controls[i].m_color,"mask protects unselected controls");
+    brush.radius=std::numeric_limits<double>::quiet_NaN();
+    require(!masked.begin(original,mask,brush),"reject invalid brush bounds");
+    // Row operations must preserve existing associations or refuse lossy edits.
+    UndoMemento* saved=patch.exportState();
+    patch.TransposeMatrix(); patch.TransposeMatrix();
+    patch.InvertMatrix(); patch.InvertMatrix();
+    require(original.matches(patch),"transpose/invert preserve paint association");
+    patch.InsertRemove(true,true,true);
+    Q3mapxPaintData inserted(patch);
+    require(inserted.width==5 && inserted.mode==2,"painted row insertion retains mode");
+    for(int y=0;y<=8;++y) for(int x=0;x<=8;++x) {
+        auto before=original.sample(x/8.0,y/8.0), after=inserted.sample(x/8.0,y/8.0);
+        for(int c=0;c<4;++c) require(std::abs(int(before[c])-int(after[c]))<=1,"subdivision paint field within byte quantization");
+    }
+    patch.InsertRemove(false,true,true);
+    require(inserted.matches(patch),"lossy painted row removal is refused");
+    patch.importState(saved); saved->release();
+    require(original.matches(patch),"topology undo restores paint");
+    NodeSmartReference thick(g_patchCreator->createPatch()); bool no12=false,no34=false;
+    Node_getPatch(thick)->createThickenedOpposite(patch,4,2,no12,no34);
+    for(std::size_t i=0;i<9;++i) require(Node_getPatch(thick)->begin()[i].m_color==original.controls[i].m_color,"thickened opposite retains color");
+    require(Node_getPatch(thick)->paintMode()==2 && Node_getPatch(thick)->lightmapSampleSize()==8,"thickening metadata");
+    // Wall generation calls upstream NaturalTexture(), which requires a realised
+    // GL shader. Its color transport remains outside this no-GL harness.
+
+    // Use native instances and the real undo stack. Invoke model/widget actions
+    // directly: this sends no mouse/keyboard events and needs no GL context.
+    NodeSmartReference root(NewMapRoot("paint"));
+    globalOutputStream()<<"Paint checks: attach native instance\n";
+    Node_getTraversable(root)->insert(node);
+    GlobalSceneGraph().insert_root(root);
+    scene::Path path(makeReference(root.get())); path.push(makeReference(node.get()));
+    auto* instance=Instance_getPatch(*GlobalSceneGraph().find(path));
+    require(instance!=nullptr,"native paint instance");
+    globalOutputStream()<<"Paint checks: select native instance\n";
+    instance->setSelected(true);
+    GlobalUndoSystem().clear();
+    require(Q3mapxPaint_apply(patch,original,sparse.result()),"commit native stroke");
+    globalOutputStream()<<"Paint checks: undo/redo\n";
+    require(GlobalUndoSystem().size()==1 && sparse.result().matches(patch),"one undo operation per stroke");
+    GlobalUndoSystem().undo(); require(original.matches(patch),"real paint undo");
+    GlobalUndoSystem().redo(); require(sparse.result().matches(patch),"real paint redo");
+    require(!Q3mapxPaint_apply(patch,original,masked.result()),"stale stroke is rejected");
+    GlobalUndoSystem().undo();
+    auto moved=original; moved.controls[0].m_vertex[0]+=1;
+    require(!Q3mapxPaint_apply(patch,original,moved) && original.matches(patch),"paint cannot change geometry");
+    Q3mapxPaintStroke cancelled;
+    brush.radius=0.3;
+    require(cancelled.begin(original,all,brush),"begin cancellable stroke");
+    cancelled.move(0.5,0.5); cancelled.end(); cancelled.move(0,0);
+    require(!cancelled.active() && original.matches(patch),"cancelled stroke never mutates native patch");
+    auto untouched=original;
+    untouched.mode=0;
+    for(auto& p:untouched.controls) p.m_color={255,255,255,255};
+    Q3mapxPaintStroke defaultAlpha;
+    Q3mapxPaintBrush whiteAlpha;
+    require(defaultAlpha.begin(untouched,all,whiteAlpha),"default alpha stroke"); defaultAlpha.move(0.5,0.5);
+    require(defaultAlpha.result().mode==0,"painting default opaque alpha retains legacy representation");
+    std::unique_ptr<QWidget> panel(Q3mapxPaint_createPanel());
+    auto* alpha=panel->findChild<QCheckBox*>("q3mapxPaintAlpha");
+    auto* rgb=panel->findChild<QCheckBox*>("q3mapxPaintRGB");
+    auto* value=panel->findChild<QSpinBox*>("q3mapxPaintOpacity");
+    auto* fill=panel->findChild<QPushButton*>("q3mapxPaintFill");
+    auto* reset=panel->findChild<QPushButton*>("q3mapxPaintReset");
+    auto* status=panel->findChild<QLabel*>("q3mapxPaintStatus");
+    require(alpha && rgb && value && fill && reset && status,"native paint controls exist");
+    require(status->text().contains("9 of 9") && fill->isEnabled(),"native patch selection");
+    value->setValue(64); fill->click();
+    for(const auto& p:patch) require(p.m_color[3]==64,"alpha fill action");
+    GlobalUndoSystem().undo(); require(original.matches(patch),"widget fill is undoable");
+    Q3mapxPaint_update();
+    GlobalSelectionSystem().SetMode(SelectionSystem::eComponent);
+    Q3mapxPaint_update(); require(!fill->isEnabled() && status->text().contains("0 of 9"),"empty component mask disables fill");
+    instance->selectCtrl(true); Q3mapxPaint_update();
+    require(fill->isEnabled() && status->text().contains("9 of 9"),"component selection enables controls");
+    instance->selectCtrl(false); GlobalSelectionSystem().SetMode(SelectionSystem::ePrimitive); Q3mapxPaint_update();
+    rgb->setChecked(true); reset->click();
+    require(patch.paintMode()==0 && patch.lightmapSampleSize()==8,"full reset restores density-only patch");
+    for(const auto& p:patch) require(p.m_color==std::array<unsigned char,4>{255,255,255,255},"full paint reset");
+    GlobalUndoSystem().undo(); require(original.matches(patch),"paint reset undo");
+    Q3mapxPaint_update();
+    panel->resize(550,760);
+    QImage image(panel->size(),QImage::Format_ARGB32_Premultiplied); image.fill(Qt::transparent);
+    panel->render(&image);
+    require(image.save(outputDirectory+"/paint-controls.png"),"native paint panel render");
+    instance->setSelected(false); Q3mapxPaint_update();
+    require(!fill->isEnabled(),"deselection clears target");
+    panel.reset(); GlobalUndoSystem().clear(); GlobalSceneGraph().erase_root();
 }
 
 static void selectionChecks( QWidget& controls ) {
@@ -242,11 +419,13 @@ static void selectionChecks( QWidget& controls ) {
 
 static int Q3mapxAuthoringTestRun() {
     SurfaceInspector_constructWindow( nullptr );
+    EntityList_constructWindow( nullptr );
     GlobalEntityCreator().setKeyValueChangedFunc( +[]{} );
     brushChecks( "quake", eBrushTypeQuake3 );
     brushChecks( "bp", eBrushTypeQuake3BP );
     brushChecks( "valve", eBrushTypeQuake3Valve220 );
     patchChecks();
+    paintChecks();
     graphChecks( "quake", eBrushTypeQuake3 );
     graphChecks( "bp", eBrushTypeQuake3BP );
     graphChecks( "valve", eBrushTypeQuake3Valve220 );
@@ -298,6 +477,7 @@ static int Q3mapxAuthoringTestRun() {
     output( "results.json", QJsonDocument( result ).toJson().constData() );
     controls.reset();
     SurfaceInspector_destroyWindow();
+    EntityList_destroyWindow();
     fprintf( stdout, "q3mapx Radiant authoring: %d checks passed\n", checks );
     return 0;
 }

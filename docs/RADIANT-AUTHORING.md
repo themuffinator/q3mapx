@@ -9,14 +9,14 @@ their existing syntax and compiler behavior.
 This is an experimental authoring integration. The Windows editor model,
 serializers, widgets and grid geometry are tested; the camera's rendered pixels
 are **not yet qualified**. The grid shows requested spacing, not the compiler's
-effective material classification or packed atlas. Patch RGB/alpha painting,
+effective material classification or packed atlas. Shader-aware paint previews,
 effective inherited-density previews and compiled-atlas inspection remain open
 in [M11](PLAN.md#m11--radiant-painting-and-per-surface-lighting-controls).
 
-The separate [patch RGBA compiler foundation](PATCH-PAINT.md) introduces
-`q3mapxPatchDef2`. This version of the NRC integration does not yet support that
-primitive; its patch authoring remains density-only. Native painting and its
-source persistence are the next integration work.
+The companion [patch RGB/alpha painting panel](PATCH-PAINT.md) supports
+`q3mapxPatchDef2`, independent channels, undo and a parameter-space RGBA preview.
+Open it from the Surface Inspector. Its source/lighting contract, supported
+editing operations and remaining preview limits are documented separately.
 
 ## Editing and precedence
 
@@ -170,6 +170,10 @@ editor installation, use NRC's documented resource/gamepack installation workflo
 with this source; the isolated test gamepack generated below is only a fixture.
 No ready-to-install companion editor package or Linux editor qualification is
 claimed by this round.
+
+The paint integration changes `PatchControl` and bumps the patch module API to
+version 2. Rebuild every patch-using module/plugin with this header; older modules
+cannot use the new layout. Third-party topology tools are not paint-qualified.
 
 ## Qualification
 

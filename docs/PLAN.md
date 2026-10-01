@@ -471,22 +471,35 @@ User-requested expansion, 2026-09-30. Compiler support and companion Radiant
 integration are both required for completion. The initial density implementation
 uses a maintained NRC core patch because persistence, undo and rendering need
 editor model hooks. See [the implemented contract](RADIANT-AUTHORING.md).
-Patch painting and the broader preview/qualification requirements remain open.
+Native paint tools and source persistence are implemented experimentally. The
+broader material-preview/runtime qualification requirements remain open.
 
 ### Patch vertex RGB and alpha painting
 
-- [ ] Add independently editable per-vertex RGB and alpha on patches, without
+- [ ] Audit inherited NRC patch resizing: `setDims` adjusts `m_height` instead of
+  its even-height argument, and `RemovePoints` advances the source pointer using
+  the destination row stride. Painted input requires odd dimensions and painted
+  row reduction is guarded; broader legacy operations need targeted checks.
+
+- [x] Add independently editable per-vertex RGB and alpha on patches, without
   requiring `alphaMod` brushes. Define persistent source metadata and its mapping
   from authored patch vertices to tessellated vertices; preserve unpainted defaults.
   The experimental compiler foundation now accepts `q3mapxPatchDef2` with RGBA
   controls, explicit lighting/material RGB modes and bounded uniform tessellation.
   Painted patches render as triangles to retain gradients on flat geometry;
-  legacy patches remain unchanged. Native editor persistence is the next slice.
+  legacy patches remain unchanged. Native control storage, MAP/XML transfer,
+  duplication and undo now retain the fields; module API version 2 requires a
+  matching editor/module rebuild.
   See [the source/lighting contract](PATCH-PAINT.md).
-- [ ] Add Radiant painting with separate RGB/alpha channel controls, color picking,
-  brush size/strength/falloff, fill/reset, selection masks and undo/redo. Provide
-  immediate color/alpha visualization and a material preview that respects the
-  supported shader's use of those channels.
+- [x] Add Radiant painting with separate RGB/alpha channel controls, color picking,
+  brush size/strength/falloff, fill/reset, selection masks and undo/redo.
+  A native parameter-space canvas previews raw Bezier RGBA over a checker;
+  strokes use bounded coverage and commit as one undo operation after checking
+  the source snapshot. Native Windows model/action checks and saved-map compiler
+  round trips pass. Interactive mouse ergonomics still need qualification.
+- [ ] Add a material preview which evaluates supported shaders' RGB/alpha stages,
+  blending/depth and lighting, with camera/runtime render-target comparisons.
+  The current paint canvas does not evaluate shaders or camera-rendered paint.
 - [ ] Define how authored color/alpha interacts with lighting, shader modifiers
   and native BSP color/light-style channels. Preserve the intended result through
   patch subdivision, tessellation, LOD stitching, merging and geometry optimization;
@@ -500,8 +513,11 @@ Patch painting and the broader preview/qualification requirements remain open.
   Recover compiled colors during decompilation, and restore original paint only
   where retained authoring metadata supports it; distinguish paint from baked light.
   Decompilation now warns about unrecovered authored paint when its BSP marker
-  is present. The build binding is not a source-control archive. Paint recovery,
-  native copy/topology editing and undo/redo have not been delivered.
+  is present. The build binding is not a source-control archive. Native
+  save/reopen, duplication, undo/redo, transpose/inversion and bounded insertion
+  now retain paint. Insertion rounds new controls to bytes; lossy row reduction
+  and caps are guarded. Wall generation, third-party topology plugins, exact
+  paint-aware reduction and decompiler paint recovery still need work.
 
 Acceptance: paint RGB and alpha independently in Radiant, save/reopen the map and
 compile it through the CLI with the same intended material appearance, without

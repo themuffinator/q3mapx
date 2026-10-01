@@ -95,7 +95,8 @@ See [decompilation options and limits](docs/DECOMPILATION.md). The traditional
   integration, versioned MAP data and requested-spacing grid controls.
 - Experimental [patch RGBA compiler support](docs/PATCH-PAINT.md), with explicit
   material-color/vertex-light modes, paint-preserving triangles and relight checks.
-  The companion Radiant paint tools are still in development.
+  The companion Radiant panel adds RGB/alpha brushes, fill/reset, selection masks,
+  undo and a raw color preview; shader/camera/runtime qualification remains open.
 
 Measured whole-command results on the documented Windows fixture: indexed CPU
 minimaps were **29.8x faster** than the imported sampler; a sufficiently large GPU

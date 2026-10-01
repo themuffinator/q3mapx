@@ -12,6 +12,8 @@ from fixtures import box, create_fixture
 from brush_input import adapt
 from surface_density import PROJECTION, authored_brush, authored_patch, extras
 from integration import run
+from patch_paint import painted, paint_rows, expected
+from patch_input import payloads
 
 
 def main():
@@ -39,6 +41,15 @@ def main():
     engine=root/'engine'
     source=create_fixture(engine,patch=False)
     plain=source.read_text(encoding='utf-8')
+    scripts=source.parent.parent/'scripts/q3mapx_tests.shader'
+    scripts.write_text(scripts.read_text(encoding='utf-8')+'''
+textures/q3mapx/paint
+{
+    qer_editorimage textures/q3mapx/checker.tga
+    { map $whiteimage rgbGen vertex alphaGen vertex }
+    { map $lightmap blendFunc filter }
+}
+''',encoding='utf-8')
     # Point-entity labels allocate GL textures in upstream NRC. Keep the native
     # parser fixture to a complete worldspawn graph for this no-GL harness and
     # append the generated point/door entities for the compiler check below.
@@ -72,27 +83,47 @@ def main():
     for style in PROJECTION:
         (root/('brush-'+style+'.txt')).write_text(authored_brush(box((-224,0,0),(-160,64,64)),style,[0,0,0,0,0,8]),encoding='utf-8')
         text=adapt(world,style).replace('"message" "q3mapx regression"\n',
-            '"message" "q3mapx regression"\n'+(root/('brush-'+style+'.txt')).read_text()+authored_patch(12))
+            '"message" "q3mapx regression"\n'+(root/('brush-'+style+'.txt')).read_text(encoding='utf-8')+authored_patch(12)+painted(curved=True))
         (root/('map-'+style+'.map')).write_text(text,encoding='utf-8')
     (root/'patch.txt').write_text(authored_patch(12),encoding='utf-8')
+    (root/'paint.txt').write_text(painted(curved=True),encoding='utf-8')
+    (root/'paint-alpha.txt').write_text(painted(mode='lighting',curved=True),encoding='utf-8')
     env=dict(os.environ,Q3MAPX_TEST_OUTPUT=str(root),QT_QPA_PLATFORM='offscreen',PYTHONDONTWRITEBYTECODE='1')
     if os.name=='nt': env['Q3MAPX_TEST_FONT']=str(Path(os.environ.get('WINDIR','C:/Windows'))/'Fonts/segoeui.ttf')
     result=subprocess.run([str(executable)],cwd=editor,env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=90)
     (root/'editor.log').write_bytes(result.stdout)
     assert result.returncode==0,(result.returncode,result.stdout[-5000:].decode(errors='replace'),
                                 (pref/'radiant.log').read_text(encoding='utf-8',errors='replace')[-5000:])
-    native=json.loads((root/'results.json').read_text())
+    native=json.loads((root/'results.json').read_text(encoding='utf-8'))
     compiled=[]
     for style in PROJECTION:
-        text=(root/('native-'+style+'.map')).read_text()+adapt(entities,style)
+        text=(root/('native-'+style+'.map')).read_text(encoding='utf-8')+adapt(entities,style)
         source.write_text(text,encoding='utf-8')
         base=['-game','quake3','-fs_basepath',engine,'-fs_homepath',engine/'home','-threads',1]
         run(compiler,[*base,'-meta','-patchmeta',source],root,'compiler-'+style)
         rows=extras(source)
         assert {row['authoredSampleSize'] for row in rows.values() if row.get('authoredSampleSize')}=={8,12}
         assert all(row['sampleSize'] in (0,row['authoredSampleSize']) for row in rows.values() if row.get('authoredSampleSize'))
+        for stage in ('bsp','light'):
+            if stage=='light': run(compiler,[*base,'-light','-fast',source],root,'light-'+style)
+            render=[r for r in paint_rows(payloads(source.with_suffix('.bsp').read_bytes()),rows) if r[1]!=2]
+            assert render and sum(r[4]//3 for r in render)==128, (style,stage)
+            for _,_,verts,_,_ in render:
+                for xyz,rgba in verts:
+                    assert rgba==expected(xyz,'material'),(style,stage,xyz,rgba,expected(xyz,'material'))
         compiled.append(style)
     native['compiler_roundtrips']=compiled
+    native['paint_bsp_and_light_analytic_colors']=True
+    source.write_text(plain.replace('"message" "q3mapx regression"\n',
+        '"message" "q3mapx regression"\n'+(root/'roundtrip-paint-alpha.txt').read_text(encoding='utf-8')),encoding='utf-8')
+    run(compiler,[*base,source],root,'paint-alpha-bsp')
+    for stage in ('bsp','light'):
+        if stage=='light': run(compiler,[*base,'-light','-fast',source],root,'paint-alpha-light')
+        render=[r for r in paint_rows(payloads(source.with_suffix('.bsp').read_bytes()),extras(source)) if r[1]!=2]
+        assert render
+        for _,_,verts,_,_ in render:
+            for xyz,rgba in verts: assert rgba[3]==expected(xyz,'lighting')[3],(stage,xyz,rgba)
+    native['lighting_mode_native_roundtrip']=True
     (root/'results.json').write_text(json.dumps(native,indent=2)+'\n',encoding='utf-8')
     print(f"NRC authoring: {native['checks']} native checks; {len(compiled)} compiler round trips")
 

@@ -48,7 +48,7 @@ does not modify the reference checkout. NRC's Qt 5 and other dependencies retain
 their own license obligations; this round does not distribute their binaries or
 third-party gamepacks.
 
-The optional geometry renderer harness uses
+The optional geometry and patch material renderer harnesses use
 [Quake3e](https://github.com/ec-/Quake3e) and its id Software ancestry as an external
 reference. Its GPL-2.0-or-later header notices and GPL license were checked before
 compiling the original `tests/renderer/geometry_cgame.c` fixture against that ABI;
@@ -56,6 +56,11 @@ the later-version permission is compatible with this GPL-3.0-or-later project.
 No engine implementation or game assets are incorporated or redistributed.
 The validation record identifies the local source files and executable by hashes,
 since the available reference is a source snapshot without Git metadata.
+The original static material interpreter and bounded TGA reader were checked
+against [Quake3e's renderer](https://github.com/ec-/Quake3e/tree/master/code/renderer)
+and [image loading code](https://github.com/ec-/Quake3e/tree/master/code/renderercommon).
+No renderer or decoder implementation was copied. The existing GPL-compatible
+reference ABI fixture is reused for render-target comparisons.
 
 Additional format-layout observations are credited to the
 [fnTech3 headers](https://github.com/themuffinator/fnTech3/tree/a1251ede2c382190b18c154b45357f6979d8171c/code/qcommon),

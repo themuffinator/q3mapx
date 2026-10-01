@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "q3mapxpaint.h"
+#include "q3mapxmaterial.h"
 #include "patch.h"
 #include "brush.h"
 #include "iundo.h"
@@ -18,6 +19,7 @@
 #include <QPointer>
 #include <QPushButton>
 #include <QSpinBox>
+#include <QScrollArea>
 #include <QStandardItemModel>
 #include <QTimer>
 #include <QVBoxLayout>
@@ -293,6 +295,7 @@ class Canvas final : public QWidget {
             }
         }
         update();
+        SceneChangeNotify();
     }
 protected:
     void paintEvent( QPaintEvent* ) override {
@@ -346,6 +349,8 @@ public:
                     "Vertex component selection masks controls. Preview shows raw RGBA over a checker, before shader and lighting effects." );
     }
     const Q3mapxPaintData& data() const { return m_data; }
+    const Patch* targetPatch() const { return m_node ? Node_getPatch(m_node->get()) : nullptr; }
+    const Q3mapxPaintData& previewData() const { return m_stroke.active() ? m_stroke.result() : m_data; }
     bool hasTarget() const { return bool( m_node ); }
     std::size_t maskedCount() const { return std::count( m_mask.begin(), m_mask.end(), true ); }
     void refresh() {
@@ -397,6 +402,9 @@ class PaintPanel final : public QWidget {
     QLabel* m_status;
     QComboBox* m_quality;
     QPushButton *m_fill, *m_reset;
+    QCheckBox* m_preview;
+    QLabel* m_materialStatus;
+    Q3mapxMaterialPreview m_material;
 public:
     explicit PaintPanel( QWidget* parent ) : QWidget( parent ) {
         setObjectName( "q3mapxPaintPanel" );
@@ -404,6 +412,14 @@ public:
         auto* intro = new QLabel( "Paint patch RGB and alpha\nRaw Bezier color preview; game shaders control the final appearance." );
         intro->setWordWrap( true ); layout->addWidget( intro );
         m_canvas = new Canvas( this ); layout->addWidget( m_canvas, 1 );
+        m_preview = new QCheckBox("Preview selected patch material in camera");
+        m_preview->setObjectName("q3mapxMaterialPreview"); layout->addWidget(m_preview);
+        m_materialStatus = new QLabel; m_materialStatus->setObjectName("q3mapxMaterialStatus");
+        m_materialStatus->setTextFormat(Qt::PlainText);
+        m_materialStatus->setWordWrap(true); layout->addWidget(m_materialStatus);
+        auto* reload = new QPushButton("Reload preview material"); reload->setObjectName("q3mapxMaterialReload"); layout->addWidget(reload);
+        QObject::connect(m_preview,&QCheckBox::toggled,[this]{ refresh(); SceneChangeNotify(); });
+        QObject::connect(reload,&QPushButton::clicked,[this]{ m_material.refresh(); refresh(); SceneChangeNotify(); });
         auto* row = new QHBoxLayout;
         auto* rgb = new QCheckBox( "RGB (material color)" ); rgb->setObjectName( "q3mapxPaintRGB" );
         auto* alpha = new QCheckBox( "Alpha" ); alpha->setObjectName( "q3mapxPaintAlpha" ); alpha->setChecked( true );
@@ -453,6 +469,11 @@ public:
     void refresh() {
         m_canvas->refresh();
         const bool active = m_canvas->hasTarget();
+        if ( !m_preview->isChecked() ) m_materialStatus->setText("Camera material preview is off.");
+        else if ( !active ) m_materialStatus->setText("Select one patch for the material preview.");
+        else if ( !m_material.material(m_canvas->targetPatch()->GetShader()) )
+            m_materialStatus->setText("Editor material shown: "+QString::fromStdString(m_material.definition().error));
+        else m_materialStatus->setText("Camera: approximate static Quake III stages, neutral white lighting. Bilinear editor textures; no baked/dynamic lights, fog or runtime sorting. At least 16 segments per span; build tessellation can differ.");
         m_fill->setEnabled( active && m_canvas->maskedCount() != 0 );
         m_reset->setEnabled( m_fill->isEnabled() ); m_quality->setEnabled( active );
         if ( !active ) { m_status->setText( "Select exactly one Quake 3 patch. Vertex selection can mask the controls to paint." ); return; }
@@ -466,6 +487,22 @@ public:
             .arg( m_canvas->maskedCount() ).arg( data.controls.size() ).arg( data.mode == materialPaint ? "material" : "baked lighting" )
             .arg( 2*((data.width-1)/2*n)*((data.height-1)/2*n) ) );
     }
+    bool preview( const Patch& patch, Renderer& renderer, const Matrix4& transform, const OpenGLRenderable& fallback ) {
+        if ( !isVisible() || !m_preview->isChecked() || m_canvas->targetPatch()!=&patch || !m_canvas->data().matches(patch) ) return false;
+        const Target target;
+        if ( !target.instance || &target.instance->getPatch()!=&patch ) return false;
+        if ( !m_material.material(patch.GetShader()) ) return false;
+        auto data=m_canvas->previewData();
+        const auto& transformed=patch.getControlPointsTransformed();
+        if ( transformed.size()!=data.controls.size() ) return false;
+        for ( std::size_t i=0;i<data.controls.size();++i ) {
+            data.controls[i].m_vertex=transformed[i].m_vertex;
+            data.controls[i].m_texcoord=transformed[i].m_texcoord;
+        }
+        return m_material.mesh(data) && m_material.submit(renderer,transform,fallback);
+    }
+protected:
+    void hideEvent(QHideEvent* event) override { SceneChangeNotify(); QWidget::hideEvent(event); }
 };
 QPointer<PaintPanel> panel;
 QPointer<QDialog> dialog;
@@ -473,6 +510,9 @@ QPointer<QDialog> dialog;
 
 QWidget* Q3mapxPaint_createPanel( QWidget* parent ) { panel = new PaintPanel( parent ); return panel; }
 void Q3mapxPaint_update() { if ( panel ) panel->refresh(); }
+bool Q3mapxPaint_previewSubmit( const Patch& patch, Renderer& renderer, const Matrix4& transform, const OpenGLRenderable& fallback ) {
+    return panel && panel->preview(patch,renderer,transform,fallback);
+}
 QWidget* Q3mapxPaint_createButton() {
     auto* button = new QPushButton( "q3mapx patch paint\u2026" );
     button->setObjectName( "q3mapxPaintOpen" );
@@ -480,7 +520,9 @@ QWidget* Q3mapxPaint_createButton() {
         if ( !dialog ) {
             dialog = new QDialog( button->window() ); dialog->setWindowTitle( "q3mapx patch paint" );
             dialog->setAttribute( Qt::WA_DeleteOnClose );
-            auto* layout = new QVBoxLayout( dialog ); layout->addWidget( Q3mapxPaint_createPanel( dialog ) );
+            auto* layout = new QVBoxLayout( dialog );
+            auto* scroll = new QScrollArea; scroll->setWidgetResizable(true);
+            scroll->setWidget(Q3mapxPaint_createPanel(scroll)); layout->addWidget(scroll);
             dialog->resize( 550,740 );
         }
         Q3mapxPaint_update(); dialog->show(); dialog->raise();

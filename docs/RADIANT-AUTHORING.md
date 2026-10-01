@@ -186,9 +186,11 @@ python tests/nrc_authoring.py --editor-dir build/nrc-authoring --compiler build/
 ```
 
 The native harness creates a marked disposable portable profile and generated
-game assets. It invokes actions directly without mouse/keyboard events and paints
-only its own Qt widget into a QImage. It does not open the main editor window,
-capture the desktop, run a game or validate camera pixels. Worldspawn graph
+game assets. Its default mode invokes actions directly without mouse/keyboard
+events and paints its own Qt widget into a QImage. The optional `--gl` mode now
+validates paint material camera pixels through owned framebuffers; see
+[the material preview guide](PATCH-MATERIAL-PREVIEW.md). Neither mode opens the
+main editor window, captures the desktop or runs a game. Worldspawn graph
 loading avoids upstream point-entity labels that allocate GL textures; generated
 point/door entities are appended for compiler validation.
 
@@ -200,7 +202,7 @@ and legacy parity. A lit 64-unit face spans eight texels at spacing 8 and two at
 spacing 32; measured boundary-inclusive footprints are 81 and 9 texels. This
 checks actual packed UVs instead of unused legacy chart-width fields.
 
-Remaining work includes native camera raster tests, larger maps, explicit shader
+Remaining density work includes native grid raster tests, larger maps, explicit shader
 eligibility, inherited previews, baked-atlas inspection, topology-changing editor
 operations, lighting seams, other native profiles, Linux editor delivery, patch
 painting and retained authoring metadata for decompilation.

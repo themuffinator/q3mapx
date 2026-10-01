@@ -8,7 +8,8 @@ paint together with the patch and preserves it through BSP assembly and LIGHT.
 The maintained [NRC integration](RADIANT-AUTHORING.md#prepare-and-build-the-companion-editor)
 now provides native paint storage, a painting panel, undo and save/reopen support.
 This is experimental M11 functionality. The panel previews raw RGBA in patch
-parameter space; shader-accurate camera preview and runtime qualification remain
+parameter space and offers a [static material camera preview](PATCH-MATERIAL-PREVIEW.md)
+with explicit neutral lighting. Broader lighting/runtime qualification remains
 open. Use the matching editor and compiler with these versioned MAP primitives.
 
 ## Painting in Radiant
@@ -41,10 +42,12 @@ Reset RGB alone restores lighting mode only after every RGB control is white.
 The checker displays alpha and the circles show authored controls. The smooth
 field is the continuous quadratic control field, rounded to bytes; actual BSP
 triangles approximate it at the chosen resolution. Control colors are generally
-not interpolated through by the curve. The preview does not evaluate textures,
-shader stages, lighting, fog or blending/depth rules. The regular camera renderer
-does not yet display these authored colors. This round does not qualify brush
-ergonomics through automated mouse input or claim a shader-accurate material preview.
+not interpolated through by the curve. This raw canvas does not evaluate material
+stages. Enable **Preview selected patch material in camera** for supported static
+Quake III textures, vertex channels, blending and depth with neutral lighting.
+Unsupported materials show a reason and retain normal editor rendering. See the
+[preview contract and limits](PATCH-MATERIAL-PREVIEW.md). Interactive brush
+ergonomics remain unqualified; no automated mouse input is used.
 
 MAP and native XML clipboard transfer preserve RGBA, mode and subdivisions,
 alongside position/UV/density. XML uses an ordered `q3mapxPaint2` child after the
@@ -223,7 +226,9 @@ It renders its own widget into a QImage without OS capture or injected input.
 Editor-saved axial/BP/Valve maps and an alpha-only patch are compiled and lit;
 painted output is compared with independent analytic channel values. See
 [native paint evidence](validation/radiant-paint.json). Linux native editor,
-camera/runtime raster tests, interactive input testing and packaging remain open.
+broader camera/runtime qualification, interactive input testing and packaging
+remain open. The optional `--gl` path now adds native camera rendering and
+[reference-engine pixel comparisons](PATCH-MATERIAL-PREVIEW.md).
 
 `ctest --test-dir build/release -R '^patch_grid$' --output-on-failure` runs an
 independent rational-polynomial oracle for reduction. It covers float/byte

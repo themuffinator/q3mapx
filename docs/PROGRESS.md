@@ -3335,3 +3335,83 @@ also rejected deletion of this round's verified disposable
 `.agents/tmp/patch-grid/edit_native.py` with "blocked by policy"; that helper
 remains and cleanup was not retried. No additional unrelated issue was found;
 existing LIGHT initialization and sidecar/parser audits remain open.
+
+## 2026-10-01 — Experimental native material preview and painted UV origins
+
+The native paint panel now offers an opt-in selected-patch camera preview of a
+bounded static Quake III material subset. It resolves explicit shader definitions
+and exact stage images through the editor filesystem, evaluates RGB/alpha,
+blending, alpha tests, depth and culling, and displays live stroke colors on the
+curved surface with neutral white lighting. Unsupported materials retain normal
+editor rendering and show a reason. Shader refresh and explicit reload invalidate
+cached resources; modeless callbacks borrow Qt's shared GL context. The renderer
+restores caller GL/program/buffer/texture state and preserves Qt framebuffer
+coverage alpha. The panel scrolls on smaller displays.
+
+Added a bounded original TGA decoder that follows Quake III's legacy origin-bit
+handling and preserves fully transparent textures. Ordinary NRC TGA loading has
+different behavior. PNG/JPEG still use upstream decoders and have not received
+the same runtime coverage. This is an approximate static authoring preview, not
+a bake, complete scene renderer or lossless raster-equivalence claim.
+
+Runtime comparison exposed a compiler defect: inherited integer texture rebiasing
+changed absolute painted UVs across meta charts. Painted surfaces now skip that
+pass, preserving clampMap and nonperiodic coordinates. Unpainted surfaces retain
+their existing path. Rebuild the BSP for this fix; existing paint bindings remain
+valid for their own geometry and do not reconstruct previously shifted UVs.
+
+Validation:
+
+- **47,692 parser/color/TGA checks** pass on Windows Release, Linux Release and
+  Linux Debug ASan/UBSan. These cover all byte values, directive/factor rejection,
+  truncations, raw/RLE TGA/origin/transparent-alpha cases and malformed byte corpora.
+- **2,248 native GL checks** and **1,475 default no-GL checks** pass, including
+  existing editor/compiler projection, paint-mode and grid round trips. All 68
+  owned-FBO direct draws match NRC's actual render-cache draws. The real panel
+  hook, fallback, invalidation, sentinel programs/buffers and between-frame
+  texture-context borrowing are exercised without showing a native window or
+  injecting input.
+- The optional Quake3e comparison has **66/68 passing views** across 17 materials,
+  two shapes and two cameras. Geometry, absolute UVs, RGBA and connectivity match
+  all 512 triangles per shape before and after LIGHT. All 34 engine repeat
+  captures match exactly; the negative control differs at 102,400 pixels.
+  **The strict pixel gate is still failing** for curved texture-alpha and
+  two-stage top views: mean channel errors are 0.107253 and 0.102504 versus 0.10,
+  with maximum error two in either image. Disabling native dithering did not
+  change those differences. The threshold and cases remain unchanged; the
+  optional engine harness returns failure, and full pixel qualification is open.
+- Compiler pipeline, paint, density, geometry optimization and meta-order
+  regressions pass on all three builds. Windows also passes exact unpainted
+  BSP/SRF/LIGHT parity against the pre-paint reference. The latest material unit
+  suite was rebuilt separately on all three configurations after adding TGA cases.
+- Fresh preparation in `build/nrc-material-final-verified` matches the tested
+  editor's 12 patched upstream files and 12 overlays. Source, executable, driver,
+  capture and result hashes are recorded in [evidence](validation/paint-material.json).
+
+Quake3e uses SDL offscreen/software Mesa, windowed mode, disabled input/network,
+read-only reference assets and its registered `screenshot` command. Native
+images come from owned render targets. No OS capture or input control occurred.
+Test-only final shader-name substitutions preserve the verified compiled mesh;
+runtime shader remapping was unsuitable because it retained the original draw
+ordering. Early validation also caught and corrected Qt framebuffer-alpha and
+NRC-versus-game TGA interpretation differences. Native Linux editor, additional
+drivers/assets, baked/dynamic lighting, scene sorting, animation, LOD seams,
+interactive ergonomics, GL-dependent wall generation and editor packaging remain
+open. This round does not complete M11 or the continuing project goal.
+
+Build/runtime logs and the evidence/export helpers are retained under
+`.agents/tmp/paint-material/`; native results and captures are in
+`build/release/tests/nrc-material/`, with the default harness results in
+`build/release/tests/nrc-material-nogl/`. The isolated editor build remains in
+`.agents/tmp/radiant-density/editor/`. Real installations/profiles and the pinned
+source reference were not modified.
+
+Automatic approval review rejected removal of the superseded disposable
+`build/nrc-material-verified` preparation with "blocked by policy". It remains
+untouched; deletion was not retried through another mechanism. Earlier rejected
+cleanup targets also remain untouched.
+
+Unrelated issue: the previously tracked LIGHT-only MAP first-shader dimension
+dependency remains reproducible. The lightless rendering fixture explicitly uses
+`_keepLights 1` to bypass it; this is not reported as a fix. Existing raw-sidecar
+publication and broader parser/CLI audits remain open.

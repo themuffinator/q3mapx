@@ -176,8 +176,9 @@ textures/q3mapx/paint_indexed
                             st = struct.unpack_from('<2f', lumps[10], offset+12)
                             normal = struct.unpack_from('<3f', lumps[10], offset+(52 if game == 'ja' else 28))
                             assert abs(sum(n*n for n in normal)-1) < 1e-5
-                            # Meta assembly may bias a whole chart by integer texture repeats.
-                            assert all(abs((a-b+.5) % 1-.5) < 1e-5 for a,b in zip(st,(2*u,2*v)))
+                            # Painted charts retain absolute authored UVs; integer
+                            # rebiasing would change clamp/nonperiodic stages.
+                            assert all(abs(a-b) < 1e-5 for a,b in zip(st,(2*u,2*v)))
                             want = expected(xyz, mode)
                             assert color[:4] == want, (label, xyz, color, want)
                             if game == 'ja': assert color == want*4

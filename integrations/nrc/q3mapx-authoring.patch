@@ -142,7 +142,7 @@
  		setDims( other.m_width, other.m_height );
  		copy_ctrl( m_ctrl.data(), other.m_ctrl.data(), other.m_ctrl.data() + ( m_width * m_height ) );
  		SetShader( other.m_shader.c_str() );
-@@ -611,9 +630,34 @@
+@@ -611,9 +630,36 @@
  	VolumeIntersectionValue intersectVolume( const VolumeTest& test, const Matrix4& localToWorld ) const override {
  		return test.TestAABB( m_aabb_local, localToWorld );
  	}
@@ -168,8 +168,12 @@
 +	}
 +	const PatchTesselation& lightmapPreviewMesh() const { return m_tess; }
  	void render_solid( Renderer& renderer, const VolumeTest& volume, const Matrix4& localToWorld ) const {
- 		renderer.SetState( m_state, Renderer::eFullMaterials );
- 		renderer.addRenderable( m_render_solid, localToWorld );
+-		renderer.SetState( m_state, Renderer::eFullMaterials );
+-		renderer.addRenderable( m_render_solid, localToWorld );
++		if ( !Q3mapxPaint_previewSubmit( *this, renderer, localToWorld, m_render_solid ) ) {
++			renderer.SetState( m_state, Renderer::eFullMaterials );
++			renderer.addRenderable( m_render_solid, localToWorld );
++		}
 +		if ( Q3mapxLightmaps_previewEnabled() && m_lightmapSampleSize > 0 ) {
 +			m_lightmapGrid.update( m_tess, m_lightmapSampleSize );
 +			m_lightmapGrid.submit( renderer, localToWorld );
@@ -177,7 +181,7 @@
  	}
  	void render_wireframe( Renderer& renderer, const VolumeTest& volume, const Matrix4& localToWorld ) const {
  		renderer.SetState( m_state, Renderer::eFullMaterials );
-@@ -715,11 +759,15 @@
+@@ -715,11 +761,15 @@
  		case xml_state_t::eDefault:
  			ASSERT_MESSAGE( string_equal( element.name(), "patch" ), "parse error" );
  			m_xml_state.push_back( xml_state_t::ePatch );
@@ -193,7 +197,7 @@
  			}
  			else if ( string_equal( element.name(), "shader" ) ) {
  				m_xml_state.push_back( xml_state_t::eShader );
-@@ -752,6 +800,9 @@
+@@ -752,6 +802,9 @@
  				controlPointsChanged();
  			}
  			break;
@@ -203,7 +207,7 @@
  		case xml_state_t::eShader:
  			{
  				SetShader( m_xml_state.back().content() );
-@@ -772,6 +823,7 @@
+@@ -772,6 +825,7 @@
  		case xml_state_t::ePatch:
  			break;
  		case xml_state_t::eMatrix:
@@ -211,7 +215,7 @@
  		case xml_state_t::eShader:
  			return m_xml_state.back().write( buffer, length );
  			break;
-@@ -783,6 +835,8 @@
+@@ -783,6 +837,8 @@
  
  	void exportXML( XMLImporter& importer ) override {
  		StaticElement patchElement( "patch" );
@@ -220,7 +224,7 @@
  		importer.pushElement( patchElement );
  
  		{
-@@ -808,12 +862,13 @@
+@@ -808,12 +864,13 @@
  					         << ' ' << ( *i ).m_vertex[1]
  					         << ' ' << ( *i ).m_vertex[2]
  					         << ' ' << ( *i ).m_texcoord[0]
@@ -235,7 +239,17 @@
  		importer.popElement( patchElement.name() );
  	}
  
-@@ -932,7 +987,7 @@
+@@ -881,6 +938,9 @@
+ 	}
+ 
+ 	PatchControlArray& getControlPointsTransformed(){
++		return m_ctrlTransformed;
++	}
++	const PatchControlArray& getControlPointsTransformed() const {
+ 		return m_ctrlTransformed;
+ 	}
+ 
+@@ -932,7 +992,7 @@
  	}
  
  	UndoMemento* exportState() const override {
@@ -244,7 +258,7 @@
  	}
  	void importState( const UndoMemento* state ) override {
  		undoSave();
-@@ -951,6 +1006,9 @@
+@@ -951,6 +1011,9 @@
  			m_patchDef3 = other.m_patchDef3;
  			m_subdivisions_x = other.m_subdivisions_x;
  			m_subdivisions_y = other.m_subdivisions_y;
@@ -254,7 +268,7 @@
  		}
  
  		// end duplicate code
-@@ -1009,6 +1067,12 @@
+@@ -1009,6 +1072,12 @@
  
  inline bool Patch_importHeader( Patch& patch, Tokeniser& tokeniser ){
  	tokeniser.nextLine();
@@ -267,7 +281,7 @@
  	RETURN_FALSE_IF_FAIL( Tokeniser_parseToken( tokeniser, "{" ) );
  	return true;
  }
-@@ -1056,6 +1120,10 @@
+@@ -1056,6 +1125,10 @@
  		RETURN_FALSE_IF_FAIL( Tokeniser_getSize( tokeniser, c ) );
  		RETURN_FALSE_IF_FAIL( Tokeniser_getSize( tokeniser, r ) );
  
@@ -278,7 +292,7 @@
  		patch.setDims( c, r );
  	}
  
-@@ -1093,6 +1161,9 @@
+@@ -1093,6 +1166,9 @@
  				RETURN_FALSE_IF_FAIL( Tokeniser_getFloat( tokeniser, patch.ctrlAt( r, c ).m_texcoord[0] ) );
  				RETURN_FALSE_IF_FAIL( Tokeniser_getFloat( tokeniser, patch.ctrlAt( r, c ).m_texcoord[1] ) );
  
@@ -288,7 +302,7 @@
  				RETURN_FALSE_IF_FAIL( Tokeniser_parseToken( tokeniser, ")" ) );
  			}
  			RETURN_FALSE_IF_FAIL( Tokeniser_parseToken( tokeniser, ")" ) );
-@@ -1124,6 +1195,15 @@
+@@ -1124,6 +1200,15 @@
  		RETURN_FALSE_IF_FAIL( Patch_importHeader( m_patch, tokeniser ) );
  		RETURN_FALSE_IF_FAIL( Patch_importShader( m_patch, tokeniser ) );
  		RETURN_FALSE_IF_FAIL( Patch_importParams( m_patch, tokeniser ) );
@@ -304,7 +318,7 @@
  		RETURN_FALSE_IF_FAIL( Patch_importMatrix( m_patch, tokeniser ) );
  		RETURN_FALSE_IF_FAIL( Patch_importFooter( m_patch, tokeniser ) );
  
-@@ -1141,6 +1221,15 @@
+@@ -1141,6 +1226,15 @@
  		RETURN_FALSE_IF_FAIL( Patch_importHeader( m_patch, tokeniser ) );
  		RETURN_FALSE_IF_FAIL( PatchDoom3_importShader( m_patch, tokeniser ) );
  		RETURN_FALSE_IF_FAIL( Patch_importParams( m_patch, tokeniser ) );
@@ -320,7 +334,7 @@
  		RETURN_FALSE_IF_FAIL( Patch_importMatrix( m_patch, tokeniser ) );
  		RETURN_FALSE_IF_FAIL( Patch_importFooter( m_patch, tokeniser ) );
  
-@@ -1151,7 +1240,7 @@
+@@ -1151,7 +1245,7 @@
  inline void Patch_exportHeader( const Patch& patch, TokenWriter& writer ){
  	writer.writeToken( "{" );
  	writer.nextLine();
@@ -329,7 +343,7 @@
  	writer.nextLine();
  	writer.writeToken( "{" );
  	writer.nextLine();
-@@ -1214,6 +1303,8 @@
+@@ -1214,6 +1308,8 @@
  			writer.writeFloat( patch.ctrlAt( r, c ).m_texcoord[0] );
  			writer.writeFloat( patch.ctrlAt( r, c ).m_texcoord[1] );
  
@@ -338,7 +352,7 @@
  			writer.writeToken( ")" );
  		}
  		writer.writeToken( ")" );
-@@ -1240,6 +1331,11 @@
+@@ -1240,6 +1336,11 @@
  		Patch_exportHeader( m_patch, writer );
  		Patch_exportShader( m_patch, writer );
  		Patch_exportParams( m_patch, writer );
@@ -350,7 +364,7 @@
  		Patch_exportMatrix( m_patch, writer );
  		Patch_exportFooter( m_patch, writer );
  	}
-@@ -1255,6 +1351,11 @@
+@@ -1255,6 +1356,11 @@
  		Patch_exportHeader( m_patch, writer );
  		PatchDoom3_exportShader( m_patch, writer );
  		Patch_exportParams( m_patch, writer );
@@ -362,7 +376,7 @@
  		Patch_exportMatrix( m_patch, writer );
  		Patch_exportFooter( m_patch, writer );
  	}
-@@ -1510,6 +1611,9 @@
+@@ -1510,6 +1616,9 @@
  			instance.m_selectable.setSelected( select );
  		}
  	}
@@ -759,16 +773,17 @@
  	radiant/autosave.o \
  	radiant/brushmanip.o \
  	radiant/brushmodule.o \
-@@ -951,6 +951,8 @@
+@@ -951,6 +951,9 @@
  	radiant/sockets.o \
  	radiant/stacktrace.o \
  	radiant/surfacedialog.o \
 +	radiant/q3mapxlightmaps.o \
 +	radiant/q3mapxpaint.o \
++	radiant/q3mapxmaterial.o \
  	radiant/texmanip.o \
  	radiant/textures.o \
  	radiant/texwindow.o \
-@@ -971,6 +973,14 @@
+@@ -971,6 +974,14 @@
  	libquickhull.$(A) \
  	libxmllib.$(A) \
  	$(if $(findstring Win32,$(OS)),icons/radiant.o,) \
@@ -832,11 +847,16 @@
  
 --- a/radiant/renderstate.cpp
 +++ b/radiant/renderstate.cpp
-@@ -1806,6 +1806,13 @@
+@@ -1806,6 +1806,18 @@
  		else if ( string_equal( name + 1, "BLENDLINE" ) ) {
  			state.m_state = RENDER_COLOURARRAY | RENDER_COLOURWRITE | RENDER_BLEND;
  			state.m_sort = OpenGLState::eSortGUI0 - 1;
 +			state.m_linewidth = 1;
++		}
++		else if ( string_equal( name + 1, "Q3MAPX_PAINT_OPAQUE" ) || string_equal( name + 1, "Q3MAPX_PAINT_BLEND" ) ) {
++			state.m_state = RENDER_FILL | RENDER_TEXTURE | RENDER_LIGHTING | RENDER_DEPTHTEST | RENDER_DEPTHWRITE | RENDER_COLOURWRITE | RENDER_CULLFACE | RENDER_SMOOTH;
++			state.m_sort = string_equal( name + 1, "Q3MAPX_PAINT_BLEND" ) ? OpenGLState::eSortTranslucent : OpenGLState::eSortFullbright;
++			state.m_depthfunc = GL_LEQUAL;
 +		}
 +		else if ( string_equal( name + 1, "Q3MAPX_DENSITY" ) ) {
 +			state.m_colour = Vector4( 0.1f, 0.95f, 1.f, 1.f );

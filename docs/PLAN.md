@@ -501,7 +501,18 @@ broader material-preview/runtime qualification requirements remain open.
   round trips pass. Interactive mouse ergonomics still need qualification.
 - [ ] Add a material preview which evaluates supported shaders' RGB/alpha stages,
   blending/depth and lighting, with camera/runtime render-target comparisons.
-  The current paint canvas does not evaluate shaders or camera-rendered paint.
+  An opt-in selected-patch camera preview now evaluates bounded static Quake III
+  stages with neutral white lighting. VFS image resolution, alpha tests, blends,
+  depth/culling, shader invalidation and state restoration are implemented;
+  unsupported materials retain editor rendering with a reason. Owned native FBO
+  and reference-engine comparisons cover the stated static contract; 66/68 views
+  pass the strict cross-driver pixel gate. Two curved blended views still exceed
+  its mean-error limit (each channel differs by at most two 8-bit levels), so
+  pixel qualification remains incomplete and the gate stays unchanged. Painted
+  compiler charts now retain absolute UVs, fixing integer-repeat shifts that
+  changed clamped textures. Baked lighting/styles, dynamic lighting, animation,
+  scene sorting, broader assets/renderers and LOD seams remain open. See
+  [material preview](PATCH-MATERIAL-PREVIEW.md).
 - [ ] Define how authored color/alpha interacts with lighting, shader modifiers
   and native BSP color/light-style channels. Preserve the intended result through
   patch subdivision, tessellation, LOD stitching, merging and geometry optimization;

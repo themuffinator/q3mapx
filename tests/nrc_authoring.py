@@ -14,6 +14,7 @@ from surface_density import PROJECTION, authored_brush, authored_patch, extras
 from integration import run
 from patch_paint import painted, paint_rows, expected
 from patch_input import payloads
+import material_fixture
 
 
 def main():
@@ -21,6 +22,7 @@ def main():
     p.add_argument('--editor-dir',type=Path,required=True)
     p.add_argument('--compiler',type=Path,required=True)
     p.add_argument('--work-dir',type=Path,required=True)
+    p.add_argument('--gl',action='store_true',help='Use a hidden native GL context and owned framebuffer readback (no OS capture/input)')
     a=p.parse_args()
     project=Path(__file__).resolve().parent.parent
     editor,root,compiler=a.editor_dir.resolve(),a.work_dir.resolve(),a.compiler.resolve()
@@ -50,6 +52,9 @@ textures/q3mapx/paint
     { map $lightmap blendFunc filter }
 }
 ''',encoding='utf-8')
+    if a.gl:
+        material_fixture.assets(source.parent.parent)
+        material_fixture.native_inputs(root)
     # Point-entity labels allocate GL textures in upstream NRC. Keep the native
     # parser fixture to a complete worldspawn graph for this no-GL harness and
     # append the generated point/door entities for the compiler check below.
@@ -64,7 +69,7 @@ textures/q3mapx/paint
     description={'name':'q3mapx authoring tests','type':'q3','basegame':'baseq3',
         'basegamename':'Generated test assets','unknowngamename':'Test mod',
         'enginepath_win32':engine.as_posix()+'/','enginepath_linux':engine.as_posix()+'/',
-        'engine_win32':'unused.exe','engine_linux':'unused','entities':'quake3','shaders':'quake3',
+        'engine_win32':'unused.exe','engine_linux':'unused','entities':'quake3','shaders':'quake3','shaderpath':'scripts/',
         'brushtypes':'quake3','patchtypes':'quake3','entityclass':'quake3','entityclasstype':'def',
         'texturetypes':'tga','archivetypes':'pk3','modeltypes':'md3','maptypes':'mapq3'}
     (games/name).write_text('<game '+ ' '.join(k+'='+quoteattr(v) for k,v in description.items())+'/>\n',encoding='utf-8')
@@ -89,6 +94,9 @@ textures/q3mapx/paint
     (root/'paint.txt').write_text(painted(curved=True),encoding='utf-8')
     (root/'paint-alpha.txt').write_text(painted(mode='lighting',curved=True),encoding='utf-8')
     env=dict(os.environ,Q3MAPX_TEST_OUTPUT=str(root),QT_QPA_PLATFORM='offscreen',PYTHONDONTWRITEBYTECODE='1')
+    if a.gl:
+        assert os.name=='nt', 'Native GL qualification currently uses the Windows Qt platform'
+        env.update(Q3MAPX_TEST_GL='1',QT_QPA_PLATFORM='windows')
     if os.name=='nt': env['Q3MAPX_TEST_FONT']=str(Path(os.environ.get('WINDIR','C:/Windows'))/'Fonts/segoeui.ttf')
     result=subprocess.run([str(executable)],cwd=editor,env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=90)
     (root/'editor.log').write_bytes(result.stdout)

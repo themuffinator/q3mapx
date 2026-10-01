@@ -2554,8 +2554,10 @@ void MakeFogHullSurfs( const char *shader ){
  */
 
 static void BiasSurfaceTextures( mapDrawSurface_t& ds ){
-	/* don't bias globaltextured shaders */
-	if ( ds.shaderInfo->globalTexture ) {
+	/* Preserve authored paint UVs as well as global-texture coordinates. Whole
+	   repeats change clampMap and nonperiodic stages, and different meta charts
+	   can otherwise introduce seams within a single painted patch. */
+	if ( ds.shaderInfo->globalTexture || ds.paintMode ) {
 		return;
 	}
 

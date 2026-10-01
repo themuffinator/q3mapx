@@ -9,6 +9,9 @@ class Tokeniser;
 class TokenWriter;
 class XMLImporter;
 class QWidget;
+class Renderer;
+class Matrix4;
+class OpenGLRenderable;
 
 bool Q3mapxPaint_importSettings( Patch&, Tokeniser& );
 bool Q3mapxPaint_importControl( PatchControl&, int mode, Tokeniser& );
@@ -57,3 +60,4 @@ bool Q3mapxPaint_reduceRows( const Q3mapxPaintData&, bool column, bool first, Q3
 QWidget* Q3mapxPaint_createButton();
 QWidget* Q3mapxPaint_createPanel( QWidget* parent = nullptr );
 void Q3mapxPaint_update();
+bool Q3mapxPaint_previewSubmit( const Patch&, Renderer&, const Matrix4&, const OpenGLRenderable& );

@@ -96,7 +96,8 @@ See [decompilation options and limits](docs/DECOMPILATION.md). The traditional
 - Experimental [patch RGBA compiler support](docs/PATCH-PAINT.md), with explicit
   material-color/vertex-light modes, paint-preserving triangles and relight checks.
   The companion Radiant panel adds RGB/alpha brushes, fill/reset, selection masks,
-  undo and a raw color preview; shader/camera/runtime qualification remains open.
+  undo, a raw color preview and a [static material camera preview](docs/PATCH-MATERIAL-PREVIEW.md)
+  with explicit neutral lighting. Broader lighting/runtime qualification remains open.
 
 Measured whole-command results on the documented Windows fixture: indexed CPU
 minimaps were **29.8x faster** than the imported sampler; a sufficiently large GPU

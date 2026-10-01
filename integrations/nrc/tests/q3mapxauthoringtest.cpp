@@ -14,6 +14,7 @@ static int Q3mapxAuthoringTestRun();
 #include "maplib.h"
 #include "plugin.h"
 #include "ientity.h"
+#include "q3mapxmaterial.h"
 #include "script/scripttokeniser.h"
 #include "script/scripttokenwriter.h"
 #include "stream/textfilestream.h"
@@ -30,6 +31,10 @@ static int Q3mapxAuthoringTestRun();
 #include <QFontDatabase>
 #include <QPushButton>
 #include <QLabel>
+#include <QOffscreenSurface>
+#include <QOpenGLContext>
+#include <QOpenGLFramebufferObject>
+#include <QMatrix4x4>
 #include <memory>
 #include <limits>
 
@@ -40,6 +45,9 @@ class TestDebugHandler final : public DefaultDebugMessageHandler {
     bool handleMessage() override { std::fflush( nullptr ); std::_Exit( 1 ); }
 };
 static TestDebugHandler testDebugHandler;
+void GlobalGL_sharedContextCreated();
+void GlobalGL_sharedContextDestroyed();
+static void materialRasterChecks();
 
 static void Q3mapxAuthoringTestQtSetup() {
     GlobalDebugMessageHandler::instance().setHandler( testDebugHandler );
@@ -62,7 +70,36 @@ static void Q3mapxAuthoringTestSetup() {
     QSettings::setDefaultFormat( QSettings::IniFormat );
     QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, outputDirectory + "/qt-settings" );
     QSettings::setPath( QSettings::IniFormat, QSettings::SystemScope, outputDirectory + "/qt-settings" );
-    qputenv( "QT_QPA_PLATFORM", "offscreen" );
+    if ( qgetenv("Q3MAPX_TEST_GL") != "1" ) qputenv( "QT_QPA_PLATFORM", "offscreen" );
+}
+
+static void materialGLChecks() {
+    if ( qgetenv("Q3MAPX_TEST_GL") != "1" ) return;
+    QOffscreenSurface surface;
+    surface.setFormat( QSurfaceFormat::defaultFormat() ); surface.create();
+    QOpenGLContext context;
+    context.setFormat( surface.format() );
+    context.setShareContext(QOpenGLContext::globalShareContext());
+    require( context.create() && context.makeCurrent(&surface), "hidden render-target GL context" );
+    GlobalOpenGL().funcs = context.versionFunctions<QOpenGLFunctions_2_0>();
+    require( GlobalOpenGL().funcs && GlobalOpenGL().funcs->initializeOpenGLFunctions(), "native GL 2.0 functions" );
+    GlobalOpenGL().contextValid = true;
+    GlobalGL_sharedContextCreated();
+    {
+        QOpenGLFramebufferObject target(256,256,QOpenGLFramebufferObject::CombinedDepthStencil);
+        require( target.isValid() && target.bind(), "native framebuffer target" );
+        gl().glViewport(0,0,256,256);
+        gl().glClearColor(0.25f,0.5f,0.75f,1);
+        gl().glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+        const QImage image = target.toImage();
+        require( image.pixelColor(128,128)==QColor(64,128,191), "render-target readback" );
+        require( image.save(outputDirectory+"/material-context.png"), "renderer-generated context image" );
+        require( gl().glGetError()==GL_NO_ERROR, "context GL errors" );
+    }
+    materialRasterChecks();
+    GlobalGL_sharedContextDestroyed();
+    GlobalOpenGL().contextValid = false; GlobalOpenGL().funcs = nullptr;
+    context.doneCurrent();
 }
 
 static QByteArray input( const QString& filename ) {
@@ -514,6 +551,164 @@ static void gridChecks() {
     GlobalUndoSystem().clear(); GlobalSceneGraph().erase_root();
 }
 
+static void materialRasterChecks() {
+    QOpenGLFramebufferObject target(640,480,QOpenGLFramebufferObject::CombinedDepthStencil);
+    require(target.isValid() && target.bind(),"material render target");
+    auto& g=gl();
+    const GLuint program=g.glCreateProgram();
+    std::vector<GLuint> shaders;
+    for(const auto kind : {GL_VERTEX_SHADER,GL_FRAGMENT_SHADER}) {
+        const char* source=kind==GL_VERTEX_SHADER ? "#version 110\nvoid main(){gl_Position=ftransform();}" : "#version 110\nvoid main(){gl_FragColor=vec4(1,0,1,1);}";
+        const GLuint shader=g.glCreateShader(kind); g.glShaderSource(shader,1,&source,nullptr); g.glCompileShader(shader);
+        GLint compiled; g.glGetShaderiv(shader,GL_COMPILE_STATUS,&compiled); require(compiled,"sentinel GL program compiles");
+        g.glAttachShader(program,shader); shaders.push_back(shader);
+    }
+    g.glLinkProgram(program); GLint linked; g.glGetProgramiv(program,GL_LINK_STATUS,&linked); require(linked,"sentinel GL program links");
+    GLuint buffers[2]; g.glGenBuffers(2,buffers);
+    const auto cases=QJsonDocument::fromJson(input("material-cases.json")).object();
+    QJsonArray images;
+    class Submission final : public Renderer {
+        Shader* shader=nullptr;
+    public:
+        int depth=0;
+        void PushState() override { ++depth; }
+        void PopState() override { --depth; }
+        void SetState(Shader* state,EStyle) override { shader=state; }
+        EStyle getStyle() const override { return eFullMaterials; }
+        void Highlight(EHighlightMode,bool enabled) override { require(!enabled,"material suppresses selection fill"); }
+        void addRenderable(const OpenGLRenderable& value,const Matrix4& transform) override {
+            require(depth==1 && shader,"material render-cache submission"); shader->addRenderable(value,transform);
+        }
+    } renderer;
+    class Fallback final : public OpenGLRenderable {
+    public:
+        mutable int calls=0;
+        void render(RenderStateFlags) const override { ++calls; }
+    } fallback;
+    const auto clear=[&]{
+        target.bind(); g.glViewport(0,0,640,480); g.glDisable(GL_SCISSOR_TEST);
+        g.glDepthMask(GL_TRUE); g.glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
+        g.glClearColor(64.f/255,96.f/255,128.f/255,1); g.glClearDepth(1);
+        g.glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT); g.glFrontFace(GL_CW);
+    };
+    const auto writeImage=[&](const QString& name){
+        const QImage image=target.toImage().convertToFormat(QImage::Format_RGB888);
+        require(image.save(outputDirectory+'/'+name+".png"),"material framebuffer PNG");
+        QFile ppm(outputDirectory+'/'+name+".ppm");
+        require(ppm.open(QIODevice::WriteOnly|QIODevice::Truncate),"material framebuffer PPM");
+        ppm.write("P6\n640 480\n255\n");
+        qint64 written=0;
+        for(int row=0;row<480;++row) written+=ppm.write(reinterpret_cast<const char*>(image.constScanLine(row)),640*3);
+        require(written==640*480*3,"complete material framebuffer pixels");
+        return image;
+    };
+    const auto integers=[&]{
+        std::vector<GLint> values;
+        for(GLenum key : {GL_CURRENT_PROGRAM,GL_ARRAY_BUFFER_BINDING,GL_ELEMENT_ARRAY_BUFFER_BINDING,GL_MATRIX_MODE,
+            GL_ACTIVE_TEXTURE,GL_CLIENT_ACTIVE_TEXTURE,GL_TEXTURE_BINDING_2D,GL_SHADE_MODEL,GL_CULL_FACE_MODE,GL_FRONT_FACE,
+            GL_DEPTH_FUNC,GL_DEPTH_WRITEMASK,GL_ALPHA_TEST_FUNC,GL_BLEND_SRC,GL_BLEND_DST,GL_BLEND_EQUATION}) {
+            GLint v; g.glGetIntegerv(key,&v); values.push_back(v);
+        }
+        for(GLenum key : {GL_TEXTURE_2D,GL_BLEND,GL_LIGHTING,GL_FOG,GL_CULL_FACE,GL_DEPTH_TEST,GL_ALPHA_TEST,GL_DITHER,
+                           GL_VERTEX_ARRAY,GL_COLOR_ARRAY,GL_NORMAL_ARRAY,GL_TEXTURE_COORD_ARRAY}) values.push_back(g.glIsEnabled(key));
+        return values;
+    };
+    for(const QString shape : {QString("flat"),QString("curved")}) {
+        NodeSmartReference node(g_patchCreator->createPatch()); Patch& patch=*Node_getPatch(node);
+        const auto text=input("material-"+shape+".txt"); BufferInputStream stream(text.constData(),text.size());
+        Tokeniser& reader=NewMapTokeniser(stream); reader.nextLine();
+        require(Tokeniser_parseToken(reader,"{") && PatchTokenImporter(patch).importTokens(reader),"native material source"); reader.release();
+        Q3mapxMaterialPreview preview;
+        require(preview.mesh(Q3mapxPaintData(patch)),"native painted mesh");
+        require(preview.vertices().size()==289 && preview.indices().size()==1536,"bounded requested material grid");
+        QJsonArray meshVertices,meshIndices;
+        for(const auto& v:preview.vertices()) {
+            QJsonArray point;
+            for(float value:v.xyz) point.append(value);
+            for(float value:v.uv) point.append(value);
+            for(auto value:v.color) point.append(int(value));
+            meshVertices.append(point);
+        }
+        for(auto index:preview.indices()) meshIndices.append(int(index));
+        output("material-"+shape+"-mesh.json",QJsonDocument(QJsonObject{{"vertices",meshVertices},{"indices",meshIndices}}).toJson().constData());
+        for(const auto& entry:cases["materials"].toArray()) {
+            const QString name=entry.toString();
+            const std::string shader=("textures/q3mapx/material-"+name).toStdString();
+            if(!preview.material(shader.c_str())) globalErrorStream()<<"Preview error: "<<preview.definition().error.c_str()<<'\n';
+            require(preview.material(shader.c_str()),"native VFS shader material");
+            for(const auto& cameraEntry:cases["cameras"].toArray()) {
+                const auto camera=cameraEntry.toArray(); const auto args=camera[1].toArray();
+                const double pitch=args[3].toDouble()*3.141592653589793/180, yaw=args[4].toDouble()*3.141592653589793/180;
+                const QVector3D origin(args[0].toDouble(),args[1].toDouble(),args[2].toDouble());
+                const QVector3D forward(std::cos(pitch)*std::cos(yaw),std::cos(pitch)*std::sin(yaw),-std::sin(pitch));
+                const QVector3D up(std::sin(pitch)*std::cos(yaw),std::sin(pitch)*std::sin(yaw),std::cos(pitch));
+                QMatrix4x4 view,projection; view.lookAt(origin,origin+forward,up);
+                projection.perspective(2*std::atan(std::tan(args[5].toDouble()*3.141592653589793/360)*480/640)*180/3.141592653589793,640.f/480,4,4096);
+                clear(); g.glMatrixMode(GL_PROJECTION); g.glLoadMatrixf(projection.constData());
+                g.glMatrixMode(GL_MODELVIEW); g.glLoadMatrixf(view.constData());
+                // Dirty states deliberately differ from those the material needs.
+                g.glShadeModel(GL_FLAT); g.glEnable(GL_LIGHTING); g.glEnable(GL_FOG); g.glEnable(GL_BLEND);
+                g.glBlendFunc(GL_ZERO,GL_ONE); g.glDepthMask(GL_FALSE); g.glDepthFunc(GL_GREATER);
+                g.glAlphaFunc(GL_NEVER,0.37f); g.glEnable(GL_ALPHA_TEST);
+                g.glActiveTexture(GL_TEXTURE1); g.glClientActiveTexture(GL_TEXTURE1); g.glEnable(GL_TEXTURE_2D);
+                g.glUseProgram(program); g.glBindBuffer(GL_ARRAY_BUFFER,buffers[0]); g.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,buffers[1]);
+                const auto before=integers();
+                preview.render(RENDER_FILL|RENDER_TEXTURE);
+                require(before==integers(),"material restores GL state");
+                require(g.glGetError()==GL_NO_ERROR,"material GL errors");
+                const QString label="material-"+shape+'-'+name+'-'+camera[0].toString();
+                const QImage direct=writeImage(label);
+                images.append(QJsonObject{{"shape",shape},{"material",name},{"camera",camera[0].toString()},{"image",label+".ppm"}});
+                g.glActiveTexture(GL_TEXTURE0); g.glClientActiveTexture(GL_TEXTURE0); g.glDisable(GL_FOG);
+                g.glUseProgram(0); g.glBindBuffer(GL_ARRAY_BUFFER,0); g.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
+                clear(); require(preview.submit(renderer,g_matrix4_identity,fallback),"material submits to actual render cache");
+                Matrix4 nativeView,nativeProjection;
+                std::copy_n(view.constData(),16,&nativeView[0]); std::copy_n(projection.constData(),16,&nativeProjection[0]);
+                GlobalShaderCache().render(RENDER_FILL|RENDER_TEXTURE|RENDER_LIGHTING|RENDER_DEPTHTEST|RENDER_DEPTHWRITE|RENDER_COLOURWRITE|RENDER_CULLFACE|RENDER_SMOOTH,nativeView,nativeProjection);
+                require(target.toImage().convertToFormat(QImage::Format_RGB888)==direct,"direct and native camera cache pixels match");
+                require(renderer.depth==0 && g.glGetError()==GL_NO_ERROR,"native camera state balanced");
+            }
+        }
+        require(!preview.material("textures/q3mapx/material-unsupported") && !preview.definition().error.empty(),"unsupported shader explicit fallback");
+        require(!preview.submit(renderer,g_matrix4_identity,fallback),"unsupported shader never replaces native material");
+        require(!preview.material("textures/q3mapx/material-missing"),"missing texture explicit fallback");
+        require(!preview.material("textures/q3mapx/not-a-shader"),"implicit texture explicit fallback");
+        require(preview.material("textures/q3mapx/material-vertex"),"recover supported material after errors");
+        preview.unrealise(); preview.realise();
+        require(preview.material("textures/q3mapx/material-vertex"),"shader refresh rebuilds material");
+        preview.render(RENDER_FILL); require(fallback.calls==1,"untextured mode uses native fallback"); fallback.calls=0;
+        auto invalid=Q3mapxPaintData(patch); invalid.controls[0].m_vertex[0]=std::numeric_limits<float>::infinity();
+        require(!preview.mesh(invalid) && preview.vertices().empty(),"invalid mesh clears preview atomically");
+        // The actual modeless-panel hook: no native window or input events.
+        GlobalBrushCreator().toggleFormat(eBrushTypeQuake3);
+        NodeSmartReference root(NewMapRoot("material-ui")); Node_getTraversable(root)->insert(node); GlobalSceneGraph().insert_root(root);
+        scene::Path path(makeReference(root.get())); path.push(makeReference(node.get())); auto* instance=Instance_getPatch(*GlobalSceneGraph().find(path));
+        require(instance!=nullptr,"material UI patch instance"); instance->setSelected(true);
+        std::unique_ptr<QWidget> panel(Q3mapxPaint_createPanel()); panel->setAttribute(Qt::WA_DontShowOnScreen); panel->show();
+        auto* toggle=panel->findChild<QCheckBox*>("q3mapxMaterialPreview");
+        auto* status=panel->findChild<QLabel*>("q3mapxMaterialStatus");
+        require(toggle && status && !toggle->isChecked(),"material UI defaults off"); toggle->setChecked(true);
+        require(status->text().contains("neutral white lighting"),"supported material status declares lighting");
+        // Drain the submitted renderable while its panel and target remain alive.
+        require(Q3mapxPaint_previewSubmit(patch,renderer,g_matrix4_identity,fallback),"visible selected panel camera hook");
+        GlobalShaderCache().render(RENDER_FILL|RENDER_TEXTURE|RENDER_DEPTHTEST|RENDER_DEPTHWRITE|RENDER_COLOURWRITE,g_matrix4_identity,g_matrix4_identity);
+        panel->hide(); require(!Q3mapxPaint_previewSubmit(patch,renderer,g_matrix4_identity,fallback),"hidden panel restores native rendering");
+        panel.reset(); instance->setSelected(false); GlobalUndoSystem().clear(); GlobalSceneGraph().erase_root();
+    }
+    g.glUseProgram(0); g.glDeleteProgram(program); for(auto shader:shaders) g.glDeleteShader(shader); g.glDeleteBuffers(2,buffers);
+    auto* owner=QOpenGLContext::currentContext(); auto* surface=owner->surface();
+    owner->doneCurrent();
+    {
+        Q3mapxMaterialPreview betweenFrames;
+        require(betweenFrames.material("textures/q3mapx/material-texture"),"modeless callback borrows the shared texture context");
+        require(QOpenGLContext::currentContext()==nullptr,"borrowed texture context released after load");
+        betweenFrames.refresh();
+        require(QOpenGLContext::currentContext()==nullptr,"borrowed texture context released after invalidation");
+    }
+    require(owner->makeCurrent(surface) && g.glGetError()==GL_NO_ERROR,"original renderer context remains valid");
+    output("material-images.json",QJsonDocument(QJsonObject{{"images",images},{"driver",reinterpret_cast<const char*>(g.glGetString(GL_RENDERER))}}).toJson().constData());
+}
+
 static int Q3mapxAuthoringTestRun() {
     SurfaceInspector_constructWindow( nullptr );
     EntityList_constructWindow( nullptr );
@@ -571,7 +766,9 @@ static int Q3mapxAuthoringTestRun() {
     image.fill( Qt::transparent );
     controls->render( &image ); // paints our own widget; no OS capture or input
     require( image.save( outputDirectory+"/density-controls.png" ), "native widget render" );
-    QJsonObject result { {"checks",checks}, {"editor_model_roundtrip",true}, {"os_input_control",false}, {"viewport_raster_tested",false} };
+    materialGLChecks();
+    QJsonObject result { {"checks",checks}, {"editor_model_roundtrip",true}, {"os_input_control",false},
+        {"viewport_raster_tested",qgetenv("Q3MAPX_TEST_GL")=="1"} };
     output( "results.json", QJsonDocument( result ).toJson().constData() );
     controls.reset();
     SurfaceInspector_destroyWindow();

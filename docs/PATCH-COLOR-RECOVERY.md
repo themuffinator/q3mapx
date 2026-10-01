@@ -1,5 +1,10 @@
 # Compiled patch color recovery
 
+For BSPs built with retained authoring data, use
+[`-patch-recovery source`](PATCH-SOURCE.md) to restore pre-modifier controls and
+settings, including triangle-only sources. The compiled-channel policy below
+remains useful when no source archive exists.
+
 MAP export can explicitly retain compiled alpha or RGBA from surviving native
 Bezier patch controls. This is extraction of stored channels, **not identification
 of the author's original paint**. Ordinary BSP vertex RGB may be baked lighting;

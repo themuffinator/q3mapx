@@ -37,6 +37,7 @@
 #include "bspfile_rbsp.h"
 #include "qspatial.h"
 #include "decompile.h"
+#include "patch_source.h"
 #include "light_recovery.h"
 #include "bsp_evidence.h"
 #include "recovery_groups.h"
@@ -55,6 +56,31 @@ struct DecompileStats {
 	size_t unrepresentableUVOutputs = 0;
 };
 static DecompileStats recovery;
+static std::vector<bool> sourcePatchSurfaces;
+static size_t restoredSourcePatches = 0;
+
+static void WriteSourcePatch( FILE* f, const q3mapx::PatchSource& patch, const Vector3& origin ) {
+	fprintf( f, "\t// Retained patch source: entity %d, primitive %d; pre-tessellation paint and settings.\n",
+	    patch.entity, patch.primitive );
+	fprintf( f, "\t{\n\t\tq3mapxPatchDef2\n\t\t{\n\t\t\t%s\n\t\t\t( %d %d 0 0 0 )\n",
+	    patch.shader.c_str() + 9, patch.width, patch.height );
+	fprintf( f, "\t\t\tlightmapSampleSize %d\n\t\t\tvertexRGB %s\n\t\t\tpaintSubdivisions %d\n\t\t\t(\n",
+	    patch.sampleSize, patch.mode == q3mapx::authoring::materialPaint ? "material" : "lighting", patch.subdivisions );
+	for ( int x = 0; x < patch.width; ++x ) {
+		fprintf( f, "\t\t\t\t(" );
+		for ( int y = 0; y < patch.height; ++y ) {
+			const auto& v = patch.controls[y * patch.width + x];
+			const Vector3 xyz = v.xyz + origin;
+			for ( int a = 0; a < 3; ++a ) if ( !std::isfinite( xyz[a] ) || std::abs( xyz[a] ) > MAX_WORLD_COORD )
+				throw std::runtime_error( "Retained patch source exceeds MAP coordinate limits after model placement" );
+			fprintf( f, " ( %.9g %.9g %.9g %.9g %.9g %d %d %d %d )", xyz[0], xyz[1], xyz[2], v.st[0], v.st[1],
+			    v.color[0][0], v.color[0][1], v.color[0][2], v.color[0][3] );
+		}
+		fprintf( f, " )\n" );
+	}
+	fprintf( f, "\t\t\t)\n\t\t}\n\t}\n\n" );
+	++restoredSourcePatches; ++recovery.patches;
+}
 
 struct PatchColorRecord {
 	int surface;
@@ -1408,13 +1434,15 @@ static void ConvertModel( FILE *f, const bspModel_t& model, const Vector3& origi
 	}
 
 	/* go through each drawsurf in the model */
+	if ( decompileOptions.patchRecovery == DecompileOptions::PatchRecovery::Source ) for ( const auto& patch : q3mapx::PatchSources() )
+		if ( patch.model == &model - bspModels.data() ) WriteSourcePatch( f, patch, origin );
 	for ( int i = 0; i < model.numBSPSurfaces; ++i )
 	{
 		const int num = i + model.firstBSPSurface;
 		const bspDrawSurface_t& ds = bspDrawSurfaces[ num ];
 
 		/* we only love patches */
-		if ( ds.surfaceType == MST_PATCH ) {
+		if ( ds.surfaceType == MST_PATCH && ( sourcePatchSurfaces.empty() || !sourcePatchSurfaces[num] ) ) {
 			ConvertPatch( f, num, ds, origin );
 		}
 	}
@@ -1506,6 +1534,13 @@ static void WriteGroupInferenceReport( rapidjson::PrettyWriter<rapidjson::String
 static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 	if ( decompileOptions.lightRecovery ) decompileOptions.lightRecovery->prepare();
 	recovery = {};
+	sourcePatchSurfaces.clear(); restoredSourcePatches = 0;
+	if ( decompileOptions.patchRecovery == DecompileOptions::PatchRecovery::Source ) {
+		q3mapx::ValidatePatchSources();
+		sourcePatchSurfaces.assign( bspDrawSurfaces.size(), false );
+		for ( const auto& patch : q3mapx::PatchSources() )
+			for ( int surface : patch.surfaces ) sourcePatchSurfaces[surface] = true;
+	}
 	PreparePatchColorRecovery();
 	uvRecoveryRecords.clear(); uvRecoveryCounts.clear(); omittedUVRecoveryRecords = 0;
 	detailDecisions.clear(); detailEvidence.reset();
@@ -1737,6 +1772,16 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		if ( groupRecovery ) WriteGroupInferenceReport( writer, buffer );
 		count( "skipped_brushes", recovery.skippedBrushes );
 		count( "patches", recovery.patches );
+		if ( decompileOptions.patchRecovery != DecompileOptions::PatchRecovery::None ) {
+			writer.Key( "patch_recovery" ); writer.StartObject();
+			writer.Key( "policy" ); writer.String( "source" );
+			writer.Key( "basis" ); writer.String( "retained_pre_tessellation_source_archive" );
+			count( "restored_source_patches", restoredSourcePatches );
+			writer.Key( "geometry_binding_verified" ); writer.Bool( true );
+			writer.Key( "author_identity_authenticated" ); writer.Bool( false );
+			writer.Key( "original_compile_context_restored" ); writer.Bool( false );
+			writer.EndObject();
+		}
 		if ( RecoverPatchColors() ) {
 			writer.Key( "patch_colors" ); writer.StartObject();
 			const bool rgba = decompileOptions.patchColors == DecompileOptions::PatchColors::RGBA;
@@ -1822,7 +1867,7 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		writer.Key( "limitations" );
 		writer.StartArray();
 		writer.String( "Original editor groups are unavailable; removed entities and some source model instances may not be stored in the BSP." );
-		if ( !strEmpty( entities[0].valueForKey( q3mapx::authoring::paintBindingKey ) ) )
+		if ( !restoredSourcePatches && !strEmpty( entities[0].valueForKey( q3mapx::authoring::paintBindingKey ) ) )
 			writer.String( RecoverPatchColors()
 			    ? "This BSP contains authored patch paint. Only eligible surviving native control channels are recovered; original pre-modifier paint, RGB mode, tessellation and density are unproven. Triangle-only painted surfaces are not recovered. The BSP/SRF binding is a build identity, not original authoring metadata. Keep the original source."
 			    : "This BSP contains authored patch paint. MAP recovery does not yet restore its RGBA controls, RGB mode or tessellation settings; keep the original q3mapxPatchDef2 source. The BSP/SRF binding is a build identity, not original authoring metadata." );
@@ -1838,7 +1883,8 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		if(!bspNativeFenceMasks.empty()) writer.String("Native terrain is retained in this report and OBJ/ASE export, not as MAP brushes or Bezier patches. Static-model placements are retained here; their external model meshes are not imported.");
 		if(bspEarlyVersion) writer.String("Early BSP model origins/head nodes are retained here. Fog visible sides depend on native shader semantics and are not reconstructed. The native shader dialect is only partially supported.");
 		if(bspEarlyVersion==43 || bspEarlyVersion==44) writer.String("This format has no brush-side material names. Visible face names and UVs are inferred from rendered triangles; unmatched faces use common/caulk and fallback UVs. Raw brush contents and side flags remain in source order in this report.");
-		writer.String( "Triangle soup geometry is not exported separately; collision brushes may approximate it." );
+		writer.String( restoredSourcePatches ? "Triangle soup without restored patch sources is not exported separately; collision brushes may approximate it." : "Triangle soup geometry is not exported separately; collision brushes may approximate it." );
+		if ( restoredSourcePatches ) writer.String( "Paint controls, source shader, RGB mode, density override and subdivisions come from a checksummed geometry-bound compiler archive. Positions are retained in model space after source entity placement. Original groups, inherited compile settings, material assets and removed modifier volumes are not archived; equivalent rebuilding still depends on that context. The checksum is not an author-authentication signature." );
 		writer.String( "Fallback texture axes are used on faces without a usable rendered triangle, including hidden faces." );
 		writer.String( "Consensus output preserves whole texture offsets and uses round-trip decimal precision for stored parameters. Native compiler texture biases and source reconstruction loss cannot be undone; rebuilding with different shader or compiler semantics can still change UVs. Triangle compatibility mode retains legacy offset wrapping and decimal rounding. Constant axes and unsupported output representations retain fallback mappings." );
 		writer.String( "UV consensus uses bounded overlap-weighted samples and a capped binary32 error allowance. Conflicting, ill-conditioned or limited evidence retains the largest-triangle mapping; charts are not averaged across a detected seam. Independent integer UV biases can also cause conflicts. Report errors describe fitting, not a guarantee of exact serialized/rebuilt UVs or original author intent." );
@@ -1853,12 +1899,12 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 	}
 	if ( decompileOptions.lightRecovery ) decompileOptions.lightRecovery->verifyInputs();
 	outputs.commit();
-	if ( !strEmpty( entities[0].valueForKey( q3mapx::authoring::paintBindingKey ) ) )
+	if ( !restoredSourcePatches && !strEmpty( entities[0].valueForKey( q3mapx::authoring::paintBindingKey ) ) )
 		Sys_Warning( RecoverPatchColors()
 		    ? "Original authored patch paint is unproven; compiled control recovery cannot restore missing source metadata or triangle-only patches\n"
 		    : "Authored patch paint is not restored by MAP recovery; keep the original q3mapxPatchDef2 source\n" );
 	if ( RecoverPatchColors() ) Sys_Printf( "Patch colors: %zu recovered, %zu retained as legacy patches; compiled channels are not proof of original paint\n",
-	    patchColorCounts["recovered"], recovery.patches - patchColorCounts["recovered"] );
+	    patchColorCounts["recovered"], recovery.patches - restoredSourcePatches - patchColorCounts["recovered"] );
 	Sys_Printf( "Recovered %zu brushes, %zu patches; %zu/%zu faces matched texture coordinates, %zu used fallback\n",
 	    recovery.brushes, recovery.patches, recovery.matchedFaces, recovery.faces, recovery.fallbackFaces );
 	if ( recovery.skippedBrushes || recovery.degenerateUVs || recovery.approximateQuakeFaces ) {

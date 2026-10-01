@@ -30,6 +30,7 @@
 
 /* dependencies */
 #include "q3map2.h"
+#include "patch_source.h"
 #include "bspfile_rbsp.h"
 #include "surface_extra.h"
 
@@ -307,6 +308,7 @@ void UnSetLightStyles(){
  */
 
 void BeginBSPFile(){
+	q3mapx::ResetPatchSources();
 	/* these values may actually be initialized if the file existed when loaded, so clear them explicitly */
 	bspModels.clear();
 	bspNodes.clear();

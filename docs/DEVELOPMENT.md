@@ -870,6 +870,21 @@ Use `.exe` on Windows. The optional reference checks default MAP/report byte
 parity; opt-in recovery is checked by independent control and sampled-field
 comparisons after recompilation and relighting. See [the contract and guards](PATCH-COLOR-RECOVERY.md).
 
+## Retained patch sources
+
+Retained source recovery is independently checked by `patch_source`:
+
+```sh
+ctest --test-dir build/release -R '^(patch_source|patch_color_recovery|patch_paint|decompile_recovery|recovery_outputs|uv_recovery|bsp_validation)$' --output-on-failure -j 2
+python tests/patch_source.py --compiler build/release/bin/q3mapx --reference path/to/prior/q3mapx --work-dir build/release/tests/patch-source
+```
+
+The optional renderer harness `tests/renderer/patch_source_render.py` accepts a
+Quake3e executable/source tree, read-only game assets, generated material-fixture
+assets, compiler and in-project work directory. It compares engine screenshots
+of identical native lump payloads with/without the archive, with SDL offscreen,
+windowed mode and disabled input/network. See [archive format and limits](PATCH-SOURCE.md).
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

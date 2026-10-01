@@ -31,6 +31,7 @@
 /* dependencies */
 #include "q3map2.h"
 #include "surface_extra.h"
+#include "patch_source.h"
 #include "bspfile_rbsp.h"
 #include "authoring/surface.h"
 #include "authoring/patch_paint.h"
@@ -152,6 +153,7 @@ void SetDefaultAmbientColor( const Vector3& color ){
  */
 
 void SetSurfaceExtra( const mapDrawSurface_t& ds ){
+	q3mapx::LinkPatchSourceSurface( ds );
 	/* get a new extra */
 	surfaceExtra_t& se = surfaceExtras.emplace_back( seDefault );
 

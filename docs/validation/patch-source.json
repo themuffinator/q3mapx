@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-01T22:57:43.676078+00:00",
+  "base_revision": "2bb32253ea310f6debbc4bb80b7912e23eb60c5e",
+  "scope": "Embedded pre-tessellation source paint/settings and exact archive-based native/triangle-only patch recovery",
+  "configurations": {
+    "windows": {
+      "compiler_sha256": "d365459cff46dfe09c5151c7e294d59441e5232ea06971f8dc70d64c9059c003",
+      "exact_source_and_rebuild_cases": 80,
+      "malformed_archive_and_output_preservation_cases": 48,
+      "transforms_drop_stale_archive": 2,
+      "reference_native_lump_parity": true,
+      "groups": [
+        "patch_paint",
+        "bsp_validation",
+        "recovery_outputs",
+        "decompile_recovery",
+        "uv_recovery",
+        "patch_color_recovery",
+        "patch_source"
+      ],
+      "regression_log_sha256": "f6b41a9f6295702da9205bcfeb533a1da3496cb0f68bf9fb21447a6080ee0147",
+      "result_sha256": "6e9880350e8ccc0f923fe76583300835ac9cafc24e4c84a60bdc1b372e8557fb"
+    },
+    "linux": {
+      "compiler_sha256": "d2d39ea9716f9cb7db5ad5332fee68e44a51f0f1b0326b6b576101742baa3666",
+      "exact_source_and_rebuild_cases": 80,
+      "malformed_archive_and_output_preservation_cases": 48,
+      "transforms_drop_stale_archive": 2,
+      "reference_native_lump_parity": true,
+      "groups": [
+        "patch_paint",
+        "bsp_validation",
+        "recovery_outputs",
+        "decompile_recovery",
+        "uv_recovery",
+        "patch_color_recovery",
+        "patch_source"
+      ],
+      "regression_log_sha256": "4fec2b3eac677c49d080c8d2604fc5ce449724d1c9333f183c0ed3c9cade0f0b",
+      "result_sha256": "a771341082acf54f9972644dace14ff159648af1392adb5a5ae035227d9b9f7b"
+    },
+    "sanitized": {
+      "compiler_sha256": "016f076f3fe6a73c08481b66fca880ac556dd1963d3917d5ef4cb7ee047996ef",
+      "exact_source_and_rebuild_cases": 80,
+      "malformed_archive_and_output_preservation_cases": 48,
+      "transforms_drop_stale_archive": 2,
+      "reference_native_lump_parity": false,
+      "groups": [
+        "uv_recovery",
+        "patch_color_recovery",
+        "patch_paint",
+        "bsp_validation",
+        "recovery_outputs",
+        "decompile_recovery",
+        "patch_source"
+      ],
+      "regression_log_sha256": "11a15897c80d55728cd2749be8b9b0b8cc1398d0a08c91b50f07a6236f06ca10",
+      "result_sha256": "bb38cdfd3a78123cc98baf824a74327dab7015d7752ca62d1c549206d4fdb18c"
+    }
+  },
+  "render": {
+    "cases": [
+      {
+        "shape": "flat",
+        "pixels_equal": true,
+        "pixel_sha256": "b6d4bbc74b9df013d0e44586f2da410bb82030412a33b3e127596dcac97cc165"
+      },
+      {
+        "shape": "curved",
+        "pixels_equal": true,
+        "pixel_sha256": "0608cf40cdbd275dd7b6ad6885d36d68cfab4da342fe21990b0efeb22304aefd"
+      }
+    ],
+    "capture": "Engine screenshot command, SDL offscreen, input/network disabled"
+  },
+  "render_sha256": "5c4f4512d5f00f26a4ab8c8b1cccd05cf4756e04b39090e147181176c0abb49b",
+  "sanitizer": "Debug assertions, ASan/UBSan; established lifetime allocation exclusion ASAN_OPTIONS=detect_leaks=0",
+  "evidence_locations": [
+    ".agents/tmp/patch-source/",
+    "build/release/tests/patch-source/",
+    "build/linux-release/tests/patch-source/",
+    "build/linux-sanitized/tests/patch-source/"
+  ],
+  "limitations": [
+    "Compiler archive is not author authentication or complete source context",
+    "Older BSPs without archives do not retain original controls",
+    "Native editor recovery controls and broader engine/game coverage not measured",
+    "Earlier material-preview strict pixel result remains 66/68; not requalified here"
+  ]
+}

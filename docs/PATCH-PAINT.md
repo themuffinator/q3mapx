@@ -197,8 +197,11 @@ these fields and can overwrite material RGB. BSP transforms/reordering tools do
 not currently regenerate the binding; rebuild from source before relighting a
 transformed result. Changes to shader modifiers require the BSP stage too.
 
-The binding does **not** retain original source controls, brush strokes or
-pre-modifier paint. Default MAP decompilation warns when it sees authored paint.
+The SRF binding does **not** retain original source controls. New BSP builds also
+include a separate [source archive](PATCH-SOURCE.md) with pre-modifier paint,
+controls and settings. `-patch-recovery source` restores it, including triangle-only
+patches. Brush strokes and discarded compile context remain unavailable.
+Default MAP decompilation warns when it sees authored paint.
 Explicit [`-patch-colors alpha|rgba`](PATCH-COLOR-RECOVERY.md) can extract compiled
 channels from eligible surviving native controls, with chosen output mode and
 sampling. This does not identify original paint or recover triangle-only patches;

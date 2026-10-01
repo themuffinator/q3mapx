@@ -3510,3 +3510,39 @@ equivalence remain open. No new unrelated issue was found. The earlier material
 preview result remains 66/68 at its unchanged strict pixel gate; this round did
 not modify or rerun that renderer. Previous policy-blocked cleanup targets were
 left untouched, and the broader project goal remains active.
+
+## 2026-10-01 — Retained original patch sources
+
+Painted BSP builds now append a versioned source archive containing pre-modifier
+controls, shader names, RGB mode, subdivisions and density overrides. Surface
+associations survive meta merging without altering native output. Explicit
+`-patch-recovery source` restores each primitive once, including sources compiled
+entirely into triangles. `-no-patch-source` omits the archive. The default MAP
+export remains unchanged. See [format, compatibility and limits](PATCH-SOURCE.md).
+
+Windows Release, Linux Release and Linux Debug ASan/UBSan each pass 80 exact
+source/rebuild cases, 48 integrity/output-preservation cases and two transform
+invalidation cases. Seven regression groups pass on all three builds. Q3/JA,
+material/lighting paint, native/triangle-only output, shader modifiers, translated
+models, three MAP projections and BSP/VIS/LIGHT/bounced relight/onlyents are
+covered. Windows/Linux compare native lumps against the preceding compiler;
+archive opt-out parity is checked everywhere. Poisoned adjacent MAP/SRF files
+cannot substitute for retained source. See [evidence](validation/patch-source.json).
+
+Quake3e renders archive-bearing and archive-stripped BSPs with identical pixels
+in flat and curved scenes after LIGHT. Capture uses the engine screenshot command
+with windowed SDL offscreen and input/network disabled. No OS capture or input
+control occurred. Sanitizers retain the established lifetime-allocation leak
+exclusion. Logs, comparison binaries and captures remain under
+`.agents/tmp/patch-source/`; fixture results are under each build's
+`tests/patch-source/` directory.
+
+Original paint is supported only where retained metadata exists. The archive
+is neither author authentication nor complete original compile context: discarded
+groups, inherited settings, shader assets and removed modifier volumes remain
+external requirements. Archive-free triangle fitting continues in the next
+round. Native editor recovery controls and broader engine coverage remain open.
+No new unrelated issue was found. The prior material-preview pixel result is
+still 66/68; this round's archive parity test does not requalify those views.
+Existing raw-sidecar publication/parser audits and policy-blocked cleanup targets
+remain untouched.

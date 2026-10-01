@@ -30,6 +30,7 @@
 
 /* dependencies */
 #include "q3map2.h"
+#include "patch_source.h"
 #include "brush_texture.h"
 
 
@@ -66,6 +67,7 @@ mapDrawSurface_t& AllocDrawSurface( const mapDrawSurface_t& src ){
 	/* ydnar: do initial surface setup */
 	new ( &ds ) mapDrawSurface_t_params{ src }; // placement new
 	ds.clearData(); // excess safety: must be already clean, if all kosher
+	ds.patchSources = src.patchSources;
 
 	return ds;
 }
@@ -818,6 +820,7 @@ mapDrawSurface_t& DrawSurfaceForMesh( const entity_t& e, parseMesh_t& p ){
 	ds.lightmapSampleSizeOverride = p.lightmapSampleSizeOverride;
 	ds.paintMode = p.paintMode;
 	ds.paintSubdivisions = p.paintSubdivisions;
+	if ( p.paintMode ) ds.patchSources.push_back( q3mapx::CapturePatchSource( p ) );
 	ds.ambientColor  = p.ambientColor;
 	ds.patchWidth  = mesh.width;
 	ds.patchHeight = mesh.height;

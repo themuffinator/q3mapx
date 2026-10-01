@@ -30,6 +30,7 @@
 
 /* dependencies */
 #include "q3map2.h"
+#include "patch_source.h"
 #include "authoring/patch_paint.h"
 
 
@@ -653,6 +654,7 @@ int BSPMain( Args& args ){
 			Sys_Printf( "Running entity-only compile\n" );
 			onlyents = true;
 		}
+		while ( args.takeArg( "-no-patch-source" ) ) q3mapx::retainPatchSources = false;
 		while ( args.takeArg( "-tempname" ) ) {
 			strcpy( tempSource, args.takeNext() );
 		}

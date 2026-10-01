@@ -60,6 +60,7 @@ struct metaTriangle_t
 	int entityNum, surfaceNum, planeNum, fogNum, sampleSize, castShadows, recvShadows;
 	int lightmapSampleSizeOverride;
 	int paintMode;
+	int patchSource = -1;
 	float shadeAngleDegrees;
 	Vector3 ambientColor;
 	Plane3f plane;
@@ -333,6 +334,7 @@ static void SurfaceToMetaTriangles( mapDrawSurface_t& ds ){
 			src.sampleSize        = ds.sampleSize;
 			src.lightmapSampleSizeOverride = ds.lightmapSampleSizeOverride;
 			src.paintMode = ds.paintMode;
+			src.patchSource = ds.patchSources.empty() ? -1 : ds.patchSources.front();
 			src.shadeAngleDegrees = ds.shadeAngleDegrees;
 			src.ambientColor      = ds.ambientColor;
 			src.lightmapAxis      = ds.lightmapAxis;
@@ -1448,6 +1450,8 @@ static int AddMetaTriangleToSurface( mapDrawSurface_t& ds, const metaTriangle_t&
 
 		/* add a side reference */
 		ds.addSideRef( tri.side );
+		if ( tri.patchSource >= 0 && std::ranges::find( ds.patchSources, tri.patchSource ) == ds.patchSources.end() )
+			ds.patchSources.push_back( tri.patchSource );
 
 		for( const int id : { ai, bi, ci } ){
 			if( id >= numVerts_original )

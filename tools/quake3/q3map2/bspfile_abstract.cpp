@@ -34,6 +34,7 @@
 #include "bspfile_ibsp.h"
 #include "bspfile_abstract.h"
 #include "bspfile_native.h"
+#include "patch_source.h"
 #include <ctime>
 #include <charconv>
 
@@ -211,6 +212,7 @@ void LoadBSPFile( const char *filename ){
 	SwapBSPFile();
 	ValidateBSPData();
 	CompleteBSPNativeRecovery();
+	q3mapx::ReadPatchSourceTrailer( filename );
 }
 
 /*
@@ -222,6 +224,7 @@ void LoadBSPFilePartially( const char *filename ){
 	if (g_game && !g_game->write) { LoadBSPFile(filename); return; }
 	ResetBSPRecoveryMetadata();
 	bspLoadedPartially = true;
+	q3mapx::ResetPatchSources();
 	/* dummy check */
 	if ( g_game == nullptr || g_game->load == nullptr ) {
 		Error( "LoadBSPFile: unsupported BSP file format" );
@@ -244,13 +247,21 @@ void WriteBSPFile( const char *filename ){
 	Sys_Printf( "Writing %s\n", filename );
 	if ( !g_game || !g_game->write ) Error( "WriteBSPFile: unsupported BSP file format" );
 	try {
+		const auto patchSource = q3mapx::PatchSourceTrailer();
 		// Legacy shader remapping may report fatal errors; finish it before any
 		// output stream exists. Native serializers throw on all I/O/range errors.
 		SwapBSPFile();
 		int size;
 		try {
 			q3mapx::OutputFiles output;
-			size = g_game->write( output.open(filename) );
+			FILE* stream = output.open( filename );
+			size = g_game->write( stream );
+			if ( !patchSource.empty() ) {
+				if ( patchSource.size() > size_t( INT_MAX - size ) ) throw std::overflow_error( "Patch source archive exceeds BSP size limit" );
+				q3mapx::seekOutput( stream, size );
+				q3mapx::writeOutput( stream, patchSource.data(), patchSource.size() );
+				size += int( patchSource.size() );
+			}
 			output.commit();
 		}
 		catch ( ... ) { SwapBSPFile(false); throw; }

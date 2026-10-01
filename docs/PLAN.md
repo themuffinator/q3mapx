@@ -534,8 +534,11 @@ broader material-preview/runtime qualification requirements remain open.
   native control channels with chosen sampling and per-patch skip reasons;
   RGBA can contain baked lighting and is not inferred original paint. Native
   style conflicts, material replay, grid limits and triangle-only losses are
-  diagnosed. Original metadata, triangle-to-patch recovery, workbench controls
-  and runtime equivalence remain open. See [recovery](PATCH-COLOR-RECOVERY.md).
+  diagnosed. A versioned, geometry-bound BSP archive now preserves original
+  pre-modifier controls/settings and restores native and triangle-only sources
+  with `-patch-recovery source`. Archive-free triangle fitting, workbench controls
+  and broader runtime equivalence remain open. See [source recovery](PATCH-SOURCE.md)
+  and [compiled channels](PATCH-COLOR-RECOVERY.md).
   The build binding is not a source-control archive. Native
   save/reopen, duplication, undo/redo, transpose/inversion and bounded insertion
   now retain paint. Insertion rounds new controls to bytes. Painted row reduction
@@ -543,7 +546,8 @@ broader material-preview/runtime qualification requirements remain open.
   lossy reductions and caps remain guarded. Native undo, independent rational
   proofs and original-versus-edit-roundtrip compiler parity pass. Per-span
   tessellation still affects runtime approximation. Wall generation, third-party
-  topology plugins, caps and original-paint recovery still need work.
+  topology plugins and caps still need work. Original-paint recovery is available
+  for new BSPs with retained source archives; older BSPs lack this evidence.
 
 Acceptance: paint RGB and alpha independently in Radiant, save/reopen the map and
 compile it through the CLI with the same intended material appearance, without

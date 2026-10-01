@@ -836,6 +836,7 @@ struct parseMesh_t
 	int entityNum, brushNum;                    /* ydnar: editor numbering */
 	int lightmapSampleSizeOverride = 0;         /* authored patch; 0 inherits */
 	int paintMode = 0, paintSubdivisions = 0;
+	std::string paintSourceShader;
 
 	/* ydnar: for shadowcasting entities */
 	int castShadows;
@@ -984,6 +985,7 @@ struct mapDrawSurface_t : public mapDrawSurface_t_params
 	};
 
 	std::vector<const side_t*> sideRefs;
+	std::vector<int> patchSources;
 
 	void addSideRef( const side_t *side ){ // note: might try to store only unique refs
 		if ( side != nullptr )
@@ -994,6 +996,7 @@ struct mapDrawSurface_t : public mapDrawSurface_t_params
 		verts = DrawVerts(); // deallocate
 		indexes = DrawIndexes(); // deallocate
 		sideRefs = decltype( sideRefs )(); // deallocate
+		patchSources.clear();
 	}
 };
 

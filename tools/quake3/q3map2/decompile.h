@@ -9,6 +9,7 @@ struct DecompileOptions {
 	enum class GroupPolicy { None, Surfaces };
 	enum class UVPolicy { Consensus, Triangle };
 	enum class PatchColors { None, Alpha, RGBA };
+	enum class PatchRecovery { None, Source };
 	const char* output = nullptr;
 	const char* report = nullptr;
 	const char* lightProposals = nullptr;
@@ -22,5 +23,6 @@ struct DecompileOptions {
 	UVPolicy uvPolicy = UVPolicy::Consensus;
 	PatchColors patchColors = PatchColors::None;
 	int patchColorSubdivisions = 16;
+	PatchRecovery patchRecovery = PatchRecovery::None;
 };
 inline DecompileOptions decompileOptions;

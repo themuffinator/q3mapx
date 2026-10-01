@@ -393,6 +393,7 @@ void ParsePatch( bool onlyLights, entity_t& mapEnt, int mapPrimitiveNum, int aut
 	pm.lightmapSampleSizeOverride = authoredSampleSize;
 	pm.paintMode = paintMode;
 	pm.paintSubdivisions = paintSubdivisions;
+	if ( paintMode ) pm.paintSourceShader = shader.c_str();
 
 	/* set shader */
 	pm.shaderInfo = &ShaderInfoForShader( shader );

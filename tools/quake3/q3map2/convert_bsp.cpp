@@ -1206,8 +1206,20 @@ int ConvertBSPMain( Args& args, bool decompile ){
 			if ( n & ( n - 1 ) ) Error( "Patch color subdivisions must be 1, 2, 4, 8, 16 or 32" );
 			decompileOptions.patchColorSubdivisions = n;
 		}
+		while ( args.takeArg( "-patch-recovery" ) ) {
+			const char* policy = args.takeNext();
+			if ( striEqual( policy, "none" ) ) decompileOptions.patchRecovery = DecompileOptions::PatchRecovery::None;
+			else if ( striEqual( policy, "source" ) ) decompileOptions.patchRecovery = DecompileOptions::PatchRecovery::Source;
+			else Error( "Patch recovery must be none or source" );
+		}
 	}
 	if ( !args.empty() ) Error( "Unknown conversion option '%s'", args.takeFront() );
+	if ( decompileOptions.patchRecovery != DecompileOptions::PatchRecovery::None ) {
+		if ( !map_allowed || convertGame || !g_game->write ) Error( "Patch recovery requires MAP export and a BSP-writing profile" );
+		if ( force_map || ( !force_bsp && path_extension_is( fileName, "map" ) ) ) Error( "Patch recovery requires a compiled BSP input" );
+		if ( g_decompile_wtf ) Error( "Patch recovery cannot be combined with -wtf material replacement" );
+		decompileOptions.automaticReport = true;
+	}
 	if ( patchColorsSpecified && ( !map_allowed || convertGame ) ) Error( "-patch-colors requires MAP export" );
 	if ( patchColorSubdivisionsSpecified && decompileOptions.patchColors == DecompileOptions::PatchColors::None )
 		Error( "-patch-color-subdivisions requires -patch-colors alpha or rgba" );

@@ -395,6 +395,10 @@ if(BUILD_TESTING)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/patch_color_recovery.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/patch-color-recovery)
     set_tests_properties(patch_color_recovery PROPERTIES TIMEOUT 600)
+    add_test(NAME patch_source COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/patch_source.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/patch-source)
+    set_tests_properties(patch_source PROPERTIES TIMEOUT 900)
     add_executable(patch_grid_test tests/patch_grid.cpp)
     add_executable(paint_material_test tests/paint_material.cpp)
     target_include_directories(paint_material_test PRIVATE libs)

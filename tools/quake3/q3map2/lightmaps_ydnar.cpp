@@ -30,6 +30,7 @@
 
 /* dependencies */
 #include "q3map2.h"
+#include "authoring/patch_paint.h"
 #include "bspfile_rbsp.h"
 #include "surface_extra.h"
 #include "timer.h"
@@ -968,13 +969,14 @@ void SetupSurfaceLightmaps(bool allocateLightmaps){
 				const surfaceExtra_t& se = GetSurfaceExtra( num );
 				info.si = se.si;
 				if ( info.si == nullptr ) {
-					info.si = &ShaderInfoForShader( bspShaders[ ds.shaderNum ].shader );
+					info.si = &ShaderInfoForShader( se.shaderName.empty() ? bspShaders[ ds.shaderNum ].shader : se.shaderName.c_str() );
 				}
 				info.parentSurfaceNum = se.parentSurfaceNum;
 				info.entityNum        = se.entityNum;
 				info.castShadows      = se.castShadows;
 				info.recvShadows      = se.recvShadows;
 				info.sampleSize       = se.sampleSize;
+				info.paintMode        = se.paintMode;
 				info.ambientColor     = se.ambientColor;
 				info.longestCurve     = se.longestCurve;
 				info.patchIterations = IterationsForCurve( info.longestCurve, patchSubdivisions );
@@ -1625,6 +1627,9 @@ static bool ApproximateLightmap( rawLightmap_t *lm ){
 		if ( info.lm != lm ) {
 			continue;
 		}
+
+		/* Material RGB cannot replace baked lightmap illumination. */
+		if ( info.paintMode == q3mapx::authoring::materialPaint ) return false;
 
 		/* bail if not vertex lit */
 		if ( info.si->noVertexLight ) {
@@ -3024,7 +3029,10 @@ void StoreSurfaceLightmaps( bool fastAllocate, bool storeForReal ){
 				for ( j = 0; j < ds.numVerts; ++j )
 				{
 					dv[ j ].lightmap = dvParent[ j ].lightmap;
-					dv[ j ].color = dvParent[ j ].color;
+					for ( int style = 0; style < MAX_LIGHTMAPS; ++style ) {
+						if ( info.paintMode != q3mapx::authoring::materialPaint ) dv[j].color[style].rgb() = dvParent[j].color[style].rgb();
+						if ( !info.paintMode ) dv[j].color[style].alpha() = dvParent[j].color[style].alpha();
+					}
 				}
 
 				/* skip the rest */
@@ -3110,7 +3118,7 @@ void StoreSurfaceLightmaps( bool fastAllocate, bool storeForReal ){
 					}
 
 					/* store to bytes */
-					if ( !info.si->noVertexLight ) {
+					if ( !info.si->noVertexLight && info.paintMode != q3mapx::authoring::materialPaint ) {
 						dv[ j ].color[ lightmapNum ].rgb() = ColorToBytes( color, info.si->vertexScale );
 					}
 				}

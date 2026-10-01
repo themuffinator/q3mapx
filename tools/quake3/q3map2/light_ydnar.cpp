@@ -30,6 +30,7 @@
 
 /* dependencies */
 #include "q3map2.h"
+#include "authoring/patch_paint.h"
 #include "lighting_jobs.h"
 #include "light_sample_culling.h"
 #include "light_gpu.h"
@@ -3110,7 +3111,7 @@ void IlluminateVertexes( int num ){
 				if ( bouncing || bounce == 0 || !bounceOnly ) {
 					vertLuxel += radVertLuxel;
 				}
-				if ( !info.si->noVertexLight ) {
+				if ( !info.si->noVertexLight && info.paintMode != q3mapx::authoring::materialPaint ) {
 					verts[ i ].color[ lightmapNum ].rgb() = ColorToBytes( vertLuxel, info.si->vertexScale );
 				}
 			}
@@ -3223,7 +3224,7 @@ void IlluminateVertexes( int num ){
 			AddLightStatistic( numVertsIlluminated );
 
 			/* store into bytes (for vertex approximation) */
-			if ( !info.si->noVertexLight ) {
+			if ( !info.si->noVertexLight && info.paintMode != q3mapx::authoring::materialPaint ) {
 				verts[ i ].color[ lightmapNum ].rgb() = ColorToBytes( vertLuxel );
 			}
 		}

@@ -31,6 +31,7 @@
 /* dependencies */
 #include "q3map2.h"
 #include "map_input.h"
+#include "authoring/patch_paint.h"
 #include <charconv>
 #include <limits>
 
@@ -246,7 +247,7 @@ struct PatchReader : MapInputReader
 };
 }
 
-void ParsePatch( bool onlyLights, entity_t& mapEnt, int mapPrimitiveNum, bool authoredSurface ){
+void ParsePatch( bool onlyLights, entity_t& mapEnt, int mapPrimitiveNum, int authoringVersion ){
 	const PatchReader reader{ mapEnt.mapEntityNum, mapPrimitiveNum };
 	bool degenerate;
 	float longestCurve;
@@ -265,7 +266,18 @@ void ParsePatch( bool onlyLights, entity_t& mapEnt, int mapPrimitiveNum, bool au
 	// The three legacy header fields are unused, but must still be numeric.
 	for ( int i = 0; i < 3; ++i ) reader.number( "finite patch header number" );
 	reader.match( ")" );
-	const int authoredSampleSize = authoredSurface ? reader.surfaceSampleSize() : 0;
+	const int authoredSampleSize = authoringVersion ? reader.surfaceSampleSize() : 0;
+	int paintMode = 0, paintSubdivisions = 0;
+	if ( authoringVersion >= 2 ) {
+		reader.match( "vertexRGB" );
+		reader.next( false, "vertex RGB mode: lighting or material" );
+		if ( !q3mapx::authoring::parsePaintMode( token, paintMode ) ) reader.fail( "vertex RGB mode: lighting or material" );
+		reader.match( "paintSubdivisions" );
+		reader.next( false, "paint subdivisions: 1, 2, 4, 8, 16 or 32" );
+		if ( !q3mapx::authoring::parsePaintSubdivisions( token, paintSubdivisions ) )
+			reader.fail( "paint subdivisions: 1, 2, 4, 8, 16 or 32" );
+		if ( !q3mapx::authoring::paintMeshFits( width, height, paintSubdivisions ) ) reader.fail( "paint tessellation within 65536 vertices" );
+	}
 	mesh_t m( width, height );
 	const int numVerts = m.numVerts();
 
@@ -275,18 +287,24 @@ void ParsePatch( bool onlyLights, entity_t& mapEnt, int mapPrimitiveNum, bool au
 		reader.match( "(" );
 		for ( int i = 0; i < m.height; ++i )
 		{
-			// MAP patches supply positions and texture coordinates only. Initialize
-			// the remaining channels before mesh interpolation or BSP publication.
+			// Initialize every field before interpolation or BSP publication.
 			m[ i ][ j ] = c_bspDrawVert_t0;
 			reader.match( "(" );
 			for ( int axis = 0; axis < 3; ++axis )
 				m[ i ][ j ].xyz[axis] = reader.coordinate( "finite patch position in -65536..65536", MAX_WORLD_COORD );
 			for ( int axis = 0; axis < 2; ++axis )
 				m[ i ][ j ].st[axis] = reader.coordinate( "finite representable patch texture coordinate", std::numeric_limits<float>::max() );
+			Color4b color( 255 );
+			if ( paintMode ) for ( int channel = 0; channel < 4; ++channel ) {
+				reader.next( false, "RGBA byte: decimal integer in 0..255" );
+				int value;
+				if ( !q3mapx::authoring::parsePaintByte( token, value ) ) reader.fail( "RGBA byte: decimal integer in 0..255" );
+				if ( paintMode == q3mapx::authoring::alphaPaint && channel < 3 && value != 255 )
+					reader.fail( "RGB 255 255 255 in lighting mode (use material mode for RGB paint)" );
+				color[channel] = value;
+			}
 			reader.match( ")" );
-
-			/* ydnar: fix colors */
-			m[ i ][ j ].color.fill( Color4b( 255 ) );
+			m[ i ][ j ].color.fill( color );
 		}
 		reader.match( ")" );
 	}
@@ -294,7 +312,7 @@ void ParsePatch( bool onlyLights, entity_t& mapEnt, int mapPrimitiveNum, bool au
 
 	// if brush primitives format, we may have some epairs to ignore here
 	reader.next( true, "closing brace or patch metadata" );
-	if ( !authoredSurface && !TokenIs( "}" ) && ( g_brushType == EBrushType::Bp || g_brushType == EBrushType::Undefined ) ) {
+	if ( !authoringVersion && !TokenIs( "}" ) && ( g_brushType == EBrushType::Bp || g_brushType == EBrushType::Undefined ) ) {
 		std::list<epair_t> dummy;
 		ParseEPair( dummy );
 	}
@@ -373,9 +391,13 @@ void ParsePatch( bool onlyLights, entity_t& mapEnt, int mapPrimitiveNum, bool au
 	pm.entityNum = mapEnt.mapEntityNum;
 	pm.brushNum = mapPrimitiveNum;
 	pm.lightmapSampleSizeOverride = authoredSampleSize;
+	pm.paintMode = paintMode;
+	pm.paintSubdivisions = paintSubdivisions;
 
 	/* set shader */
 	pm.shaderInfo = &ShaderInfoForShader( shader );
+	if ( paintMode && ( pm.shaderInfo->indexed || pm.shaderInfo->autosprite ) )
+		reader.fail( "paint material without indexed blending or autosprite geometry" );
 
 	/* set mesh */
 	pm.mesh = std::move( m );

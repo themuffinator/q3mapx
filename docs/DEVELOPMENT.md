@@ -136,6 +136,14 @@ project-local test profile, never an installed editor. The current editor tests
 cover persistence, actions, widget layout and grid submission, not viewport raster
 qualification. Patch RGB/alpha painting remains a separate M11 task.
 
+`patch_paint` validates the [compiler RGBA contract](PATCH-PAINT.md) without the
+editor. It covers analytic flat/curved samples, Q3/JA, both RGB modes, one/four
+workers, repeated LIGHT and bounce saves, density, shader modifiers, shared-edge
+colors and malformed-source/SRF output preservation. An optional `--reference`
+checks legacy BSP/SRF and LIGHT output against the previous compiler. The native
+editor does not yet read the new primitive. Compiler checks are prerequisites
+for its painting UI, not evidence of editor or runtime raster completion.
+
 ## Performance evidence
 
 Record compiler revision/build mode, CPU/GPU, worker count, input identity, exact

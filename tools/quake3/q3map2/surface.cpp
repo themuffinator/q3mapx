@@ -816,6 +816,8 @@ mapDrawSurface_t& DrawSurfaceForMesh( const entity_t& e, parseMesh_t& p ){
 	ds.sampleSize    = p.lightmapSampleSize;
 	ds.lightmapScale = p.lightmapScale;   /* ydnar */
 	ds.lightmapSampleSizeOverride = p.lightmapSampleSizeOverride;
+	ds.paintMode = p.paintMode;
+	ds.paintSubdivisions = p.paintSubdivisions;
 	ds.ambientColor  = p.ambientColor;
 	ds.patchWidth  = mesh.width;
 	ds.patchHeight = mesh.height;
@@ -877,7 +879,7 @@ mapDrawSurface_t& DrawSurfaceForMesh( const entity_t& e, parseMesh_t& p ){
 		/* ydnar: set color */
 		if( indexed )
 			dv.color.fill( Color4b( 255, 255, 255, shaderIndexes[ i ] ) ); /* ydnar: gs mods: handle indexed shader blending */
-		else
+		else if ( !p.paintMode )
 			dv.color.fill( Color4b( 255 ) );
 
 		/* ydnar: offset */
@@ -2048,7 +2050,7 @@ static void EmitPatchSurface( const entity_t& e, mapDrawSurface_t& ds ){
 	if ( debugSurfaces ) {
 		out.shaderNum = EmitShader( "debugsurfaces", nullptr, nullptr );
 	}
-	else if ( patchMeta || forcePatchMeta ) {
+	else if ( patchMeta || forcePatchMeta || ds.paintMode ) {
 		/* patch meta requires that we have nodraw patches for collision */
 		int surfaceFlags = ds.shaderInfo->surfaceFlags;
 		int contentFlags = ds.shaderInfo->contentFlags;

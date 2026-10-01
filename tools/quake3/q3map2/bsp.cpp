@@ -30,6 +30,7 @@
 
 /* dependencies */
 #include "q3map2.h"
+#include "authoring/patch_paint.h"
 
 
 
@@ -578,6 +579,7 @@ static void OnlyEnts( const char *filename ){
 	const CopiedString save_cmdline( entities[ 0 ].valueForKey( "_q3map2_cmdline" ) );
 	const CopiedString save_version( entities[ 0 ].valueForKey( "_q3map2_version" ) );
 	const CopiedString save_gridsize( entities[ 0 ].valueForKey( "gridsize" ) );
+	const CopiedString save_paint( entities[0].valueForKey( q3mapx::authoring::paintBindingKey ) );
 
 	entities.clear();
 
@@ -596,6 +598,9 @@ static void OnlyEnts( const char *filename ){
 		entities[0].setKeyValue( "gridsize", save_gridsize.c_str() );
 	}
 
+	// Entity-only compiles retain the existing geometry and its paint binding.
+	entities[0].epairs.remove_if( []( const epair_t& ep ){ return striEqual( ep.key.c_str(), q3mapx::authoring::paintBindingKey ); } );
+	if ( !save_paint.empty() ) entities[0].setKeyValue( q3mapx::authoring::paintBindingKey, save_paint.c_str() );
 	numBSPEntities = entities.size();
 	UnparseEntities();
 

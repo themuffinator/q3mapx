@@ -1,0 +1,513 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-01T19:33:25.309265+00:00",
+  "base_revision": "0fdfd570e8f0b396cda52d195c89dec8ef0348e9",
+  "scope": "Experimental patch RGBA compiler foundation; native Radiant painting and runtime raster equivalence remain open",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "1142b48c29cdfc744b3eedab874c7afe1e17d4bd160853ed9c72d8dab9995ac3",
+    "libs/authoring/patch_paint.h": "5baab7d57c0dd4139f95476fdba38871452f96f19c7b7c1fa1a5e49cfb3914d0",
+    "tests/patch_paint.py": "af668b57fefe17e512c50b710ddf15dc6cf415fd823475a5c832332831efc51d",
+    "tools/quake3/q3map2/bsp.cpp": "0387ccd6cfd4f78b1bdd132612e9c89c8db720ec12ea9133be826e538ceee000",
+    "tools/quake3/q3map2/convert_map.cpp": "5cb58e074052aaebce721bdaaab8ee106c629f4ded33a238915d84dac0cb6049",
+    "tools/quake3/q3map2/light.cpp": "fb29a4bfb7090b98427f2959b6f4360271f76065ef2d5118aee7667cb108f394",
+    "tools/quake3/q3map2/light_ydnar.cpp": "13813ad469849217321bff50dcf97c3e4accf118a450fe2002b7820a9ae72c15",
+    "tools/quake3/q3map2/lightmaps_ydnar.cpp": "6d126dcc0e99c6f9716baedc371c74ec825f671d09abf3f63d06ab7df6ae29fc",
+    "tools/quake3/q3map2/map.cpp": "b8382b2abc5930a871aa7039225f3cdee6e0d935bc73beb54777fa3b3d2bd922",
+    "tools/quake3/q3map2/patch.cpp": "78e93a03d87bc059d85d696d170e402ed4dd255ffa21e6d99ca279722fa98cb2",
+    "tools/quake3/q3map2/patch_paint.cpp": "881275dfb6c32668c389b50b636dd2b116f8b941d9b10123b08f1e5c2c8bbfae",
+    "tools/quake3/q3map2/q3map2.h": "1c5f6a3640d36e4abf64938671473e90f05d26220b55eccaf56a87f596f7abf5",
+    "tools/quake3/q3map2/surface.cpp": "ef5ff26be03515c3b5c117fe6a75e6923f9db268f36e967ba689a6025d7b6b90",
+    "tools/quake3/q3map2/surface_extra.cpp": "5bbb45dd9b60d30015511fccf2bec8c4ee599fcfb4d4d51a46d1441a2bbf006f",
+    "tools/quake3/q3map2/surface_extra.h": "ef5f9efd1a96de24a3cb6025e7449e0ef8e91dd951fbda45dafe657f6ad40144",
+    "tools/quake3/q3map2/surface_meta.cpp": "b28471160b135a6a99768a226c4bdd7d9f20ec37fbd1ae6112865c8be78f1c36",
+    "tools/quake3/q3map2/writebsp.cpp": "02915eb2fdb60ef0b645e15c09eff66ab02f83bae391743fe3845259914ada89"
+  },
+  "platforms": {
+    "windows": {
+      "build_directory": "build/release",
+      "compiler_sha256": "b08192ff08b8540424532922347bad26c5c19d84ce568584de6a4d7d2fa59896",
+      "previous_compiler_sha256": "fae1e3ce53e5d202c732675a37c5ca942d5859d9e5ece51375d36f97d26042e5",
+      "matrix": {
+        "matrix": [
+          {
+            "case": "quake3-material-flat-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "1def0eef121eb0fc0b125a57c0710ebd25bdd211f5f6a3b6e91b5c0a475a8c72"
+          },
+          {
+            "case": "quake3-material-flat-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "1def0eef121eb0fc0b125a57c0710ebd25bdd211f5f6a3b6e91b5c0a475a8c72"
+          },
+          {
+            "case": "quake3-material-curve-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "5833358995d1ce2add185a7bc0260de4bc7e439d83125672388cfd8f572e7a43"
+          },
+          {
+            "case": "quake3-material-curve-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "5833358995d1ce2add185a7bc0260de4bc7e439d83125672388cfd8f572e7a43"
+          },
+          {
+            "case": "quake3-lighting-flat-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "54effdfdd670bf4b6962dd0a09ae43d4e5c4eb02802356b3904053ae55e59962"
+          },
+          {
+            "case": "quake3-lighting-flat-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "54effdfdd670bf4b6962dd0a09ae43d4e5c4eb02802356b3904053ae55e59962"
+          },
+          {
+            "case": "quake3-lighting-curve-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "10a5a21aca2ebe05415888cb30056cfa7a0f03313f42bc22ff6e025ed8e9b64e"
+          },
+          {
+            "case": "quake3-lighting-curve-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "10a5a21aca2ebe05415888cb30056cfa7a0f03313f42bc22ff6e025ed8e9b64e"
+          },
+          {
+            "case": "ja-material-flat-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "312f847c46c56c6bfd65e0886946417472c252d4d8679e09b68c027300861465"
+          },
+          {
+            "case": "ja-material-flat-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "312f847c46c56c6bfd65e0886946417472c252d4d8679e09b68c027300861465"
+          },
+          {
+            "case": "ja-material-curve-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "8efd934deb4ed2d452aab3e59821fa75a23e9023159caef1818ee9275874556b"
+          },
+          {
+            "case": "ja-material-curve-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "8efd934deb4ed2d452aab3e59821fa75a23e9023159caef1818ee9275874556b"
+          },
+          {
+            "case": "ja-lighting-flat-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "65099789f271ec627feee18348bc9ad035a6d0f1c01bd579ca9daf87eb606ab6"
+          },
+          {
+            "case": "ja-lighting-flat-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "65099789f271ec627feee18348bc9ad035a6d0f1c01bd579ca9daf87eb606ab6"
+          },
+          {
+            "case": "ja-lighting-curve-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "9063055c068acd050f31438064424a693b1f687a001e36e6930cce4648050802"
+          },
+          {
+            "case": "ja-lighting-curve-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "9063055c068acd050f31438064424a693b1f687a001e36e6930cce4648050802"
+          }
+        ],
+        "malformed_sources_rejected": 28,
+        "binding_failures_rejected": 22,
+        "legacy_reference_parity": true,
+        "shared_edge_rgb_preserved": true,
+        "material_modes_kept_separate": true,
+        "shader_modifiers_and_unlit": true,
+        "onlyents_relight": true,
+        "small_patch_triangles_preserved": true,
+        "decompiler_warns_about_unrecovered_paint": true
+      },
+      "related_ctest_before_final_small_triangle_fix": 12,
+      "final_related_ctest_passed": 3,
+      "final_ctest_log": ".agents/tmp/patch-paint/ctest-final-windows.log",
+      "final_ctest_log_sha256": "ee8819c1f4c939d859609b1cedc6426037d42ab236fd20624df27ab9d1d400e4",
+      "ctest_log": ".agents/tmp/patch-paint/ctest-windows.log",
+      "ctest_log_sha256": "c4f0aa0944a503b1372717968abeec14126949f6f4ec8c68995d69c22de9ce92",
+      "direct_log": ".agents/tmp/patch-paint/test-windows.log",
+      "direct_log_sha256": "0c7c1c7b30a744e9bbd40bf1ec1c3cf3591590da4fa05a0af80ec0565d24146a"
+    },
+    "linux": {
+      "build_directory": "build/linux-release",
+      "compiler_sha256": "d134cc4fcf56d3f33785007e7a75e897bb5788a8389d8c556819c716840f24ae",
+      "previous_compiler_sha256": "a885e42afd4b0d77f26e4854a5d60e1c1a15fb2a6dfdb4092da6ce960c271eae",
+      "matrix": {
+        "matrix": [
+          {
+            "case": "quake3-material-flat-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "870cc78e18a06bc3fe8736aac0b8477d30760693300e412a31d63485cf8bae10"
+          },
+          {
+            "case": "quake3-material-flat-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "fb1121bcb47152886d330a968da37f0967df12c04564cdd5b34b9d4cc8b9aed7"
+          },
+          {
+            "case": "quake3-material-curve-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "0b6ead551b7d447fefa4f69e983dc0c78f9f76c61813655cb837fcd487559cfd"
+          },
+          {
+            "case": "quake3-material-curve-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "da97b84f080228fdfbc52525139224e7876ce45ae9dde8f5c74e14d1889e7bb1"
+          },
+          {
+            "case": "quake3-lighting-flat-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "66f7ad2feb1e3aaa1cfacb958124d23b40ff639d3a1503230312f7bf08bad041"
+          },
+          {
+            "case": "quake3-lighting-flat-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "66f7ad2feb1e3aaa1cfacb958124d23b40ff639d3a1503230312f7bf08bad041"
+          },
+          {
+            "case": "quake3-lighting-curve-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "7ca57e7af685fb4e6297b78098c9eddddab7e73b4118bdcceef39150cc557ff4"
+          },
+          {
+            "case": "quake3-lighting-curve-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "05a554dd4aadd038025eff45049984212485f69d62b721148fde02de7cd629d3"
+          },
+          {
+            "case": "ja-material-flat-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "a997a3ddb1d8d3933f6932f6233b727c7efd10c9890ed5f4eb397360513c66af"
+          },
+          {
+            "case": "ja-material-flat-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "cf793c679f919b99fe4ab5bcb42f10177ae28133ccafa4bbfa57f9715f852ad1"
+          },
+          {
+            "case": "ja-material-curve-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "989a696803d50223b7c564f48308da8b482efdef94d6edfbac57f17fb2d99fdd"
+          },
+          {
+            "case": "ja-material-curve-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "989a696803d50223b7c564f48308da8b482efdef94d6edfbac57f17fb2d99fdd"
+          },
+          {
+            "case": "ja-lighting-flat-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "0517ec6d3add32fc8e2be7405d147a8a6ebfd1c05cbcd03db7ee9bee7e3cf33e"
+          },
+          {
+            "case": "ja-lighting-flat-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "42b33e4958c063b1ae8cf9a2d2419ebebf00354b2af29b0e4a30a79d751d7ea1"
+          },
+          {
+            "case": "ja-lighting-curve-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "9e891cd7e75247aae285374718ba8008238bceb92f6da37564cc89522aed0133"
+          },
+          {
+            "case": "ja-lighting-curve-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "7729ec8356c2bb97bbf05cbed192ab8742855b7c11b42a81461690ca570aa57a"
+          }
+        ],
+        "malformed_sources_rejected": 28,
+        "binding_failures_rejected": 22,
+        "legacy_reference_parity": true,
+        "shared_edge_rgb_preserved": true,
+        "material_modes_kept_separate": true,
+        "shader_modifiers_and_unlit": true,
+        "onlyents_relight": true,
+        "small_patch_triangles_preserved": true,
+        "decompiler_warns_about_unrecovered_paint": true
+      },
+      "related_ctest_before_final_small_triangle_fix": 12,
+      "final_related_ctest_passed": 3,
+      "final_ctest_log": ".agents/tmp/patch-paint/ctest-final-linux.log",
+      "final_ctest_log_sha256": "8f51bd25052c41a9e32ebd8c8c7095670a3b30beb3f49c0576fcf4c4a7e0fabe",
+      "ctest_log": ".agents/tmp/patch-paint/ctest-linux.log",
+      "ctest_log_sha256": "6acbb51d8eba64b56e0604fe824d9ca738f1304ebf72c6ad8057fe39b311a9d0",
+      "direct_log": ".agents/tmp/patch-paint/test-linux.log",
+      "direct_log_sha256": "2891c1d0398db2ec42f83485db8d7b3692526a9c9e7d7a6f0009b0eaf248c4bc"
+    },
+    "sanitized": {
+      "build_directory": "build/linux-sanitized",
+      "compiler_sha256": "02693b42840a551ca61836d0a85af4c7ffb99adf2c054bb44b2ed110dc82c01b",
+      "previous_compiler_sha256": "b3696d0393ed747edee0cec54539c93acd2f14c8027cd1d8d36a7914ff31cc19",
+      "matrix": {
+        "matrix": [
+          {
+            "case": "quake3-material-flat-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "346dccc0a35fd28874f7027fd3def6f6fa1cca13a95a73c1b250c6a56bf71d3a"
+          },
+          {
+            "case": "quake3-material-flat-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "a821ffb0a5ccad455aa288d6f314c2f2a050b5e7076e1e8787c3d467a0432d94"
+          },
+          {
+            "case": "quake3-material-curve-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "ffdb311a96232b5d7cf28fb4a4dbcafcc3b476e2e9f734d39cae777d2fcc9422"
+          },
+          {
+            "case": "quake3-material-curve-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "24f02a154ea558d7f5b745afc2e953caea049603fabf68189b7ccf06efb3c5d8"
+          },
+          {
+            "case": "quake3-lighting-flat-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "92b7314b0dc64ff8db9c8be67fa74a35da0b5d9f310827acc60810aaaef26bd1"
+          },
+          {
+            "case": "quake3-lighting-flat-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "d06ba8a861b5f7355cc7d694b99e91dde2e84ed805eb8af7ea5e956957f28232"
+          },
+          {
+            "case": "quake3-lighting-curve-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "3d4fdef331b792d882ad91a2e5c2a00d6411537242b103cc02829a4c2c4f2626"
+          },
+          {
+            "case": "quake3-lighting-curve-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "b48e4063b76ee8c54b37dbe1d783ffe2a037c7c70edd6b36cdf917f946db9270"
+          },
+          {
+            "case": "ja-material-flat-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "85b98ad8a6c394852702db8513a3e1b4016c121db5e3afe6d0bd9f76779a47b8"
+          },
+          {
+            "case": "ja-material-flat-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "f696f6fce409014e6ec6647072c7e4376763fe293c55acb5d992ecc400db14fa"
+          },
+          {
+            "case": "ja-material-curve-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "3a2e2c5a2df38e753ffec28c4c48b6251ad2addad40d251be8d12c0b9a838623"
+          },
+          {
+            "case": "ja-material-curve-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "f6a4f963ea57a00ead1866c33dcff82bc4de41d1c2eea3866fe69a108ff8d1e0"
+          },
+          {
+            "case": "ja-lighting-flat-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "2117fbbfcb439e1b256061de3f245eefdf7a16fa1f4144e66d7bf6ce9b053c07"
+          },
+          {
+            "case": "ja-lighting-flat-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "049733d83c065424722edcb97e7f73f0b1a8fccff170264bca26dd764e676f72"
+          },
+          {
+            "case": "ja-lighting-curve-t1",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "d58cd3c8f38090f1ecff959a518916f96ea0fa19090fcdb900cf1587c4faeffb"
+          },
+          {
+            "case": "ja-lighting-curve-t4",
+            "render_triangles": 128,
+            "render_surfaces": 2,
+            "relights": 2,
+            "repeated_light_lump_parity": true,
+            "bsp_sha256": "5ca2daf0ace4ef0726e8984d9dc6b894177b9f286a0eaa63b838f40e2e31d51f"
+          }
+        ],
+        "malformed_sources_rejected": 28,
+        "binding_failures_rejected": 22,
+        "legacy_reference_parity": true,
+        "shared_edge_rgb_preserved": true,
+        "material_modes_kept_separate": true,
+        "shader_modifiers_and_unlit": true,
+        "onlyents_relight": true,
+        "small_patch_triangles_preserved": true,
+        "decompiler_warns_about_unrecovered_paint": true
+      },
+      "related_ctest_before_final_small_triangle_fix": 12,
+      "final_related_ctest_passed": 3,
+      "final_ctest_log": ".agents/tmp/patch-paint/ctest-final-sanitized.log",
+      "final_ctest_log_sha256": "cd2765c2e000ce4783fea8d8cf554eedbbdbcf5333efab53a1ac3f9fc96b066c",
+      "ctest_log": ".agents/tmp/patch-paint/ctest-sanitized.log",
+      "ctest_log_sha256": "800656a58b8abbb834b3085b58c2042d8805bf720dc1830e987ed0d70ce41a74",
+      "direct_log": ".agents/tmp/patch-paint/test-sanitized.log",
+      "direct_log_sha256": "2891c1d0398db2ec42f83485db8d7b3692526a9c9e7d7a6f0009b0eaf248c4bc"
+    }
+  },
+  "related_ctest_groups": [
+    "compiler_pipeline",
+    "lighting_materials",
+    "bsp_validation",
+    "geometry_optimize",
+    "meta_order",
+    "patch_input",
+    "script_input",
+    "brush_input",
+    "surface_density",
+    "patch_paint",
+    "light_probes",
+    "recovery_outputs"
+  ],
+  "notes": [
+    "Each platform passed the 12-group related CTest selection. A subsequent half-unit-patch regression exposed the legacy 0.125-edge cutoff; after the paint-specific fix, each final compiler passed compiler_pipeline, geometry_optimize and meta_order again plus the full expanded paint corpus with reference, repeated-LIGHT and worker parity checks.",
+    "Reference comparisons cover legacy BSP lump payloads, SRF bytes and LIGHT lump payloads with identical argv. Worker comparison removes only literal _q3map2_cmdline provenance.",
+    "The Quake III and Jedi Academy fixtures install and verify loading actual shader scripts from scripts/ and shaders/ respectively.",
+    "Sample checks compare analytic Bezier position and RGBA, periodic UV values and unit normals. Native RGBA style storage is checked; the light scenes themselves are unstyled.",
+    "Linux builds use the existing project-local assimp/dependency extraction through LIBRARY_PATH and LD_LIBRARY_PATH; no system dependencies were installed.",
+    "ASan/UBSan uses the existing Debug -g -O1 build with assertions; leak detection remains disabled for inherited process-lifetime allocations.",
+    "No native editor, game, OS screenshot or input injection was used. Current NRC integration cannot yet load q3mapxPatchDef2.",
+    "Shader modifiers, duplicate vertices and parent metadata are covered within the documented corpus; animated materials, general runtime/LOD seams, large-map costs, original-paint recovery and broader native profiles are unqualified."
+  ]
+}

@@ -30,6 +30,7 @@
 
 /* dependencies */
 #include "q3map2.h"
+#include "authoring/patch_paint.h"
 #include "bspfile_abstract.h"
 #include "bspfile_native.h"
 #include "bspfile_early.h"
@@ -1704,6 +1705,8 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		writer.Key( "limitations" );
 		writer.StartArray();
 		writer.String( "Original editor groups are unavailable; removed entities and some source model instances may not be stored in the BSP." );
+		if ( !strEmpty( entities[0].valueForKey( q3mapx::authoring::paintBindingKey ) ) )
+			writer.String( "This BSP contains authored patch paint. MAP recovery does not yet restore its RGBA controls, RGB mode or tessellation settings; keep the original q3mapxPatchDef2 source. The BSP/SRF binding is a build identity, not original authoring metadata." );
 		writer.String( decompileOptions.lightRecovery
 		    ? "Selected conditional light proposals are exported under their recorded bake hypothesis. Stored observations/scores and BSP identity are checked; native lighting is not recomputed here. Original author lights, target identity and rebuilt lighting equivalence remain unproven."
 		    : "Baked lightmaps and lightgrid data are not reconstructed as source lights by MAP export." );
@@ -1726,6 +1729,8 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 	}
 	if ( decompileOptions.lightRecovery ) decompileOptions.lightRecovery->verifyInputs();
 	outputs.commit();
+	if ( !strEmpty( entities[0].valueForKey( q3mapx::authoring::paintBindingKey ) ) )
+		Sys_Warning( "Authored patch paint is not restored by MAP recovery; keep the original q3mapxPatchDef2 source\n" );
 	Sys_Printf( "Recovered %zu brushes, %zu patches; %zu/%zu faces matched texture coordinates, %zu used fallback\n",
 	    recovery.brushes, recovery.patches, recovery.matchedFaces, recovery.faces, recovery.fallbackFaces );
 	if ( recovery.skippedBrushes || recovery.degenerateUVs || recovery.approximateQuakeFaces ) {

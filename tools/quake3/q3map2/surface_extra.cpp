@@ -31,7 +31,14 @@
 /* dependencies */
 #include "q3map2.h"
 #include "surface_extra.h"
+#include "bspfile_rbsp.h"
 #include "authoring/surface.h"
+#include "authoring/patch_paint.h"
+#include <glib.h>
+#include <bit>
+#include <charconv>
+#include <memory>
+#include <set>
 
 
 /* -------------------------------------------------------------------------------
@@ -43,6 +50,84 @@
 
 static std::vector<surfaceExtra_t> surfaceExtras;
 static surfaceExtra_t seDefault;
+static std::string paintBinding;
+
+namespace {
+bool validPaintBinding( std::string_view value ) {
+	return value.size() == 64 && std::ranges::all_of( value, []( char c ) { return ( c >= '0' && c <= '9' ) || ( c >= 'a' && c <= 'f' ); } );
+}
+
+// Bind modes and their immutable output channels to exact output topology.
+// Exclude lightmaps, baked RGB and generated shader names: LIGHT changes them.
+// Canonical little-endian words avoid host layout/padding in the digest.
+std::string patchPaintDigest() {
+	std::unique_ptr<GChecksum, decltype( &g_checksum_free )> hash( g_checksum_new( G_CHECKSUM_SHA256 ), g_checksum_free );
+	if ( !hash ) Error( "Cannot allocate patch paint checksum" );
+	std::array<uint32_t, 1024> buffer;
+	size_t used = 0;
+	auto flush = [&] {
+		g_checksum_update( hash.get(), reinterpret_cast<const guchar*>( buffer.data() ), used * sizeof( uint32_t ) );
+		used = 0;
+	};
+	auto word = [&]( uint32_t n ) {
+		buffer[used++] = GUINT32_TO_LE( n );
+		if ( used == buffer.size() ) flush();
+	};
+	word( 1 );
+	const int styles = g_game->load == LoadRBSPFile ? MAX_LIGHTMAPS : 1;
+	word( styles );
+	word( bspDrawSurfaces.size() );
+	for ( size_t index = 0; index < bspDrawSurfaces.size(); ++index ) {
+		const auto& ds = bspDrawSurfaces[index];
+		const int mode = GetSurfaceExtra( index ).paintMode;
+		word( mode ); word( ds.surfaceType ); word( ds.firstVert ); word( ds.numVerts ); word( ds.firstIndex ); word( ds.numIndexes );
+		word( GetSurfaceExtra( index ).parentSurfaceNum );
+		word( ds.patchWidth ); word( ds.patchHeight );
+		for ( int v = 0; v < ds.numVerts; ++v ) {
+			const auto& vert = bspDrawVerts[ds.firstVert + v];
+			for ( int axis = 0; axis < 3; ++axis ) word( std::bit_cast<uint32_t>( vert.xyz[axis] ) );
+			for ( int axis = 0; axis < 2; ++axis ) word( std::bit_cast<uint32_t>( vert.st[axis] ) );
+			if ( mode ) for ( int style = 0; style < styles; ++style ) {
+				word( vert.color[style].alpha() );
+				if ( mode == q3mapx::authoring::materialPaint )
+					for ( int channel = 0; channel < 3; ++channel ) word( vert.color[style][channel] );
+			}
+		}
+		for ( int i = 0; i < ds.numIndexes; ++i ) word( bspDrawIndexes[ds.firstIndex + i] );
+	}
+	if ( used ) flush();
+	return g_checksum_get_string( hash.get() );
+}
+}
+
+void BindPatchPaint() {
+	paintBinding.clear();
+	entities[0].epairs.remove_if( []( const epair_t& ep ) { return striEqual( ep.key.c_str(), q3mapx::authoring::paintBindingKey ); } );
+	if ( std::ranges::any_of( surfaceExtras, []( const auto& se ) { return se.paintMode != 0; } ) ) {
+		paintBinding = patchPaintDigest();
+		entities[0].setKeyValue( q3mapx::authoring::paintBindingKey, paintBinding.c_str() );
+	}
+}
+
+void ValidatePatchPaintBinding() {
+	for ( size_t index = 0; index < surfaceExtras.size(); ++index ) {
+		const int parent = surfaceExtras[index].parentSurfaceNum;
+		if ( parent < -1 || ( parent >= 0 && ( size_t( parent ) >= bspDrawSurfaces.size()
+		  || size_t( parent ) >= index || bspDrawSurfaces[parent].numVerts != bspDrawSurfaces[index].numVerts ) ) )
+			Error( "Invalid SRF parent surface for surface %zu", index );
+	}
+	const std::string_view stored = entities[0].valueForKey( q3mapx::authoring::paintBindingKey );
+	const bool painted = std::ranges::any_of( surfaceExtras, []( const auto& se ) { return se.paintMode != 0; } );
+	if ( stored.empty() && paintBinding.empty() && !painted ) return;
+	if ( !painted || !validPaintBinding( stored ) || stored != paintBinding || stored != patchPaintDigest() )
+		Error( "Patch paint BSP/SRF binding mismatch; rebuild BSP and keep its matching SRF before LIGHT" );
+}
+
+void ResolveSurfaceExtraShaders() {
+	if ( !seDefault.shaderName.empty() ) seDefault.si = &ShaderInfoForShader( seDefault.shaderName.c_str() );
+	for ( auto& se : surfaceExtras )
+		if ( !se.shaderName.empty() ) se.si = &ShaderInfoForShader( se.shaderName.c_str() );
+}
 
 
 
@@ -79,6 +164,7 @@ void SetSurfaceExtra( const mapDrawSurface_t& ds ){
 	se.recvShadows  = ds.recvShadows;
 	se.sampleSize   = ds.sampleSize;
 	se.authoredSampleSize = ds.lightmapSampleSizeOverride;
+	se.paintMode = ds.paintMode;
 	se.ambientColor = ds.ambientColor;
 	se.longestCurve = ds.longestCurve;
 	se.lightmapAxis = ds.lightmapAxis;
@@ -151,6 +237,8 @@ void WriteSurfaceExtraFile( const char *path ){
 
 		/* open braces */
 		fprintf( sf, "{\n" );
+		if ( i < 0 && !paintBinding.empty() ) fprintf( sf, "\tpatchPaintBinding1 %s\n", paintBinding.c_str() );
+		if ( se.paintMode ) fprintf( sf, "\tpatchPaintMode %d\n", se.paintMode );
 
 		/* shader */
 		if ( se.si != nullptr ) {
@@ -226,11 +314,15 @@ void LoadSurfaceExtraFile( const char *path ){
 	/* parse the file */
 	if( !LoadScriptFile( srfPath, -1 ) )
 		Error( "" );
+	surfaceExtras.clear();
+	paintBinding.clear();
+	std::set<int> records;
 
 	/* tokenize it */
 	while ( GetToken( true ) ) /* test for end of file */
 	{
 		surfaceExtra_t  *se;
+		int record = -1;
 		/* default? */
 		if ( striEqual( token, "default" ) ) {
 			se = &seDefault;
@@ -239,10 +331,12 @@ void LoadSurfaceExtraFile( const char *path ){
 		/* surface number */
 		else
 		{
-			const int surfaceNum = atoi( token );
-			if ( surfaceNum < 0 ) {
-				Error( "ReadSurfaceExtraFile(): %s, line %d: bogus surface num %d", srfPath.c_str(), scriptline, surfaceNum );
-			}
+			int surfaceNum = -1;
+			const char* end = token + std::strlen( token );
+			const auto result = std::from_chars( token, end, surfaceNum );
+			if ( result.ec != std::errc{} || result.ptr != end || surfaceNum < 0 || size_t( surfaceNum ) >= bspDrawSurfaces.size() )
+				Error( "ReadSurfaceExtraFile(): %s, line %d: surface index outside loaded BSP", srfPath.c_str(), scriptline );
+			record = surfaceNum;
 			if( size_t( surfaceNum ) >= surfaceExtras.size() ){
 				if( size_t( surfaceNum ) >= surfaceExtras.capacity() ) // ensure that capacity grows efficiently, as it's not guaranteed for vector::resize()
 					surfaceExtras.reserve( surfaceExtras.capacity() << 1 );
@@ -250,23 +344,44 @@ void LoadSurfaceExtraFile( const char *path ){
 			}
 			se = &surfaceExtras[ surfaceNum ];
 		}
+		if ( !records.insert( record ).second ) Error( "Duplicate SRF surface record at line %d", scriptline );
+		bool hasPaintMode = false;
 
 		/* handle { } section */
 		if ( !( GetToken( true ) && strEqual( token, "{" ) ) ) {
 			Error( "ReadSurfaceExtraFile(): %s, line %d: { not found", srfPath.c_str(), scriptline );
 		}
-		while ( GetToken( true ) && !strEqual( token, "}" ) )
+		while ( true )
 		{
+			if ( !GetToken( true ) ) Error( "Incomplete SRF surface record at line %d", scriptline );
+			if ( strEqual( token, "}" ) ) break;
+			if ( strEqual( token, "patchPaintMode" ) ) {
+				if ( record < 0 || hasPaintMode || !GetToken( false ) || !( strEqual( token, "1" ) || strEqual( token, "2" ) ) )
+					Error( "Invalid patchPaintMode at line %d", scriptline );
+				se->paintMode = token[0] - '0';
+				hasPaintMode = true;
+				if ( TokenAvailable() ) Error( "Trailing patchPaintMode data at line %d", scriptline );
+				continue;
+			}
+			else if ( strEqual( token, "patchPaintBinding1" ) ) {
+				if ( record >= 0 || !paintBinding.empty() || !GetToken( false ) || !validPaintBinding( token ) )
+					Error( "Invalid patchPaintBinding1 at line %d", scriptline );
+				paintBinding = token;
+				if ( TokenAvailable() ) Error( "Trailing patchPaintBinding1 data at line %d", scriptline );
+				continue;
+			}
 			/* shader */
-			if ( striEqual( token, "shader" ) ) {
+			else if ( striEqual( token, "shader" ) ) {
 				GetToken( false );
-				se->si = &ShaderInfoForShader( token );
+				se->shaderName = token;
 			}
 
 			/* parent surface number */
 			else if ( striEqual( token, "parent" ) ) {
-				GetToken( false );
-				se->parentSurfaceNum = atoi( token );
+				if ( !GetToken( false ) ) Error( "Missing SRF parent index at line %d", scriptline );
+				const char* end = token + std::strlen( token );
+				const auto result = std::from_chars( token, end, se->parentSurfaceNum );
+				if ( result.ec != std::errc{} || result.ptr != end ) Error( "Invalid SRF parent index at line %d", scriptline );
 			}
 
 			/* entity number */

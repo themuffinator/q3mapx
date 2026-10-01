@@ -31,6 +31,7 @@
 /* dependencies */
 #include "q3map2.h"
 #include "bspfile_rbsp.h"
+#include "surface_extra.h"
 
 
 
@@ -333,6 +334,7 @@ void EndBSPFile( bool do_write ){
 	EmitPlanes();
 
 	numBSPEntities = entities.size();
+	BindPatchPaint();
 	UnparseEntities();
 
 	if ( do_write ) {

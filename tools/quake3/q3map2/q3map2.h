@@ -835,6 +835,7 @@ struct parseMesh_t
 {
 	int entityNum, brushNum;                    /* ydnar: editor numbering */
 	int lightmapSampleSizeOverride = 0;         /* authored patch; 0 inherits */
+	int paintMode = 0, paintSubdivisions = 0;
 
 	/* ydnar: for shadowcasting entities */
 	int castShadows;
@@ -943,6 +944,7 @@ struct mapDrawSurface_t_params
 	/* ydnar: per-surface (per-entity, actually) lightmap sample size scaling */
 	float lightmapScale;
 	int lightmapSampleSizeOverride = 0;
+	int paintMode = 0, paintSubdivisions = 0;
 
 	/* jal: per-surface (per-entity, actually) shadeangle */
 	float shadeAngleDegrees;
@@ -1415,6 +1417,7 @@ struct surfaceInfo_t
 	Vector3 axis;
 	MinMax minmax;
 	bool hasLightmap, approximated;
+	int paintMode;
 	int firstSurfaceCluster, numSurfaceClusters;
 };
 
@@ -1600,6 +1603,7 @@ float                       PatchLongestCurve(mesh_view_t mesh);
 mesh_t                      SubdivideMesh2( const mesh_view_t in, int iterations );
 mesh_t                      RemoveLinearMeshColumnsRows( const mesh_t& in );
 mesh_t                      TessellatedMesh( const mesh_view_t in, int iterations );
+mesh_t                      TessellatedPaintMesh( const mesh_view_t in, int segments );
 void                        MakeMeshNormals( mesh_t& in );
 void                        PutMeshOnCurve( mesh_t& in );
 
@@ -1722,7 +1726,7 @@ inline node_t               *AllocNode(){ return new node_t(); } // zero initial
 
 
 /* patch.c */
-void                        ParsePatch( bool onlyLights, entity_t& mapEnt, int mapPrimitiveNum, bool authoredSurface = false );
+void                        ParsePatch( bool onlyLights, entity_t& mapEnt, int mapPrimitiveNum, int authoringVersion = 0 );
 void                        PatchMapDrawSurfs( entity_t& e );
 
 

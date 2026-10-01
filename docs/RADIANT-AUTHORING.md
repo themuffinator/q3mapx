@@ -13,6 +13,11 @@ effective material classification or packed atlas. Patch RGB/alpha painting,
 effective inherited-density previews and compiled-atlas inspection remain open
 in [M11](PLAN.md#m11--radiant-painting-and-per-surface-lighting-controls).
 
+The separate [patch RGBA compiler foundation](PATCH-PAINT.md) introduces
+`q3mapxPatchDef2`. This version of the NRC integration does not yet support that
+primitive; its patch authoring remains density-only. Native painting and its
+source persistence are the next integration work.
+
 ## Editing and precedence
 
 1. Use the patched NRC with a Quake III MAP game profile. Open the Surface

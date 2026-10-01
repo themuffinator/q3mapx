@@ -3130,3 +3130,75 @@ preserved and the fix remains an explicit plan item. Previously recorded numeric
 scale/shift, token/include lookahead, compiler-warning, VIS and raw sidecar
 publication issues remain open. The broader recovery, optimization and M11 goal
 continues.
+
+
+## 2026-10-01 — Patch RGBA compiler foundation
+
+Implemented the compiler contract needed by M11's native Radiant painting work.
+`q3mapxPatchDef2` stores RGBA bytes on patch controls, an explicit lighting/material
+RGB mode, per-patch density and bounded paint subdivisions. Alpha-only authoring
+retains normal vertex illumination; material mode preserves RGB independently of
+vertex lighting while lightmaps continue to bake. Shader and volume modifiers
+retain their existing order. Ordinary patch and density-only input stays compatible.
+See [the contract and limits](PATCH-PAINT.md) and
+[validation evidence](validation/patch-paint.json).
+
+Painted patches automatically generate render triangles so flat geometry does not
+lose nonlinear gradients through native patch LOD or geometric simplification.
+The evaluator samples position, UV, normal and color together, rounding color only
+once. Solid/playerclip patches retain native nodraw collision patches. Both meta
+vertex-merging passes and normal-smoothing reconstruction retain distinct painted
+RGB, and different RGB modes cannot merge. A final half-unit-patch test exposed the
+legacy 0.125-edge cutoff erasing valid paint geometry; the painted path now rejects
+zero-area triangles without using that size heuristic. Legacy thresholds are unchanged.
+
+BSP worldspawn and SRF share a SHA-256 binding of ordered topology, parent references,
+positions, UVs, modes and immutable native paint channels, including all four RBSP
+color channels. LIGHT validates it before deleting its generated shader or writing
+outputs. Hashing batches canonical words in a 4 KiB buffer. SRF indices are bounded
+by the loaded BSP; duplicate/truncated records and invalid parents fail explicitly.
+Shader resolution is deferred until validation completes, then restored before MAP
+light-entity parsing. Entity-only builds retain the existing geometry's binding.
+Decompilation warns in the console and report that original paint is not recovered.
+
+Validation:
+
+- Windows Release, Linux Release and Linux Debug ASan/UBSan pass 16 generated
+  Q3/JA cases each: flat/curved patches, both RGB modes and one/four workers.
+  Both profiles load their actual generated shader scripts. Checks compare analytic
+  Bezier positions/colors, periodic UVs, unit normals, density, collision flags and
+  all stored native color channels. Repeated LIGHT and one/four-worker BSP/LIGHT
+  lump payloads match after removing only command-line provenance.
+- Each final compiler also passes shared-edge RGB discontinuities, mode separation,
+  shader color/alpha scaling, unlightmapped materials, small-patch retention,
+  entity-only relighting and the decompiler warning. Legacy BSP/SRF and LIGHT
+  comparisons against the preceding binary preserve all tested lump/SRF bytes.
+- Each rejects 28 malformed sources while preserving prior MAP/BSP/SRF/PRT/LIN/REG
+  bytes and rejects 22 invalid/stale paint-binding cases, including secondary RBSP
+  channels. Binding failures preserve the previous BSP and generated shader where
+  included in the safety fixture.
+- Twelve related CTest groups passed per platform before the final small-triangle
+  fix. After that localized change, the final binaries passed the full expanded
+  paint corpus with reference comparisons plus `compiler_pipeline`,
+  `geometry_optimize` and `meta_order` again. The full 82-test GUI-enabled inventory
+  was not rerun. Sanitizers keep assertions and the established lifetime-leak exclusion.
+
+This round does not deliver native Radiant painting, editor persistence/undo, material
+preview or runtime raster/LOD seam qualification. The current NRC integration cannot
+read the new primitive yet. Native styles/dynamic lighting, animated materials,
+large-map costs, broader native profiles and recovery of original paint remain open.
+No editor/game was launched, no OS screenshot was taken and no input was injected.
+No portable package was updated. Existing NRC source and its integration were untouched.
+
+Logs, reference executables and the evidence recorder remain in
+`.agents/tmp/patch-paint/`; native fixtures/results are under each build's
+`tests/patch-paint/`. Two disposable editing scripts were removed after verifying
+their exact independent-file paths. Previously blocked cleanup targets were untouched.
+
+One separate inherited issue was exposed: LIGHT-only brush parsing takes texture
+dimensions from the first shader, which may not yet be initialized. Resolving SRF
+shaders before parsing restores existing behavior for this round; removing that
+order dependency is now tracked in the plan. Existing raw-sidecar publication,
+parser/CLI audits and compiler warnings remain open. Continue with the native
+Radiant paint model, persistence and painting controls, followed by preview and
+runtime qualification; the broader project goal remains active.

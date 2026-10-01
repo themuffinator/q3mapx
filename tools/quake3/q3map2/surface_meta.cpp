@@ -41,10 +41,11 @@ struct metaTriangle_t;
 struct metaVertex_t : public bspDrawVert_t
 {
 	std::vector<metaTriangle_t*> m_triangles;    // references to triangles, introducing this vertex // bspDrawVert_equal()
+	int paintMode = 0;
 	std::list<metaVertex_t> *m_metaVertexGroup;  // reference to own group of vertices with equal .xyz position
 
 	metaVertex_t() = default;
-	metaVertex_t( const bspDrawVert_t& vert ) : bspDrawVert_t( vert ){}
+	metaVertex_t( const bspDrawVert_t& vert, int paint = 0 ) : bspDrawVert_t( vert ), paintMode( paint ){}
 };
 
 using MetaVertexGroups = std::multimap
@@ -58,6 +59,7 @@ struct metaTriangle_t
 	const side_t        *side; // can be nullptr
 	int entityNum, surfaceNum, planeNum, fogNum, sampleSize, castShadows, recvShadows;
 	int lightmapSampleSizeOverride;
+	int paintMode;
 	float shadeAngleDegrees;
 	Vector3 ambientColor;
 	Plane3f plane;
@@ -102,21 +104,22 @@ inline bool bspDrawVert_equal( const bspDrawVert_t& a, const bspDrawVert_t& b ){
    finds a matching metavertex in the global list or inserts new one
  */
 
-static metaVertex_t* metaVertex_findOrInsert( const bspDrawVert_t& src ){
+static metaVertex_t* metaVertex_findOrInsert( const bspDrawVert_t& src, int paintMode ){
 	/* try to find an existing drawvert */
 	const auto begin = metaVerts.lower_bound( spatial_distance( src.xyz ) - c_spatial_EQUAL_EPSILON );
 	const auto end = metaVerts.upper_bound( spatial_distance( src.xyz ) + c_spatial_EQUAL_EPSILON );
 
 	for( auto it = begin; it != end; ++it ){
 		for( auto& vertex : it->second )
-			if( bspDrawVert_equal( src, vertex ) )
+			if( paintMode == vertex.paintMode && bspDrawVert_equal( src, vertex )
+			 && ( !paintMode || src.color == vertex.color ) )
 				return &vertex;
 	}
 	/* try to put to exisitng group */
 	for( auto it = begin; it != end; ++it ){
 		auto& list = it->second;
 		if( VectorCompare( src.xyz, list.front().xyz ) ){
-			auto& newVertex = list.emplace_back( src );
+			auto& newVertex = list.emplace_back( src, paintMode );
 			newVertex.m_metaVertexGroup = &list;
 			return &newVertex;
 		}
@@ -124,7 +127,7 @@ static metaVertex_t* metaVertex_findOrInsert( const bspDrawVert_t& src ){
 
 	/* add new vertex group */
 	auto& list = metaVerts.emplace_hint( begin, spatial_distance( src.xyz ), decltype( metaVerts )::mapped_type() )->second;
-	auto& newVertex = list.emplace_back( src );
+	auto& newVertex = list.emplace_back( src, paintMode );
 	newVertex.m_metaVertexGroup = &list;
 	/* return the vertex */
 	return &newVertex;
@@ -165,6 +168,9 @@ struct CompareMetaTriangles
 		else if ( a.lightmapSampleSizeOverride != b.lightmapSampleSizeOverride ) {
 			return a.lightmapSampleSizeOverride < b.lightmapSampleSizeOverride;
 		}
+		else if ( a.paintMode != b.paintMode ) {
+			return a.paintMode < b.paintMode;
+		}
 		else if ( a.ambientColor[0] != b.ambientColor[0] ) { // may be different inside one entityNum for attached misc_models
 			return a.ambientColor[0] < b.ambientColor[0];
 		}
@@ -192,6 +198,7 @@ struct CompareMetaTriangles
 		    && ( a.recvShadows  == b.recvShadows )
 		    && ( a.sampleSize   == b.sampleSize )
 		    && ( a.lightmapSampleSizeOverride == b.lightmapSampleSizeOverride )
+		    && ( a.paintMode == b.paintMode )
 		    && ( a.ambientColor == b.ambientColor );
 	}
 };
@@ -204,10 +211,14 @@ struct CompareMetaTriangles
  */
 
 static void metaTriangle_insert( metaTriangle_t& src, std::array<bspDrawVert_t, 3> verts, int planeNum ){
-	/* detect degenerate triangles fixme: do something proper here */
-	if ( vector3_length( verts[0].xyz - verts[1].xyz ) < 0.125f
+	// Paint refinement can intentionally produce short but valid edges. Do not
+	// erase their color field using the inherited model/brush size heuristic.
+	if ( src.paintMode && vector3_cross( verts[1].xyz - verts[0].xyz, verts[2].xyz - verts[0].xyz ) == g_vector3_identity ) {
+		return;
+	}
+	if ( !src.paintMode && ( vector3_length( verts[0].xyz - verts[1].xyz ) < 0.125f
 	  || vector3_length( verts[1].xyz - verts[2].xyz ) < 0.125f
-	  || vector3_length( verts[2].xyz - verts[0].xyz ) < 0.125f ) {
+	  || vector3_length( verts[2].xyz - verts[0].xyz ) < 0.125f ) ) {
 		return;
 	}
 
@@ -245,9 +256,9 @@ static void metaTriangle_insert( metaTriangle_t& src, std::array<bspDrawVert_t, 
 	}
 
 	/* fill out the src triangle */
-	src.m_vertices[0] = metaVertex_findOrInsert( verts[0] );
-	src.m_vertices[1] = metaVertex_findOrInsert( verts[1] );
-	src.m_vertices[2] = metaVertex_findOrInsert( verts[2] );
+	src.m_vertices[0] = metaVertex_findOrInsert( verts[0], src.paintMode );
+	src.m_vertices[1] = metaVertex_findOrInsert( verts[1], src.paintMode );
+	src.m_vertices[2] = metaVertex_findOrInsert( verts[2], src.paintMode );
 
 	/* try to find an existing triangle */
 	if( !src.m_vertices[0]->m_triangles.empty() // all vertices aren't brand new and have triangles assinged already
@@ -321,6 +332,7 @@ static void SurfaceToMetaTriangles( mapDrawSurface_t& ds ){
 			src.fogNum            = ds.fogNum;
 			src.sampleSize        = ds.sampleSize;
 			src.lightmapSampleSizeOverride = ds.lightmapSampleSizeOverride;
+			src.paintMode = ds.paintMode;
 			src.shadeAngleDegrees = ds.shadeAngleDegrees;
 			src.ambientColor      = ds.ambientColor;
 			src.lightmapAxis      = ds.lightmapAxis;
@@ -350,7 +362,7 @@ static void TriangulatePatchSurface( const entity_t& e, mapDrawSurface_t& ds ){
 	const bool forcePatchMeta = e.boolForKey( "_patchMeta", "patchMeta" );
 
 	/* try to early out */
-	if ( ds.verts.empty() || ds.type != ESurfaceType::Patch || ( !patchMeta && !forcePatchMeta ) ) {
+	if ( ds.verts.empty() || ds.type != ESurfaceType::Patch || ( !patchMeta && !forcePatchMeta && !ds.paintMode ) ) {
 		return;
 	}
 
@@ -363,7 +375,12 @@ static void TriangulatePatchSurface( const entity_t& e, mapDrawSurface_t& ds ){
 		iterations = IterationsForCurve( ds.longestCurve, patchSubdivisions / ( patchQuality == 0? 1 : patchQuality ) );
 	}
 	/* make a mesh from the drawsurf */
-	const mesh_t mesh = TessellatedMesh( mesh_view_t( ds.patchWidth, ds.patchHeight, ds.verts.data() ), iterations ); //%	ds.maxIterations
+	const mesh_view_t controls( ds.patchWidth, ds.patchHeight, ds.verts.data() );
+	const mesh_t mesh = ds.paintMode
+		? TessellatedPaintMesh( controls, std::max( ds.paintSubdivisions, 2 << iterations ) )
+		: TessellatedMesh( controls, iterations );
+	if ( ds.paintMode ) Sys_Printf( "Painted patch entity %d surface %d: %d x %d samples, %d triangles\n",
+		ds.entityNum, ds.surfaceNum, mesh.width, mesh.height, ( mesh.width - 1 ) * ( mesh.height - 1 ) * 2 );
 
 	/* make a copy of the drawsurface */
 	mapDrawSurface_t& dsNew = AllocDrawSurface( ds );
@@ -817,7 +834,7 @@ void MakeEntityMetaTriangles( const entity_t& e ){
 		}
 
 		/* meta this surface? */
-		if ( !meta && !ds.shaderInfo->forceMeta ) {
+		if ( !meta && !ds.shaderInfo->forceMeta && !ds.paintMode ) {
 			continue;
 		}
 
@@ -1192,11 +1209,11 @@ void SmoothMetaTriangles(){
 						if( v.smoothed )
 							newv.normal = v.newnormal;
 
-						auto it = std::ranges::find_if( newlist, [&newv]( const metaVertex_t& v ){
-							return bspDrawVert_equal( newv, v );
+						auto it = std::ranges::find_if( newlist, [&newv, paintMode = v.vertex->paintMode]( const metaVertex_t& v ){
+							return paintMode == v.paintMode && bspDrawVert_equal( newv, v ) && ( !paintMode || newv.color == v.color );
 						} );
 						if( it == newlist.end() ){ /* insert vertex */
-							newlist.push_back( newv );
+							newlist.emplace_back( newv, v.vertex->paintMode );
 							it = --newlist.end();
 							it->m_metaVertexGroup = &list;
 						}
@@ -1254,6 +1271,9 @@ static int AddMetaVertToSurface( const mapDrawSurface_t& ds, const bspDrawVert_t
 			continue;
 		}
 		if ( dv1.color[ 0 ].alpha() != dv2.color[ 0 ].alpha() ) {
+			continue;
+		}
+		if ( ds.paintMode && dv1.color != dv2.color ) {
 			continue;
 		}
 
@@ -1476,6 +1496,7 @@ static void MetaTrianglesToSurface(){
 		ds.fogNum            = seed.fogNum;
 		ds.sampleSize        = seed.sampleSize;
 		ds.lightmapSampleSizeOverride = seed.lightmapSampleSizeOverride;
+		ds.paintMode = seed.paintMode;
 		ds.shadeAngleDegrees = seed.shadeAngleDegrees;
 		ds.ambientColor      = seed.ambientColor;
 		ds.lightmapAxis      = seed.lightmapAxis;

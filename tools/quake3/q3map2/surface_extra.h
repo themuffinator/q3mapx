@@ -27,15 +27,20 @@ struct surfaceExtra_t
 {
 	const mapDrawSurface_t        *mds = nullptr;
 	const shaderInfo_t            *si = nullptr;
+	std::string shaderName; // resolve after SRF/BSP validation and shader loading
 	int parentSurfaceNum = -1;
 	int entityNum = 0;
 	int castShadows = WORLDSPAWN_CAST_SHADOWS;
 	int recvShadows = WORLDSPAWN_RECV_SHADOWS;
 	int sampleSize = 0;
 	int authoredSampleSize = 0;
+	int paintMode = 0;
 	Vector3 ambientColor{ 0 };
 	float longestCurve = 0;
 	Vector3 lightmapAxis{ 0 };
 };
 
 const surfaceExtra_t& GetSurfaceExtra( int num );
+void BindPatchPaint();
+void ValidatePatchPaintBinding();
+void ResolveSurfaceExtraShaders();

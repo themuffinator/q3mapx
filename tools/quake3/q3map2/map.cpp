@@ -31,6 +31,7 @@
 /* dependencies */
 #include "q3map2.h"
 #include "map_input.h"
+#include "authoring/patch_paint.h"
 #include "brush_texture.h"
 
 
@@ -1607,9 +1608,9 @@ static bool ParseMapEntity( bool onlyLights, bool noCollapseGroups, int mapEntit
 			}
 
 			/* check */
-			if ( TokenIs( "patchDef2" ) || TokenIs( q3mapx::authoring::patchDefinition ) ) {
+			if ( TokenIs( "patchDef2" ) || TokenIs( q3mapx::authoring::patchDefinition ) || TokenIs( q3mapx::authoring::paintedPatchDefinition ) ) {
 				++c_patches;
-				ParsePatch( onlyLights, mapEnt, mapPrimitiveNum, TokenIs( q3mapx::authoring::patchDefinition ) );
+				ParsePatch( onlyLights, mapEnt, mapPrimitiveNum, TokenIs( q3mapx::authoring::paintedPatchDefinition ) ? 2 : TokenIs( q3mapx::authoring::patchDefinition ) ? 1 : 0 );
 			}
 			else if ( TokenIs( q3mapx::authoring::brushDefinition ) ) {
 				ParseBrush( onlyLights, noCollapseGroups, mapEnt, mapPrimitiveNum, true );

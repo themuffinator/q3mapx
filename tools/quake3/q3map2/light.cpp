@@ -34,6 +34,7 @@
 #include "lighting_math.h"
 #include "light_gpu.h"
 #include "light_probes.h"
+#include "surface_extra.h"
 #include "bspfile_rbsp.h"
 #include <set>
 
@@ -2942,21 +2943,21 @@ int LightMain( Args& args ) try {
 	/* ydnar: set default sample size */
 	SetDefaultSampleSize( sampleSize );
 
-	/* ydnar: handle shaders */
-	if (!probes) BeginMapShaderFile( source );
-	LoadShaderInfo();
-
 	/* note loading */
 	Sys_Printf( "Loading %s\n", source );
-
-	/* ydnar: load surface file */
-	if (!probes) LoadSurfaceExtraFile( source );
 
 	/* load bsp file */
 	LoadBSPFile( source );
 
 	/* parse bsp entities */
 	ParseEntities();
+	if ( !probes ) {
+		LoadSurfaceExtraFile( source );
+		ValidatePatchPaintBinding();
+		BeginMapShaderFile( source );
+	}
+	LoadShaderInfo();
+	if ( !probes ) ResolveSurfaceExtraShaders();
 	if (probes) probes->prepare();
 
 	/* inject command line parameters */

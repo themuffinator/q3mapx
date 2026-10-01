@@ -221,6 +221,10 @@ not a redefinition of the overall goal around the existing release:
 - [ ] Repair repeated surface classification reapplying a shader's absolute
   sample size after consuming entity lightmap scale. The initial M11 authored
   override bypasses that inherited issue; legacy semantics remain unchanged.
+- [ ] Remove LIGHT-only MAP brush parsing's dependency on the first shader's
+  initialized texture dimensions. Delaying SRF shader resolution exposed a
+  division by zero in derived mapping; this round restores resolution before
+  MAP parsing, while the inherited first-shader assumption remains to be fixed.
 - [ ] Profile larger recovery workloads and address measured costs with geometry,
   UV/material and worker-count parity evidence before claiming speedups.
   Initial whole-command comparisons now cover a dense generated room and private
@@ -474,6 +478,11 @@ Patch painting and the broader preview/qualification requirements remain open.
 - [ ] Add independently editable per-vertex RGB and alpha on patches, without
   requiring `alphaMod` brushes. Define persistent source metadata and its mapping
   from authored patch vertices to tessellated vertices; preserve unpainted defaults.
+  The experimental compiler foundation now accepts `q3mapxPatchDef2` with RGBA
+  controls, explicit lighting/material RGB modes and bounded uniform tessellation.
+  Painted patches render as triangles to retain gradients on flat geometry;
+  legacy patches remain unchanged. Native editor persistence is the next slice.
+  See [the source/lighting contract](PATCH-PAINT.md).
 - [ ] Add Radiant painting with separate RGB/alpha channel controls, color picking,
   brush size/strength/falloff, fill/reset, selection masks and undo/redo. Provide
   immediate color/alpha visualization and a material preview that respects the
@@ -482,9 +491,17 @@ Patch painting and the broader preview/qualification requirements remain open.
   and native BSP color/light-style channels. Preserve the intended result through
   patch subdivision, tessellation, LOD stitching, merging and geometry optimization;
   keep seams and deliberately discontinuous painted regions intact.
+  Initial Q3/JA compiler tests cover flat/curved sample fields, material/lighting
+  separation, density, both meta vertex-merging passes, shader modifiers and
+  direct/bounced/repeated LIGHT. BSP/SRF binding rejects stale paint metadata.
+  Native RGB styles, runtime material/LOD seam equivalence, large-map costs and
+  paint-aware reduction remain open; finite tessellation is not pixel-exact.
 - [ ] Preserve source paint through save/reload, duplication and patch editing.
   Recover compiled colors during decompilation, and restore original paint only
   where retained authoring metadata supports it; distinguish paint from baked light.
+  Decompilation now warns about unrecovered authored paint when its BSP marker
+  is present. The build binding is not a source-control archive. Paint recovery,
+  native copy/topology editing and undo/redo have not been delivered.
 
 Acceptance: paint RGB and alpha independently in Radiant, save/reopen the map and
 compile it through the CLI with the same intended material appearance, without

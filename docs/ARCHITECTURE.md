@@ -141,7 +141,8 @@ against the pinned NRC: existing module interfaces lack persistent surface field
 undo serialization and suitable rendering hooks. `integrations/nrc/prepare.py`
 creates a hash-checked independent source tree; no full editor import is added
 to the compiler build. Compiler/workbench controls alone do not fulfill the
-Radiant interaction requirement. Patch painting remains planned.
+Radiant interaction requirement. Native patch painting remains planned; its
+[compiler foundation](PATCH-PAINT.md) now defines the versioned RGBA contract.
 
 `libs/authoring/surface.h` defines versioned primitive names and the shared strict
 integer density grammar. Metadata lives on Face/Patch objects and inline source
@@ -155,9 +156,15 @@ The native preview consumes face windings and patch tessellation, with bounded
 grid generation and isolated renderer state. It currently shows requested values
 and area estimates; effective inherited/material settings, camera raster and
 packed-atlas inspection are future gates. Existing MAPs and headless compilation
-retain their defaults. Future authored paint, baked lighting and shader modulation
-need explicit composition rules; recovery must not present inseparable baked data
-as original paint.
+retain their defaults. Painted patches use explicit lighting/material RGB modes,
+bounded Bezier sampling and a triangle render representation. Material RGB and
+alpha survive LIGHT; alpha-only paint retains normal vertex illumination. Paint
+mode and colors participate in meta identity. Shader/volume modifiers retain
+their existing order after tessellation. A BSP/SRF SHA-256 binding protects
+ordered geometry and immutable paint channels before relighting mutates outputs.
+It is not source metadata or an authenticity signature. The decompiler warns
+about unrecovered paint; native editor persistence, runtime qualification and
+accurate source recovery remain required.
 
 ## Decisions recorded at project start
 

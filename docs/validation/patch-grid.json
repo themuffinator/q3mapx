@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-01T20:23:10.317646+00:00",
+  "base_revision": "0922eac7d50611465668d93e6909d41f9cfa2973",
+  "scope": "Exact native painted patch control-field reduction and dimension/axis boundary repairs",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "bbc11d496b32e44d92d1e6259e1b192f5bc2edb593a949a288884e97714d9d73",
+    "libs/authoring/patch_grid.h": "5c7283f6684c8caa0bf77da310e08444606130d0e4103513b89f7597e73aadc1",
+    "tests/patch_grid.cpp": "eb2d0283c5bbebb0de19cc75211026b1fab16912e366c6e9359d59d5023a0751",
+    "tests/patch_grid.py": "34c67bf16de60ef54b8196c862b1e2744ab633c4dda798b82709d9085e9b8121",
+    "tests/nrc_authoring.py": "6d3780673b3b11ce18ca81e0fef0915a6f1665ddfe1deec6047644bf101266cf",
+    "integrations/nrc/manifest.json": "cd18b7261c00ab11c50a5af01b34506536715f42a2fe11a57356daa2b74c76c9",
+    "integrations/nrc/q3mapx-authoring.patch": "743bb2a27b8561ff6bb1ac9f82c11556af071cf0cf53d5a67807186c266ce25e",
+    "integrations/nrc/overlay/radiant/q3mapxpaint.h": "9404252d29dc9c867dc3ac4831506d3a4f0627299c2f0df14519cc5bcb6627b9",
+    "integrations/nrc/overlay/radiant/q3mapxpaint.cpp": "c28ae58731bd61e48e6ff628d66e1420f8560e94f97a8a5fe9fe0b5dd90d737c",
+    "integrations/nrc/tests/q3mapxauthoringtest.cpp": "a3b3a7b34f6439fe3656875ab807c3690efa06ef0e6d311a1af498a950e95022"
+  },
+  "upstream": {
+    "url": "https://github.com/Garux/netradiant-custom",
+    "revision": "8216133984031afaa9a857b56ea66dd9c3d54b26",
+    "modified_files_license": "GPL-2.0-or-later"
+  },
+  "preparation": {
+    "output": "build/nrc-grid-verified",
+    "matches_tested_source": true,
+    "patched_upstream_files": 12,
+    "overlays": 8
+  },
+  "oracle": {
+    "windows_release": {
+      "cases": 30029,
+      "accepted": {
+        "float": 5006,
+        "byte": 5000
+      },
+      "oracle": "exact rational polynomial equality and storage representability",
+      "nondefault_rounding_rejected": true,
+      "failure_output_preserved": true,
+      "executable_sha256": "a356d7f49b7d8873bb6cd85fdec4b0627767713b673bc573cc5236327f93e3cc",
+      "denormals_are_zero_rejected": true
+    },
+    "linux_release": {
+      "cases": 30029,
+      "accepted": {
+        "float": 5006,
+        "byte": 5000
+      },
+      "oracle": "exact rational polynomial equality and storage representability",
+      "nondefault_rounding_rejected": true,
+      "failure_output_preserved": true,
+      "executable_sha256": "3a5be5cfc229b8d6cb2b723a85d62d6fa4b2e27d48922fa8c46057751e0b4db7",
+      "denormals_are_zero_rejected": true
+    },
+    "linux_asan_ubsan": {
+      "cases": 30029,
+      "accepted": {
+        "float": 5006,
+        "byte": 5000
+      },
+      "oracle": "exact rational polynomial equality and storage representability",
+      "nondefault_rounding_rejected": true,
+      "failure_output_preserved": true,
+      "executable_sha256": "dac1668fc9520e89ca076c43fa0b6e22df7934605c9be2dcdfcbec482a0f1ef9",
+      "denormals_are_zero_rejected": true
+    }
+  },
+  "native_editor": {
+    "checks": 1475,
+    "editor_model_roundtrip": true,
+    "os_input_control": false,
+    "viewport_raster_tested": false,
+    "compiler_roundtrips": [
+      "quake",
+      "bp",
+      "valve"
+    ],
+    "paint_bsp_and_light_analytic_colors": true,
+    "lighting_mode_native_roundtrip": true,
+    "grid_original_vs_edit_roundtrip_bsp_light_lump_parity": [
+      0,
+      1,
+      2
+    ],
+    "platform": "Windows x64",
+    "gcc": "15.2.0",
+    "qt": "5.15.18",
+    "patch_module_api": 2,
+    "dimension_pairs": 100,
+    "insert_reduce_roundtrips": 144,
+    "axis_limit_cases": 96,
+    "atomic_rejection_cases": 36,
+    "editor_executable_sha256": "5cb5b036606cb20e658e22eb74fda9a39eccffc1e4b8daf6342d73d88f5f6922",
+    "test_executable_sha256": "6bd2fa53d992d33a36714e5b1730d7eda87bf465a8cdfd308d6660cb3102d00a",
+    "mapq3_module_sha256": "876cc80d11a83fe7a3e2adb622b00be31e75ecf7f759a5001d2f1393d5b613f8",
+    "build_log": ".agents/tmp/patch-grid/build.log",
+    "build_log_sha256": "6e11d66896568c7b9cacc206b2f5021a7afe58858fccaf0bff417940eb058c30",
+    "compiler_executable_sha256": "b08192ff08b8540424532922347bad26c5c19d84ce568584de6a4d7d2fa59896",
+    "compiler_runtime_source_changed": false
+  },
+  "limitations": [
+    "Exact source fields with local span remapping; finite tessellation is not pixel invariant",
+    "Painted cap generation, GL-dependent walls and third-party topology plugins remain unqualified",
+    "Native editor tested on Windows; Linux runs the standalone mathematical proof/oracle",
+    "No OS capture, game/runtime tests or mouse/keyboard injection"
+  ],
+  "correction": "The previously suspected removal-stride defect is not functional for valid axes; both strides are equal."
+}

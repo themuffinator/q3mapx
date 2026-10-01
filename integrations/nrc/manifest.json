@@ -6,7 +6,7 @@
     "modified_files_license": "GPL-2.0-or-later"
   },
   "integration_license": "GPL-3.0-or-later",
-  "patch_sha256": "d9ad7b80b24a1db1bfc3c6f036d8348426c14300d54460e34708fce5f99e15f6",
+  "patch_sha256": "743bb2a27b8561ff6bb1ac9f82c11556af071cf0cf53d5a67807186c266ce25e",
   "edits": [
     {
       "path": "radiant/brush.h",
@@ -61,7 +61,7 @@
     {
       "path": "radiant/patch.cpp",
       "original_sha256": "14fdf6f3c6e3b54f29eb28948f9c18da7b304f9bde455686430a53a059c239f6",
-      "patched_sha256": "8cc2164aecfbe726f0ca92a7f4794f53925eeee633e41e628c48d4f6e55cbd71"
+      "patched_sha256": "94b5405f3d6c50269c9a64583cce90b1c3e996d113dcb57f04bd895c19a8242a"
     },
     {
       "path": "radiant/patchmanip.cpp",
@@ -81,6 +81,11 @@
       "sha256": "5baab7d57c0dd4139f95476fdba38871452f96f19c7b7c1fa1a5e49cfb3914d0"
     },
     {
+      "source": "libs/authoring/patch_grid.h",
+      "destination": "libs/authoring/patch_grid.h",
+      "sha256": "5c7283f6684c8caa0bf77da310e08444606130d0e4103513b89f7597e73aadc1"
+    },
+    {
       "source": "integrations/nrc/overlay/radiant/q3mapxlightmaps.h",
       "destination": "radiant/q3mapxlightmaps.h",
       "sha256": "809ca5a60a8273d979d3839cd851fdd95ec10ca3d023463a5121f7495ed3d3f0"
@@ -93,17 +98,17 @@
     {
       "source": "integrations/nrc/overlay/radiant/q3mapxpaint.h",
       "destination": "radiant/q3mapxpaint.h",
-      "sha256": "760c8527ab12d1d9e9a3eecb879c441800735ca25bb4666092d0293213655fd2"
+      "sha256": "9404252d29dc9c867dc3ac4831506d3a4f0627299c2f0df14519cc5bcb6627b9"
     },
     {
       "source": "integrations/nrc/overlay/radiant/q3mapxpaint.cpp",
       "destination": "radiant/q3mapxpaint.cpp",
-      "sha256": "e2b07760ecd3bc73db4a21f4c077363b79bb8b02a096480e3d22f28663c04f61"
+      "sha256": "c28ae58731bd61e48e6ff628d66e1420f8560e94f97a8a5fe9fe0b5dd90d737c"
     },
     {
       "source": "integrations/nrc/tests/q3mapxauthoringtest.cpp",
       "destination": "radiant/q3mapxauthoringtest.cpp",
-      "sha256": "c85171e01934bde275b7a26e5987658a458280f486181377c423f7a875e291f3"
+      "sha256": "a3b3a7b34f6439fe3656875ab807c3690efa06ef0e6d311a1af498a950e95022"
     }
   ]
 }

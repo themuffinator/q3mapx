@@ -56,11 +56,25 @@ Cross-game XML migration and third-party topology plugins remain unqualified.
 Duplication, undo, transpose and inversion retain control associations. Row/column
 insertion subdivides geometry, UVs and paint together; new color controls round
 once to bytes, so repeated insertions can accumulate quantization error. Painted
-row removal and cap creation are refused with diagnostics until there is a
-color-aware reconstruction. Reset paint on a copy to use those operations.
+row/column removal now merges the first or last pair of quadratic spans **only
+when the continuous geometry, UV and RGBA fields are exactly representable by
+one quadratic**. Every affected line must pass; a failure changes nothing and
+creates no undo memento. A candidate control must fit binary32 for geometry/UV
+and a byte for color. There is no tolerance, byte clamping or approximate fit.
+Quantized insertions are not necessarily reducible, even when undo would recover
+the earlier patch. Cap creation remains guarded; reset paint on a copy to cap it.
 Thickened opposite surfaces copy paint; wall color transport is implemented but
 its native `NaturalTexture`/GL path still needs qualification. Arbitrary external
 plugins which reconstruct patches can discard authoring metadata.
+
+Reduction maps the two old half-spans to one complete span; unaffected spans keep
+their controls. The normalized parameter positions of spans consequently change.
+Paint subdivisions remain a per-span setting, so reduction can lower the number
+of compiled samples/triangles and change their finite approximation. Exact source
+field preservation is **not a runtime pixel-equivalence claim** or an automatic
+compiler geometry optimization. Raise subdivisions if necessary for the intended
+material. The native dimension setter clamps both axes before rounding them to
+odd sizes, and an edit at a dimension limit never falls through to the other axis.
 
 Adding RGBA to `PatchControl` changes its layout. The integration bumps the patch
 module API to **version 2**. Rebuild the editor and all patch-using modules/plugins
@@ -210,3 +224,11 @@ Editor-saved axial/BP/Valve maps and an alpha-only patch are compiled and lit;
 painted output is compared with independent analytic channel values. See
 [native paint evidence](validation/radiant-paint.json). Linux native editor,
 camera/runtime raster tests, interactive input testing and packaging remain open.
+
+`ctest --test-dir build/release -R '^patch_grid$' --output-on-failure` runs an
+independent rational-polynomial oracle for reduction. It covers float/byte
+representability, discontinuities, exponent gaps, subnormals and invalid data.
+Proofs require ordinary IEEE arithmetic: non-nearest rounding and
+denormals-are-zero are rejected, and fast-math builds of this helper are forbidden.
+See [grid-edit evidence](validation/patch-grid.json) for the expanded native
+matrix, undo checks, compiler parity and Windows/Linux/sanitizer results.

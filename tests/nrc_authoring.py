@@ -124,6 +124,20 @@ textures/q3mapx/paint
         for _,_,verts,_,_ in render:
             for xyz,rgba in verts: assert rgba[3]==expected(xyz,'lighting')[3],(stage,xyz,rgba)
     native['lighting_mode_native_roundtrip']=True
+    grid_cases=[]
+    for mode in range(3):
+        baseline={}
+        for variant in ('before','after'):
+            source.write_text(plain.replace('"message" "q3mapx regression"\n',
+                '"message" "q3mapx regression"\n'+(root/f'grid-{variant}-{mode}.txt').read_text(encoding='utf-8')),encoding='utf-8')
+            run(compiler,[*base,source],root,f'grid-{mode}-{variant}-bsp')
+            for stage in ('bsp','light'):
+                if stage=='light': run(compiler,[*base,'-light','-fast',source],root,f'grid-{mode}-{variant}-light')
+                data=payloads(source.with_suffix('.bsp').read_bytes())
+                if variant=='before': baseline[stage]=data
+                else: assert data==baseline[stage],(mode,stage,'editor grid round trip changed BSP lumps')
+        grid_cases.append(mode)
+    native['grid_original_vs_edit_roundtrip_bsp_light_lump_parity']=grid_cases
     (root/'results.json').write_text(json.dumps(native,indent=2)+'\n',encoding='utf-8')
     print(f"NRC authoring: {native['checks']} native checks; {len(compiled)} compiler round trips")
 

@@ -476,10 +476,12 @@ broader material-preview/runtime qualification requirements remain open.
 
 ### Patch vertex RGB and alpha painting
 
-- [ ] Audit inherited NRC patch resizing: `setDims` adjusts `m_height` instead of
-  its even-height argument, and `RemovePoints` advances the source pointer using
-  the destination row stride. Painted input requires odd dimensions and painted
-  row reduction is guarded; broader legacy operations need targeted checks.
+- [x] Audit inherited NRC patch resizing. Both axes now clamp before odd-size
+  normalization, fixing even-height handling and zero-width underflow. Column
+  operations at a size limit no longer fall through to row edits. The suspected
+  removal-stride defect was not a functional bug: those strides are equal for
+  valid axis operations; the code now names the source stride explicitly.
+  Native tests cover dimensions, both axes/ends and legacy/alpha/material modes.
 
 - [x] Add independently editable per-vertex RGB and alpha on patches, without
   requiring `alphaMod` brushes. Define persistent source metadata and its mapping
@@ -515,9 +517,12 @@ broader material-preview/runtime qualification requirements remain open.
   Decompilation now warns about unrecovered authored paint when its BSP marker
   is present. The build binding is not a source-control archive. Native
   save/reopen, duplication, undo/redo, transpose/inversion and bounded insertion
-  now retain paint. Insertion rounds new controls to bytes; lossy row reduction
-  and caps are guarded. Wall generation, third-party topology plugins, exact
-  paint-aware reduction and decompiler paint recovery still need work.
+  now retain paint. Insertion rounds new controls to bytes. Painted row reduction
+  is permitted only after exact reconstruction of every geometry/UV/RGBA channel;
+  lossy reductions and caps remain guarded. Native undo, independent rational
+  proofs and original-versus-edit-roundtrip compiler parity pass. Per-span
+  tessellation still affects runtime approximation. Wall generation, third-party
+  topology plugins, caps and decompiler paint recovery still need work.
 
 Acceptance: paint RGB and alpha independently in Radiant, save/reopen the map and
 compile it through the CLI with the same intended material appearance, without

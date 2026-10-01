@@ -51,6 +51,9 @@ public:
 
 // Validates against the snapshot and makes one complete native undo operation.
 bool Q3mapxPaint_apply( Patch&, const Q3mapxPaintData& before, const Q3mapxPaintData& after );
+// Merge the first/last pair of spans only when all nine control channels are
+// exactly representable by a single quadratic. Failure leaves output unchanged.
+bool Q3mapxPaint_reduceRows( const Q3mapxPaintData&, bool column, bool first, Q3mapxPaintData& output );
 QWidget* Q3mapxPaint_createButton();
 QWidget* Q3mapxPaint_createPanel( QWidget* parent = nullptr );
 void Q3mapxPaint_update();

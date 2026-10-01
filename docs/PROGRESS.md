@@ -3277,3 +3277,61 @@ pointer using the destination stride. Both are recorded for targeted legacy
 operation checks. Existing LIGHT shader-initialization, raw-sidecar publication
 and earlier parser/CLI audits remain open. Continue with native paint/material
 preview and the remaining authoring/editor robustness work.
+
+## 2026-10-01 — Exact painted patch reduction and grid robustness
+
+Painted first/last row and column reduction is now available when both quadratic
+spans can be reconstructed as one without changing any continuous geometry, UV
+or RGBA field. Every affected line must pass exact affine identities, and the
+new controls must fit the original float/byte storage. Binary64 arithmetic checks
+its residuals so small values cannot disappear into a false proof; unsupported
+rounding/denormal modes fail closed. Rejection leaves the entire patch and output
+snapshot unchanged. Successful native edits retain mode, density and quality and
+participate in the usual undo command. This replaces the previous blanket guard
+with useful reconstruction; cap generation remains guarded.
+
+Fixed two inherited dimension problems: `setDims` modified the stored height
+instead of the even-height argument, and zero width underflowed before clamping.
+Both requested axes now clamp before odd-size normalization. Also fixed an
+unavailable column insertion/removal falling through to a row operation, changing
+the wrong axis. Operations at a size limit now preserve the patch and undo stack.
+The earlier removal-stride suspicion was disproved for valid patches: source and
+destination row strides are equal in both axis cases. The code names the source
+stride explicitly for clarity; this is not reported as a functional stride fix.
+
+Validation:
+
+- The Windows native editor/core/modules build and all **1,475 native checks**
+  pass. The new matrix covers 100 dimension pairs including zero, even sizes and
+  `size_t` maximum; 144 insertion/reduction round trips; 96 dimension-limit cases;
+  both axes/ends; legacy, alpha and material modes; 36 independently broken
+  geometry/UV/RGBA cases; and actual undo/redo plus no-op history behavior.
+- An independent rational-polynomial oracle passes **30,029 cases** each on
+  Windows Release, Linux Release and Linux Debug ASan/UBSan. It compares expanded
+  left/right polynomials and exact storage representability, covering valid
+  dyadic fields, single-bit perturbations, random floats/bytes, exponent gaps,
+  subnormals, nonfinite values and out-of-range reconstructed controls. Native
+  floating-environment checks reject non-nearest rounding and denormals-are-zero.
+- Editor-saved maps still pass the previous three projection and both paint-mode
+  compiler checks. For legacy, alpha and material fixtures, insertion followed by
+  reduction returns every source control and produces identical original versus
+  round-trip BSP and LIGHT lump payloads. No compiler runtime source changed.
+- The maintained integration reproduces in `build/nrc-grid-verified`; hashes
+  match all 12 patched upstream files and eight overlays in the tested source.
+  The pinned NRC reference remains unchanged. See [evidence](validation/patch-grid.json).
+
+This is exact source-field editing with a local parameter remapping. It does not
+prove that an arbitrary split patch and its reduced form render identical pixels:
+paint subdivisions are per span, so reduction can change finite compiler sampling.
+No camera/material/runtime comparison or input injection occurred. Native Windows
+tests use the existing isolated profile and owned QImage path; Linux native editor,
+GL-dependent wall generation, material preview and plugin topology qualification
+remain open. The broader project goal remains active.
+
+Logs and the evidence/export helpers are in `.agents/tmp/patch-grid/`; results are
+in each build's `tests/patch-grid/` and `build/release/tests/nrc-grid/`. Earlier
+policy-blocked cleanup targets were left untouched. Automatic approval review
+also rejected deletion of this round's verified disposable
+`.agents/tmp/patch-grid/edit_native.py` with "blocked by policy"; that helper
+remains and cleanup was not retried. No additional unrelated issue was found;
+existing LIGHT initialization and sidecar/parser audits remain open.

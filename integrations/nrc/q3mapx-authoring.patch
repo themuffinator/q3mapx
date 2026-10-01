@@ -875,13 +875,62 @@
  	virtual void Patch_undoSave( scene::Node& patch ) const = 0;
 --- a/radiant/patch.cpp
 +++ b/radiant/patch.cpp
-@@ -422,6 +422,16 @@
+@@ -154,28 +154,12 @@
+ 
+ 
+ void Patch::setDims( std::size_t w, std::size_t h ){
+-	if ( ( w % 2 ) == 0 ) {
+-		w -= 1;
+-	}
+-	ASSERT_MESSAGE( w <= MAX_PATCH_WIDTH, "patch too wide" );
+-	if ( w > MAX_PATCH_WIDTH ) {
+-		w = MAX_PATCH_WIDTH;
+-	}
+-	else if ( w < MIN_PATCH_WIDTH ) {
+-		w = MIN_PATCH_WIDTH;
+-	}
+-
+-	if ( ( h % 2 ) == 0 ) {
+-		m_height -= 1;
+-	}
+-	ASSERT_MESSAGE( h <= MAX_PATCH_HEIGHT, "patch too tall" );
+-	if ( h > MAX_PATCH_HEIGHT ) {
+-		h = MAX_PATCH_HEIGHT;
+-	}
+-	else if ( h < MIN_PATCH_HEIGHT ) {
+-		h = MIN_PATCH_HEIGHT;
+-	}
+-
++	// Clamp before rounding to avoid unsigned underflow for zero. Both axes use
++	// the requested argument and always satisfy the quadratic-patch dimensions.
++	w = std::clamp<std::size_t>( w, MIN_PATCH_WIDTH, MAX_PATCH_WIDTH );
++	h = std::clamp<std::size_t>( h, MIN_PATCH_HEIGHT, MAX_PATCH_HEIGHT );
++	w -= ( w % 2 ) == 0;
++	h -= ( h % 2 ) == 0;
+ 	m_width = w;
+ 	m_height = h;
+ 
+@@ -422,26 +406,33 @@
  }
  
  void Patch::InsertRemove( bool bInsert, bool bColumn, bool bFirst ){
++	const std::size_t length = bColumn ? m_width : m_height;
++	const std::size_t minimum = bColumn ? MIN_PATCH_WIDTH : MIN_PATCH_HEIGHT;
++	const std::size_t maximum = bColumn ? MAX_PATCH_WIDTH : MAX_PATCH_HEIGHT;
++	// An unavailable column operation must never fall through to a row edit.
++	if ( bInsert ? length + 2 > maximum : length < minimum + 2 ) return;
++
 +	if ( paintMode() != 0 ) {
 +		if ( !bInsert ) {
-+			globalErrorStream() << "Removing painted patch rows can lose the color field; reset paint first.\n";
++			Q3mapxPaintData reduced;
++			if ( !Q3mapxPaint_reduceRows( Q3mapxPaintData( *this ), bColumn, bFirst, reduced ) ) {
++				globalErrorStream() << "Cannot reduce painted patch: geometry, UVs or RGBA require both quadratic spans.\n";
++				return;
++			}
++			undoSave();
++			setDims( reduced.width, reduced.height );
++			std::copy( reduced.controls.begin(), reduced.controls.end(), begin() );
++			controlPointsChanged();
 +			return;
 +		}
 +		if ( !q3mapx::authoring::paintMeshFits( m_width + ( bColumn ? 2 : 0 ), m_height + ( bColumn ? 0 : 2 ), paintSubdivisions() ) ) {
@@ -890,21 +939,52 @@
 +		}
 +	}
  	undoSave();
+-
+-	if ( bInsert ) {
+-		if ( bColumn && ( m_width + 2 <= MAX_PATCH_WIDTH ) ) {
+-			InsertPoints( COL, bFirst );
+-		}
+-		else if ( m_height + 2 <= MAX_PATCH_HEIGHT ) {
+-			InsertPoints( ROW, bFirst );
+-		}
+-	}
+-	else
+-	{
+-		if ( bColumn && ( m_width - 2 >= MIN_PATCH_WIDTH ) ) {
+-			RemovePoints( COL, bFirst );
+-		}
+-		else if ( m_height - 2 >= MIN_PATCH_HEIGHT ) {
+-			RemovePoints( ROW, bFirst );
+-		}
+-	}
+-
++	if ( bInsert ) InsertPoints( bColumn ? COL : ROW, bFirst );
++	else RemovePoints( bColumn ? COL : ROW, bFirst );
+ 	controlPointsChanged();
+ }
  
- 	if ( bInsert ) {
-@@ -923,6 +933,11 @@
- 			r2b->m_texcoord[i] = float_mid( c2a->m_texcoord[i], c2b->m_texcoord[i] );
+@@ -924,6 +915,11 @@
  
  			p2->m_texcoord[i] = float_mid( r2a->m_texcoord[i], r2b->m_texcoord[i] );
-+		}
+ 		}
 +		for ( std::size_t i = 0; i != 4; ++i ) {
 +			r2a->m_color[i] = ( int( c2b->m_color[i] ) + p1->m_color[i] + 1 ) / 2;
 +			r2b->m_color[i] = ( int( c2a->m_color[i] ) + c2b->m_color[i] + 1 ) / 2;
 +			p2->m_color[i] = ( int( c2a->m_color[i] ) + 2 * c2b->m_color[i] + p1->m_color[i] + 2 ) / 4;
- 		}
++		}
  	}
  }
-@@ -2910,6 +2925,8 @@
+ 
+@@ -1036,7 +1032,7 @@
+ 		for ( std::size_t h = 0; h != height; ++h, p2 += row_stride2, p1 += row_stride )
+ 		{
+ 			if ( h == pos ) {
+-				p1 += 2 * row_stride2;
++				p1 += 2 * row_stride;
+ 				h += 2;
+ 			}
+ 			*p2 = *p1;
+@@ -2910,6 +2906,8 @@
  {
  	// Clone the dimensions from the other patch
  	setDims( sourcePatch.getWidth(), sourcePatch.getHeight() );
@@ -913,7 +993,7 @@
  
  	// Also inherit the tesselation from the source patch
  	//setFixedSubdivisions( sourcePatch.subdivionsFixed(), sourcePatch.getSubdivisions() );
-@@ -3180,6 +3197,7 @@
+@@ -3180,6 +3178,7 @@
  
  			// Clone the texture cooordinates of the source patch
  			ctrlAt( row, col ).m_texcoord = curCtrl.m_texcoord;
@@ -921,7 +1001,7 @@
  		}
  	}
  
-@@ -3246,6 +3264,8 @@
+@@ -3246,6 +3245,8 @@
  	}
  
  	setDims( cols, rows );
@@ -930,7 +1010,7 @@
  
  	const PatchControlArray& sourceCtrl = sourcePatch.getControlPoints();
  	const PatchControlArray& targetCtrl = targetPatch.getControlPoints();
-@@ -3261,6 +3281,10 @@
+@@ -3261,6 +3262,10 @@
  		ctrlAt( 0, col ).m_vertex = sourceCoord;
  		ctrlAt( 1, col ).m_vertex = middleCoord;
  		ctrlAt( 2, col ).m_vertex = targetCoord;

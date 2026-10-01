@@ -417,6 +417,103 @@ static void selectionChecks( QWidget& controls ) {
     Q3mapxLightmaps_update();
 }
 
+static void initialiseGrid( Patch& patch, std::size_t width, std::size_t height, int mode ) {
+    patch.setDims( width, height );
+    patch.SetShader( "textures/q3mapx/paint" );
+    for ( std::size_t r = 0; r < height; ++r ) for ( std::size_t c = 0; c < width; ++c ) {
+        PatchControl& p = patch.ctrlAt( r,c );
+        p.m_vertex = Vector3( -224 + float(c)*4, -224 + float(r)*4, 128 + float((r&1)+(c&1))*8 );
+        p.m_texcoord = Vector2( float(c)*0.5f, float(r)*0.25f );
+        p.m_color = {255,255,255,255};
+        if ( mode != 0 ) p.m_color[3] = (c&1) ? 0 : 252;
+        if ( mode == 2 ) {
+            p.m_color[0] = (c%3)*80;
+            p.m_color[1] = (r%3)*84;
+            p.m_color[2] = ((r+c)%3)*96;
+        }
+    }
+    patch.setLightmapSampleSize(8);
+    require( patch.setPaintSettings(mode,8), "initialize grid paint mode" );
+    patch.controlPointsChanged();
+}
+
+static void gridChecks() {
+    NodeSmartReference sizes( g_patchCreator->createPatch() );
+    const std::size_t requested[] = {0,1,2,3,4,5,30,31,32,std::numeric_limits<std::size_t>::max()};
+    const std::size_t expected[] = {3,3,3,3,3,5,29,31,31,31};
+    for ( int r = 0; r < 10; ++r ) for ( int c = 0; c < 10; ++c ) {
+        Node_getPatch(sizes)->setDims(requested[c],requested[r]);
+        require( Node_getPatch(sizes)->getWidth()==expected[c] && Node_getPatch(sizes)->getHeight()==expected[r], "both dimensions clamp and round without unsigned underflow" );
+    }
+    int roundtrips = 0, boundaries = 0;
+    for ( std::size_t width : {3,5,7,31} ) for ( std::size_t height : {3,5,7,31} )
+    for ( int mode : {0,1,2} ) for ( bool column : {false,true} ) for ( bool first : {false,true} ) {
+        NodeSmartReference node( g_patchCreator->createPatch() );
+        Patch& patch = *Node_getPatch(node);
+        initialiseGrid( patch,width,height,mode );
+        const Q3mapxPaintData before(patch);
+        const std::size_t length = column ? width : height;
+        if ( length == 3 ) {
+            patch.InsertRemove(false,column,first);
+            require(before.matches(patch),"minimum-size edit never changes the other axis"); ++boundaries;
+        }
+        patch.InsertRemove(true,column,first);
+        if ( length == 31 ) {
+            require(before.matches(patch),"maximum-size edit never changes the other axis"); ++boundaries;
+        }
+        else {
+            require(patch.getWidth()==width+(column?2:0) && patch.getHeight()==height+(column?0:2),"insertion respects chosen axis");
+            patch.InsertRemove(false,column,first);
+            require(before.matches(patch) && patch.lightmapSampleSize()==8,"subdivide/reduce retains every source control and metadata"); ++roundtrips;
+        }
+        if ( width==3 && height==3 && column && first ) {
+            StringOutputStream source;
+            { SimpleTokenWriter writer(source); PatchTokenExporter(patch).exportTokens(writer); }
+            output(QString("grid-before-")+QString::number(mode)+".txt",source.c_str());
+            patch.InsertRemove(true,true,true); patch.InsertRemove(true,false,false);
+            patch.InsertRemove(false,true,true); patch.InsertRemove(false,false,false);
+            require(before.matches(patch),"two-axis grid editing returns original source");
+            StringOutputStream result;
+            { SimpleTokenWriter writer(result); PatchTokenExporter(patch).exportTokens(writer); }
+            output(QString("grid-after-")+QString::number(mode)+".txt",result.c_str());
+        }
+    }
+    require(roundtrips==144 && boundaries==96,"complete legacy/alpha/material axis/end matrix");
+
+    // A defect in the final line must reject the whole grid, including all
+    // preceding lines that could have been reduced successfully.
+    for ( bool column : {false,true} ) for ( bool first : {false,true} ) for ( int channel = 0; channel < 9; ++channel ) {
+        NodeSmartReference node(g_patchCreator->createPatch()); Patch& patch=*Node_getPatch(node);
+        initialiseGrid(patch,7,5,2); patch.InsertRemove(true,column,first);
+        const std::size_t start = first ? 0 : (column?patch.getWidth():patch.getHeight())-5;
+        PatchControl& p = column ? patch.ctrlAt(patch.getHeight()-1,start+1) : patch.ctrlAt(start+1,patch.getWidth()-1);
+        if ( channel < 3 ) p.m_vertex[channel] += 0.125f;
+        else if ( channel < 5 ) p.m_texcoord[channel-3] += 0.125f;
+        else p.m_color[channel-5] ^= 1;
+        patch.controlPointsChanged();
+        const Q3mapxPaintData bad(patch);
+        Q3mapxPaintData sentinel; sentinel.width=99;
+        require(!Q3mapxPaint_reduceRows(bad,column,first,sentinel) && sentinel.width==99 && sentinel.controls.empty(),"failed reduction leaves output untouched");
+        patch.InsertRemove(false,column,first);
+        require(bad.matches(patch),"geometry/UV/RGBA discontinuity cannot partially reduce a patch");
+    }
+
+    NodeSmartReference node(g_patchCreator->createPatch()); Patch& patch=*Node_getPatch(node);
+    initialiseGrid(patch,3,3,2); patch.InsertRemove(true,true,true);
+    const Q3mapxPaintData expanded(patch);
+    NodeSmartReference root(NewMapRoot("grid-undo")); Node_getTraversable(root)->insert(node); GlobalSceneGraph().insert_root(root);
+    GlobalUndoSystem().clear();
+    { UndoableCommand command("reduce painted grid"); patch.InsertRemove(false,true,true); }
+    const Q3mapxPaintData reduced(patch);
+    require(GlobalUndoSystem().size()==1 && reduced.width==3,"native reduction has one undo operation");
+    GlobalUndoSystem().undo(); require(expanded.matches(patch),"native reduction undo restores split controls");
+    GlobalUndoSystem().redo(); require(reduced.matches(patch),"native reduction redo restores merged controls");
+    const std::size_t count=GlobalUndoSystem().size();
+    { UndoableCommand command("unavailable grid edit"); patch.InsertRemove(false,true,true); }
+    require(GlobalUndoSystem().size()==count && reduced.matches(patch),"boundary no-op creates no undo memento");
+    GlobalUndoSystem().clear(); GlobalSceneGraph().erase_root();
+}
+
 static int Q3mapxAuthoringTestRun() {
     SurfaceInspector_constructWindow( nullptr );
     EntityList_constructWindow( nullptr );
@@ -426,6 +523,7 @@ static int Q3mapxAuthoringTestRun() {
     brushChecks( "valve", eBrushTypeQuake3Valve220 );
     patchChecks();
     paintChecks();
+    gridChecks();
     graphChecks( "quake", eBrushTypeQuake3 );
     graphChecks( "bp", eBrushTypeQuake3BP );
     graphChecks( "valve", eBrushTypeQuake3Valve220 );

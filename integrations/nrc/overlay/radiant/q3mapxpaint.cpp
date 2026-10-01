@@ -4,6 +4,7 @@
 #include "brush.h"
 #include "iundo.h"
 #include "scenelib.h"
+#include "authoring/patch_grid.h"
 #include <QCheckBox>
 #include <QColorDialog>
 #include <QComboBox>
@@ -207,6 +208,43 @@ bool Q3mapxPaint_apply( Patch& patch, const Q3mapxPaintData& before, const Q3map
     patch.controlPointsChanged();
     Patch_textureChanged();
     SceneChangeNotify();
+    return true;
+}
+
+bool Q3mapxPaint_reduceRows( const Q3mapxPaintData& source, bool column, bool first, Q3mapxPaintData& output ) {
+    if ( !source.valid() ) return false;
+    const std::size_t length = column ? source.width : source.height;
+    if ( length < 5 ) return false;
+    const std::size_t start = first ? 0 : length - 5;
+    const std::size_t lines = column ? source.height : source.width;
+    Q3mapxPaintData result = source;
+    ( column ? result.width : result.height ) -= 2;
+    result.controls.resize( result.width * result.height );
+    const auto index = [column]( const Q3mapxPaintData& data, std::size_t line, std::size_t point ) {
+        return column ? line * data.width + point : point * data.width + line;
+    };
+    for ( std::size_t line = 0; line < lines; ++line ) {
+        PatchControl merged = source.controls[index( source, line, start + 1 )];
+        std::array<float, 5> values;
+        for ( int channel = 0; channel < 5; ++channel ) {
+            for ( std::size_t i = 0; i < values.size(); ++i ) {
+                const auto& point = source.controls[index( source, line, start + i )];
+                values[i] = channel < 3 ? point.m_vertex[channel] : point.m_texcoord[channel-3];
+            }
+            float& target = channel < 3 ? merged.m_vertex[channel] : merged.m_texcoord[channel-3];
+            if ( !mergeQuadraticControls( values, target ) ) return false;
+        }
+        for ( int channel = 0; channel < 4; ++channel ) {
+            std::array<unsigned char, 5> colors;
+            for ( std::size_t i = 0; i < colors.size(); ++i )
+                colors[i] = source.controls[index( source, line, start+i )].m_color[channel];
+            if ( !mergeQuadraticControls( colors, merged.m_color[channel] ) ) return false;
+        }
+        for ( std::size_t i = 0; i < length-2; ++i )
+            result.controls[index( result, line, i )] = i == start+1 ? merged
+                : source.controls[index( source, line, i <= start ? i : i+2 )];
+    }
+    output = std::move( result );
     return true;
 }
 

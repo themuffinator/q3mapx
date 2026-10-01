@@ -387,6 +387,15 @@ if(BUILD_TESTING)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/patch_paint.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/patch-paint)
     set_tests_properties(patch_paint PROPERTIES TIMEOUT 600)
+    add_executable(patch_grid_test tests/patch_grid.cpp)
+    target_include_directories(patch_grid_test PRIVATE libs)
+    if(NOT MSVC)
+        target_compile_options(patch_grid_test PRIVATE -ffp-contract=off)
+    endif()
+    add_test(NAME patch_grid COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/patch_grid.py --unit $<TARGET_FILE:patch_grid_test>
+        --work-dir ${CMAKE_BINARY_DIR}/tests/patch-grid)
+    set_tests_properties(patch_grid PROPERTIES TIMEOUT 120)
     add_test(NAME cell_adjacency COMMAND ${Python3_EXECUTABLE}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/cell_adjacency.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/cell-adjacency)

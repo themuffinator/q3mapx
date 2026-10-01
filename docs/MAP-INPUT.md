@@ -77,6 +77,36 @@ Quake texture projection no longer indexes a nonexistent plane before that
 removal. Raw numeric errors identify the entity, primitive, source side and
 detection line/location; derived winding errors identify the source primitive.
 
+## LIGHT source loading
+
+LIGHT uses BSP geometry and rereads MAP light entities unless `_keepLights` is
+set. It still validates source brushes and patches, including their numeric
+fields, even though those primitives are discarded. Source brush materials no
+longer resolve images or borrow the first shader's flags/dimensions. Quake texture
+shift rebiasing only runs when constructing brush geometry; raw parameters and
+derived texture axes remain checked during LIGHT.
+
+Previously an unrelated first shader could have zero, unfinished dimensions,
+causing a valid MAP to fail with `expected finite derived texture mapping`.
+An empty shader table also made that lookup invalid. Relighting now works without
+depending on shader declaration order or SRF material initialization. The source
+MAP can contain materials that are absent from the compiled BSP; they are ignored
+by this entity-only read. Materials actually used by the BSP still resolve through
+the normal lighting path.
+
+The `light_source` regression compares all resulting BSP lump payloads against a
+MAP containing only the same light entities. It covers 72 combinations of Q3/JA,
+Quake/brush-primitive/Valve syntax, legacy/authored brushes, used-first/unused-first/
+empty shader definitions and SRF records with/without material names. All three
+patch source formats are included. Twelve no-light controls must change the bake;
+62 malformed-source cases must report their actual invalid field or incomplete
+line and preserve previous outputs. Optional `--reference` compares the no-brush
+oracle with a previous compiler without exercising its unsafe brush lookup.
+
+See [test instructions](DEVELOPMENT.md#light-source-loading) and
+[recorded evidence](validation/light-source.json). This fixes source loading;
+it does not expand `_keepLights` semantics or make MAP geometry affect a relight.
+
 ## Patches
 
 Development builds after 0.3.0 validate `patchDef2` dimensions before converting

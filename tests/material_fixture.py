@@ -73,7 +73,7 @@ def scene(curved=False):
     walls=[((-528,-528,-16),(528,528,0)),((-528,-528,512),(528,528,528)),
            ((-528,-528,0),(-512,528,512)),((512,-528,0),(528,528,512)),
            ((-512,-528,0),(512,-512,512)),((-512,512,0),(512,528,512))]
-    # No light entities are needed for neutral rendering. Retain BSP entities;
-    # LIGHT-only MAP parsing has a separately tracked first-shader dependency.
-    return ('{\n"classname" "worldspawn"\n"_keepLights" "1"\n'+''.join(box(lo,hi,'q3mapx/material-background') for lo,hi in walls)+
+    # No light entities are needed for neutral rendering. Exercise the normal
+    # LIGHT source-loading path, including unrelated unfinished shader entries.
+    return ('{\n"classname" "worldspawn"\n'+''.join(box(lo,hi,'q3mapx/material-background') for lo,hi in walls)+
             patch_text(curved)+'}\n{\n"classname" "info_player_deathmatch"\n"origin" "160 160 32"\n}\n')

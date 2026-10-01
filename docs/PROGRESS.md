@@ -3415,3 +3415,51 @@ Unrelated issue: the previously tracked LIGHT-only MAP first-shader dimension
 dependency remains reproducible. The lightless rendering fixture explicitly uses
 `_keepLights 1` to bypass it; this is not reported as a fix. Existing raw-sidecar
 publication and broader parser/CLI audits remain open.
+
+## 2026-10-01 — Shader-independent LIGHT source parsing
+
+Fixed the inherited LIGHT-only MAP brush reader's dependency on the first shader
+entry. It previously copied an unrelated shader's flags and used its texture
+dimensions for Quake shift rebiasing even though it discarded the brush. An
+uninitialized first shader produced a false nonfinite-mapping error on valid
+source; an empty table also made the lookup invalid. LIGHT now leaves discarded
+brush materials unresolved and skips texture-period rebiasing. Plane, raw-number,
+derived-axis, flag and authoring-field validation remain active. BSP geometry
+construction still resolves the real material and retains its previous mapping.
+
+Reproduced the original failure using the preceding compiler and an unused shader
+definition ahead of the actual room material. It returned a controlled
+`expected finite derived texture mapping` error on a valid first brush. The new
+regression then checks **72 equivalent-source cases per build** across Q3/JA,
+Quake/brush-primitive/Valve projection, legacy/authored brushes, three shader-table
+arrangements and SRF data with/without shader names. Source-only materials and
+all three patch primitive versions are read without affecting compiled geometry.
+Every resulting BSP lump payload matches a source containing only the same light
+entities. Twelve no-light controls change the bake. Another **62 malformed-source
+cases per build** reject the specific bad field or incomplete line and preserve
+the prior BSP/SRF/PRT/LIN/REG/OBJ/MTL files and source.
+
+The new matrix and seven related groups (`brush_input`, `patch_input`,
+`script_input`, `surface_density`, `patch_paint`, `compiler_pipeline`,
+`lighting_materials`) pass on Windows Release, Linux Release and Linux Debug
+ASan/UBSan. The established lifetime-allocation leak exclusion remains in effect.
+Windows and Linux Release also compare each of the 12 no-brush lighting oracles
+against the preceding compiler with exact BSP-payload parity, without executing
+its unsafe first-shader brush path. See [evidence](validation/light-source.json).
+
+Removed `_keepLights 1` from the material-render fixture. It now exercises normal
+LIGHT MAP loading, and verifies the same geometry, absolute UVs, colors and
+triangle connectivity before/after LIGHT. All 68 reference-engine comparison
+measurements and 34 repeat results remain unchanged. The two previously recorded
+curved blended views still fail the strict mean-pixel-error gate; this compiler
+fix does not claim to resolve that separate preview qualification issue. The
+renderer continues to use windowed SDL offscreen and the engine screenshot
+command, with input/network disabled; no OS capture or input control occurred.
+
+Build/test logs, the failure reproduction, reference binaries, renderer captures
+and evidence recorder are retained in `.agents/tmp/light-source/`. Native
+regression results are in each build's `tests/light-source/` directory. No editor
+integration source or installed application/profile changed, and previous
+policy-blocked cleanup targets were left untouched. No new unrelated issue was
+found. The existing preview pixel limits, raw-sidecar publication and remaining
+parser/CLI audits stay open; the broader project goal remains active.

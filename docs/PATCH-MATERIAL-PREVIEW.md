@@ -113,8 +113,8 @@ offscreen/software Mesa, input and network disabled, and saves images through it
 registered `screenshot` command. Each case loads its final material before the
 engine sorts the BSP. Test-only shader-name substitutions leave the verified
 compiled mesh intact; runtime shader remapping is not used. The lightless fixture
-uses `_keepLights 1` to bypass the separately tracked LIGHT-only MAP first-shader
-initialization problem.
+now uses normal LIGHT source loading. The previous `_keepLights 1` workaround was
+removed after fixing the [uninitialized shader dependency](MAP-INPUT.md#light-source-loading).
 
 Pixel limits are declared in the harness: at most 307 of 307,200 pixels exceed
 two channel quanta, and mean channel error at most 0.10. Engine self-repeat must

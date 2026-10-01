@@ -1065,14 +1065,16 @@ static void ParseRawBrush( bool onlyLights, bool authoredSurface ){
 		if ( token[0] == '\0' || TokenIs( "{" ) || TokenIs( "}" ) ) reader.fail( "nonempty material name" );
 		const String64 shader( "textures/", token );
 
-		/* set default flags and values */
-		shaderInfo_t& si = onlyLights? *shaderInfo.begin()
-		                             : ShaderInfoForShader( shader );
-		side.shaderInfo = &si;
-		side.surfaceFlags = si.surfaceFlags;
-		side.contentFlags = si.contentFlags;
-		side.compileFlags = si.compileFlags;
-		side.value        = si.value;
+		/* LIGHT reads source entities and discards brush geometry. Do not resolve
+		   its materials or borrow an unrelated (possibly unfinished) shader. */
+		if ( !onlyLights ) {
+			shaderInfo_t& si = ShaderInfoForShader( shader );
+			side.shaderInfo = &si;
+			side.surfaceFlags = si.surfaceFlags;
+			side.contentFlags = si.contentFlags;
+			side.compileFlags = si.compileFlags;
+			side.value        = si.value;
+		}
 
 		/* AP or 220? */
 		if ( g_brushType == EBrushType::Undefined ){
@@ -1095,8 +1097,10 @@ static void ParseRawBrush( bool onlyLights, bool authoredSurface ){
 			rotate = reader.coordinate( "finite representable texture rotation" );
 			for ( float& value : scale ) value = reader.coordinate( "finite representable texture scale" );
 
-			/* ydnar: gs mods: bias texture shift */
-			if ( !si.globalTexture ) {
+			/* Texture-period rebiasing is needed only for constructed geometry.
+			   Still derive/check the axes below during LIGHT to validate numbers. */
+			if ( !onlyLights && !side.shaderInfo->globalTexture ) {
+				const shaderInfo_t& si = *side.shaderInfo;
 				shift[ 0 ] -= ( floor( shift[ 0 ] / si.shaderWidth ) * si.shaderWidth );
 				shift[ 1 ] -= ( floor( shift[ 1 ] / si.shaderHeight ) * si.shaderHeight );
 			}

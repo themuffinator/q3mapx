@@ -221,10 +221,14 @@ not a redefinition of the overall goal around the existing release:
 - [ ] Repair repeated surface classification reapplying a shader's absolute
   sample size after consuming entity lightmap scale. The initial M11 authored
   override bypasses that inherited issue; legacy semantics remain unchanged.
-- [ ] Remove LIGHT-only MAP brush parsing's dependency on the first shader's
-  initialized texture dimensions. Delaying SRF shader resolution exposed a
-  division by zero in derived mapping; this round restores resolution before
-  MAP parsing, while the inherited first-shader assumption remains to be fixed.
+- [x] Remove LIGHT-only MAP brush parsing's dependency on the first shader's
+  initialized texture dimensions. Discarded source brushes no longer resolve or
+  borrow shader data, and texture-period rebiasing only runs when constructing
+  geometry. Syntax, raw numeric and derived-axis validation remain active.
+  Quake/brush-primitive/Valve, legacy/authored and Q3/JA checks cover unused-first
+  and empty shader tables with complete BSP-payload parity against a light-only
+  source, preserved errors/outputs and source-light negative controls. See
+  [LIGHT source loading](MAP-INPUT.md#light-source-loading).
 - [ ] Profile larger recovery workloads and address measured costs with geometry,
   UV/material and worker-count parity evidence before claiming speedups.
   Initial whole-command comparisons now cover a dense generated room and private

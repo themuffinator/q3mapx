@@ -841,6 +841,22 @@ configuration. Record which targets and groups were actually tested rather than
 claiming a complete sanitizer run. [Validation evidence](validation/workbench-light-recovery.json)
 records final binaries, sources, logs and independent rebuild results.
 
+## LIGHT source loading
+
+```sh
+ctest --test-dir build/release -R '^(light_source|brush_input|patch_input|script_input|surface_density|patch_paint|compiler_pipeline|lighting_materials)$' --output-on-failure -j 2
+python tests/light_source.py --compiler build/release/bin/q3mapx --reference path/to/prior/q3mapx --work-dir build/release/tests/light-source
+```
+
+Use `.exe` on Windows and the corresponding Linux/sanitizer build directories.
+The independent LIGHT-source group has a 600-second timeout and requires no game,
+editor or installed assets. Generated fixtures include unused-first/empty shader
+tables and discarded source-only materials. Every bake must match a source with
+the same lights and no brushes, and removing those lights must change the bake.
+Malformed inputs must retain diagnostics and preserve existing outputs. The
+optional reference reads only the no-brush oracle, avoiding the former unsafe
+lookup. Keep the existing parser, authoring and material-lighting groups passing.
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

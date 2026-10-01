@@ -138,6 +138,10 @@ if(BUILD_TESTING)
         --compiler $<TARGET_FILE:q3mapx>
         --work-dir ${CMAKE_BINARY_DIR}/tests/lighting)
     set_tests_properties(lighting_materials PROPERTIES TIMEOUT 180)
+    add_test(NAME light_source COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/light_source.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/light-source)
+    set_tests_properties(light_source PROPERTIES TIMEOUT 600)
     add_test(NAME bsp_validation COMMAND ${Python3_EXECUTABLE}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/bsp_validation.py
         --compiler $<TARGET_FILE:q3mapx>

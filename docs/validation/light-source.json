@@ -1,0 +1,198 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-01T21:49:54.619207+00:00",
+  "base_revision": "71060b33fb07e2026ee5cfb42e0d2bf07458c073",
+  "scope": "Remove LIGHT source brush parsing dependency on shader-table contents and texture dimensions",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "c17995a81c731c98fb17199aa78cfc98f7ea66d72e91e5e5321cc65ebb8cdff6",
+    "tools/quake3/q3map2/map.cpp": "509fca41b5d66e011774398d4728f8ee9fea9bea1470ca411800afb339152be5",
+    "tests/light_source.py": "5ce7fd9e677c7ee2f123d3539c017b1f97799ebbfa3c31a50c571b2861da9aba",
+    "tests/material_fixture.py": "22f2e76de61f1adca5ca99c415af78d9a967b665021104157795e0834d41bd34",
+    "tests/renderer/paint_material_render.py": "9ed6336bda53d2e61cc18dab980115f4c41cc6894cabf645440240bf5bc29a6f"
+  },
+  "reproduction": {
+    "before_exit": 1,
+    "diagnostic": "expected finite derived texture mapping",
+    "before_executable_sha256": "3da41011a7cf589ffb46f37a52f42de382f55c24c1ec21956346aa394172604e",
+    "map_sha256": "f1ee0349e49db206f2c828f3348c04edbdf7481032c4716841374da67c3475d9",
+    "shader_sha256": "438a4dada2c5a651a2dcf9f48d04b8e8941906a3e0cfe98703dd7841826ed577",
+    "log_sha256": "6860b85751d033a75cd70cc85bdf5172d4cd5154d55a4b4ca51624724cb3fc32"
+  },
+  "configurations": {
+    "windows": {
+      "compiler_sha256": "dac697589229249b5c220c74037e7cb724b6c72fc3e50d3a59b411cf092568c8",
+      "reference_sha256": "3da41011a7cf589ffb46f37a52f42de382f55c24c1ec21956346aa394172604e",
+      "equivalent_source_cases": 72,
+      "all_bsp_lump_payloads_equal_to_light_only_source": true,
+      "shader_definition_orders": [
+        "used-first",
+        "unused-first",
+        "none"
+      ],
+      "srf_variants": [
+        "resolved",
+        "without-materials"
+      ],
+      "native_games": [
+        "quake3",
+        "ja"
+      ],
+      "source_projections": [
+        "quake",
+        "brush-primitives",
+        "valve220"
+      ],
+      "brush_versions": [
+        "legacy",
+        "q3mapxBrushDef1"
+      ],
+      "patch_versions": [
+        "patchDef2",
+        "q3mapxPatchDef1",
+        "q3mapxPatchDef2"
+      ],
+      "no_lights_negative_controls": 12,
+      "malformed_source_rejections": 62,
+      "previous_outputs_preserved": true,
+      "result_sha256": "0d5954bcec434a39f2b6c2da7834055729e5a4959ce93505b4a78ee887bcfe11",
+      "regression_groups": [
+        "patch_input",
+        "brush_input",
+        "script_input",
+        "patch_paint",
+        "surface_density",
+        "compiler_pipeline",
+        "lighting_materials"
+      ],
+      "regression_log_sha256": "3ef7902f4a3ffb44f7253324ccd9505fa585998f68e51b0de9cb6157b9aba3fd",
+      "reference_comparisons": 12,
+      "reference_scope": "Identical carrier BSP and no-brush light-only MAP oracle; unsafe pre-fix brush path not executed"
+    },
+    "linux_release": {
+      "compiler_sha256": "8fdf763d2b79428b40c12610ead535161bbf9957f4e1832cd43a790ec605f492",
+      "reference_sha256": "5e7301fab73bea0bf40d8d1b7caa7db81d66d2c38b3cdfc3c28a0126e752c227",
+      "equivalent_source_cases": 72,
+      "all_bsp_lump_payloads_equal_to_light_only_source": true,
+      "shader_definition_orders": [
+        "used-first",
+        "unused-first",
+        "none"
+      ],
+      "srf_variants": [
+        "resolved",
+        "without-materials"
+      ],
+      "native_games": [
+        "quake3",
+        "ja"
+      ],
+      "source_projections": [
+        "quake",
+        "brush-primitives",
+        "valve220"
+      ],
+      "brush_versions": [
+        "legacy",
+        "q3mapxBrushDef1"
+      ],
+      "patch_versions": [
+        "patchDef2",
+        "q3mapxPatchDef1",
+        "q3mapxPatchDef2"
+      ],
+      "no_lights_negative_controls": 12,
+      "malformed_source_rejections": 62,
+      "previous_outputs_preserved": true,
+      "result_sha256": "810e78ad3f5ea9057decb97791f1f13f4ead7f3c19907b8015017255f93fa5a4",
+      "regression_groups": [
+        "patch_input",
+        "brush_input",
+        "patch_paint",
+        "script_input",
+        "surface_density",
+        "compiler_pipeline",
+        "lighting_materials"
+      ],
+      "regression_log_sha256": "c8ba3724de5ee849107dbe712526f4bc15840137a495b4a71a774f7532414d3d",
+      "reference_comparisons": 12,
+      "reference_scope": "Identical carrier BSP and no-brush light-only MAP oracle; unsafe pre-fix brush path not executed"
+    },
+    "linux_sanitized": {
+      "compiler_sha256": "e966338a5c08efbe2fd2f0e4fdcb253683e086c3943f7525a264142a96767642",
+      "reference_sha256": null,
+      "equivalent_source_cases": 72,
+      "all_bsp_lump_payloads_equal_to_light_only_source": true,
+      "shader_definition_orders": [
+        "used-first",
+        "unused-first",
+        "none"
+      ],
+      "srf_variants": [
+        "resolved",
+        "without-materials"
+      ],
+      "native_games": [
+        "quake3",
+        "ja"
+      ],
+      "source_projections": [
+        "quake",
+        "brush-primitives",
+        "valve220"
+      ],
+      "brush_versions": [
+        "legacy",
+        "q3mapxBrushDef1"
+      ],
+      "patch_versions": [
+        "patchDef2",
+        "q3mapxPatchDef1",
+        "q3mapxPatchDef2"
+      ],
+      "no_lights_negative_controls": 12,
+      "malformed_source_rejections": 62,
+      "previous_outputs_preserved": true,
+      "result_sha256": "0db82ed13cf3cb4a304b9f4967301b354926d2d84db0307c37b592eab345a3b2",
+      "regression_groups": [
+        "script_input",
+        "brush_input",
+        "patch_input",
+        "patch_paint",
+        "surface_density",
+        "compiler_pipeline",
+        "lighting_materials",
+        "light_source"
+      ],
+      "regression_log_sha256": "7a02a5c3679a3e9cf11afb3f5d1dff12ba1de01226ae4f1e85c65d731c3aa070"
+    }
+  },
+  "sanitizer_options": "ASan/UBSan with Debug assertions; ASAN_OPTIONS=detect_leaks=0 for established compiler lifetime allocations",
+  "material_render_fixture": {
+    "keep_lights_workaround_removed": true,
+    "normal_light_map_loading": true,
+    "triangle_geometry_absolute_uv_rgba_connectivity_verified": true,
+    "comparisons": 68,
+    "self_repeats": 34,
+    "metrics_equal_to_previous_round": true,
+    "strict_pixel_gate_passed": false,
+    "unchanged_failures": [
+      "curved/texture-alpha-top",
+      "curved/two-stage-top"
+    ],
+    "reference_evidence": "paint-material.json",
+    "result_sha256": "4d4552d9e294d87376eb8eb59d7b3c68f49c632ce8f3e0584f6a489fd7842a5f",
+    "capture": "Engine screenshot, windowed SDL offscreen with input and network disabled; no OS capture/input control"
+  },
+  "retained_evidence": [
+    ".agents/tmp/light-source/",
+    "build/release/tests/light-source/",
+    "build/linux-release/tests/light-source/",
+    "build/linux-sanitized/tests/light-source/"
+  ],
+  "limitations": [
+    "No global parser-safety or all-game qualification claim",
+    "BSP construction still resolves material dimensions and validates emitted UVs",
+    "Two prior cross-driver blended material preview comparisons remain outside the strict pixel gate",
+    "Raw-sidecar publication and broader parser/CLI audits remain open"
+  ]
+}

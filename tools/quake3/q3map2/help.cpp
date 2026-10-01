@@ -359,6 +359,8 @@ static void HelpConvert()
 		{ "-group-max-work <1..100000000>", "Bound group surface-association and ordering work (default 50000000); requires -group-policy surfaces" },
 		{ "-light-proposals <report.json>", "Apply a qualified point/spot fitting report for the identical BSP/game, including fixed proposal dependencies and target links; verify stored score/texel consistency and write provenance in the recovery report" },
 		{ "-uv-policy <consensus|triangle>", "Recover agreeing triangles with full offsets and precise output (default), or retain legacy largest-triangle recovery/serialization. Conflicts are reported with a triangle fallback. Requires MAP export without -fast" },
+		{ "-patch-colors <none|alpha|rgba>", "MAP export: keep legacy patches (default), or recover compiled native patch alpha for rebaking / RGBA as material color. Baked RGB is not inferred paint; incompatible patches retain legacy output with a report" },
+		{ "-patch-color-subdivisions <1|2|4|8|16|32>", "Choose tessellation for recovered patch colors (default 16); this is an output setting, not recovered author metadata" },
 		{ "-deluxemapsastexcoord", "Save deluxemap names and texcoords instead of textures (only when writing ase and obj)" },
 		{ "-de <F>", "Distance epsilon for the conversion (only when reading map)" },
 		{ "-fast", "fast bsp to map conversion mode (without texture alignments)" },

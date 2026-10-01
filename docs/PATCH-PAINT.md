@@ -198,10 +198,12 @@ not currently regenerate the binding; rebuild from source before relighting a
 transformed result. Changes to shader modifiers require the BSP stage too.
 
 The binding does **not** retain original source controls, brush strokes or
-pre-modifier paint. MAP decompilation warns when it sees authored paint and adds
-that limitation to its recovery report; it does not yet restore paint source.
-Retain the original MAP. Recovery of compiled channels versus original paint
-remains a separate M11 task.
+pre-modifier paint. Default MAP decompilation warns when it sees authored paint.
+Explicit [`-patch-colors alpha|rgba`](PATCH-COLOR-RECOVERY.md) can extract compiled
+channels from eligible surviving native controls, with chosen output mode and
+sampling. This does not identify original paint or recover triangle-only patches;
+RGBA can freeze baked light as material color. Retain the original MAP. Exact
+source recovery requires additional retained authoring metadata and remains open.
 
 ## Verification
 

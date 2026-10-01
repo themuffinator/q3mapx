@@ -857,6 +857,19 @@ Malformed inputs must retain diagnostics and preserve existing outputs. The
 optional reference reads only the no-brush oracle, avoiding the former unsafe
 lookup. Keep the existing parser, authoring and material-lighting groups passing.
 
+## Compiled patch channel recovery
+
+Compiled patch channel recovery has a separate generated corpus:
+
+```sh
+ctest --test-dir build/release -R '^(patch_color_recovery|patch_paint|decompile_recovery|recovery_outputs|uv_recovery)$' --output-on-failure -j 2
+python tests/patch_color_recovery.py --compiler build/release/bin/q3mapx --reference path/to/prior/q3mapx --work-dir build/release/tests/patch-color-recovery
+```
+
+Use `.exe` on Windows. The optional reference checks default MAP/report byte
+parity; opt-in recovery is checked by independent control and sampled-field
+comparisons after recompilation and relighting. See [the contract and guards](PATCH-COLOR-RECOVERY.md).
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

@@ -1,0 +1,896 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-01T22:19:24.438409+00:00",
+  "base_revision": "9c610beba61fdba3685065c13768f75ebc123b16",
+  "scope": "Opt-in extraction of compiled native patch alpha/RGBA with explicit output settings and conservative fallback",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "6966c1e5d968c78bb0a64662ebe6fcfe785bc8ddfe9a01c4e7847cb2b0e4a07a",
+    "tools/quake3/q3map2/decompile.h": "46ad1bccd3b25676961d577181cf5919ac8b3dcdfd7ac3f334bc3fb88af6db7d",
+    "tools/quake3/q3map2/convert_bsp.cpp": "6ee51c6a413f7d63a8f6d8778c3fa5126bd60b7b026fb1f3fbd44aa5fa58d6b4",
+    "tools/quake3/q3map2/convert_map.cpp": "be19c76402ac18caad0472a84a5f15c3341e51d64956462cfdd12e5b5743cebb",
+    "tools/quake3/q3map2/help.cpp": "032bdb26b19e9d84b3719b3677e82ddf964000b4ff014f23c0ff846e3b639696",
+    "tests/patch_color_recovery.py": "b962608ceab0355d7d9db45d8ca8c75c232a1b680a98418769218343f7b46e3c"
+  },
+  "configurations": {
+    "windows_release": {
+      "executable": "build/release/bin/q3mapx.exe",
+      "executable_sha256": "2d0c171680fe1f58c620a02abaaf6b612b9d5a181bd264bff0c08496806ece5f",
+      "validation": "build/release/tests/patch-color-recovery/validation.json",
+      "validation_sha256": "525492ae07b0b8a018c76daeb94ecc618b26f39292b32b5dce62644b7ecd5941",
+      "extraction_rebuild_cases": 48,
+      "recovered_control_grids": 96,
+      "independently_checked_sampled_vertices": 45428,
+      "cases_with_two_relights": 24,
+      "default_none_parity_cases": 36,
+      "reference_default_map_and_report_parity_cases": 36,
+      "guarded_cases": [
+        {
+          "case": "quake3-rgb-mod",
+          "counts": {
+            "material_color_modifier": 2
+          }
+        },
+        {
+          "case": "quake3-alpha-mod",
+          "counts": {
+            "material_color_modifier": 2
+          }
+        },
+        {
+          "case": "quake3-indexed",
+          "counts": {
+            "incompatible_paint_material": 2
+          }
+        },
+        {
+          "case": "quake3-sprite",
+          "counts": {
+            "incompatible_paint_material": 2
+          }
+        },
+        {
+          "case": "quake3-invert",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "quake3-offset",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "quake3-tcgen",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "quake3-tcmod",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "quake3-redirect",
+          "counts": {
+            "material_redirect": 2
+          }
+        },
+        {
+          "case": "quake3-volume",
+          "counts": {
+            "color_modifier_volume_present": 2
+          }
+        },
+        {
+          "case": "quake3-large-grid-32",
+          "counts": {
+            "paint_grid_limit": 1
+          }
+        },
+        {
+          "case": "quake3-large-grid-16",
+          "counts": {
+            "recovered": 1
+          }
+        },
+        {
+          "case": "quake3-triangle-only",
+          "counts": {}
+        },
+        {
+          "case": "quake3-material-name",
+          "counts": {
+            "unsupported_material_name": 2
+          }
+        },
+        {
+          "case": "quake3-triangle-uv-policy",
+          "counts": {
+            "recovered": 2
+          }
+        },
+        {
+          "case": "quake3-translated-coordinate-limit",
+          "counts": {
+            "recovered": 1,
+            "source_coordinate_limit": 1
+          }
+        },
+        {
+          "case": "ja-rgb-mod",
+          "counts": {
+            "material_color_modifier": 2
+          }
+        },
+        {
+          "case": "ja-alpha-mod",
+          "counts": {
+            "material_color_modifier": 2
+          }
+        },
+        {
+          "case": "ja-indexed",
+          "counts": {
+            "incompatible_paint_material": 2
+          }
+        },
+        {
+          "case": "ja-sprite",
+          "counts": {
+            "incompatible_paint_material": 2
+          }
+        },
+        {
+          "case": "ja-invert",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "ja-offset",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "ja-tcgen",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "ja-tcmod",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "ja-redirect",
+          "counts": {
+            "material_redirect": 2
+          }
+        },
+        {
+          "case": "ja-volume",
+          "counts": {
+            "color_modifier_volume_present": 2
+          }
+        },
+        {
+          "case": "ja-large-grid-32",
+          "counts": {
+            "paint_grid_limit": 1
+          }
+        },
+        {
+          "case": "ja-large-grid-16",
+          "counts": {
+            "recovered": 1
+          }
+        },
+        {
+          "case": "ja-triangle-only",
+          "counts": {}
+        },
+        {
+          "case": "ja-material-name",
+          "counts": {
+            "unsupported_material_name": 2
+          }
+        },
+        {
+          "case": "ja-triangle-uv-policy",
+          "counts": {
+            "recovered": 2
+          }
+        },
+        {
+          "case": "ja-translated-coordinate-limit",
+          "counts": {
+            "recovered": 1,
+            "source_coordinate_limit": 1
+          }
+        },
+        {
+          "case": "rgb-style-conflict",
+          "counts": {
+            "conflicting_active_styles": 2
+          }
+        },
+        {
+          "case": "alpha-style-rgb-only",
+          "counts": {
+            "recovered": 2
+          }
+        },
+        {
+          "case": "alpha-style-conflict",
+          "counts": {
+            "conflicting_active_styles": 2
+          }
+        },
+        {
+          "case": "inactive-style",
+          "counts": {
+            "recovered": 2
+          }
+        },
+        {
+          "case": "equal-style",
+          "counts": {
+            "recovered": 2
+          }
+        },
+        {
+          "case": "mixed-style-results",
+          "counts": {
+            "recovered": 1,
+            "conflicting_active_styles": 1
+          }
+        },
+        {
+          "case": "record-limit",
+          "counts": {
+            "recovered": 10007
+          },
+          "omitted_records": 7
+        }
+      ],
+      "failure_preservation_cases": [
+        "bad-policy",
+        "missing-policy",
+        "bad-quality",
+        "quality-only",
+        "zero-quality",
+        "large-quality",
+        "mesh-output",
+        "map-input",
+        "replace-material",
+        "report-directory"
+      ],
+      "input_bsp_unchanged": true,
+      "source_map_and_srf_unused": true,
+      "passed_ctest_groups": [
+        "decompile_recovery",
+        "patch_paint",
+        "recovery_classification",
+        "recovery_groups",
+        "recovery_order",
+        "recovery_outputs",
+        "uv_recovery"
+      ],
+      "ctest_log_sha256": "0a929bfb5dfbb52a4da634d03c15cfb5c91bb175bbbb5d96ee5bc8cba6514291",
+      "ctest_elapsed_seconds": 27.83,
+      "reference_sha256": "dac697589229249b5c220c74037e7cb724b6c72fc3e50d3a59b411cf092568c8"
+    },
+    "linux_release": {
+      "executable": "build/linux-release/bin/q3mapx",
+      "executable_sha256": "e0d12f32a8f10d7ee8198428717fce95114fbd909d816902afc023df3b64f394",
+      "validation": "build/linux-release/tests/patch-color-recovery/validation.json",
+      "validation_sha256": "77450aac6ef55ebb2eca03f082efb67e5abba6fe8bfc79b16a8519a42d4dcc10",
+      "extraction_rebuild_cases": 48,
+      "recovered_control_grids": 96,
+      "independently_checked_sampled_vertices": 45428,
+      "cases_with_two_relights": 24,
+      "default_none_parity_cases": 36,
+      "reference_default_map_and_report_parity_cases": 36,
+      "guarded_cases": [
+        {
+          "case": "quake3-rgb-mod",
+          "counts": {
+            "material_color_modifier": 2
+          }
+        },
+        {
+          "case": "quake3-alpha-mod",
+          "counts": {
+            "material_color_modifier": 2
+          }
+        },
+        {
+          "case": "quake3-indexed",
+          "counts": {
+            "incompatible_paint_material": 2
+          }
+        },
+        {
+          "case": "quake3-sprite",
+          "counts": {
+            "incompatible_paint_material": 2
+          }
+        },
+        {
+          "case": "quake3-invert",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "quake3-offset",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "quake3-tcgen",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "quake3-tcmod",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "quake3-redirect",
+          "counts": {
+            "material_redirect": 2
+          }
+        },
+        {
+          "case": "quake3-volume",
+          "counts": {
+            "color_modifier_volume_present": 2
+          }
+        },
+        {
+          "case": "quake3-large-grid-32",
+          "counts": {
+            "paint_grid_limit": 1
+          }
+        },
+        {
+          "case": "quake3-large-grid-16",
+          "counts": {
+            "recovered": 1
+          }
+        },
+        {
+          "case": "quake3-triangle-only",
+          "counts": {}
+        },
+        {
+          "case": "quake3-material-name",
+          "counts": {
+            "unsupported_material_name": 2
+          }
+        },
+        {
+          "case": "quake3-triangle-uv-policy",
+          "counts": {
+            "recovered": 2
+          }
+        },
+        {
+          "case": "quake3-translated-coordinate-limit",
+          "counts": {
+            "recovered": 1,
+            "source_coordinate_limit": 1
+          }
+        },
+        {
+          "case": "ja-rgb-mod",
+          "counts": {
+            "material_color_modifier": 2
+          }
+        },
+        {
+          "case": "ja-alpha-mod",
+          "counts": {
+            "material_color_modifier": 2
+          }
+        },
+        {
+          "case": "ja-indexed",
+          "counts": {
+            "incompatible_paint_material": 2
+          }
+        },
+        {
+          "case": "ja-sprite",
+          "counts": {
+            "incompatible_paint_material": 2
+          }
+        },
+        {
+          "case": "ja-invert",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "ja-offset",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "ja-tcgen",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "ja-tcmod",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "ja-redirect",
+          "counts": {
+            "material_redirect": 2
+          }
+        },
+        {
+          "case": "ja-volume",
+          "counts": {
+            "color_modifier_volume_present": 2
+          }
+        },
+        {
+          "case": "ja-large-grid-32",
+          "counts": {
+            "paint_grid_limit": 1
+          }
+        },
+        {
+          "case": "ja-large-grid-16",
+          "counts": {
+            "recovered": 1
+          }
+        },
+        {
+          "case": "ja-triangle-only",
+          "counts": {}
+        },
+        {
+          "case": "ja-material-name",
+          "counts": {
+            "unsupported_material_name": 2
+          }
+        },
+        {
+          "case": "ja-triangle-uv-policy",
+          "counts": {
+            "recovered": 2
+          }
+        },
+        {
+          "case": "ja-translated-coordinate-limit",
+          "counts": {
+            "recovered": 1,
+            "source_coordinate_limit": 1
+          }
+        },
+        {
+          "case": "rgb-style-conflict",
+          "counts": {
+            "conflicting_active_styles": 2
+          }
+        },
+        {
+          "case": "alpha-style-rgb-only",
+          "counts": {
+            "recovered": 2
+          }
+        },
+        {
+          "case": "alpha-style-conflict",
+          "counts": {
+            "conflicting_active_styles": 2
+          }
+        },
+        {
+          "case": "inactive-style",
+          "counts": {
+            "recovered": 2
+          }
+        },
+        {
+          "case": "equal-style",
+          "counts": {
+            "recovered": 2
+          }
+        },
+        {
+          "case": "mixed-style-results",
+          "counts": {
+            "recovered": 1,
+            "conflicting_active_styles": 1
+          }
+        },
+        {
+          "case": "record-limit",
+          "counts": {
+            "recovered": 10007
+          },
+          "omitted_records": 7
+        }
+      ],
+      "failure_preservation_cases": [
+        "bad-policy",
+        "missing-policy",
+        "bad-quality",
+        "quality-only",
+        "zero-quality",
+        "large-quality",
+        "mesh-output",
+        "map-input",
+        "replace-material",
+        "report-directory"
+      ],
+      "input_bsp_unchanged": true,
+      "source_map_and_srf_unused": true,
+      "passed_ctest_groups": [
+        "decompile_recovery",
+        "patch_paint",
+        "recovery_classification",
+        "recovery_groups",
+        "recovery_order",
+        "recovery_outputs",
+        "uv_recovery"
+      ],
+      "ctest_log_sha256": "2515468fd6caf6dac73b40fad51551a5958929add18f9097c69f15550c60bb92",
+      "ctest_elapsed_seconds": 70.82,
+      "reference_sha256": "8fdf763d2b79428b40c12610ead535161bbf9957f4e1832cd43a790ec605f492"
+    },
+    "linux_debug_asan_ubsan": {
+      "executable": "build/linux-sanitized/bin/q3mapx",
+      "executable_sha256": "5d5d10824b46952835ef49b36e34909b0c5602a483019c0eef56a0c99c4edf58",
+      "validation": "build/linux-sanitized/tests/patch-color-recovery/validation.json",
+      "validation_sha256": "8c02a05d2fd71a16c578c7e9ca5785ea457bdf1442e4a21326ff3b8250e4ce35",
+      "extraction_rebuild_cases": 48,
+      "recovered_control_grids": 96,
+      "independently_checked_sampled_vertices": 45428,
+      "cases_with_two_relights": 24,
+      "default_none_parity_cases": 36,
+      "reference_default_map_and_report_parity_cases": 0,
+      "guarded_cases": [
+        {
+          "case": "quake3-rgb-mod",
+          "counts": {
+            "material_color_modifier": 2
+          }
+        },
+        {
+          "case": "quake3-alpha-mod",
+          "counts": {
+            "material_color_modifier": 2
+          }
+        },
+        {
+          "case": "quake3-indexed",
+          "counts": {
+            "incompatible_paint_material": 2
+          }
+        },
+        {
+          "case": "quake3-sprite",
+          "counts": {
+            "incompatible_paint_material": 2
+          }
+        },
+        {
+          "case": "quake3-invert",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "quake3-offset",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "quake3-tcgen",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "quake3-tcmod",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "quake3-redirect",
+          "counts": {
+            "material_redirect": 2
+          }
+        },
+        {
+          "case": "quake3-volume",
+          "counts": {
+            "color_modifier_volume_present": 2
+          }
+        },
+        {
+          "case": "quake3-large-grid-32",
+          "counts": {
+            "paint_grid_limit": 1
+          }
+        },
+        {
+          "case": "quake3-large-grid-16",
+          "counts": {
+            "recovered": 1
+          }
+        },
+        {
+          "case": "quake3-triangle-only",
+          "counts": {}
+        },
+        {
+          "case": "quake3-material-name",
+          "counts": {
+            "unsupported_material_name": 2
+          }
+        },
+        {
+          "case": "quake3-triangle-uv-policy",
+          "counts": {
+            "recovered": 2
+          }
+        },
+        {
+          "case": "quake3-translated-coordinate-limit",
+          "counts": {
+            "recovered": 1,
+            "source_coordinate_limit": 1
+          }
+        },
+        {
+          "case": "ja-rgb-mod",
+          "counts": {
+            "material_color_modifier": 2
+          }
+        },
+        {
+          "case": "ja-alpha-mod",
+          "counts": {
+            "material_color_modifier": 2
+          }
+        },
+        {
+          "case": "ja-indexed",
+          "counts": {
+            "incompatible_paint_material": 2
+          }
+        },
+        {
+          "case": "ja-sprite",
+          "counts": {
+            "incompatible_paint_material": 2
+          }
+        },
+        {
+          "case": "ja-invert",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "ja-offset",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "ja-tcgen",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "ja-tcmod",
+          "counts": {
+            "material_geometry_or_uv_modifier": 2
+          }
+        },
+        {
+          "case": "ja-redirect",
+          "counts": {
+            "material_redirect": 2
+          }
+        },
+        {
+          "case": "ja-volume",
+          "counts": {
+            "color_modifier_volume_present": 2
+          }
+        },
+        {
+          "case": "ja-large-grid-32",
+          "counts": {
+            "paint_grid_limit": 1
+          }
+        },
+        {
+          "case": "ja-large-grid-16",
+          "counts": {
+            "recovered": 1
+          }
+        },
+        {
+          "case": "ja-triangle-only",
+          "counts": {}
+        },
+        {
+          "case": "ja-material-name",
+          "counts": {
+            "unsupported_material_name": 2
+          }
+        },
+        {
+          "case": "ja-triangle-uv-policy",
+          "counts": {
+            "recovered": 2
+          }
+        },
+        {
+          "case": "ja-translated-coordinate-limit",
+          "counts": {
+            "recovered": 1,
+            "source_coordinate_limit": 1
+          }
+        },
+        {
+          "case": "rgb-style-conflict",
+          "counts": {
+            "conflicting_active_styles": 2
+          }
+        },
+        {
+          "case": "alpha-style-rgb-only",
+          "counts": {
+            "recovered": 2
+          }
+        },
+        {
+          "case": "alpha-style-conflict",
+          "counts": {
+            "conflicting_active_styles": 2
+          }
+        },
+        {
+          "case": "inactive-style",
+          "counts": {
+            "recovered": 2
+          }
+        },
+        {
+          "case": "equal-style",
+          "counts": {
+            "recovered": 2
+          }
+        },
+        {
+          "case": "mixed-style-results",
+          "counts": {
+            "recovered": 1,
+            "conflicting_active_styles": 1
+          }
+        },
+        {
+          "case": "record-limit",
+          "counts": {
+            "recovered": 10007
+          },
+          "omitted_records": 7
+        }
+      ],
+      "failure_preservation_cases": [
+        "bad-policy",
+        "missing-policy",
+        "bad-quality",
+        "quality-only",
+        "zero-quality",
+        "large-quality",
+        "mesh-output",
+        "map-input",
+        "replace-material",
+        "report-directory"
+      ],
+      "input_bsp_unchanged": true,
+      "source_map_and_srf_unused": true,
+      "passed_ctest_groups": [
+        "decompile_recovery",
+        "patch_color_recovery",
+        "patch_paint",
+        "recovery_classification",
+        "recovery_groups",
+        "recovery_order",
+        "recovery_outputs",
+        "uv_recovery"
+      ],
+      "ctest_log_sha256": "0608f3187f49c811cb245dac5f0652eb69775aa21233bf173fb8d04ec2fed515",
+      "ctest_elapsed_seconds": 302.34,
+      "sanitizers": {
+        "build_type": "Debug",
+        "flags": "-g -O1",
+        "ASAN_OPTIONS": "detect_leaks=0",
+        "UBSAN_OPTIONS": "print_stacktrace=1",
+        "note": "Established lifetime-allocation leak exclusion; address/undefined checks active"
+      }
+    }
+  },
+  "contract": {
+    "original_paint_inferred": false,
+    "default_export_unchanged": true,
+    "output_settings_chosen": true,
+    "native_color_slot": 0,
+    "per_patch_report_limit": 10000,
+    "report_limit_exercise": 10007,
+    "native_games": [
+      "quake3",
+      "ja"
+    ],
+    "formats": [
+      "map",
+      "map_bp",
+      "map_220"
+    ],
+    "source_modes": [
+      "legacy",
+      "material",
+      "lighting"
+    ],
+    "source_stages": [
+      "BSP",
+      "LIGHT"
+    ],
+    "shapes": [
+      "flat_multi_span",
+      "curved"
+    ],
+    "entity_ownership": [
+      "world",
+      "translated_brush_model"
+    ],
+    "subdivisions": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32
+    ]
+  },
+  "limitations": [
+    "Compiled RGB may be baked light; explicit RGBA recovery freezes it as material color.",
+    "Original paint, density, subdivision choices, source modifiers and style configuration are unproven.",
+    "Triangle-only patches are not fitted to source control grids.",
+    "Current material checks do not establish original asset or removed-volume semantics.",
+    "Finite tessellation changes native patch topology/LOD; runtime pixels and editor interaction were not measured.",
+    "The unrelated material-preview strict pixel gate remains at 66/68; this round does not change or rerun it."
+  ],
+  "evidence_directory": ".agents/tmp/patch-color-recovery"
+}

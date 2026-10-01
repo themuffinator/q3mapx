@@ -1042,6 +1042,7 @@ int ConvertBSPMain( Args& args, bool decompile ){
 	bool detailPolicySpecified=false, detailWorkSpecified=false;
 	bool groupPolicySpecified=false, groupWorkSpecified=false;
 	bool uvPolicySpecified=false;
+	bool patchColorsSpecified=false, patchColorSubdivisionsSpecified=false;
 	int ( *convertFunc )( char * );
 	const game_t  *convertGame;
 	bool map_allowed, force_bsp, force_map;
@@ -1191,8 +1192,31 @@ int ConvertBSPMain( Args& args, bool decompile ){
 			else if ( striEqual( policy, "triangle" ) ) decompileOptions.uvPolicy = DecompileOptions::UVPolicy::Triangle;
 			else Error( "UV policy must be consensus or triangle" );
 		}
+		while ( args.takeArg( "-patch-colors" ) ) {
+			patchColorsSpecified = true;
+			const char* policy = args.takeNext();
+			if ( striEqual( policy, "none" ) ) decompileOptions.patchColors = DecompileOptions::PatchColors::None;
+			else if ( striEqual( policy, "alpha" ) ) decompileOptions.patchColors = DecompileOptions::PatchColors::Alpha;
+			else if ( striEqual( policy, "rgba" ) ) decompileOptions.patchColors = DecompileOptions::PatchColors::RGBA;
+			else Error( "Patch colors must be none, alpha or rgba" );
+		}
+		while ( args.takeArg( "-patch-color-subdivisions" ) ) {
+			patchColorSubdivisionsSpecified = true;
+			const int n = args.takeInt( 1, 32 );
+			if ( n & ( n - 1 ) ) Error( "Patch color subdivisions must be 1, 2, 4, 8, 16 or 32" );
+			decompileOptions.patchColorSubdivisions = n;
+		}
 	}
 	if ( !args.empty() ) Error( "Unknown conversion option '%s'", args.takeFront() );
+	if ( patchColorsSpecified && ( !map_allowed || convertGame ) ) Error( "-patch-colors requires MAP export" );
+	if ( patchColorSubdivisionsSpecified && decompileOptions.patchColors == DecompileOptions::PatchColors::None )
+		Error( "-patch-color-subdivisions requires -patch-colors alpha or rgba" );
+	if ( decompileOptions.patchColors != DecompileOptions::PatchColors::None ) {
+		if ( !g_game->write ) Error( "Patch color recovery requires a BSP-writing game profile" );
+		if ( force_map || ( !force_bsp && path_extension_is( fileName, "map" ) ) ) Error( "Patch color recovery requires a compiled BSP input" );
+		if ( g_decompile_wtf ) Error( "Patch color recovery cannot be combined with -wtf material replacement" );
+		decompileOptions.automaticReport = true;
+	}
 	if ( decompileOptions.lightProposals ) {
 		if ( !map_allowed || convertGame || !g_game->write ) Error( "Light proposal export requires MAP export and a BSP-writing profile" );
 		if ( force_map || ( !force_bsp && path_extension_is( fileName, "map" ) ) ) Error( "Light proposal export requires a compiled BSP input" );

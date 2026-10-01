@@ -52,13 +52,16 @@ q3mapx -decompile -detail-policy cells -brush-order rebuild -o candidate.map map
 q3mapx -decompile -group-policy surfaces -detail-policy cells -o assemblies.map maps/example.bsp
 q3mapx -decompile -light-proposals fit-report.json -brush-order rebuild -o relit.map maps/example.bsp
 q3mapx -decompile -uv-policy triangle -o comparison.map maps/example.bsp
+q3mapx -decompile -patch-colors alpha -o patch-alpha.map maps/example.bsp
+q3mapx -decompile -patch-colors rgba -patch-color-subdivisions 8 -o patch-colors.map maps/example.bsp
 q3mapx -convert -format map_220 maps/example.bsp
 ```
 
 `-decompile` defaults to Valve 220 output and writes `<output.map>.recovery.json`.
 Without `-o`, the map is `<input>_converted.map`. `-report` selects a different JSON
 path. The legacy `-convert` syntax remains available and writes a report when
-explicitly requested or when cell detail or surface grouping is selected. `-o` requires a
+explicitly requested or when cell detail, surface grouping, light proposals or
+patch color recovery is selected. `-o` requires a
 `.map` extension and `-report` requires `.json`.
 Unknown conversion formats/options now produce a diagnostic instead of silently
 choosing ASE or ignoring the option.
@@ -75,6 +78,13 @@ destinations. A failed rollback identifies the retained original backup.
 and appends its fitted lights, fixed proposal dependencies and target markers.
 It always writes a recovery report. See [light recovery](LIGHT-RECOVERY.md) for
 stored-evidence checks, target protection, resource bounds and rebuild assumptions.
+
+`-patch-colors alpha|rgba` explicitly extracts surviving native patch control
+channels into the painted source format. Alpha leaves RGB to rebaking; RGBA
+freezes stored RGB as material color, including any baked light. Incompatible
+styles/materials retain legacy patches with reasons in the automatically written
+report. This does not infer original paint or recover triangle-only control grids.
+See [compiled patch color recovery](PATCH-COLOR-RECOVERY.md) for settings and limits.
 
 The MAP and report are separate filesystem names: process/power loss between
 their replacements can leave different generations. Concurrent writers, metadata

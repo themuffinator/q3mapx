@@ -24,6 +24,10 @@ directions/cones and proposes compatible retained or new target links. Unknown
 bake calibration and broader grouping/review tools below remain open. Qualified
 light fits can be [applied during MAP export](LIGHT-RECOVERY.md) with explicit
 source/score checks, fixed dependencies and target-link protection.
+Explicit [compiled patch channel recovery](PATCH-COLOR-RECOVERY.md) can now retain
+native control alpha/RGBA with chosen source settings and per-surface exclusions.
+It distinguishes compiled channels from original paint and baked lighting;
+triangle-only control fitting and original authoring metadata remain open.
 Recover the closest supported recreation of the author's MAP: editable geometry,
 organization, materials,
 visibility behavior and source lighting. Keep exact extraction available alongside

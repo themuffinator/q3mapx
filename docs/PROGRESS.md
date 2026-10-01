@@ -3463,3 +3463,50 @@ integration source or installed application/profile changed, and previous
 policy-blocked cleanup targets were left untouched. No new unrelated issue was
 found. The existing preview pixel limits, raw-sidecar publication and remaining
 parser/CLI audits stay open; the broader project goal remains active.
+
+## 2026-10-01 — Explicit compiled patch color recovery
+
+Added `-patch-colors alpha|rgba` to MAP export. Eligible native patch controls now
+become editable `q3mapxPatchDef2` primitives with their stored alpha or RGBA.
+Alpha recovery leaves RGB to rebaking; RGBA explicitly freezes stored RGB as
+material color, including any baked light. The selected subdivisions (default 16)
+and inherited density are output choices, not recovered author settings. Control
+positions, translated model origins and absolute UVs use round-trip precision.
+Default and explicit `none` exports retain their preceding MAP/report bytes.
+
+The exporter rejects conflicting active color styles, incompatible/replayed
+material operations, surviving modifier volumes, unrepresentable names or
+translated positions, and grids beyond the paint budget. Rejected patches retain
+ordinary colorless patch syntax; a forced recovery report records each decision
+and explicitly marks original-paint and rebuild equivalence as unproven. Its
+10,000-record cap does not truncate MAP output or aggregate counts. Triangle-only
+patches still have no recovered source grid. See [the contract and limitations](PATCH-COLOR-RECOVERY.md).
+
+Windows Release, Linux Release and Linux Debug ASan/UBSan pass **48 extraction and
+rebuild cases per configuration**, covering 96 native control grids and **45,428
+independently calculated sampled vertices**. The corpus covers Q3/JA, ordinary
+and both authored paint modes, before/after LIGHT, curved and flat multi-span
+grids, translated brush entities, three MAP projections and all six subdivision
+choices. Twenty-four cases undergo two further LIGHT saves with retained selected
+channels. Adjacent MAP/SRF files are poisoned; input BSPs remain unchanged.
+
+Each build also passes 36 default-versus-`none` byte comparisons, 39 guard/limit
+cases and ten CLI/publication failure cases preserving previous output. Windows
+and Linux Release additionally match all 36 default MAP/report pairs against
+the preceding `9c610be` compiler. Active/inactive RBSP styles, mixed recovery
+results, shader transforms, modifier volumes, 31×31 grid limits, triangle-only
+paint, precise controls under legacy triangle UV policy, and 10,007-patch report
+truncation are covered. Seven related groups (`patch_paint`, `decompile_recovery`,
+`recovery_outputs`, `uv_recovery`, `recovery_classification`, `recovery_order`,
+`recovery_groups`) pass on all three configurations. The sanitizer run retains
+the established lifetime-allocation leak exclusion. See [recorded evidence](validation/patch-color-recovery.json).
+
+Build/test logs, reference binaries and the evidence recorder are retained in
+`.agents/tmp/patch-color-recovery/`; fixture outputs and detailed validation are
+under each build's `tests/patch-color-recovery/`. No game or editor was launched
+and no user input or OS capture was used. Native editor recovery controls,
+original-paint metadata, triangle-to-patch reconstruction and runtime/LOD
+equivalence remain open. No new unrelated issue was found. The earlier material
+preview result remains 66/68 at its unchanged strict pixel gate; this round did
+not modify or rerun that renderer. Previous policy-blocked cleanup targets were
+left untouched, and the broader project goal remains active.

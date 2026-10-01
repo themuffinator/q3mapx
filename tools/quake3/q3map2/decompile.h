@@ -8,6 +8,7 @@ struct DecompileOptions {
 	enum class DetailPolicy { Legacy, Cells };
 	enum class GroupPolicy { None, Surfaces };
 	enum class UVPolicy { Consensus, Triangle };
+	enum class PatchColors { None, Alpha, RGBA };
 	const char* output = nullptr;
 	const char* report = nullptr;
 	const char* lightProposals = nullptr;
@@ -19,5 +20,7 @@ struct DecompileOptions {
 	GroupPolicy groupPolicy = GroupPolicy::None;
 	unsigned groupWorkLimit = 50'000'000;
 	UVPolicy uvPolicy = UVPolicy::Consensus;
+	PatchColors patchColors = PatchColors::None;
+	int patchColorSubdivisions = 16;
 };
 inline DecompileOptions decompileOptions;

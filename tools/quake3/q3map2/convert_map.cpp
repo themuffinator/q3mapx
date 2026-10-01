@@ -55,6 +55,82 @@ struct DecompileStats {
 	size_t unrepresentableUVOutputs = 0;
 };
 static DecompileStats recovery;
+
+struct PatchColorRecord {
+	int surface;
+	const char* status;
+};
+static constexpr size_t maxPatchColorRecords = 10'000;
+static std::vector<PatchColorRecord> patchColorRecords;
+static std::map<std::string, size_t> patchColorCounts;
+static size_t omittedPatchColorRecords = 0;
+static bool patchColorVolumePresent = false;
+static std::vector<const char*> patchColorMaterialStatus;
+
+static bool RecoverPatchColors(){
+	return decompileOptions.patchColors != DecompileOptions::PatchColors::None;
+}
+
+static void PreparePatchColorRecovery(){
+	patchColorRecords.clear(); patchColorCounts.clear(); omittedPatchColorRecords = 0;
+	patchColorMaterialStatus.clear(); patchColorVolumePresent = false;
+	if ( !RecoverPatchColors() ) return;
+	patchColorMaterialStatus.resize( bspShaders.size(), nullptr );
+	// A surviving modifier brush would apply its operation a second time. Be
+	// conservative without claiming that absence proves no original modifiers.
+	std::vector<bool> checked( bspShaders.size(), false );
+	for ( const auto& brush : bspBrushes ) {
+		if ( checked[brush.shaderNum] ) continue;
+		checked[brush.shaderNum] = true;
+		const auto& mods = ShaderInfoForShader( bspShaders[brush.shaderNum].shader ).colorMod;
+		if ( !mods.empty() && mods.front().type == EColorMod::Volume ) {
+			patchColorVolumePresent = true;
+			break;
+		}
+	}
+}
+
+static const char* PatchColorMaterialStatus( int shaderNum ){
+	const char*& status = patchColorMaterialStatus[shaderNum];
+	if ( status ) return status;
+	const char* name = bspShaders[shaderNum].shader;
+	if ( !striEqualPrefix( name, "textures/" ) ) return status = "unsupported_material_name";
+	const auto& si = ShaderInfoForShader( name );
+	if ( !striEqual( name, si.shader.c_str() ) ) return status = "material_redirect";
+	if ( si.indexed || si.autosprite ) return status = "incompatible_paint_material";
+	if ( !si.colorMod.empty() ) return status = "material_color_modifier";
+	if ( si.tcGen || si.invert || si.offset != 0 || si.furNumLayers
+	  || si.legacyTerrain || !si.surfaceModels.empty() || !si.foliage.empty()
+	  || !strEmptyOrNull( si.backShader ) || !strEmptyOrNull( si.cloneShader )
+	  || !strEmptyOrNull( si.remapShader ) ) return status = "material_geometry_or_uv_modifier";
+	for ( int row = 0; row < 3; ++row ) for ( int column = 0; column < 3; ++column )
+		if ( si.mod[row][column] != ( row == column ? 1.f : 0.f ) ) return status = "material_geometry_or_uv_modifier";
+	return status = "recovered";
+}
+
+static const char* PatchColorStatus( const bspDrawSurface_t& ds, const Vector3& origin ){
+	if ( !q3mapx::authoring::paintMeshFits( ds.patchWidth, ds.patchHeight, decompileOptions.patchColorSubdivisions ) )
+		return "paint_grid_limit";
+	if ( patchColorVolumePresent ) return "color_modifier_volume_present";
+	const char* material = PatchColorMaterialStatus( ds.shaderNum );
+	if ( !strEqual( material, "recovered" ) ) return material;
+	const int firstChannel = decompileOptions.patchColors == DecompileOptions::PatchColors::RGBA ? 0 : 3;
+	for ( int v = 0; v < ds.numVerts; ++v ) {
+		const auto& vert = bspDrawVerts[ds.firstVert + v];
+		const Vector3 xyz = vert.xyz + origin;
+		for ( int axis = 0; axis < 3; ++axis )
+			if ( !std::isfinite( xyz[axis] ) || std::abs( xyz[axis] ) > MAX_WORLD_COORD ) return "source_coordinate_limit";
+		// A single source RGBA field cannot represent different active styles.
+		// Inactive RBSP slots are padding, not an additional color constraint.
+		for ( int style = 1; style < MAX_LIGHTMAPS; ++style ) {
+			if ( ds.vertexStyles[style] == LS_NONE ) continue;
+			for ( int c = firstChannel; c < 4; ++c )
+				if ( vert.color[style][c] != vert.color[0][c] ) return "conflicting_active_styles";
+		}
+	}
+	return "recovered";
+}
+
 static bool PreciseTextureOutput(){
 	return decompileOptions.uvPolicy == DecompileOptions::UVPolicy::Consensus;
 }
@@ -1092,13 +1168,24 @@ static void ConvertPatch( FILE *f, int num, const bspDrawSurface_t& ds, const Ve
 	}
 
 	++recovery.patches;
+	bool colors = false;
+	if ( RecoverPatchColors() ) {
+		const char* status = PatchColorStatus( ds, origin );
+		colors = strEqual( status, "recovered" );
+		++patchColorCounts[status];
+		if ( patchColorRecords.size() < maxPatchColorRecords ) patchColorRecords.push_back( { num, status } );
+		else ++omittedPatchColorRecords;
+	}
 	/* start patch */
 	fprintf( f, "\t// patch %d\n", num );
+	if ( colors ) fprintf( f, "\t// Compiled control channels; original paint, RGB meaning and tessellation are unproven.\n" );
 	fprintf( f, "\t{\n" );
-	fprintf( f, "\t\tpatchDef2\n" );
+	fprintf( f, "\t\t%s\n", colors ? q3mapx::authoring::paintedPatchDefinition : "patchDef2" );
 	fprintf( f, "\t\t{\n" );
 	fprintf( f, "\t\t\t%s\n", texture );
 	fprintf( f, "\t\t\t( %d %d 0 0 0 )\n", ds.patchWidth, ds.patchHeight );
+	if ( colors ) fprintf( f, "\t\t\tlightmapSampleSize 0\n\t\t\tvertexRGB %s\n\t\t\tpaintSubdivisions %d\n",
+	    decompileOptions.patchColors == DecompileOptions::PatchColors::RGBA ? "material" : "lighting", decompileOptions.patchColorSubdivisions );
 	fprintf( f, "\t\t\t(\n" );
 
 	/* iterate through the verts */
@@ -1117,8 +1204,14 @@ static void ConvertPatch( FILE *f, int num, const bspDrawSurface_t& ds, const Ve
 			const Vector3 xyz = dv.xyz + origin;
 
 			/* print vertex */
-			fprintf( f, PreciseTextureOutput() ? " ( %.9g %.9g %.9g %.9g %.9g )" : " ( %f %f %f %f %f )",
+			fprintf( f, ( colors || PreciseTextureOutput() ) ? " ( %.9g %.9g %.9g %.9g %.9g" : " ( %f %f %f %f %f",
 			    xyz[ 0 ], xyz[ 1 ], xyz[ 2 ], dv.st[ 0 ], dv.st[ 1 ] );
+			if ( colors ) {
+				const auto& rgba = dv.color[0];
+				const bool rgb = decompileOptions.patchColors == DecompileOptions::PatchColors::RGBA;
+				fprintf( f, " %d %d %d %d", rgb ? rgba[0] : 255, rgb ? rgba[1] : 255, rgb ? rgba[2] : 255, rgba[3] );
+			}
+			fprintf( f, " )" );
 		}
 
 		/* end row */
@@ -1413,6 +1506,7 @@ static void WriteGroupInferenceReport( rapidjson::PrettyWriter<rapidjson::String
 static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 	if ( decompileOptions.lightRecovery ) decompileOptions.lightRecovery->prepare();
 	recovery = {};
+	PreparePatchColorRecovery();
 	uvRecoveryRecords.clear(); uvRecoveryCounts.clear(); omittedUVRecoveryRecords = 0;
 	detailDecisions.clear(); detailEvidence.reset();
 	groupRecovery.reset();
@@ -1643,6 +1737,29 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		if ( groupRecovery ) WriteGroupInferenceReport( writer, buffer );
 		count( "skipped_brushes", recovery.skippedBrushes );
 		count( "patches", recovery.patches );
+		if ( RecoverPatchColors() ) {
+			writer.Key( "patch_colors" ); writer.StartObject();
+			const bool rgba = decompileOptions.patchColors == DecompileOptions::PatchColors::RGBA;
+			writer.Key( "policy" ); writer.String( rgba ? "rgba" : "alpha" );
+			writer.Key( "basis" ); writer.String( "compiled_native_patch_control_channels" );
+			writer.Key( "original_paint_proven" ); writer.Bool( false );
+			writer.Key( "rebuild_equivalence_proven" ); writer.Bool( false );
+			writer.Key( "source_color_slot" ); writer.Int( 0 );
+			writer.Key( "output_rgb_mode" ); writer.String( rgba ? "material" : "lighting" );
+			writer.Key( "output_subdivisions" ); writer.Int( decompileOptions.patchColorSubdivisions );
+			writer.Key( "output_sample_size" ); writer.Int( 0 );
+			writer.Key( "settings_basis" ); writer.String( "chosen_for_export_not_recovered_author_metadata" );
+			writer.Key( "skipped_patch_output" ); writer.String( "legacy_patchDef2_without_color" );
+			count( "record_limit", maxPatchColorRecords ); count( "omitted_records", omittedPatchColorRecords );
+			writer.Key( "counts" ); writer.StartObject();
+			for ( const auto& [status, value] : patchColorCounts ) count( status.c_str(), value );
+			writer.EndObject(); writer.Key( "patches" ); writer.StartArray();
+			for ( const auto& record : patchColorRecords ) {
+				writer.StartObject(); writer.Key( "surface" ); writer.Int( record.surface );
+				writer.Key( "status" ); writer.String( record.status ); writer.EndObject();
+			}
+			writer.EndArray(); writer.EndObject();
+		}
 		count( "faces", recovery.faces );
 		count( "matched_uv_faces", recovery.matchedFaces );
 		count( "fallback_uv_faces", recovery.fallbackFaces );
@@ -1706,7 +1823,14 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		writer.StartArray();
 		writer.String( "Original editor groups are unavailable; removed entities and some source model instances may not be stored in the BSP." );
 		if ( !strEmpty( entities[0].valueForKey( q3mapx::authoring::paintBindingKey ) ) )
-			writer.String( "This BSP contains authored patch paint. MAP recovery does not yet restore its RGBA controls, RGB mode or tessellation settings; keep the original q3mapxPatchDef2 source. The BSP/SRF binding is a build identity, not original authoring metadata." );
+			writer.String( RecoverPatchColors()
+			    ? "This BSP contains authored patch paint. Only eligible surviving native control channels are recovered; original pre-modifier paint, RGB mode, tessellation and density are unproven. Triangle-only painted surfaces are not recovered. The BSP/SRF binding is a build identity, not original authoring metadata. Keep the original source."
+			    : "This BSP contains authored patch paint. MAP recovery does not yet restore its RGBA controls, RGB mode or tessellation settings; keep the original q3mapxPatchDef2 source. The BSP/SRF binding is a build identity, not original authoring metadata." );
+		if ( RecoverPatchColors() ) {
+			writer.String( "Patch color recovery copies stored slot-zero channels, not inferred original paint. RGBA export freezes any baked RGB as material color; alpha export resets source RGB to white for rebaking. Conflicting active vertex styles retain legacy patches; inactive style slots are ignored." );
+			writer.String( "Recovered colors use q3mapxPatchDef2 and chosen finite tessellation, which changes native patch LOD/render topology. Original density, tessellation, pre-modifier fields and pixel equivalence are not established. Native collision controls may not describe the rendered triangle colors. Triangle-only patches have no recoverable native control grid here." );
+			writer.String( "Current material modifiers and surviving color-modifier brushes can prevent patch color export. Missing or changed assets, removed modifier volumes, source entities and original compiler settings cannot be reconstructed by this check. Review the report and compare a rebuild with the original BSP." );
+		}
 		writer.String( decompileOptions.lightRecovery
 		    ? "Selected conditional light proposals are exported under their recorded bake hypothesis. Stored observations/scores and BSP identity are checked; native lighting is not recomputed here. Original author lights, target identity and rebuilt lighting equivalence remain unproven."
 		    : "Baked lightmaps and lightgrid data are not reconstructed as source lights by MAP export." );
@@ -1723,14 +1847,18 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		if ( rebuildOrder ) writer.String( "Rebuild brush order depends on the current shader assets and q3mapx loader semantics. Discarded source flags, plane/side ordering and other compiler differences can still change partitions or visibility." );
 		writer.EndArray();
 		writer.EndObject();
-		if ( ( detailEvidence || groupRecovery || decompileOptions.lightRecovery ) && buffer.GetSize() > 64 * 1024 * 1024 ) throw std::runtime_error( "Recovery inference report exceeds 64 MiB" );
+		if ( ( detailEvidence || groupRecovery || decompileOptions.lightRecovery || RecoverPatchColors() ) && buffer.GetSize() > 64 * 1024 * 1024 ) throw std::runtime_error( "Recovery inference report exceeds 64 MiB" );
 		if ( std::fwrite( buffer.GetString(), 1, buffer.GetSize(), reportFile ) != buffer.GetSize() )
 			throw std::runtime_error( "Cannot write recovery report " + std::string( report.c_str() ) );
 	}
 	if ( decompileOptions.lightRecovery ) decompileOptions.lightRecovery->verifyInputs();
 	outputs.commit();
 	if ( !strEmpty( entities[0].valueForKey( q3mapx::authoring::paintBindingKey ) ) )
-		Sys_Warning( "Authored patch paint is not restored by MAP recovery; keep the original q3mapxPatchDef2 source\n" );
+		Sys_Warning( RecoverPatchColors()
+		    ? "Original authored patch paint is unproven; compiled control recovery cannot restore missing source metadata or triangle-only patches\n"
+		    : "Authored patch paint is not restored by MAP recovery; keep the original q3mapxPatchDef2 source\n" );
+	if ( RecoverPatchColors() ) Sys_Printf( "Patch colors: %zu recovered, %zu retained as legacy patches; compiled channels are not proof of original paint\n",
+	    patchColorCounts["recovered"], recovery.patches - patchColorCounts["recovered"] );
 	Sys_Printf( "Recovered %zu brushes, %zu patches; %zu/%zu faces matched texture coordinates, %zu used fallback\n",
 	    recovery.brushes, recovery.patches, recovery.matchedFaces, recovery.faces, recovery.fallbackFaces );
 	if ( recovery.skippedBrushes || recovery.degenerateUVs || recovery.approximateQuakeFaces ) {

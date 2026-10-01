@@ -529,15 +529,21 @@ broader material-preview/runtime qualification requirements remain open.
 - [ ] Preserve source paint through save/reload, duplication and patch editing.
   Recover compiled colors during decompilation, and restore original paint only
   where retained authoring metadata supports it; distinguish paint from baked light.
-  Decompilation now warns about unrecovered authored paint when its BSP marker
-  is present. The build binding is not a source-control archive. Native
+  Default decompilation warns about unrecovered authored paint when its BSP marker
+  is present. Explicit `-patch-colors alpha|rgba` now recovers eligible compiled
+  native control channels with chosen sampling and per-patch skip reasons;
+  RGBA can contain baked lighting and is not inferred original paint. Native
+  style conflicts, material replay, grid limits and triangle-only losses are
+  diagnosed. Original metadata, triangle-to-patch recovery, workbench controls
+  and runtime equivalence remain open. See [recovery](PATCH-COLOR-RECOVERY.md).
+  The build binding is not a source-control archive. Native
   save/reopen, duplication, undo/redo, transpose/inversion and bounded insertion
   now retain paint. Insertion rounds new controls to bytes. Painted row reduction
   is permitted only after exact reconstruction of every geometry/UV/RGBA channel;
   lossy reductions and caps remain guarded. Native undo, independent rational
   proofs and original-versus-edit-roundtrip compiler parity pass. Per-span
   tessellation still affects runtime approximation. Wall generation, third-party
-  topology plugins, caps and decompiler paint recovery still need work.
+  topology plugins, caps and original-paint recovery still need work.
 
 Acceptance: paint RGB and alpha independently in Radiant, save/reopen the map and
 compile it through the CLI with the same intended material appearance, without

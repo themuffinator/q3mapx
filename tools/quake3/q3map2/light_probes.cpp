@@ -341,7 +341,7 @@ std::unique_ptr<LightProbes> LightProbes::parse(Args& args,const char* source) {
     data->input.Parse<rapidjson::kParseValidateEncodingFlag|rapidjson::kParseIterativeFlag>(content.data(),content.size());
     if(data->input.HasParseError()) throw std::runtime_error("Invalid probe JSON at byte "+std::to_string(data->input.GetErrorOffset()));
     const auto& doc=data->input;
-    fields(doc,{"schema_version","samples","baked_lightmaps","lights","fit_point_lights"}); integer(required(doc,"schema_version"),1,1);
+    fields(doc,{"schema_version","samples","baked_lightmaps","lights","fit_point_lights","fit_spot_lights"}); integer(required(doc,"schema_version"),1,1);
     if(doc.HasMember("samples")==doc.HasMember("baked_lightmaps")) throw std::runtime_error("Choose exactly one of samples or baked_lightmaps");
     if(doc.HasMember("samples")) {
         const auto& samples=doc["samples"];
@@ -373,10 +373,27 @@ std::unique_ptr<LightProbes> LightProbes::parse(Args& args,const char* source) {
         }
     }
     if(doc.HasMember("lights") && (!doc["lights"].IsArray() || doc["lights"].Size()>256)) throw std::runtime_error("At most 256 proposed probe lights are supported");
-    if(doc.HasMember("fit_point_lights")) {
+    if(doc.HasMember("fit_point_lights") && doc.HasMember("fit_spot_lights")) throw std::runtime_error("Choose one fitting family per request");
+    if(doc.HasMember("fit_point_lights") || doc.HasMember("fit_spot_lights")) {
         if(!data->baked.enabled) throw std::runtime_error("Point fitting requires baked_lightmaps observations");
-        const auto& settings=doc["fit_point_lights"]; auto& fit=data->fit; fit.enabled=true;
-        fields(settings,{"grid_spacing","mins","maxs","max_candidates","max_lights","max_intensity","refinement_steps","style",
+        auto& fit=data->fit; fit.enabled=true; fit.spot=doc.HasMember("fit_spot_lights");
+        const auto& settings=doc[fit.spot?"fit_spot_lights":"fit_point_lights"];
+        if(fit.spot) {
+            fit.spacing=96; fit.maxLights=2; fit.refinementSteps=7; fit.maxWork=200'000'000;
+            fields(settings,{"grid_spacing","mins","maxs","max_candidates","max_lights","max_intensity","refinement_steps","style",
+                "min_improvement_rmse","max_rmse","max_work","allow_implicit_materials","min_half_angle_degrees","max_half_angle_degrees",
+                "max_spot_candidates","refine_candidates","use_retained_targets"});
+            if(settings.HasMember("min_half_angle_degrees")) fit.minHalfAngle=floatValue(settings["min_half_angle_degrees"],1,85);
+            if(settings.HasMember("max_half_angle_degrees")) fit.maxHalfAngle=floatValue(settings["max_half_angle_degrees"],1,85);
+            if(fit.minHalfAngle>=fit.maxHalfAngle) throw std::runtime_error("Invalid spotlight half-angle range");
+            if(settings.HasMember("max_spot_candidates")) fit.maxSpotCandidates=integer(settings["max_spot_candidates"],1,32768);
+            if(settings.HasMember("refine_candidates")) fit.refineCandidates=integer(settings["refine_candidates"],1,8);
+            if(settings.HasMember("use_retained_targets")) {
+                if(!settings["use_retained_targets"].IsBool()) throw std::runtime_error("use_retained_targets must be boolean");
+                fit.useRetainedTargets=settings["use_retained_targets"].GetBool();
+            }
+        }
+        else fields(settings,{"grid_spacing","mins","maxs","max_candidates","max_lights","max_intensity","refinement_steps","style",
                          "min_improvement_rmse","max_rmse","max_work","allow_implicit_materials"});
         if(settings.HasMember("grid_spacing")) fit.spacing=floatValue(settings["grid_spacing"],1,1e6);
         if(settings.HasMember("max_candidates")) fit.maxCandidates=integer(settings["max_candidates"],1,4096);
@@ -421,6 +438,17 @@ void LightProbes::prepare() {
         validateEntity(e);
         if(const char* model=e.valueForKey("model"); *model=='*') ++poses[std::atoi(model+1)];
         if(const char* target=e.valueForKey("targetname"); *target) d.targets.insert(target);
+        // Reserve generated-name tokens even in dangling links or custom keys.
+        // Adding an inferred marker must not give an unrelated reference a target.
+        for(const auto& pair:e.epairs) {
+            const std::string_view value=pair.value.c_str(); size_t offset=0;
+            while((offset=value.find("_q3mapx_",offset))!=std::string_view::npos) {
+                size_t end=offset+8;
+                while(end<value.size() && ((value[end]>='0' && value[end]<='9') || (value[end]>='a' && value[end]<='z')
+                    || (value[end]>='A' && value[end]<='Z') || value[end]=='_')) ++end;
+                d.targets.emplace(value.substr(offset,end-offset)); offset=end;
+            }
+        }
     }
     for(size_t i=1;i<poses.size();++i) if(poses[i]!=1) throw std::runtime_error("Inline probe model needs exactly one surviving entity pose");
     if(d.baked.enabled) d.selectBakedSamples();
@@ -429,6 +457,21 @@ void LightProbes::prepare() {
         if(!finite(d.fit.mins) || !finite(d.fit.maxs)) throw std::runtime_error("Invalid world bounds for point fitting");
     }
     d.originalEntities=entities.size();
+    if(d.fit.spot) {
+        std::map<std::string,size_t> names;
+        for(const auto& entity:entities) if(const char* name=entity.valueForKey("targetname"); *name) ++names[name];
+        for(size_t i=0;i<entities.size();++i) {
+            const auto& entity=entities[i]; const char* name=entity.valueForKey("targetname");
+            if(!*name) continue;
+            const char* reason=!d.fit.useRetainedTargets?"disabled_by_request":names[name]!=1?"duplicate_targetname":
+                !(entity.classname_is("info_null") || entity.classname_is("target_position"))?"unsupported_class":
+                !*entity.valueForKey("origin")?"missing_origin":*entity.valueForKey("model")?"model_owned_marker":
+                (*entity.valueForKey("target") || *entity.valueForKey("target2"))?"outgoing_link":nullptr;
+            if(reason) ++d.fit.targetExclusions[reason];
+            else d.fit.targets.push_back({i,name,entity.vectorForKey("origin")});
+        }
+        if(d.fit.targets.size()>128) throw std::runtime_error("Spot fitting supports at most 128 unique static target markers");
+    }
     if(d.input.HasMember("lights")) for(const auto& light:d.input["lights"].GetArray()) {
         fields(light,{"origin","intensity","color","spawnflags","fade","angle_scale","extra_distance","style","target","radius","sun"});
         entity_t e{}; e.setKeyValue("classname","light"); entityVector(e,"origin",vector(required(light,"origin")));
@@ -491,7 +534,7 @@ void LightProbes::run(const Vector3& ambient,size_t generated) {
     unchanged(d.source,d.sourceIdentity,true); unchanged(d.request,d.requestIdentity,false);
     OutputFiles output; Stream stream(output.open(d.destination)); Writer w(stream);
     w.StartObject(); number(w,"schema_version",1);
-    text(w,"status",d.fit.enabled?"point_fitting_diagnostic":"direct_forward_observations_only");
+    text(w,"status",d.fit.enabled?(d.fit.spot?"spot_fitting_diagnostic":"point_fitting_diagnostic"):"direct_forward_observations_only");
     text(w,"game",g_game->arg); flag(w,"light_inference_performed",d.fit.enabled && fit.gridPoints>0);
     text(w,"source_sha256",d.sourceIdentity.sha.c_str()); text(w,"request_sha256",d.requestIdentity.sha.c_str());
     number(w,"generated_sources",generated); number(w,"active_sources",lights.size()); number(w,"culled_sources",generated-lights.size());
@@ -611,9 +654,9 @@ void LightProbes::run(const Vector3& ambient,size_t generated) {
         w.EndObject();
     }
     if(d.fit.enabled) {
-        w.Key("point_fit"); w.StartObject(); text(w,"status",fit.status); flag(w,"accepted",fit.accepted);
+        w.Key(d.fit.spot?"spot_fit":"point_fit"); w.StartObject(); text(w,"status",fit.status); flag(w,"accepted",fit.accepted);
         text(w,"qualification","conditional_current_assets_and_encoding_not_original_author_metadata");
-        text(w,"family","nonnegative_inverse_square_point_with_native_angle_and_extra_distance");
+        text(w,"family",d.fit.spot?"nonnegative_native_spot_with_inverse_square_angle_and_extra_distance":"nonnegative_inverse_square_point_with_native_angle_and_extra_distance");
         text(w,"validation_split","one_in_five_hashed_atlas_blocks_never_used_for_search_or_stopping");
         number(w,"atlas_block_size",d.fit.blockSize); number(w,"style",d.fit.style);
         flag(w,"original_bake_settings_known",false); flag(w,"encoding_calibrated",false);
@@ -621,6 +664,18 @@ void LightProbes::run(const Vector3& ambient,size_t generated) {
         vec(w,"mins",d.fit.mins); vec(w,"maxs",d.fit.maxs); value(w,"grid_spacing",d.fit.spacing);
         value(w,"max_intensity",d.fit.maxIntensity); number(w,"max_lights",d.fit.maxLights);
         number(w,"max_candidates",d.fit.maxCandidates); number(w,"refinement_steps",d.fit.refinementSteps);
+        if(d.fit.spot) {
+            value(w,"min_half_angle_degrees",d.fit.minHalfAngle); value(w,"max_half_angle_degrees",d.fit.maxHalfAngle);
+            number(w,"max_spot_candidates",d.fit.maxSpotCandidates); number(w,"refine_candidates",d.fit.refineCandidates);
+            flag(w,"use_retained_targets",d.fit.useRetainedTargets); value(w,"target_training_mse_slack",0.01);
+            text(w,"training_encoding","native_continuous_before_final_srgb_rounding");
+            number(w,"spot_candidates_evaluated",fit.spotCandidates); number(w,"residual_direction_seeds",fit.residualSeeds);
+            w.Key("target_exclusions"); w.StartObject(); for(const auto& [key,count]:d.fit.targetExclusions) number(w,key.c_str(),count); w.EndObject();
+            w.Key("eligible_retained_targets"); w.StartArray();
+            for(const auto& target:d.fit.targets) {
+                w.StartObject(); number(w,"bsp_entity",target.entity); text(w,"targetname",target.name.c_str()); vec(w,"origin",target.origin); w.EndObject();
+            } w.EndArray();
+        }
         value(w,"min_improvement_rmse",d.fit.minImprovement); value(w,"max_rmse",d.fit.maxRMSE);
         number(w,"max_work",d.fit.maxWork); number(w,"work_used",fit.work); number(w,"grid_points",fit.gridPoints);
         number(w,"usable_candidates",fit.usableCandidates); number(w,"positions_tested",fit.positionsTested);
@@ -634,11 +689,17 @@ void LightProbes::run(const Vector3& ambient,size_t generated) {
         };
         for(int split=0;split<2;++split) {
             w.Key(split==0?"training":"withheld"); w.StartObject();
-            metric("baseline",fit.baseline[split]); metric("trial",fit.trial[split]); w.EndObject();
+            metric("baseline",fit.baseline[split]); metric("trial",fit.trial[split]);
+            if(d.fit.spot) { metric("illuminated_baseline",fit.illuminatedBaseline[split]); metric("illuminated_trial",fit.illuminatedTrial[split]); }
+            w.EndObject();
         }
         w.Key("initial_grid_alternatives"); w.StartArray();
         for(const auto& alternative:fit.trainingAlternatives) {
             w.StartObject(); vec(w,"origin",alternative.light.origin); vec(w,"linear_intensity_rgb",alternative.light.energy);
+            if(d.fit.spot) {
+                vec(w,"direction",alternative.light.direction); value(w,"radius_by_distance",alternative.light.radiusByDist);
+                w.Key("target_bsp_entity"); if(alternative.light.target>=0) w.Uint64(d.fit.targets[alternative.light.target].entity); else w.Null();
+            }
             value(w,"training_quantization_center_rmse",alternative.trainingRMSE); w.EndObject();
         } w.EndArray();
         w.Key("best_trial"); w.StartArray();
@@ -648,11 +709,35 @@ void LightProbes::run(const Vector3& ambient,size_t generated) {
             Vector3 color=intensity>0?source.energy/intensity:Vector3(0);
             if(colorsRGB) for(int a=0;a<3;++a) color[a]=std::clamp(Image_sRGBFloatFromLinearFloat(color[a]),0.f,1.f);
             vec(w,"color",color); number(w,"style",d.fit.style); number(w,"spawnflags",wolfLight?1:0);
-            value(w,"extra_distance",extraDist); w.EndObject();
+            value(w,"extra_distance",extraDist);
+            if(d.fit.spot) {
+                vec(w,"direction",source.direction); value(w,"radius_by_distance",source.radiusByDist);
+                value(w,"half_angle_degrees",radians_to_degrees(std::atan(source.radiusByDist)));
+                const bool retained=source.target>=0;
+                const Vector3 target=retained?d.fit.targets[source.target].origin:source.origin+source.direction*(64/source.radiusByDist);
+                const float radius=source.radiusByDist*vector3_length(target-source.origin)-16;
+                if(!finite(target) || std::any_of(target.data(),target.data()+3,[](float v){ return std::abs(v)>1e6; })
+                    || !std::isfinite(radius) || radius<=0 || radius>1e6)
+                    throw std::runtime_error("Fitted spotlight target/radius exceeds the native proposal range");
+                vec(w,"target",target); value(w,"radius",radius);
+                w.Key("target_link"); w.StartObject();
+                text(w,"status",retained?"retained_static_marker_proposal":"new_inferred_marker_proposal");
+                std::string name;
+                if(retained) { name=d.fit.targets[source.target].name; number(w,"bsp_entity",d.fit.targets[source.target].entity); }
+                else {
+                    const std::string prefix="_q3mapx_inferred_target_"; size_t suffix=0;
+                    do { name=prefix+std::to_string(suffix++); } while(!d.targets.insert(name).second);
+                    w.Key("bsp_entity"); w.Null(); text(w,"classname","info_null");
+                }
+                text(w,"targetname",name.c_str()); vec(w,"origin",target);
+                flag(w,"input_entity_modified",false); w.EndObject();
+            }
+            w.EndObject();
         } w.EndArray();
         w.Key("validation_observations"); w.StartArray();
         for(size_t i=0;i<fit.receivers.size();++i) {
             w.StartObject(); number(w,"sample",fit.receivers[i].sample); flag(w,"withheld",fit.receivers[i].withheld);
+            if(d.fit.spot) flag(w,"illuminated_support",fit.receivers[i].illuminated);
             if(i<fit.subsampling.size()) flag(w,"subsampling_requested",fit.subsampling[i]!=0);
             if(i<fit.prediction.size()) rgb(w,"trial_rgb",fit.prediction[i]);
             w.EndObject();
@@ -660,7 +745,7 @@ void LightProbes::run(const Vector3& ambient,size_t generated) {
     }
     w.Key("limitations"); w.StartArray();
     for(const char* s:{
-        "This is the current compiler's direct CPU forward model with current assets and explicit points/normals. Optional point fitting proposes a conditional explanation; no original author metadata or bake settings are recovered and no entities are exported.",
+        "This is the current compiler's direct CPU forward model with current assets and explicit points/normals. Optional point/spot fitting proposes a conditional explanation; no original author metadata or bake settings are recovered and no entities are exported.",
         "BSP entities are retained and proposals exist only in memory. MAP/SRF files are not read; shader scripts, images and referenced model assets use the selected filesystem settings. Missing shader text is unresolved material provenance, not proof that a shader was originally implicit.",
         "Surface metadata uses compiler defaults without the original SRF; patch lengths are recomputed from stored controls using the compiler's curve metric. Inline geometry uses surviving entity origins. Probe coordinates/normals are explicitly world-space; runtime poses, bake nudges, phong/bump normals and original tessellation settings are not reconstructed.",
         "Responses are pre-encoding direct contributions, separated by source/style. Ambient and minimum light are separate metadata. Bounce, dirt, floodlight, filtering, luxel reconstruction, supersampling, clamping and output encoding are not applied. Never subtract these values directly from stored RGB bytes.",
@@ -669,10 +754,16 @@ void LightProbes::run(const Vector3& ambient,size_t generated) {
         "Pair/source/response limits and a 64 MiB report ceiling bound this diagnostic's retained data. Scene preparation and each trace use existing compiler algorithms; pair work is not a ray-step count or elapsed-time guarantee.",
         "No BSP, MAP, SRF, lightmap or generated shader output is written. Source/request hashes are rechecked before publishing the staged report. Concurrent changes to source, assets or destinations are unsupported."
     }) w.String(s);
-    if(d.fit.enabled) for(const char* s:{
+    if(d.fit.enabled && !d.fit.spot) for(const char* s:{
         "Point fitting holds retained lights, supplied proposals, current shader emitters and sun/sky fixed. Its nonnegative inverse-square point family does not calibrate encoding or model bounce, dirt, floodlight, filter reconstruction, spotlights or target links. A low residual does not prove a missing entity light or a unique solution.",
         "Candidate positions use a bounded BSP-world grid and local refinement. Colors/intensities minimize a pre-byte quantization-centre training objective; acceptance uses byte RMSE improvement and absolute RMSE limits in both training and withheld atlas blocks. This split withholds texel blocks, not independent scenes or assets, and supplies no calibrated confidence probability.",
         "Observed 255 channels and unknown baseline illumination are excluded from fitting. Missing shader text is unresolved unless implicit materials were explicitly allowed; known missing/default images prevent fitting. Existing assets may still differ from the original bake. best_trial remains a rejected trial unless accepted is true; inference is read-only and requires author review."
+    }) w.String(s);
+    if(d.fit.spot) for(const char* s:{
+        "Spot fitting keeps retained lights, supplied proposals, shader emitters and sun/sky fixed. Native inverse-square/angular falloff, cone slope and edge softening are modelled, but encoding calibration, indirect/filter reconstruction, jitter, custom falloff and original luxel normals remain unresolved.",
+        "Residual direction seeds, coordinate refinement, joint finite-difference least squares and target selection use only training observations. Actual native-byte improvement and RMSE must pass on training/withheld blocks and separately on positive illuminated support; these are correlated observations within one BSP, not calibrated confidence or proof of unique source placement.",
+        "Unique positioned info_null/target_position markers without models or outgoing target/target2 links are candidate static aims. Current poses and target semantics are assumptions. A nearby marker may be preferred within 0.01 training MSE; equivalent marker identities remain ambiguous. New markers reserve existing names and generated-name tokens in entity values, including dangling links. No entity or existing gameplay link is modified.",
+        "best_trial and target_link are rejected hypotheses unless accepted is true. Recompile a separate recovered map before adopting a proposal. Resource limits, missing assets and incomplete observations can prevent inference; low lighting error alone does not establish the original spotlight position, cone, count or target name."
     }) w.String(s);
     if(d.baked.enabled) for(const char* s:{
         "Automatic internal-lightmap comparisons apply current compiler encoding, world ambient/minlight on slot zero, and current material brightness to the direct hypothesis. These are declared assumptions, not recovered or calibrated bake settings. Residuals are predicted minus stored bytes, not decoded irradiance or evidence of missing entity lights.",

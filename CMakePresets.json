@@ -63,7 +63,9 @@
       "cacheVariables": {
         "Q3MAPX_ENABLE_SANITIZERS": "ON",
         "Q3MAPX_ENABLE_OPENCL": "OFF",
-        "Q3MAPX_BUILD_GUI": "OFF"
+        "Q3MAPX_BUILD_GUI": "OFF",
+        "CMAKE_C_FLAGS_DEBUG": "-g -O1",
+        "CMAKE_CXX_FLAGS_DEBUG": "-g -O1"
       }
     }
   ],

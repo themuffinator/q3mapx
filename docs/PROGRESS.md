@@ -2750,3 +2750,100 @@ Previously documented parser-sign/include-line findings, compiler warnings, VIS
 discrepancies, raw-sidecar publication and intermittent Windows process delays
 remain outside this round. Intelligent compiler optimization and M11 Radiant
 patch RGB/alpha painting and per-surface density/preview remain active.
+
+## 2026-10-01 — Conditional spotlight and target reconstruction
+
+Added optional `fit_spot_lights` to `-light -probes`. It fits missing native
+spotlight positions, directions, cone widths and nonnegative RGB energy while
+keeping retained lights, material emitters and sun/sky fixed. Training residuals
+supply direction seeds; bounded CPU jobs evaluate grid candidates. Coordinate
+refinement, fresh source-grid searches and joint damped least squares reduce
+bias when multiple colored spotlights overlap. The native cone includes the
+radius/target-distance relationship and soft edge. Continuous sRGB encoding
+supports optimizer derivatives; qualification still uses native encoded bytes.
+
+The report proposes compatible surviving static target markers or uniquely named
+new `info_null` markers. Marker eligibility, rejected targets and the static-pose
+assumption are explicit. Generated names reserve existing names and generated-name
+tokens in every entity value, including dangling custom references. This also
+fixes a reproduced forward-probe defect: a temporary target could resolve an
+unrelated retained light's dangling link, changing it from point to spot. The
+preceding compiler reproduces the defect; current retained source type and
+responses remain unchanged when the proposal is added.
+
+Search and stopping use training atlas blocks only. Separate illuminated-support
+scores prevent a large dark background from hiding a poor reconstructed footprint.
+Both training and withheld sets must pass improvement and absolute-error gates;
+at least 12 illuminated training and six illuminated withheld observations are
+required. Trials remain conditional proposals with explicit bounds and work
+budgets. Invalid requests and exhausted budgets preserve the prior report and
+input BSP. No MAP/entity export or original-author identity claim is made.
+
+Windows Release, Linux Release and Linux Debug ASan/UBSan each pass 20 spotlight
+reports and seven preserved-output failures. Twelve positive cases per platform wire proposals
+into independently decompiled maps and complete BSP/VIS/LIGHT rebuilds, comparing
+world position/normal/style associations. Maximum source-position error is
+3.805 map units, direction error 0.749 degrees and cone-half-angle error 0.281
+degrees. Maximum rebuilt-lighting RMSE is 0.103 byte units overall and 0.281 on
+illuminated support; reconstructed bakes exactly match predicted bytes in these
+cases. These are measured synthetic controls under explicit bake hypotheses,
+not general source-recovery guarantees.
+
+The matrix covers stripped and retained targets, native styles and sRGB,
+overlapping colored lights, retained point sources, duplicate/unsafe/disabled
+targets and generated-name collisions. One/four-worker reports agree exactly.
+Eighteen complete `spot_fit` objects also agree across all three builds;
+overlap and retained-point cases have floating-point/search-path differences,
+with each build independently passing the same parameter and rebuild gates.
+Changing only withheld colors preserves the selected sources, training scores,
+alternatives, work and residual seeds, while failing qualification. Sun-only and
+emitter-only baselines require no extra source; point-only and bounced-light
+controls reject the spotlight hypothesis, and a tiny footprint lacks support.
+
+All 76 preexisting Windows CTest groups pass, followed by the complete spotlight
+matrix and prior-compiler target regression. Linux passes 76 of 77 groups,
+including spotlight recovery, with GPU `area_factors` skipped for unavailable
+hardware. All 12 selected related Debug ASan/UBSan groups and the separately
+executed complete spotlight matrix pass. CLI light-stage help is checked on
+every final binary. Retained matrix logs contain no address/undefined-behavior
+sanitizer diagnostics.
+
+The sanitizer preset now uses `-g -O1` for C/C++, retaining Debug assertions,
+ASan/UBSan, frame pointers and the established lifetime-leak exclusion. No
+`NDEBUG` or fast-math is enabled. The complete spotlight CTest allows 5400 seconds
+with sanitizers, retaining 1800 seconds for ordinary builds. The initial
+unoptimized Debug matrix was
+deliberately stopped for this configuration change and is not counted as a
+complete pass. Early overlap trials matched footprints but missed source
+positions; final tests check both. The overlap case needs a one-billion-unit
+work budget; a 700-million-unit attempt failed safely. The final bounced-scene
+negative control uses stride two after the dense stride-one request exhausted
+its budget. These changes and superseded investigations remain documented.
+
+The existing 27-report point-fitting summaries, including fitted sources,
+scores and charged work, remain identical to the preceding validation on all
+three builds, excluding elapsed time. The 67-report/36-failure comparison and
+26-report/45-failure probe matrices also pass. Twenty-eight ordinary bakes across
+seven modes preserve exact vertex/surface/lightmap/grid bytes against the
+preceding validated executable at one/four workers and without sample culling.
+The parity harness also passes material mutation, dense-grid and 1/4/20/70-worker
+controls. No editor, game renderer, screen capture or input control was used.
+
+See [the spotlight contract](SPOT-FITTING.md),
+[reproduction instructions](DEVELOPMENT.md#spotlight-fitting) and
+[validation evidence](validation/spot-fitting.json). Logs, the reference binary
+and evidence generator remain in `.agents/tmp/continuation/spot-fitting/`;
+native fixtures/reports remain in each build's `tests/spot-fitting/`. Automatic
+approval review rejected removal of this round's disposable `explore/`,
+`probe.py` and `probe.log` as "blocked by policy", after their absolute paths and
+links had been checked. They remain in that task area; cleanup was not retried.
+Older policy-blocked targets were not touched.
+
+Unknown bake calibration, custom falloff, indirect effects, complete asset
+provenance, broad real-map/target-identity qualification, automatic entity export
+and GUI review remain open. This round adds no GPU backend or performance claim;
+portable packages were not refreshed and no external code was incorporated.
+No new unrelated production defect was reproduced. Previously documented parser,
+VIS, compiler-warning, sidecar-publication and Windows process-delay findings
+remain outside this round. Intelligent compiler optimization and M11 Radiant
+patch RGB/alpha painting and per-surface density/preview remain active.

@@ -47,6 +47,9 @@ process-lifetime compiler allocations; address and undefined-behavior checks sta
 enabled. MinGW/MSVC sanitizer configurations are rejected explicitly. Baseline
 comparisons use LTO off and no fast-math. The sanitizer suite is also executed
 locally under Ubuntu 24.04 WSL; local results do not imply a remote CI run.
+The Debug sanitizer preset uses `-g -O1` for C/C++ so complete native fitting
+searches remain practical under instrumentation. Debug assertions remain enabled;
+this does not add `NDEBUG`, disable sanitizer checks or enable fast-math.
 
 OpenCL support is enabled by default but dynamically loads the installed GPU
 driver only for compute/device queries. No OpenCL SDK is required to build.
@@ -701,6 +704,37 @@ sRGB flags; earlier sRGB-labelled comparison cases were overridden to linear.
 Native inputs, reports and logs remain in each build's `tests/point-fitting/`;
 [validation evidence](validation/point-fitting.json) records these checks and
 their limits. No editor, game renderer or user-input control is used.
+
+## Spotlight fitting
+
+`spot_fitting` exercises native `fit_spot_lights` requests with original lights
+and optional targets stripped, original MAP/SRF poisoned, and hidden source
+labels used only for accuracy evaluation. Known-source cases compare position,
+direction and cone errors separately from actual recovered-map BSP/VIS/LIGHT
+rebuilds. Native encoding/styles, overlapping sources, fixed retained lights,
+static/duplicate/unsafe targets and generated-name collisions are covered.
+
+```sh
+ctest --test-dir build/release -R '^spot_fitting$' -V
+python tests/spot_fitting.py --compiler build/release/bin/q3mapx --work-dir build/release/tests/spot-fitting
+```
+
+Use `.exe` on Windows. `--case <name>` selects a fixture during investigation;
+only the complete matrix qualifies a build. The group timeout is 1800 seconds,
+or 5400 seconds with sanitizers for the complete instrumented native searches.
+One/four-worker reports, altered withheld blocks, exact/one-below work budgets
+and malformed options check determinism and report preservation. Separate
+illuminated-support scores prevent a dark background from diluting fit errors.
+An optional `--reference <prior-compiler>` demonstrates the earlier dangling
+target bug: a temporary proposed target could incorrectly change an unrelated
+retained light from point to spot. Current retained responses must stay unchanged.
+
+The shared native encoder now permits continuous sRGB output for optimizer
+derivatives; ordinary baking and report qualification retain native rounding.
+Re-run `light_comparison`, `point_fitting` and ordinary reference bake parity
+when changing this path. See [the spotlight contract](SPOT-FITTING.md) and
+[validation evidence](validation/spot-fitting.json) for assumptions, measured
+errors and unsupported recovery cases. No renderer or input control is used.
 
 ## Task commits
 

@@ -7,7 +7,9 @@ select geometric internal-lightmap observations and compare an encoded direct
 hypothesis with the stored texels. This supplies
 a reference model for the [light recovery roadmap](RECOVERY-INFERENCE.md).
 Optional [point fitting](POINT-FITTING.md) can now propose missing point lights
-under that fixed hypothesis. It does not export entities or reproduce a complete bake.
+under that fixed hypothesis. [Spotlight fitting](SPOT-FITTING.md) adds native cones,
+direction/position refinement and target-link proposals. Neither exports entities
+or reproduces a complete bake.
 
 ```sh
 q3mapx -game quake3 -fs_basepath /path/to/game -threads 4 \

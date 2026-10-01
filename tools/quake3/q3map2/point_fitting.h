@@ -8,12 +8,22 @@
 #include <vector>
 
 namespace q3mapx {
+struct FitTarget {
+    size_t entity;
+    std::string name;
+    Vector3 origin;
+};
 struct PointFitOptions {
-    bool enabled=false,explicitBounds=false,allowImplicitMaterials=false;
+    bool enabled=false,explicitBounds=false,allowImplicitMaterials=false,spot=false;
     Vector3 mins{0},maxs{0};
     float spacing=64,maxIntensity=1000,minImprovement=1,maxRMSE=2;
     unsigned maxCandidates=1024,maxLights=4,refinementSteps=6,style=0,blockSize=4;
     uint64_t maxWork=50'000'000;
+    float minHalfAngle=5,maxHalfAngle=75;
+    unsigned maxSpotCandidates=8192,refineCandidates=4;
+    bool useRetainedTargets=true;
+    std::vector<FitTarget> targets;
+    std::map<std::string,uint64_t> targetExclusions;
 };
 struct PointFitReceiver {
     size_t sample;
@@ -21,10 +31,13 @@ struct PointFitReceiver {
     Vector3 origin,normal,baseline;
     Vector3b observed;
     float brightness;
-    bool withheld=false;
+    bool withheld=false,illuminated=false;
 };
 struct PointFitLight {
     Vector3 origin{0},energy{0}; // Native linear RGB intensity, before pointScale.
+    Vector3 direction{0};
+    float radiusByDist=0;
+    int target=-1; // Index into PointFitOptions::targets; -1 proposes a new target.
 };
 struct PointFitMetrics {
     uint64_t samples=0;
@@ -36,7 +49,9 @@ struct PointFitResult {
     bool accepted=false;
     uint64_t work=0,gridPoints=0,usableCandidates=0,positionsTested=0;
     uint64_t unknownCandidates=0,encodingFailures=0;
+    uint64_t spotCandidates=0,residualSeeds=0;
     std::array<PointFitMetrics,2> baseline,trial;
+    std::array<PointFitMetrics,2> illuminatedBaseline,illuminatedTrial;
     std::vector<PointFitLight> lights;
     std::vector<PointFitReceiver> receivers;
     std::vector<Vector3b> prediction;

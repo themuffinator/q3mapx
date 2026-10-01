@@ -62,7 +62,7 @@ static void color_saturate( Vector3& color, float saturation ){
 	lightmapExposure is something special here, doing clamp/bump, god knows what's proper order for it
 	lmscale, lightmapCompensate are applied last, since they try to emulate engine effects (bitshift, clamp)
 */
-Vector3 ColorToFloat( const Vector3& color, float scale, float lmscale ){
+Vector3 ColorToFloat( const Vector3& color, float scale, float lmscale, bool roundSRGB ){
 	/* user inputs are not range checked, sanitize here... */
 	if ( scale <= 0 ) scale = 1;
 	if ( lmscale <= 0 ) lmscale = 1;
@@ -111,9 +111,10 @@ Vector3 ColorToFloat( const Vector3& color, float scale, float lmscale ){
 
 	/* sRGB lightmaps */
 	if ( lightmapsRGB ) {
-		sample[0] = floor( Image_sRGBFloatFromLinearFloat( sample[0] * ( 1.0 / 255.0 ) ) * 255.0 + 0.5 );
-		sample[1] = floor( Image_sRGBFloatFromLinearFloat( sample[1] * ( 1.0 / 255.0 ) ) * 255.0 + 0.5 );
-		sample[2] = floor( Image_sRGBFloatFromLinearFloat( sample[2] * ( 1.0 / 255.0 ) ) * 255.0 + 0.5 );
+		for ( int i = 0; i < 3; ++i ) {
+			const double encoded = Image_sRGBFloatFromLinearFloat( sample[i] * ( 1.0 / 255.0 ) ) * 255.0;
+			sample[i] = roundSRGB ? floor( encoded + 0.5 ) : encoded;
+		}
 	}
 
 	/* store it off */

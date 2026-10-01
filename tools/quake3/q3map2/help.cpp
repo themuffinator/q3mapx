@@ -164,7 +164,7 @@ static void HelpLight()
 	const std::vector<HelpOption> options = {
 		{ "-light [options] <filename.map>", "Switch that enters this stage" },
 		{ "-probes <request.json> <filename.bsp>", "Read-only direct-light reference mode: explicit samples or baked_lightmaps associations and optional proposed lights; retained BSP sources, surface emitters and skies are attributed separately. No MAP/SRF read or bake output" },
-		{ "-probe-report <result.json>", "Atomic probe report (default <bsp>.light-probes.json); direct responses, baked comparisons and optional fit_point_lights conditional point proposals; no entity export" },
+		{ "-probe-report <result.json>", "Atomic probe report (default <bsp>.light-probes.json); direct responses, baked comparisons and optional fit_point_lights / fit_spot_lights conditional proposals with target links; no entity export" },
 		{ "-probe-max-pairs <1..20000000>", "Limit source/sample tests in probe mode (default 5000000); 10000 samples, 256 proposals and 100000 nonzero responses maximum" },
 		{ "-approx <N>", "Vertex light approximation tolerance (never use in conjunction with deluxemapping)" },
 		{ "-areascale <F>, -area <F>", "Scaling factor for area lights (surfacelight)" },

@@ -317,6 +317,12 @@ limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md
 - [ ] Infer spotlight position, aim, cone and falloff; find compatible surviving
   targets and connect them appropriately, or propose clearly labelled replacement
   target entities without disturbing existing gameplay links.
+  Initial [conditional spotlight fitting](SPOT-FITTING.md) now searches native
+  positions/directions/cones and nonnegative colors/intensities, with fixed native
+  falloff, joint refinement and separate illuminated-support qualification.
+  It proposes compatible surviving static marker links or uniquely named new
+  markers. These are read-only hypotheses; custom falloff, automatic entity
+  export, GUI review and broad real-map/target-identity qualification remain open.
 - [ ] Improve multi-triangle UV fitting, compatible brush-fragment reconstruction,
   plane/grid recovery, patches/model instances, hidden faces and entity relationships.
   [Multi-triangle UV consensus](UV-RECOVERY.md) is now implemented in the native

@@ -19,8 +19,9 @@ Curved patch inverses and constant-UV primitive regions now include bounded
 geometry associations, separate stored/geometric normals and explicit ambiguity.
 Initial [conditional point-light fitting](POINT-FITTING.md) now searches BSP space,
 fits nonnegative colors/intensities with native tracing and checks withheld
-observations. Unknown bake calibration, spotlights/targets, export and broader
-grouping/review tools below remain open.
+observations. Initial [spotlight fitting](SPOT-FITTING.md) also fits native
+directions/cones and proposes compatible retained or new target links. Unknown
+bake calibration, export and broader grouping/review tools below remain open.
 Recover the closest supported recreation of the author's MAP: editable geometry,
 organization, materials,
 visibility behavior and source lighting. Keep exact extraction available alongside
@@ -178,8 +179,12 @@ the base mode does not generate candidates or infer spotlight targets. Optional
 retained/material/sky sources, alternative trials, material prerequisites and
 withheld atlas-block validation. Blind native fixtures and full recovered-map
 rebuilds qualify this initial point family. Transfer-function calibration,
-deluxe/external channels, bounce, broader inference accuracy and spotlight/target
-recovery remain open.
+deluxe/external channels, bounce and broader inference accuracy remain open.
+`fit_spot_lights` now adds a native spotlight family, residual direction seeds,
+joint refinement and illuminated-support gates. Its target proposals preserve
+existing entities and reserve dangling generated-name references; current marker
+poses and identities remain conditional. Custom falloff, target ambiguity,
+automatic MAP export and GUI review remain open.
 
 1. Extract world-space lighting samples from lightmaps, vertex lighting and the
    lightgrid; use directional/deluxe channels and separate styles when available.

@@ -57,6 +57,7 @@ struct metaTriangle_t
 	shaderInfo_t        *si; // only null when triangle has already been merged
 	const side_t        *side; // can be nullptr
 	int entityNum, surfaceNum, planeNum, fogNum, sampleSize, castShadows, recvShadows;
+	int lightmapSampleSizeOverride;
 	float shadeAngleDegrees;
 	Vector3 ambientColor;
 	Plane3f plane;
@@ -161,6 +162,9 @@ struct CompareMetaTriangles
 		else if ( a.sampleSize != b.sampleSize ) {
 			return a.sampleSize < b.sampleSize;
 		}
+		else if ( a.lightmapSampleSizeOverride != b.lightmapSampleSizeOverride ) {
+			return a.lightmapSampleSizeOverride < b.lightmapSampleSizeOverride;
+		}
 		else if ( a.ambientColor[0] != b.ambientColor[0] ) { // may be different inside one entityNum for attached misc_models
 			return a.ambientColor[0] < b.ambientColor[0];
 		}
@@ -187,6 +191,7 @@ struct CompareMetaTriangles
 		    && ( a.castShadows  == b.castShadows )
 		    && ( a.recvShadows  == b.recvShadows )
 		    && ( a.sampleSize   == b.sampleSize )
+		    && ( a.lightmapSampleSizeOverride == b.lightmapSampleSizeOverride )
 		    && ( a.ambientColor == b.ambientColor );
 	}
 };
@@ -315,6 +320,7 @@ static void SurfaceToMetaTriangles( mapDrawSurface_t& ds ){
 			src.recvShadows       = ds.recvShadows;
 			src.fogNum            = ds.fogNum;
 			src.sampleSize        = ds.sampleSize;
+			src.lightmapSampleSizeOverride = ds.lightmapSampleSizeOverride;
 			src.shadeAngleDegrees = ds.shadeAngleDegrees;
 			src.ambientColor      = ds.ambientColor;
 			src.lightmapAxis      = ds.lightmapAxis;
@@ -1469,6 +1475,7 @@ static void MetaTrianglesToSurface(){
 		ds.planeNum          = seed.planeNum;
 		ds.fogNum            = seed.fogNum;
 		ds.sampleSize        = seed.sampleSize;
+		ds.lightmapSampleSizeOverride = seed.lightmapSampleSizeOverride;
 		ds.shadeAngleDegrees = seed.shadeAngleDegrees;
 		ds.ambientColor      = seed.ambientColor;
 		ds.lightmapAxis      = seed.lightmapAxis;

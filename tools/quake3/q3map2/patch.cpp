@@ -246,7 +246,7 @@ struct PatchReader : MapInputReader
 };
 }
 
-void ParsePatch( bool onlyLights, entity_t& mapEnt, int mapPrimitiveNum ){
+void ParsePatch( bool onlyLights, entity_t& mapEnt, int mapPrimitiveNum, bool authoredSurface ){
 	const PatchReader reader{ mapEnt.mapEntityNum, mapPrimitiveNum };
 	bool degenerate;
 	float longestCurve;
@@ -265,6 +265,7 @@ void ParsePatch( bool onlyLights, entity_t& mapEnt, int mapPrimitiveNum ){
 	// The three legacy header fields are unused, but must still be numeric.
 	for ( int i = 0; i < 3; ++i ) reader.number( "finite patch header number" );
 	reader.match( ")" );
+	const int authoredSampleSize = authoredSurface ? reader.surfaceSampleSize() : 0;
 	mesh_t m( width, height );
 	const int numVerts = m.numVerts();
 
@@ -293,7 +294,7 @@ void ParsePatch( bool onlyLights, entity_t& mapEnt, int mapPrimitiveNum ){
 
 	// if brush primitives format, we may have some epairs to ignore here
 	reader.next( true, "closing brace or patch metadata" );
-	if ( !TokenIs( "}" ) && ( g_brushType == EBrushType::Bp || g_brushType == EBrushType::Undefined ) ) {
+	if ( !authoredSurface && !TokenIs( "}" ) && ( g_brushType == EBrushType::Bp || g_brushType == EBrushType::Undefined ) ) {
 		std::list<epair_t> dummy;
 		ParseEPair( dummy );
 	}
@@ -371,6 +372,7 @@ void ParsePatch( bool onlyLights, entity_t& mapEnt, int mapPrimitiveNum ){
 	/* ydnar: add entity/brush numbering */
 	pm.entityNum = mapEnt.mapEntityNum;
 	pm.brushNum = mapPrimitiveNum;
+	pm.lightmapSampleSizeOverride = authoredSampleSize;
 
 	/* set shader */
 	pm.shaderInfo = &ShaderInfoForShader( shader );

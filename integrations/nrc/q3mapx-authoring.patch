@@ -1,0 +1,722 @@
+--- a/radiant/brush.h
++++ b/radiant/brush.h
+@@ -60,6 +60,7 @@
+ #include "signal/signalfwd.h"
+ 
+ #include "winding.h"
++#include "q3mapxlightmaps.h"
+ #include "brush_primit.h"
+ 
+ const unsigned int BRUSH_DETAIL_FLAG = 27;
+@@ -895,11 +896,13 @@
+ 		FacePlane::SavedState m_planeState;
+ 		FaceTexdef::SavedState m_texdefState;
+ 		FaceShader::SavedState m_shaderState;
+-
+-		SavedState( const Face& face ) : m_planeState( face.getPlane() ), m_texdefState( face.getTexdef() ), m_shaderState( face.getShader() ){
++		int m_lightmapSampleSize;
++
++		SavedState( const Face& face ) : m_planeState( face.getPlane() ), m_texdefState( face.getTexdef() ), m_shaderState( face.getShader() ), m_lightmapSampleSize( face.lightmapSampleSize() ){
+ 		}
+ 
+ 		void exportState( Face& face ) const {
++			face.m_lightmapSampleSize = m_lightmapSampleSize;
+ 			m_planeState.exportState( face.getPlane() );
+ 			m_shaderState.exportState( face.getShader() );
+ 			m_texdefState.exportState( face.getTexdef() );
+@@ -922,6 +925,8 @@
+ 	FaceShader m_shader;
+ 	FaceTexdef m_texdef;
+ 	TextureProjection m_texdefTransformed;
++	int m_lightmapSampleSize = 0;
++	mutable Q3mapxLightmapGrid m_lightmapGrid;
+ 
+ 	Winding m_winding;
+ 	Vector3 m_centroid;
+@@ -977,6 +982,7 @@
+ 		m_move_planepts( other.m_move_planepts ),
+ 		m_shader( other.m_shader.getShader(), other.m_shader.m_flags ),
+ 		m_texdef( m_shader, other.getTexdef().normalised() ),
++		m_lightmapSampleSize( other.m_lightmapSampleSize ),
+ 		m_observer( observer ),
+ 		m_undoable_observer( 0 ),
+ 		m_map( 0 ){
+@@ -1072,6 +1078,18 @@
+ 	void render( Renderer& renderer, const Matrix4& localToWorld ) const {
+ 		renderer.SetState( m_shader.state(), Renderer::eFullMaterials );
+ 		renderer.addRenderable( *this, localToWorld );
++		if ( Q3mapxLightmaps_previewEnabled() && m_lightmapSampleSize > 0 ) {
++			m_lightmapGrid.update( m_winding, m_lightmapSampleSize );
++			m_lightmapGrid.submit( renderer, localToWorld );
++		}
++	}
++
++	int lightmapSampleSize() const { return m_lightmapSampleSize; }
++	void setLightmapSampleSize( int value ) {
++		if ( value < 0 || value > q3mapx::authoring::maxSampleSize || value == m_lightmapSampleSize ) return;
++		undoSave();
++		m_lightmapSampleSize = value;
++		Brush_textureChanged();
+ 	}
+ 
+ 	void texdef_from_points(){
+--- a/radiant/patch.h
++++ b/radiant/patch.h
+@@ -20,6 +20,8 @@
+  */
+ 
+ #pragma once
++
++#include "q3mapxlightmaps.h"
+ 
+ /// \file
+ /// \brief The patch primitive.
+@@ -365,7 +367,8 @@
+ 		    const char* shader,
+ 		    bool patchDef3,
+ 		    std::size_t subdivisions_x,
+-		    std::size_t subdivisions_y
++		    std::size_t subdivisions_y,
++		    int lightmapSampleSize
+ 		) :
+ 			m_width( width ),
+ 			m_height( height ),
+@@ -373,7 +376,7 @@
+ 			m_ctrl( ctrl ),
+ 			m_patchDef3( patchDef3 ),
+ 			m_subdivisions_x( subdivisions_x ),
+-			m_subdivisions_y( subdivisions_y ){
++			m_subdivisions_y( subdivisions_y ), m_lightmapSampleSize( lightmapSampleSize ){
+ 		}
+ 
+ 		void release() override {
+@@ -386,6 +389,7 @@
+ 		bool m_patchDef3;
+ 		std::size_t m_subdivisions_x;
+ 		std::size_t m_subdivisions_y;
++		int m_lightmapSampleSize;
+ 	};
+ 
+ public:
+@@ -412,7 +416,10 @@
+ 	bool m_patchDef3;
+ 	std::size_t m_subdivisions_x;
+ 	std::size_t m_subdivisions_y;
++	bool m_q3mapxImport = false; // transient parser flag, never an authoring association
+ private:
++	int m_lightmapSampleSize = 0;
++	mutable Q3mapxLightmapGrid m_lightmapGrid;
+ 
+ 	UndoObserver* m_undoable_observer;
+ 	MapFile* m_map;
+@@ -495,6 +502,7 @@
+ 		m_patchDef3 = other.m_patchDef3;
+ 		m_subdivisions_x = other.m_subdivisions_x;
+ 		m_subdivisions_y = other.m_subdivisions_y;
++		m_lightmapSampleSize = other.m_lightmapSampleSize;
+ 		setDims( other.m_width, other.m_height );
+ 		copy_ctrl( m_ctrl.data(), other.m_ctrl.data(), other.m_ctrl.data() + ( m_width * m_height ) );
+ 		SetShader( other.m_shader.c_str() );
+@@ -527,6 +535,7 @@
+ 		m_patchDef3 = other.m_patchDef3;
+ 		m_subdivisions_x = other.m_subdivisions_x;
+ 		m_subdivisions_y = other.m_subdivisions_y;
++		m_lightmapSampleSize = other.m_lightmapSampleSize;
+ 		setDims( other.m_width, other.m_height );
+ 		copy_ctrl( m_ctrl.data(), other.m_ctrl.data(), other.m_ctrl.data() + ( m_width * m_height ) );
+ 		SetShader( other.m_shader.c_str() );
+@@ -611,9 +620,21 @@
+ 	VolumeIntersectionValue intersectVolume( const VolumeTest& test, const Matrix4& localToWorld ) const override {
+ 		return test.TestAABB( m_aabb_local, localToWorld );
+ 	}
++	int lightmapSampleSize() const { return m_lightmapSampleSize; }
++	void setLightmapSampleSize( int value ) {
++		if ( value < 0 || value > q3mapx::authoring::maxSampleSize || value == m_lightmapSampleSize ) return;
++		undoSave();
++		m_lightmapSampleSize = value;
++		Patch_textureChanged();
++	}
++	const PatchTesselation& lightmapPreviewMesh() const { return m_tess; }
+ 	void render_solid( Renderer& renderer, const VolumeTest& volume, const Matrix4& localToWorld ) const {
+ 		renderer.SetState( m_state, Renderer::eFullMaterials );
+ 		renderer.addRenderable( m_render_solid, localToWorld );
++		if ( Q3mapxLightmaps_previewEnabled() && m_lightmapSampleSize > 0 ) {
++			m_lightmapGrid.update( m_tess, m_lightmapSampleSize );
++			m_lightmapGrid.submit( renderer, localToWorld );
++		}
+ 	}
+ 	void render_wireframe( Renderer& renderer, const VolumeTest& volume, const Matrix4& localToWorld ) const {
+ 		renderer.SetState( m_state, Renderer::eFullMaterials );
+@@ -715,6 +736,7 @@
+ 		case xml_state_t::eDefault:
+ 			ASSERT_MESSAGE( string_equal( element.name(), "patch" ), "parse error" );
+ 			m_xml_state.push_back( xml_state_t::ePatch );
++			m_lightmapSampleSize = Q3mapxLightmaps_xmlSampleSize( element.attribute( "q3mapxSampleSize1" ) );
+ 			break;
+ 		case xml_state_t::ePatch:
+ 			if ( string_equal( element.name(), "matrix" ) ) {
+@@ -783,6 +805,8 @@
+ 
+ 	void exportXML( XMLImporter& importer ) override {
+ 		StaticElement patchElement( "patch" );
++		const auto density = StringStream<16>( m_lightmapSampleSize );
++		if ( m_lightmapSampleSize > 0 ) patchElement.insertAttribute( "q3mapxSampleSize1", density );
+ 		importer.pushElement( patchElement );
+ 
+ 		{
+@@ -808,7 +832,7 @@
+ 					         << ' ' << ( *i ).m_vertex[1]
+ 					         << ' ' << ( *i ).m_vertex[2]
+ 					         << ' ' << ( *i ).m_texcoord[0]
+-					         << ' ' << ( *i ).m_texcoord[1];
++					         << ' ' << ( *i ).m_texcoord[1] << ' ';
+ 				}
+ 			}
+ 			importer.popElement( element.name() );
+@@ -932,7 +956,7 @@
+ 	}
+ 
+ 	UndoMemento* exportState() const override {
+-		return new SavedState( m_width, m_height, m_ctrl, m_shader.c_str(), m_patchDef3, m_subdivisions_x, m_subdivisions_y );
++		return new SavedState( m_width, m_height, m_ctrl, m_shader.c_str(), m_patchDef3, m_subdivisions_x, m_subdivisions_y, m_lightmapSampleSize );
+ 	}
+ 	void importState( const UndoMemento* state ) override {
+ 		undoSave();
+@@ -951,6 +975,7 @@
+ 			m_patchDef3 = other.m_patchDef3;
+ 			m_subdivisions_x = other.m_subdivisions_x;
+ 			m_subdivisions_y = other.m_subdivisions_y;
++			m_lightmapSampleSize = other.m_lightmapSampleSize;
+ 		}
+ 
+ 		// end duplicate code
+@@ -1009,6 +1034,10 @@
+ 
+ inline bool Patch_importHeader( Patch& patch, Tokeniser& tokeniser ){
+ 	tokeniser.nextLine();
++	const char* token = tokeniser.getToken();
++	patch.m_q3mapxImport = token != nullptr && string_equal( token, q3mapx::authoring::patchDefinition );
++	if ( !patch.m_q3mapxImport ) tokeniser.ungetToken();
++	else tokeniser.nextLine();
+ 	RETURN_FALSE_IF_FAIL( Tokeniser_parseToken( tokeniser, "{" ) );
+ 	return true;
+ }
+@@ -1124,6 +1153,12 @@
+ 		RETURN_FALSE_IF_FAIL( Patch_importHeader( m_patch, tokeniser ) );
+ 		RETURN_FALSE_IF_FAIL( Patch_importShader( m_patch, tokeniser ) );
+ 		RETURN_FALSE_IF_FAIL( Patch_importParams( m_patch, tokeniser ) );
++		if ( m_patch.m_q3mapxImport ) {
++			int sampleSize;
++			tokeniser.nextLine();
++			RETURN_FALSE_IF_FAIL( Q3mapxLightmaps_import( tokeniser, sampleSize ) );
++			m_patch.setLightmapSampleSize( sampleSize );
++		}
+ 		RETURN_FALSE_IF_FAIL( Patch_importMatrix( m_patch, tokeniser ) );
+ 		RETURN_FALSE_IF_FAIL( Patch_importFooter( m_patch, tokeniser ) );
+ 
+@@ -1141,6 +1176,12 @@
+ 		RETURN_FALSE_IF_FAIL( Patch_importHeader( m_patch, tokeniser ) );
+ 		RETURN_FALSE_IF_FAIL( PatchDoom3_importShader( m_patch, tokeniser ) );
+ 		RETURN_FALSE_IF_FAIL( Patch_importParams( m_patch, tokeniser ) );
++		if ( m_patch.m_q3mapxImport ) {
++			int sampleSize;
++			tokeniser.nextLine();
++			RETURN_FALSE_IF_FAIL( Q3mapxLightmaps_import( tokeniser, sampleSize ) );
++			m_patch.setLightmapSampleSize( sampleSize );
++		}
+ 		RETURN_FALSE_IF_FAIL( Patch_importMatrix( m_patch, tokeniser ) );
+ 		RETURN_FALSE_IF_FAIL( Patch_importFooter( m_patch, tokeniser ) );
+ 
+@@ -1151,7 +1192,7 @@
+ inline void Patch_exportHeader( const Patch& patch, TokenWriter& writer ){
+ 	writer.writeToken( "{" );
+ 	writer.nextLine();
+-	writer.writeToken( patch.m_patchDef3 ? "patchDef3" : "patchDef2" );
++	writer.writeToken( patch.lightmapSampleSize() > 0 ? q3mapx::authoring::patchDefinition : patch.m_patchDef3 ? "patchDef3" : "patchDef2" );
+ 	writer.nextLine();
+ 	writer.writeToken( "{" );
+ 	writer.nextLine();
+@@ -1240,6 +1281,10 @@
+ 		Patch_exportHeader( m_patch, writer );
+ 		Patch_exportShader( m_patch, writer );
+ 		Patch_exportParams( m_patch, writer );
++		if ( m_patch.lightmapSampleSize() > 0 ) {
++			Q3mapxLightmaps_export( writer, m_patch.lightmapSampleSize() );
++			writer.nextLine();
++		}
+ 		Patch_exportMatrix( m_patch, writer );
+ 		Patch_exportFooter( m_patch, writer );
+ 	}
+@@ -1255,6 +1300,10 @@
+ 		Patch_exportHeader( m_patch, writer );
+ 		PatchDoom3_exportShader( m_patch, writer );
+ 		Patch_exportParams( m_patch, writer );
++		if ( m_patch.lightmapSampleSize() > 0 ) {
++			Q3mapxLightmaps_export( writer, m_patch.lightmapSampleSize() );
++			writer.nextLine();
++		}
+ 		Patch_exportMatrix( m_patch, writer );
+ 		Patch_exportFooter( m_patch, writer );
+ 	}
+--- a/radiant/brushtokens.h
++++ b/radiant/brushtokens.h
+@@ -199,7 +199,7 @@
+ public:
+ 	QuakeFaceTokenImporter( Face& face ) : m_face( face ){
+ 	}
+-	bool importTokens( Tokeniser& tokeniser ){
++	bool importTokens( Tokeniser& tokeniser, bool requireFlags = false ){
+ 		RETURN_FALSE_IF_FAIL( FacePlane_importTokens( m_face.getPlane(), tokeniser ) );
+ 		RETURN_FALSE_IF_FAIL( FaceShader_importTokens( m_face.getShader(), tokeniser ) );
+ 		RETURN_FALSE_IF_FAIL( FaceTexdef_importTokens( m_face.getTexdef(), tokeniser ) );
+@@ -207,7 +207,7 @@
+ 		// Q1: normally not present, try to load to handle 3rd party maps with them or extended format with flags
+ 		// Q2: presence determines whether flags are considered as specified (otherwise embedded .wal flags are used)
+ 		// Q3: normally present, load optionally to handle 3rd party maps without them
+-		if ( Tokeniser_nextTokenIsDigit( tokeniser ) ) {
++		if ( requireFlags || Tokeniser_nextTokenIsDigit( tokeniser ) ) {
+ 			m_face.getShader().m_flags.m_specified = true; // enable for Q2
+ 			RETURN_FALSE_IF_FAIL( FaceShader_importContentsFlagsValue( m_face.getShader(), tokeniser ) );
+ 		}
+@@ -222,11 +222,11 @@
+ public:
+ 	Quake3BPFaceTokenImporter( Face& face ) : m_face( face ){
+ 	}
+-	bool importTokens( Tokeniser& tokeniser ){
++	bool importTokens( Tokeniser& tokeniser, bool requireFlags = false ){
+ 		RETURN_FALSE_IF_FAIL( FacePlane_importTokens( m_face.getPlane(), tokeniser ) );
+ 		RETURN_FALSE_IF_FAIL( FaceTexdef_BP_importTokens( m_face.getTexdef(), tokeniser ) );
+ 		RETURN_FALSE_IF_FAIL( FaceShader_importTokens( m_face.getShader(), tokeniser ) );
+-		if ( Tokeniser_nextTokenIsDigit( tokeniser ) ) { ///optional for more flexibility
++		if ( requireFlags || Tokeniser_nextTokenIsDigit( tokeniser ) ) { ///optional for more flexibility
+ 			m_face.getShader().m_flags.m_specified = true; // enable for Q2
+ 			RETURN_FALSE_IF_FAIL( FaceShader_importContentsFlagsValue( m_face.getShader(), tokeniser ) );
+ 		}
+@@ -244,11 +244,11 @@
+ public:
+ 	Valve220FaceTokenImporter( Face& face ) : m_face( face ){
+ 	}
+-	bool importTokens( Tokeniser& tokeniser ){
++	bool importTokens( Tokeniser& tokeniser, bool requireFlags = false ){
+ 		RETURN_FALSE_IF_FAIL( FacePlane_importTokens( m_face.getPlane(), tokeniser ) );
+ 		RETURN_FALSE_IF_FAIL( FaceShader_importTokens( m_face.getShader(), tokeniser ) );
+ 		RETURN_FALSE_IF_FAIL( FaceTexdef_Valve220_importTokens( m_face.getTexdef(), tokeniser ) );
+-		if ( Tokeniser_nextTokenIsDigit( tokeniser ) ) { ///optional for more flexibility
++		if ( requireFlags || Tokeniser_nextTokenIsDigit( tokeniser ) ) { ///optional for more flexibility
+ 			m_face.getShader().m_flags.m_specified = true; // enable for Q2
+ 			RETURN_FALSE_IF_FAIL( FaceShader_importContentsFlagsValue( m_face.getShader(), tokeniser ) );
+ 		}
+@@ -415,14 +415,16 @@
+ class QuakeFaceTokenExporter
+ {
+ 	const Face& m_face;
+-public:
+-	QuakeFaceTokenExporter( const Face& face ) : m_face( face ){
++	bool m_authored;
++public:
++	QuakeFaceTokenExporter( const Face& face, bool authored = false ) : m_face( face ), m_authored( authored ){
+ 	}
+ 	void exportTokens( TokenWriter& writer ) const {
+ 		FacePlane_exportTokens( m_face.getPlane(), writer );
+ 		FaceShader_exportTokens( m_face.getShader(), writer );
+ 		FaceTexdef_exportTokens( m_face.getTexdef(), writer );
+ 		FaceFlags_exportTokens<exportFlags>( m_face, writer );
++		if ( m_authored ) Q3mapxLightmaps_export( writer, m_face.lightmapSampleSize() );
+ 		writer.nextLine();
+ 	}
+ };
+@@ -431,14 +433,16 @@
+ class Quake3BPFaceTokenExporter
+ {
+ 	const Face& m_face;
+-public:
+-	Quake3BPFaceTokenExporter( const Face& face ) : m_face( face ){
++	bool m_authored;
++public:
++	Quake3BPFaceTokenExporter( const Face& face, bool authored = false ) : m_face( face ), m_authored( authored ){
+ 	}
+ 	void exportTokens( TokenWriter& writer ) const {
+ 		FacePlane_exportTokens( m_face.getPlane(), writer );
+ 		FaceTexdef_BP_exportTokens( m_face.getTexdef(), writer );
+ 		FaceShader_exportTokens( m_face.getShader(), writer );
+ 		FaceFlags_exportTokens<exportFlags>( m_face, writer );
++		if ( m_authored ) Q3mapxLightmaps_export( writer, m_face.lightmapSampleSize() );
+ 		writer.nextLine();
+ 	}
+ };
+@@ -447,14 +451,16 @@
+ class Valve220FaceTokenExporter
+ {
+ 	const Face& m_face;
+-public:
+-	Valve220FaceTokenExporter( const Face& face ) : m_face( face ){
++	bool m_authored;
++public:
++	Valve220FaceTokenExporter( const Face& face, bool authored = false ) : m_face( face ), m_authored( authored ){
+ 	}
+ 	void exportTokens( TokenWriter& writer ) const {
+ 		FacePlane_exportTokens( m_face.getPlane(), writer );
+ 		FaceShader_exportTokens( m_face.getShader(), writer );
+ 		FaceTexdef_Valve220_exportTokens( m_face.getTexdef(), writer );
+ 		FaceFlags_exportTokens<exportFlags>( m_face, writer );
++		if ( m_authored ) Q3mapxLightmaps_export( writer, m_face.lightmapSampleSize() );
+ 		writer.nextLine();
+ 	}
+ };
+@@ -468,7 +474,11 @@
+ 	BrushTokenImporter( Brush& brush ) : m_brush( brush ){
+ 	}
+ 	bool importTokens( Tokeniser& tokeniser ) override {
+-		if ( Brush::m_type == eBrushTypeQuake3BP || Brush::m_type == eBrushTypeQuake2BP || Brush::m_type == eBrushTypeDoom3 || Brush::m_type == eBrushTypeQuake4 ) {
++		tokeniser.nextLine();
++		const char* first = tokeniser.getToken();
++		const bool authored = first != nullptr && ( string_equal( first, "quake" ) || string_equal( first, "brushPrimitives" ) || string_equal( first, "valve220" ) );
++		if ( !authored ) tokeniser.ungetToken();
++		if ( authored || Brush::m_type == eBrushTypeQuake3BP || Brush::m_type == eBrushTypeQuake2BP || Brush::m_type == eBrushTypeDoom3 || Brush::m_type == eBrushTypeQuake4 ) {
+ 			tokeniser.nextLine();
+ 			RETURN_FALSE_IF_FAIL( Tokeniser_parseToken( tokeniser, "{" ) );
+ 		}
+@@ -509,14 +519,14 @@
+ 			case eBrushTypeQuake3:
+ 				{
+ 					QuakeFaceTokenImporter importer( face );
+-					RETURN_FALSE_IF_FAIL( importer.importTokens( tokeniser ) );
++					RETURN_FALSE_IF_FAIL( importer.importTokens( tokeniser, authored ) );
+ 				}
+ 				break;
+ 			case eBrushTypeQuake2BP:
+ 			case eBrushTypeQuake3BP:
+ 				{
+ 					Quake3BPFaceTokenImporter importer( face );
+-					RETURN_FALSE_IF_FAIL( importer.importTokens( tokeniser ) );
++					RETURN_FALSE_IF_FAIL( importer.importTokens( tokeniser, authored ) );
+ 				}
+ 				break;
+ 			case eBrushTypeValve220:
+@@ -524,13 +534,18 @@
+ 			case eBrushTypeQuake3Valve220:
+ 				{
+ 					Valve220FaceTokenImporter importer( face );
+-					RETURN_FALSE_IF_FAIL( importer.importTokens( tokeniser ) );
++					RETURN_FALSE_IF_FAIL( importer.importTokens( tokeniser, authored ) );
+ 				}
+ 				break;
+ 			}
++			if ( authored ) {
++				int sampleSize;
++				RETURN_FALSE_IF_FAIL( Q3mapxLightmaps_import( tokeniser, sampleSize ) );
++				face.setLightmapSampleSize( sampleSize );
++			}
+ 			face.planeChanged();
+ 		}
+-		if ( Brush::m_type == eBrushTypeQuake3BP || Brush::m_type == eBrushTypeQuake2BP || Brush::m_type == eBrushTypeDoom3 || Brush::m_type == eBrushTypeQuake4 ) {
++		if ( authored || Brush::m_type == eBrushTypeQuake3BP || Brush::m_type == eBrushTypeQuake2BP || Brush::m_type == eBrushTypeDoom3 || Brush::m_type == eBrushTypeQuake4 ) {
+ 			tokeniser.nextLine();
+ 			RETURN_FALSE_IF_FAIL( Tokeniser_parseToken( tokeniser, "}" ) );
+ 		}
+@@ -560,7 +575,15 @@
+ 		writer.writeToken( "{" );
+ 		writer.nextLine();
+ 
+-		if ( Brush::m_type == eBrushTypeQuake3BP || Brush::m_type == eBrushTypeQuake2BP ) {
++		const bool authored = std::any_of( m_brush.begin(), m_brush.end(), []( const auto& face ){ return face->contributes() && face->lightmapSampleSize() > 0; } );
++		if ( authored ) {
++			writer.writeToken( q3mapx::authoring::brushDefinition );
++			writer.writeToken( Brush::m_type == eBrushTypeQuake3BP ? "brushPrimitives" : Brush::m_type == eBrushTypeQuake3Valve220 ? "valve220" : "quake" );
++			writer.nextLine();
++			writer.writeToken( "{" );
++			writer.nextLine();
++		}
++		else if ( Brush::m_type == eBrushTypeQuake3BP || Brush::m_type == eBrushTypeQuake2BP ) {
+ 			writer.writeToken( "brushDef" );
+ 			writer.nextLine();
+ 			writer.writeToken( "{" );
+@@ -604,7 +627,7 @@
+ 					break;
+ 				case eBrushTypeQuake3:
+ 					{
+-						QuakeFaceTokenExporter<FaceExportFlags::yes> exporter( *face );
++						QuakeFaceTokenExporter<FaceExportFlags::yes> exporter( *face, authored );
+ 						exporter.exportTokens( writer );
+ 					}
+ 					break;
+@@ -616,7 +639,7 @@
+ 					break;
+ 				case eBrushTypeQuake3BP:
+ 					{
+-						Quake3BPFaceTokenExporter<FaceExportFlags::yes> exporter( *face );
++						Quake3BPFaceTokenExporter<FaceExportFlags::yes> exporter( *face, authored );
+ 						exporter.exportTokens( writer );
+ 					}
+ 					break;
+@@ -634,7 +657,7 @@
+ 					break;
+ 				case eBrushTypeQuake3Valve220:
+ 					{
+-						Valve220FaceTokenExporter<FaceExportFlags::yes> exporter( *face );
++						Valve220FaceTokenExporter<FaceExportFlags::yes> exporter( *face, authored );
+ 						exporter.exportTokens( writer );
+ 					}
+ 					break;
+@@ -642,7 +665,7 @@
+ 			}
+ 		}
+ 
+-		if ( Brush::m_type == eBrushTypeQuake3BP || Brush::m_type == eBrushTypeQuake2BP || Brush::m_type == eBrushTypeDoom3 || Brush::m_type == eBrushTypeQuake4 ) {
++		if ( authored || Brush::m_type == eBrushTypeQuake3BP || Brush::m_type == eBrushTypeQuake2BP || Brush::m_type == eBrushTypeDoom3 || Brush::m_type == eBrushTypeQuake4 ) {
+ 			writer.writeToken( "}" );
+ 			writer.nextLine();
+ 		}
+--- a/plugins/mapq3/plugin.cpp
++++ b/plugins/mapq3/plugin.cpp
+@@ -37,6 +37,7 @@
+ 
+ #include "parse.h"
+ #include "write.h"
++#include "authoring/surface.h"
+ 
+ 
+ class MapDoom3Dependencies :
+@@ -245,8 +246,24 @@
+ 	scene::Node& parsePrimitive( Tokeniser& tokeniser ) const override {
+ 		const char* primitive = tokeniser.getToken();
+ 		if ( primitive != 0 ) {
+-			if ( string_equal( primitive, "patchDef2" ) ) {
++			if ( string_equal( primitive, "patchDef2" ) || string_equal( primitive, q3mapx::authoring::patchDefinition ) ) {
++				if ( string_equal( primitive, q3mapx::authoring::patchDefinition ) ) tokeniser.ungetToken();
+ 				return GlobalPatchModule::getTable().createPatch();
++			}
++			if ( string_equal( primitive, q3mapx::authoring::brushDefinition ) ) {
++				const char* projection = tokeniser.getToken();
++				const EBrushType format = projection != nullptr && string_equal( projection, "quake" ) ? eBrushTypeQuake3
++				                        : projection != nullptr && string_equal( projection, "brushPrimitives" ) ? eBrushTypeQuake3BP
++				                        : eBrushTypeQuake3Valve220;
++				if ( projection == nullptr || ( format == eBrushTypeQuake3Valve220 && !string_equal( projection, "valve220" ) )
++				  || ( m_formatDetected && format != GlobalBrushCreator().getFormat() ) ) {
++					Tokeniser_unexpectedError( tokeniser, projection, "consistent q3mapx brush projection: quake, brushPrimitives or valve220" );
++					return g_nullNode;
++				}
++				m_formatDetected = true;
++				if ( format != GlobalBrushCreator().getFormat() ) GlobalBrushCreator().toggleFormat( format );
++				tokeniser.ungetToken();
++				return GlobalBrushCreator().createBrush();
+ 			}
+ 			if( !m_formatDetected ){
+ 				EBrushType detectedFormat;
+--- a/radiant/brushxml.h
++++ b/radiant/brushxml.h
+@@ -74,6 +74,8 @@
+ 			eBPMatrix,
+ 			eFlags,
+ 			eShader,
++			eBasis,
++			eIgnored,
+ 		};
+ 
+ 		EState m_state;
+@@ -105,6 +107,10 @@
+ 	}
+ 
+ 	void pushElement( const XMLElement& element ){
++		if ( m_xml_state.back().state() == xml_state_t::eIgnored ) {
++			m_xml_state.push_back( xml_state_t::eIgnored );
++			return;
++		}
+ 		ASSERT_MESSAGE( m_xml_state.back().state() == xml_state_t::eDefault, "parse error" );
+ 
+ 		if ( strcmp( element.name(), "planepts" ) == 0 ) {
+@@ -122,6 +128,12 @@
+ 		else if ( strcmp( element.name(), "shader" ) == 0 ) {
+ 			m_xml_state.push_back( xml_state_t::eShader );
+ 		}
++		else if ( strcmp( element.name(), "valvebasis" ) == 0 ) {
++			m_xml_state.push_back( xml_state_t::eBasis );
++		}
++		else {
++			m_xml_state.push_back( xml_state_t::eIgnored );
++		}
+ 	}
+ 	void popElement( const char* name ){
+ 		ASSERT_MESSAGE( m_xml_state.back().state() != xml_state_t::eDefault, "parse error" );
+@@ -141,6 +153,14 @@
+ 		case xml_state_t::eBPMatrix:
+ 			{
+ 				FaceTexdef_BP_importXML( m_face.getTexdef(), m_xml_state.back().content() );
++			}
++			break;
++		case xml_state_t::eBasis:
++			{
++				StringTokeniser content( m_xml_state.back().content() );
++				auto& projection = m_face.getTexdef().m_projection;
++				for ( int axis = 0; axis < 3; ++axis ) projection.m_basis_s[axis] = atof( content.getToken() );
++				for ( int axis = 0; axis < 3; ++axis ) projection.m_basis_t[axis] = atof( content.getToken() );
+ 			}
+ 			break;
+ 		case xml_state_t::eFlags:
+@@ -165,7 +185,7 @@
+ 	}
+ 	std::size_t write( const char* data, std::size_t length ){
+ 		ASSERT_MESSAGE( !m_xml_state.empty(), "parse error" );
+-		return m_xml_state.back().write( data, length );
++		return m_xml_state.back().state() == xml_state_t::eIgnored ? length : m_xml_state.back().write( data, length );
+ 	}
+ };
+ 
+@@ -185,7 +205,7 @@
+ 	importer.popElement( element.name() );
+ }
+ inline void FaceTexdef_BP_exportXML( const FaceTexdef& texdef, XMLImporter& importer ){
+-	StaticElement element( "texdef" );
++	StaticElement element( "bpmatrix" );
+ 	importer.pushElement( element );
+ 
+ 	for ( int i = 0; i < 2; ++i )
+@@ -293,6 +313,14 @@
+ 
+ 		if ( !bAlternateTexdef ) {
+ 			FaceTexdef_exportXML( m_face.getTexdef(), importer );
++			if ( Face::m_type == eBrushTypeValve220 || Face::m_type == eBrushTypeQuake2Valve220 || Face::m_type == eBrushTypeQuake3Valve220 ) {
++				StaticElement element( "valvebasis" );
++				importer.pushElement( element );
++				const auto& projection = m_face.getTexdef().m_projection;
++				for ( int axis = 0; axis < 3; ++axis ) importer << projection.m_basis_s[axis] << ' ';
++				for ( int axis = 0; axis < 3; ++axis ) importer << projection.m_basis_t[axis] << ' ';
++				importer.popElement( element.name() );
++			}
+ 		}
+ 		else
+ 		{
+@@ -351,6 +379,7 @@
+ 			ASSERT_MESSAGE( strcmp( element.name(), "plane" ) == 0, "parse error" );
+ 			m_xml_state.push_back( xml_state_t::eFace );
+ 			m_brush.push_back( FaceSmartPointer( new Face( &m_brush ) ) );
++			m_brush.back()->setLightmapSampleSize( Q3mapxLightmaps_xmlSampleSize( element.attribute( "q3mapxSampleSize1" ) ) );
+ 			constructor( faceImporter(), makeReference( *m_brush.back() ) );
+ 			m_brush.planeChanged();
+ 			m_brush.shaderChanged();
+@@ -407,7 +436,9 @@
+ 		for ( const auto& face : m_brush )
+ 		{
+ 			if ( face->contributes() ) {
+-				const StaticElement element( "plane" );
++				StaticElement element( "plane" );
++				const auto density = StringStream<16>( face->lightmapSampleSize() );
++				if ( face->lightmapSampleSize() > 0 ) element.insertAttribute( "q3mapxSampleSize1", density );
+ 				importer.pushElement( element );
+ 				FaceXMLExporter( *face ).exportXML( importer );
+ 				importer.popElement( element.name() );
+--- a/radiant/surfacedialog.cpp
++++ b/radiant/surfacedialog.cpp
+@@ -920,6 +920,7 @@
+ 				}
+ 			}
+ 		}
++		vbox->addWidget( Q3mapxLightmaps_create() );
+ 		vbox->addStretch( 1 );
+ 	}
+ }
+@@ -935,6 +936,7 @@
+  */
+ 
+ void SurfaceInspector::Update(){
++	Q3mapxLightmaps_update();
+ 	const char * name = SurfaceInspector_GetSelectedShader();
+ 
+ 	if ( shader_is_texture( name ) ) {
+--- a/Makefile
++++ b/Makefile
+@@ -873,7 +873,7 @@
+ $(INSTALLDIR)/radiant.$(EXE): LDFLAGS_EXTRA := $(MWINDOWS)
+ $(INSTALLDIR)/radiant.$(EXE): LIBS_EXTRA := $(LIBS_GL) $(LIBS_DL) $(LIBS_XML) $(LIBS_GLIB) $(LIBS_QTWIDGETS) $(LIBS_QTSVG) $(LIBS_ZLIB)
+ $(INSTALLDIR)/radiant.$(EXE): CPPFLAGS_EXTRA := $(CPPFLAGS_GL) $(CPPFLAGS_DL) $(CPPFLAGS_XML) $(CPPFLAGS_GLIB) $(CPPFLAGS_QTWIDGETS) $(CPPFLAGS_QTSVG) -Ilibs -Iinclude
+-$(INSTALLDIR)/radiant.$(EXE): \
++RADIANT_OBJECTS = \
+ 	radiant/autosave.o \
+ 	radiant/brushmanip.o \
+ 	radiant/brushmodule.o \
+@@ -951,6 +951,7 @@
+ 	radiant/sockets.o \
+ 	radiant/stacktrace.o \
+ 	radiant/surfacedialog.o \
++	radiant/q3mapxlightmaps.o \
+ 	radiant/texmanip.o \
+ 	radiant/textures.o \
+ 	radiant/texwindow.o \
+@@ -971,6 +972,14 @@
+ 	libquickhull.$(A) \
+ 	libxmllib.$(A) \
+ 	$(if $(findstring Win32,$(OS)),icons/radiant.o,) \
++
++$(INSTALLDIR)/radiant.$(EXE): $(RADIANT_OBJECTS)
++
++# Optional native authoring qualification: no main window, input injection or
++# installed game needed. The harness supplies its own portable test profile.
++$(INSTALLDIR)/q3mapx-authoring-test.$(EXE): LIBS_EXTRA := $(LIBS_GL) $(LIBS_DL) $(LIBS_XML) $(LIBS_GLIB) $(LIBS_QTWIDGETS) $(LIBS_QTSVG) $(LIBS_ZLIB)
++$(INSTALLDIR)/q3mapx-authoring-test.$(EXE): CPPFLAGS_EXTRA := $(CPPFLAGS_GL) $(CPPFLAGS_DL) $(CPPFLAGS_XML) $(CPPFLAGS_GLIB) $(CPPFLAGS_QTWIDGETS) $(CPPFLAGS_QTSVG) -Ilibs -Iinclude
++$(INSTALLDIR)/q3mapx-authoring-test.$(EXE): $(filter-out radiant/main.o,$(RADIANT_OBJECTS)) radiant/q3mapxauthoringtest.o
+ 
+ libfilematch.$(A): CPPFLAGS_EXTRA := -Ilibs
+ libfilematch.$(A): \
+--- a/radiant/main.cpp
++++ b/radiant/main.cpp
+@@ -400,6 +400,9 @@
+ 	crt_init();
+ 
+ 	streams_init();
++#ifdef Q3MAPX_AUTHORING_TEST
++	Q3mapxAuthoringTestSetup();
++#endif
+ 
+ #ifdef WIN32
+ 	_setmaxstdio( 2048 );
+@@ -419,6 +422,9 @@
+ 	QCoreApplication::setApplicationVersion( QT_VERSION_STR );
+ 
+ 	GlobalDebugMessageHandler::instance().setHandler( GlobalPopupDebugMessageHandler::instance() );
++#ifdef Q3MAPX_AUTHORING_TEST
++	Q3mapxAuthoringTestQtSetup();
++#endif
+ 
+ 	environment_init( argc, argv );
+ 
+@@ -432,7 +438,10 @@
+ 
+ 	QApplication::setWindowIcon( new_local_icon( "radiant.ico" ) ); // before any windows, after paths_init()
+ 
++
++#ifndef Q3MAPX_AUTHORING_TEST
+ 	show_splash();
++#endif
+ 
+ 	create_global_pid();
+ 
+@@ -449,6 +458,13 @@
+ 	create_local_pid();
+ 
+ 	Radiant_Initialise();
++#ifdef Q3MAPX_AUTHORING_TEST
++	const int testResult = Q3mapxAuthoringTestRun();
++	remove_local_pid();
++	Radiant_Shutdown();
++	Sys_LogFile( false );
++	return testResult;
++#endif
+ 
+ //	user_shortcuts_init();
+ 
+--- a/radiant/renderstate.cpp
++++ b/radiant/renderstate.cpp
+@@ -1806,6 +1806,13 @@
+ 		else if ( string_equal( name + 1, "BLENDLINE" ) ) {
+ 			state.m_state = RENDER_COLOURARRAY | RENDER_COLOURWRITE | RENDER_BLEND;
+ 			state.m_sort = OpenGLState::eSortGUI0 - 1;
++			state.m_linewidth = 1;
++		}
++		else if ( string_equal( name + 1, "Q3MAPX_DENSITY" ) ) {
++			state.m_colour = Vector4( 0.1f, 0.95f, 1.f, 1.f );
++			state.m_state = RENDER_DEPTHTEST | RENDER_COLOURWRITE;
++			state.m_sort = OpenGLState::eSortGUI0;
++			state.m_depthfunc = GL_LEQUAL;
+ 			state.m_linewidth = 1;
+ 		}
+ 		else if ( string_equal( name + 1, "LATTICE" ) ) {

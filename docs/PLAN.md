@@ -218,6 +218,9 @@ not a redefinition of the overall goal around the existing release:
   decimal/scientific and integer-limit behavior. See [numeric input](CLI-INPUT.md).
 - [ ] Audit the separate legacy positional BSP scale/shift parsers, which still
   use `atof`; retain valid numeric/vector semantics and protect existing BSPs.
+- [ ] Repair repeated surface classification reapplying a shader's absolute
+  sample size after consuming entity lightmap scale. The initial M11 authored
+  override bypasses that inherited issue; legacy semantics remain unchanged.
 - [ ] Profile larger recovery workloads and address measured costs with geometry,
   UV/material and worker-count parity evidence before claiming speedups.
   Initial whole-command comparisons now cover a dense generated room and private
@@ -460,11 +463,11 @@ render validation uses windowed operation and registered render-target screensho
 
 ## M11 — Radiant painting and per-surface lighting controls
 
-User-requested expansion, 2026-09-30. These are planned authoring features, with
-compiler support and companion Radiant integration both required for completion.
-Start with NRC as the editor target; audit its extension points before choosing
-a plugin or maintained editor patch. The q3mapx workbench alone does not deliver
-painting or previews inside Radiant.
+User-requested expansion, 2026-09-30. Compiler support and companion Radiant
+integration are both required for completion. The initial density implementation
+uses a maintained NRC core patch because persistence, undo and rendering need
+editor model hooks. See [the implemented contract](RADIANT-AUTHORING.md).
+Patch painting and the broader preview/qualification requirements remain open.
 
 ### Patch vertex RGB and alpha painting
 
@@ -492,23 +495,39 @@ state the supported shader/rendering contract.
 
 ### Per-surface lightmap density with preview
 
-- [ ] Add persistent lightmap-density overrides for individual brush faces and
+- [x] Add persistent lightmap-density overrides for individual brush faces and
   patch surfaces, editable in Radiant without splitting entities or cloning
   shaders. Define units, scaling and precedence against global, entity and shader
   settings, with clear inheritance and reset-to-default behavior.
+  Delivered for Quake III axial/BP/Valve 220 faces and patchDef2: versioned inline
+  primitives, native Surface Inspector actions, copy/memento/MAP/XML persistence
+  and CLI propagation. The Windows editor is experimental; Linux editor delivery,
+  topology-changing operations and a distributable companion package remain open.
 - [ ] Provide interactive texel-grid/checker and density overlays in Radiant's
   viewport, including curved patches. Show effective sampling density and an
   estimated lightmap cost; identify unsupported/unlightmapped surfaces and any
   native-format limits or clamping. Distinguish estimates from actual baked atlas
   placement and sample counts, and allow inspection of the compiled result.
+  A bounded requested-spacing grid for face polygons and curved tessellation,
+  area-based estimates and mixed-selection feedback are implemented. Native grid,
+  draw-submission and widget tests pass; camera raster, material eligibility,
+  effective inherited settings and compiled-atlas inspection are still required.
 - [ ] Carry each authored surface's override through BSP splitting, patch
   tessellation, meta merging and lightmap allocation. Prevent merges from silently
   erasing different density settings, and report effective values in CLI/workbench
   diagnostics. Preserve settings through editor save/reload and duplication.
+  The initial compiler adapter retains authored values in sides/patches/surface
+  copies/meta triangles and exposes authored/effective sizes in SRF. Distinct
+  values stay separate even when clamped to equal spacing. Workbench diagnostic
+  presentation and broader split/native-format qualification remain open.
 - [ ] Validate mixed densities on adjacent coplanar faces and curved patches,
   entity transforms, packing limits, inherited settings and legacy MAP input.
   Check preview predictions against compiled sampling/atlas data, lighting seams,
   memory/compile cost and worker determinism.
+  Windows/Linux Release and Debug ASan/UBSan pass the initial Quake III/JA matrix,
+  malformed-source safety, legacy parity, clamp/vertex-lit checks and actual baked
+  UV footprints. Preview raster, seams, large-map costs and other profiles remain
+  outside that evidence. See [validation](validation/radiant-density.json).
 
 Acceptance: changing a selected surface's density updates its Radiant preview
 and affects that surface's effective compile setting while other surfaces retain

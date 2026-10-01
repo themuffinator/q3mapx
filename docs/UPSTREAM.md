@@ -36,6 +36,18 @@ section describes an upstream component that q3mapx does not import.
 
 ## Credits
 
+The optional [Radiant authoring integration](RADIANT-AUTHORING.md) maintains a
+patch against the same pinned [NRC editor](https://github.com/Garux/netradiant-custom/tree/8216133984031afaa9a857b56ea66dd9c3d54b26).
+The modified editor/model/serializer/Makefile headers permit GPL-2.0-or-later;
+that later-version permission is compatible with q3mapx's GPL-3.0-or-later work.
+Original copyright and license notices are preserved. The patch and original
+q3mapx overlays are distributed under GPL-3.0-or-later. The
+[integration manifest](../integrations/nrc/manifest.json) records exact upstream
+and patched hashes. Preparation creates an independent source archive copy and
+does not modify the reference checkout. NRC's Qt 5 and other dependencies retain
+their own license obligations; this round does not distribute their binaries or
+third-party gamepacks.
+
 The optional geometry renderer harness uses
 [Quake3e](https://github.com/ec-/Quake3e) and its id Software ancestry as an external
 reference. Its GPL-2.0-or-later header notices and GPL license were checked before

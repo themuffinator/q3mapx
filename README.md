@@ -91,6 +91,8 @@ See [decompilation options and limits](docs/DECOMPILATION.md). The traditional
   diagnostics, reports, build history, hardware discovery and light/dark themes.
 - Separate CLI, optional Qt-free and GPU-disabled builds, portable runtime/source
   packaging, and asset-independent regression fixtures.
+- Experimental per-face/per-patch lightmap density with a maintained NRC editor
+  integration, versioned MAP data and requested-spacing grid controls.
 
 Measured whole-command results on the documented Windows fixture: indexed CPU
 minimaps were **29.8x faster** than the imported sampler; a sufficiently large GPU
@@ -119,6 +121,7 @@ native validation of 242 installed-map entries without distributing game assets.
 - [Baked lighting observations and source-recovery limits](docs/LIGHTING-EVIDENCE.md)
 - [Direct lighting probes and proposed-light evaluation](docs/LIGHT-PROBES.md)
 - [Planned Radiant patch RGB/alpha painting and surface density previews](docs/PLAN.md#m11--radiant-painting-and-per-surface-lighting-controls)
+- [Radiant density authoring, companion editor and preview limits](docs/RADIANT-AUTHORING.md)
 - [VIS modes, merge repairs and compact working data](docs/VIS.md)
 - [Measured performance and backend options](docs/PERFORMANCE.md)
 - [Installation, packaging and known limits](docs/RELEASE.md)
@@ -140,3 +143,6 @@ license notices. See [licensing details](docs/UPSTREAM.md).
 The compiler builds on the work of id Software, GtkRadiant, NetRadiant,
 [Garux and the NRC contributors](https://github.com/Garux/netradiant-custom),
 and q3map2's contributors including ydnar. See [provenance](docs/UPSTREAM.md).
+The optional Radiant authoring patch also builds directly on NRC's editor model,
+serialization and renderer; [its pinned manifest](integrations/nrc/manifest.json)
+records the modified upstream files and their original hashes.

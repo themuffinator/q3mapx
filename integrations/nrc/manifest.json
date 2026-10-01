@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "upstream": {
+    "url": "https://github.com/Garux/netradiant-custom",
+    "revision": "8216133984031afaa9a857b56ea66dd9c3d54b26",
+    "modified_files_license": "GPL-2.0-or-later"
+  },
+  "integration_license": "GPL-3.0-or-later",
+  "patch_sha256": "b44891c35d28b6159a483d42f174d1cee192e5f3d9a79640601c4890be706c52",
+  "edits": [
+    {
+      "path": "radiant/brush.h",
+      "original_sha256": "392d9e85cf13e40e11b1beba9774ce99479d7cb3da60d04878a812eb85018e81",
+      "patched_sha256": "6afebd16623b9265fa22a3bd80b7274da440319f45ea1ac7a094dca137316289"
+    },
+    {
+      "path": "radiant/patch.h",
+      "original_sha256": "6377981a9d9a64fa5792e2cfa006863dd0a123228b9c4c8b093344d0b1d5bd65",
+      "patched_sha256": "bc0f22632c863ae1799343a7616a8b69b4ed14ec43f3d1a07f7450ce89473a0d"
+    },
+    {
+      "path": "radiant/brushtokens.h",
+      "original_sha256": "94d8cc8d71642779722e40f377051eeb63f5cd8f217ad57ce289f84f2e2550f3",
+      "patched_sha256": "366d17b0e419914f95cb6c93c32173d4af537edc65d71f01d0776c99fdf6f2ef"
+    },
+    {
+      "path": "plugins/mapq3/plugin.cpp",
+      "original_sha256": "042e52663ab7d1f2af2a1ed4315f4b7b2b9009e831cab6630c1d5ae785c341b4",
+      "patched_sha256": "09f7fb6632c5567fc40c7d2fe77b65f875715e36a39169487e71715cdc508540"
+    },
+    {
+      "path": "radiant/brushxml.h",
+      "original_sha256": "f2cd1e959337ec3ca5704ac44b00078b7bef18b4ca4f58acb569d693843671c1",
+      "patched_sha256": "a19ddee6461e89ff8da3a9e1c8b591bb4f16c19ac193a8889e432968c3aa061e"
+    },
+    {
+      "path": "radiant/surfacedialog.cpp",
+      "original_sha256": "8cd8336689eb581ec4cce872bf9b86d6fa11ec602e4a5e5066bcbde947a9c882",
+      "patched_sha256": "030049e9d07b3e950cfdba8bf7aa6b476985fcc1da2ae69f10b96a70e236e697"
+    },
+    {
+      "path": "Makefile",
+      "original_sha256": "6565370c03339edc1df16ac68ff0086667c900c7c5cc6dc6e6d2c71666254834",
+      "patched_sha256": "a4b29186853d36a80bff16b27a736d12311d52dd6700e3d2cc17a8784c495d00"
+    },
+    {
+      "path": "radiant/main.cpp",
+      "original_sha256": "25d224d9c402424433b63d76e652853e89429a6e2e887fae856e64fd7224f66a",
+      "patched_sha256": "9405d2718ca4f1bb9c6b7b134a4eb158e2c0a2fa3f8205ed1ab96f92bb327d68"
+    },
+    {
+      "path": "radiant/renderstate.cpp",
+      "original_sha256": "0ef298764df9a5faa8912076393c4580166dc775d8484ee3cab72585ebaa2b6b",
+      "patched_sha256": "9832dc1f2a175dcb6c645dc249d6d2fb4dd909003682c1add2e2c152686f2799"
+    }
+  ],
+  "additions": [
+    {
+      "source": "libs/authoring/surface.h",
+      "destination": "libs/authoring/surface.h",
+      "sha256": "524f37db589c501f9ee453767ca5adf2b99de96c3a96ad7663c2b102dba5d894"
+    },
+    {
+      "source": "integrations/nrc/overlay/radiant/q3mapxlightmaps.h",
+      "destination": "radiant/q3mapxlightmaps.h",
+      "sha256": "809ca5a60a8273d979d3839cd851fdd95ec10ca3d023463a5121f7495ed3d3f0"
+    },
+    {
+      "source": "integrations/nrc/overlay/radiant/q3mapxlightmaps.cpp",
+      "destination": "radiant/q3mapxlightmaps.cpp",
+      "sha256": "9346ef0bc23ad350bf31c5880f4b27ccadb7b81157901ee601d0c34b9c070c59"
+    },
+    {
+      "source": "integrations/nrc/tests/q3mapxauthoringtest.cpp",
+      "destination": "radiant/q3mapxauthoringtest.cpp",
+      "sha256": "61111d3e251c1ad2df1a716fd018a6992826362168409702ce308dbedab5c16e"
+    }
+  ]
+}

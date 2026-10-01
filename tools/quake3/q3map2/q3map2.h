@@ -697,6 +697,7 @@ struct plane_t
 struct side_t
 {
 	int planenum;
+	int lightmapSampleSizeOverride = 0;      /* authored face; 0 inherits */
 
 	int outputNum;                          /* set when the side is written to the file list */
 
@@ -833,6 +834,7 @@ public:
 struct parseMesh_t
 {
 	int entityNum, brushNum;                    /* ydnar: editor numbering */
+	int lightmapSampleSizeOverride = 0;         /* authored patch; 0 inherits */
 
 	/* ydnar: for shadowcasting entities */
 	int castShadows;
@@ -940,6 +942,7 @@ struct mapDrawSurface_t_params
 
 	/* ydnar: per-surface (per-entity, actually) lightmap sample size scaling */
 	float lightmapScale;
+	int lightmapSampleSizeOverride = 0;
 
 	/* jal: per-surface (per-entity, actually) shadeangle */
 	float shadeAngleDegrees;
@@ -1719,7 +1722,7 @@ inline node_t               *AllocNode(){ return new node_t(); } // zero initial
 
 
 /* patch.c */
-void                        ParsePatch( bool onlyLights, entity_t& mapEnt, int mapPrimitiveNum );
+void                        ParsePatch( bool onlyLights, entity_t& mapEnt, int mapPrimitiveNum, bool authoredSurface = false );
 void                        PatchMapDrawSurfs( entity_t& e );
 
 

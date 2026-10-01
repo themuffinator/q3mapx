@@ -5,6 +5,7 @@
 #include "inout.h"
 #include "vfs.h"
 #include "stream/stringstream.h"
+#include "authoring/surface.h"
 #include <charconv>
 #include <cmath>
 #include <cstdint>
@@ -64,5 +65,13 @@ struct MapInputReader
 		  || value < std::numeric_limits<std::int32_t>::min() || value > std::numeric_limits<std::uint32_t>::max()
 		  || ( token[0] == '+' && *begin == '-' ) ) fail( field );
 		return std::uint32_t( value );
+	}
+	int surfaceSampleSize() const {
+		match( q3mapx::authoring::sampleSizeKey );
+		next( false, "lightmap sample size: decimal integer in 0..16384 (0 inherits)" );
+		int value;
+		if ( !q3mapx::authoring::parseSampleSize( token, value ) )
+			fail( "lightmap sample size: decimal integer in 0..16384 (0 inherits)" );
+		return value;
 	}
 };

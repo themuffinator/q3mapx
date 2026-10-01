@@ -31,6 +31,7 @@
 /* dependencies */
 #include "q3map2.h"
 #include "surface_extra.h"
+#include "authoring/surface.h"
 
 
 /* -------------------------------------------------------------------------------
@@ -77,6 +78,7 @@ void SetSurfaceExtra( const mapDrawSurface_t& ds ){
 	se.castShadows  = ds.castShadows;
 	se.recvShadows  = ds.recvShadows;
 	se.sampleSize   = ds.sampleSize;
+	se.authoredSampleSize = ds.lightmapSampleSizeOverride;
 	se.ambientColor = ds.ambientColor;
 	se.longestCurve = ds.longestCurve;
 	se.lightmapAxis = ds.lightmapAxis;
@@ -178,6 +180,9 @@ void WriteSurfaceExtraFile( const char *path ){
 		/* lightmap sample size */
 		if ( se.sampleSize != seDefault.sampleSize || &se == &seDefault ) {
 			fprintf( sf, "\tsampleSize %d\n", se.sampleSize );
+		}
+		if ( se.authoredSampleSize > 0 ) {
+			fprintf( sf, "\tauthoredSampleSize %d\n", se.authoredSampleSize );
 		}
 
 		if ( ( se.ambientColor != g_vector3_identity && se.ambientColor != seDefault.ambientColor ) || &se == &seDefault ) { // 0 == use global
@@ -286,6 +291,10 @@ void LoadSurfaceExtraFile( const char *path ){
 			else if ( striEqual( token, "sampleSize" ) ) {
 				GetToken( false );
 				se->sampleSize = atoi( token );
+			}
+			else if ( striEqual( token, "authoredSampleSize" ) ) {
+				if ( !GetToken( false ) || !q3mapx::authoring::parseSampleSize( token, se->authoredSampleSize ) )
+					Error( "Invalid authoredSampleSize in surface extra file at line %d", scriptline );
 			}
 
 			else if ( striEqual( token, "ambientColor" ) ) {

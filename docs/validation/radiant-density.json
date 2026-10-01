@@ -1,0 +1,1131 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-01T18:40:59.986198+00:00",
+  "base_revision": "06437586f9ea99f91e0357b5e513fe1a849a855e",
+  "scope": "Experimental NRC density controls, source persistence and compiler propagation; no viewport raster or patch painting claim",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "cc7a6ab138f8f328644c365ba1f4b33a426006b95a0e0a1e1a159361ab029219",
+    "libs/authoring/surface.h": "524f37db589c501f9ee453767ca5adf2b99de96c3a96ad7663c2b102dba5d894",
+    "tests/surface_density.py": "8b74dac7043005aa35d51809c7c70315edc5530c8a77235e191ef333f1cb56f4",
+    "tests/nrc_authoring.py": "e9efeaf43f36e22e2236e32bb0ef962ca0a3e5a30bfed30cd3a44a51cf7af50a",
+    "integrations/nrc/prepare.py": "6d5efd8d883d05e0a64730c04357fe09afc37a94a6f6f23d54b804830d416b53",
+    "integrations/nrc/manifest.json": "81e533e69ec97805cd3ce0d4c1e528dbb40e065bab0f6dca5ef2ee46b550b5fb",
+    "integrations/nrc/q3mapx-authoring.patch": "b44891c35d28b6159a483d42f174d1cee192e5f3d9a79640601c4890be706c52",
+    "integrations/nrc/overlay/radiant/q3mapxlightmaps.h": "809ca5a60a8273d979d3839cd851fdd95ec10ca3d023463a5121f7495ed3d3f0",
+    "integrations/nrc/overlay/radiant/q3mapxlightmaps.cpp": "9346ef0bc23ad350bf31c5880f4b27ccadb7b81157901ee601d0c34b9c070c59",
+    "integrations/nrc/tests/q3mapxauthoringtest.cpp": "61111d3e251c1ad2df1a716fd018a6992826362168409702ce308dbedab5c16e",
+    "tools/quake3/q3map2/map.cpp": "8b3f32711e2cb955ac95c544419f5e176a2eda6f58fd52c9dcc3d1d805bf2c13",
+    "tools/quake3/q3map2/map_input.h": "2fa1a6e9ab76b360cf092060a1f9e30f1a967267348fb20dfb2369a097dc4931",
+    "tools/quake3/q3map2/patch.cpp": "a280719288c4ae4b7462959c3d9f2347a6bc2b3932984badbba9359432834384",
+    "tools/quake3/q3map2/q3map2.h": "7f45195ec16f38409584556d3bfd2efad0985c68365e33b1616d7440c405da58",
+    "tools/quake3/q3map2/surface.cpp": "6742b16b8f1578d18d0a88cb32f2c6368f9331fc9d1bb6a6275b3e256fec89e7",
+    "tools/quake3/q3map2/surface_extra.cpp": "8c525ce81f2cc0afb871dc04f8c3fe2b06fc801ee25c36f384a2702c48a87514",
+    "tools/quake3/q3map2/surface_extra.h": "83c4eed301b46a898e5bd9a310add02ef7f1cfd4cd9ed3a7590bba46c6459a1d",
+    "tools/quake3/q3map2/surface_meta.cpp": "1424f2b7b6cfa40573182654c660d7ddd80cc758a146b7ca84c98734aa804716"
+  },
+  "preparation": {
+    "upstream": {
+      "url": "https://github.com/Garux/netradiant-custom",
+      "revision": "8216133984031afaa9a857b56ea66dd9c3d54b26",
+      "modified_files_license": "GPL-2.0-or-later"
+    },
+    "output": "build/nrc-authoring",
+    "matches_tested_source": true,
+    "upstream_checkout_unchanged": true
+  },
+  "native_editor": {
+    "checks": 206,
+    "editor_model_roundtrip": true,
+    "os_input_control": false,
+    "viewport_raster_tested": false,
+    "compiler_roundtrips": [
+      "quake",
+      "bp",
+      "valve"
+    ],
+    "platform": "Windows x64",
+    "gcc": "15.2.0",
+    "qt": "5.15.18",
+    "editor_executable_sha256": "7c974c0da56039092299d9ec4d078ad30ada9c720e697a688a5ccc6a1348d99c",
+    "test_executable_sha256": "6a4237fc58cf56103114a33279d14aa6b914ef056c84ae23aa0eede07fcad91b",
+    "mapq3_module_sha256": "97fff0f86fde47e5e96c05ac9e949983fc8965804fba1c7576c970f8035400f5",
+    "widget_image": "build/release/tests/nrc-authoring/density-controls.png",
+    "widget_image_sha256": "d4f175e8c94fcda81e3c3fe6a868715a7fb937a356284b443069547401675f2c",
+    "worldspawn_graph_roundtrip": true,
+    "point_entities_native_editor_tested": false,
+    "isolated_profile": ".agents/tmp/radiant-density/editor/install/settings",
+    "build_log": ".agents/tmp/radiant-density/editor-tests-build.log"
+  },
+  "compiler_platforms": {
+    "windows": {
+      "matrix": {
+        "matrix": [
+          {
+            "case": "quake-quake3-ordinary-t1",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ],
+            "top_face_chart_texels": {
+              "32": [
+                9
+              ],
+              "8": [
+                81
+              ]
+            }
+          },
+          {
+            "case": "quake-quake3-ordinary-t4",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ],
+            "top_face_chart_texels": {
+              "32": [
+                9
+              ],
+              "8": [
+                81
+              ]
+            }
+          },
+          {
+            "case": "quake-quake3-meta-t1",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ],
+            "top_face_chart_texels": {
+              "8": [
+                81
+              ],
+              "32": [
+                9
+              ]
+            }
+          },
+          {
+            "case": "quake-quake3-meta-t4",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ],
+            "top_face_chart_texels": {
+              "8": [
+                81
+              ],
+              "32": [
+                9
+              ]
+            }
+          },
+          {
+            "case": "quake-ja-ordinary-t1",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "quake-ja-ordinary-t4",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "quake-ja-meta-t1",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "quake-ja-meta-t4",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-quake3-ordinary-t1",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-quake3-ordinary-t4",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-quake3-meta-t1",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-quake3-meta-t4",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-ja-ordinary-t1",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-ja-ordinary-t4",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-ja-meta-t1",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-ja-meta-t4",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-quake3-ordinary-t1",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-quake3-ordinary-t4",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-quake3-meta-t1",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-quake3-meta-t4",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-ja-ordinary-t1",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-ja-ordinary-t4",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-ja-meta-t1",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-ja-meta-t4",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          }
+        ],
+        "rejected": [
+          "face-0",
+          "patch-1",
+          "face-2",
+          "patch-3",
+          "face-4",
+          "patch-5",
+          "face-6",
+          "patch-7",
+          "face-8",
+          "patch-9",
+          "face-10",
+          "patch-11",
+          "face-12",
+          "patch-13",
+          "face-14",
+          "patch-15",
+          "face-16",
+          "patch-17",
+          "face-18",
+          "patch-19",
+          "face-20",
+          "patch-21",
+          "face-missing",
+          "patch-missing",
+          "face-version",
+          "patch-version",
+          "mixed-projection"
+        ],
+        "reference_legacy_parity": true,
+        "clamp_minima": [
+          16,
+          64
+        ],
+        "unlightmapped_preserved": true,
+        "compiler_sha256": "fae1e3ce53e5d202c732675a37c5ca942d5859d9e5ece51375d36f97d26042e5"
+      },
+      "previous_compiler_sha256": "b7b5bcecb1889cbcf496f806878a913cbb08c2ac2d8664b835d05a78d8d74d59",
+      "related_ctest_passed": 8,
+      "ctest_log": ".agents/tmp/radiant-density/ctest-windows.log",
+      "ctest_log_sha256": "c8a338500652a1c44392fab68be6618ed7fab2652e15c0b94aeb3bf395f90088"
+    },
+    "linux": {
+      "matrix": {
+        "matrix": [
+          {
+            "case": "quake-quake3-ordinary-t1",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ],
+            "top_face_chart_texels": {
+              "32": [
+                9
+              ],
+              "8": [
+                81
+              ]
+            }
+          },
+          {
+            "case": "quake-quake3-ordinary-t4",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ],
+            "top_face_chart_texels": {
+              "32": [
+                9
+              ],
+              "8": [
+                81
+              ]
+            }
+          },
+          {
+            "case": "quake-quake3-meta-t1",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ],
+            "top_face_chart_texels": {
+              "8": [
+                81
+              ],
+              "32": [
+                9
+              ]
+            }
+          },
+          {
+            "case": "quake-quake3-meta-t4",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ],
+            "top_face_chart_texels": {
+              "8": [
+                81
+              ],
+              "32": [
+                9
+              ]
+            }
+          },
+          {
+            "case": "quake-ja-ordinary-t1",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "quake-ja-ordinary-t4",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "quake-ja-meta-t1",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "quake-ja-meta-t4",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-quake3-ordinary-t1",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-quake3-ordinary-t4",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-quake3-meta-t1",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-quake3-meta-t4",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-ja-ordinary-t1",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-ja-ordinary-t4",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-ja-meta-t1",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-ja-meta-t4",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-quake3-ordinary-t1",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-quake3-ordinary-t4",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-quake3-meta-t1",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-quake3-meta-t4",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-ja-ordinary-t1",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-ja-ordinary-t4",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-ja-meta-t1",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-ja-meta-t4",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          }
+        ],
+        "rejected": [
+          "face-0",
+          "patch-1",
+          "face-2",
+          "patch-3",
+          "face-4",
+          "patch-5",
+          "face-6",
+          "patch-7",
+          "face-8",
+          "patch-9",
+          "face-10",
+          "patch-11",
+          "face-12",
+          "patch-13",
+          "face-14",
+          "patch-15",
+          "face-16",
+          "patch-17",
+          "face-18",
+          "patch-19",
+          "face-20",
+          "patch-21",
+          "face-missing",
+          "patch-missing",
+          "face-version",
+          "patch-version",
+          "mixed-projection"
+        ],
+        "reference_legacy_parity": true,
+        "clamp_minima": [
+          16,
+          64
+        ],
+        "unlightmapped_preserved": true,
+        "compiler_sha256": "a885e42afd4b0d77f26e4854a5d60e1c1a15fb2a6dfdb4092da6ce960c271eae"
+      },
+      "previous_compiler_sha256": "35bcbb43a720e755ee166debcaf146b0a4797476025fc9687e189cd4a06c5b50",
+      "related_ctest_passed": 8,
+      "ctest_log": ".agents/tmp/radiant-density/ctest-linux.log",
+      "ctest_log_sha256": "34fcb72dbc6b366be8d522df86573b78415f2046afaae8b5d4d38a24c95d41ce"
+    },
+    "sanitized": {
+      "matrix": {
+        "matrix": [
+          {
+            "case": "quake-quake3-ordinary-t1",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ],
+            "top_face_chart_texels": {
+              "32": [
+                9
+              ],
+              "8": [
+                81
+              ]
+            }
+          },
+          {
+            "case": "quake-quake3-ordinary-t4",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ],
+            "top_face_chart_texels": {
+              "32": [
+                9
+              ],
+              "8": [
+                81
+              ]
+            }
+          },
+          {
+            "case": "quake-quake3-meta-t1",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ],
+            "top_face_chart_texels": {
+              "8": [
+                81
+              ],
+              "32": [
+                9
+              ]
+            }
+          },
+          {
+            "case": "quake-quake3-meta-t4",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ],
+            "top_face_chart_texels": {
+              "8": [
+                81
+              ],
+              "32": [
+                9
+              ]
+            }
+          },
+          {
+            "case": "quake-ja-ordinary-t1",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "quake-ja-ordinary-t4",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "quake-ja-meta-t1",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "quake-ja-meta-t4",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-quake3-ordinary-t1",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-quake3-ordinary-t4",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-quake3-meta-t1",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-quake3-meta-t4",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-ja-ordinary-t1",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-ja-ordinary-t4",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-ja-meta-t1",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "bp-ja-meta-t4",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-quake3-ordinary-t1",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-quake3-ordinary-t4",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-quake3-meta-t1",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-quake3-meta-t4",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-ja-ordinary-t1",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-ja-ordinary-t4",
+            "surfaces": 26,
+            "authored_surfaces": 4,
+            "sizes": [
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-ja-meta-t1",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          },
+          {
+            "case": "valve-ja-meta-t4",
+            "surfaces": 25,
+            "authored_surfaces": 5,
+            "sizes": [
+              0,
+              8,
+              10,
+              12,
+              32
+            ]
+          }
+        ],
+        "rejected": [
+          "face-0",
+          "patch-1",
+          "face-2",
+          "patch-3",
+          "face-4",
+          "patch-5",
+          "face-6",
+          "patch-7",
+          "face-8",
+          "patch-9",
+          "face-10",
+          "patch-11",
+          "face-12",
+          "patch-13",
+          "face-14",
+          "patch-15",
+          "face-16",
+          "patch-17",
+          "face-18",
+          "patch-19",
+          "face-20",
+          "patch-21",
+          "face-missing",
+          "patch-missing",
+          "face-version",
+          "patch-version",
+          "mixed-projection"
+        ],
+        "reference_legacy_parity": true,
+        "clamp_minima": [
+          16,
+          64
+        ],
+        "unlightmapped_preserved": true,
+        "compiler_sha256": "b3696d0393ed747edee0cec54539c93acd2f14c8027cd1d8d36a7914ff31cc19"
+      },
+      "previous_compiler_sha256": "d5d4540cb64c4b13ac787ed66721a609af36a8436c1bf8075b1de48e3f72d564",
+      "related_ctest_passed": 8,
+      "ctest_log": ".agents/tmp/radiant-density/ctest-sanitized.log",
+      "ctest_log_sha256": "72abac65a41e66993508d9adc67d6cc3938456524a738b083f86df39885beb09"
+    }
+  },
+  "notes": [
+    "The related CTest groups passed before the final additional clamp/unlightmapped assertions; the final full surface-density matrix was then rerun directly with --reference on every platform.",
+    "Legacy parity compares all BSP lump payloads and SRF bytes against the preceding binary with identical argv; worker comparison omits only literal _q3map2_cmdline provenance.",
+    "The four lit Quake III axial cases check actual packed UV spans and boundary-inclusive texel footprints; other cases test BSP/SRF propagation, not complete runtime appearance.",
+    "ASan/UBSan uses Debug -g -O1 with assertions and detect_leaks=0 for inherited process-lifetime allocations.",
+    "Camera renderer raster, real-map/editor performance, Linux editor delivery, other native profiles, source recovery and patch RGB/alpha painting remain open.",
+    "Automatic approval review rejected deletion of build/nrc-authoring-verify with blocked by policy. Failed preparation trees are retained in that directory and build/nrc-authoring-verified."
+  ]
+}

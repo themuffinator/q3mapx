@@ -2,3 +2,4 @@
 * text=auto
 # Unified diffs prefix context lines, including blank/tab-indented ones, with a space.
 benchmarks/references/*.patch text eol=lf whitespace=-blank-at-eol,-space-before-tab
+integrations/nrc/*.patch text eol=lf whitespace=-blank-at-eol,-space-before-tab

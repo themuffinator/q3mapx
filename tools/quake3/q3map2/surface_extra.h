@@ -32,6 +32,7 @@ struct surfaceExtra_t
 	int castShadows = WORLDSPAWN_CAST_SHADOWS;
 	int recvShadows = WORLDSPAWN_RECV_SHADOWS;
 	int sampleSize = 0;
+	int authoredSampleSize = 0;
 	Vector3 ambientColor{ 0 };
 	float longestCurve = 0;
 	Vector3 lightmapAxis{ 0 };

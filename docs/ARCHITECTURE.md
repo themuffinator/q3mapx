@@ -132,23 +132,32 @@ support through the game catalog. See [the native contract](GEOMETRY-OPTIMIZATIO
 and [the core contract](PLANAR-REDUCTION.md): exact affine-field preservation alone
 does not approve a runtime rewrite.
 
-## Planned Radiant authoring boundary
+## Radiant authoring boundary
 
 [M11](PLAN.md#m11--radiant-painting-and-per-surface-lighting-controls) adds patch
 vertex RGB/alpha painting and per-surface lightmap-density editing with previews
-inside Radiant. Treat the editor integration and compiler support as separate
-components of one delivery. Audit NRC's extension points before choosing a
-plugin or editor patch; compiler/workbench controls alone do not fulfill the
-Radiant interaction requirement.
+inside Radiant. The initial density implementation uses a maintained core patch
+against the pinned NRC: existing module interfaces lack persistent surface fields,
+undo serialization and suitable rendering hooks. `integrations/nrc/prepare.py`
+creates a hash-checked independent source tree; no full editor import is added
+to the compiler build. Compiler/workbench controls alone do not fulfill the
+Radiant interaction requirement. Patch painting remains planned.
 
-Define a versioned source-data contract for authored patch channels and individual
-face/patch density overrides. Preserve associations across editor operations and
-compiler-generated splits/merges instead of storing transient BSP surface IDs.
-Authored paint, baked lighting and shader modulation need explicit composition
-rules; recovery must not present inseparable baked data as original paint.
-Density previews expose effective settings and estimated cost, with compiled
-sampling/atlas data as the validation reference. Existing MAPs and headless
-compilation retain their defaults; unsupported metadata requires clear diagnostics.
+`libs/authoring/surface.h` defines versioned primitive names and the shared strict
+integer density grammar. Metadata lives on Face/Patch objects and inline source
+primitives. A separate compiler field propagates source intent through surface
+classification and meta assembly; authored values participate in merge identity
+even when their effective spacings coincide. SRF adds an optional authored value
+alongside effective sampling. No BSP extension or decompiler claim is implied.
+See [the source and preview contract](RADIANT-AUTHORING.md).
+
+The native preview consumes face windings and patch tessellation, with bounded
+grid generation and isolated renderer state. It currently shows requested values
+and area estimates; effective inherited/material settings, camera raster and
+packed-atlas inspection are future gates. Existing MAPs and headless compilation
+retain their defaults. Future authored paint, baked lighting and shader modulation
+need explicit composition rules; recovery must not present inseparable baked data
+as original paint.
 
 ## Decisions recorded at project start
 

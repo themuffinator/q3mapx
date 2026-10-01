@@ -990,14 +990,25 @@ static void QuakeTextureVecs( const plane_t& plane, float shift[ 2 ], float rota
    NOTE: it would be "cleaner" to have separate functions to parse between old and new brushes
  */
 
-static void ParseRawBrush( bool onlyLights ){
+static void ParseRawBrush( bool onlyLights, bool authoredSurface ){
 	MapInputReader reader{ "brush", buildBrush.entityNum, buildBrush.brushNum };
 	/* initial setup */
 	buildBrush.sides.clear();
 	buildBrush.detail = false;
 
-	/* bp */
-	if ( g_brushType == EBrushType::Bp ) {
+	if ( authoredSurface ) {
+		reader.next( true, "quake, brushPrimitives or valve220 projection" );
+		const EBrushType projection = TokenIs( "quake" ) ? EBrushType::Quake
+		                           : TokenIs( "brushPrimitives" ) ? EBrushType::Bp
+		                           : TokenIs( "valve220" ) ? EBrushType::Valve220
+		                           : EBrushType::Undefined;
+		if ( projection == EBrushType::Undefined ) reader.fail( "quake, brushPrimitives or valve220 projection" );
+		if ( g_brushType != EBrushType::Undefined && g_brushType != projection )
+			reader.fail( "the same brush projection throughout the MAP" );
+		g_brushType = projection;
+	}
+	/* Versioned primitives always have an inner brace, including AP/220. */
+	if ( authoredSurface || g_brushType == EBrushType::Bp ) {
 		reader.match( "{" );
 	}
 
@@ -1010,7 +1021,7 @@ static void ParseRawBrush( bool onlyLights ){
 		}
 		if ( TokenIs( "}" ) ) break;
 		/* ttimo : bp: here we may have to jump over brush epairs (only used in editor) */
-		if ( g_brushType == EBrushType::Bp && !TokenIs( "(" ) ) {
+		if ( !authoredSurface && g_brushType == EBrushType::Bp && !TokenIs( "(" ) ) {
 			std::list<epair_t> dummy;
 			ParseEPair( dummy );
 			continue;
@@ -1127,7 +1138,7 @@ static void ParseRawBrush( bool onlyLights ){
 		    portability. :sigh:
 		 */
 
-		if ( TokenAvailable() ) {
+		if ( authoredSurface || TokenAvailable() ) {
 			/* get detail bit from map content flags */
 			const std::uint32_t flags = reader.flags( "32-bit decimal content flags" );
 			if ( flags & C_DETAIL ) {
@@ -1138,10 +1149,11 @@ static void ParseRawBrush( bool onlyLights ){
 			reader.flags( "32-bit decimal surface flags" );
 			reader.flags( "32-bit decimal surface value" );
 		}
+		if ( authoredSurface ) side.lightmapSampleSizeOverride = reader.surfaceSampleSize();
 	}
 
 	/* bp */
-	if ( g_brushType == EBrushType::Bp ) {
+	if ( authoredSurface || g_brushType == EBrushType::Bp ) {
 		reader.match( "}" );
 	}
 }
@@ -1198,13 +1210,13 @@ static bool RemoveDuplicateBrushPlanes( brush_t& b ){
    parses a brush out of a map file and sets it up
  */
 
-static void ParseBrush( bool onlyLights, bool noCollapseGroups, entity_t& mapEnt, int mapPrimitiveNum ){
+static void ParseBrush( bool onlyLights, bool noCollapseGroups, entity_t& mapEnt, int mapPrimitiveNum, bool authoredSurface = false ){
 	/* also identify failures encountered while reading the brush */
 	buildBrush.entityNum = mapEnt.mapEntityNum;
 	buildBrush.brushNum = mapPrimitiveNum;
 
 	/* parse the brush out of the map */
-	ParseRawBrush( onlyLights );
+	ParseRawBrush( onlyLights, authoredSurface );
 
 	/* only go this far? */
 	if ( onlyLights ) {
@@ -1595,9 +1607,12 @@ static bool ParseMapEntity( bool onlyLights, bool noCollapseGroups, int mapEntit
 			}
 
 			/* check */
-			if ( TokenIs( "patchDef2" ) ) {
+			if ( TokenIs( "patchDef2" ) || TokenIs( q3mapx::authoring::patchDefinition ) ) {
 				++c_patches;
-				ParsePatch( onlyLights, mapEnt, mapPrimitiveNum );
+				ParsePatch( onlyLights, mapEnt, mapPrimitiveNum, TokenIs( q3mapx::authoring::patchDefinition ) );
+			}
+			else if ( TokenIs( q3mapx::authoring::brushDefinition ) ) {
+				ParseBrush( onlyLights, noCollapseGroups, mapEnt, mapPrimitiveNum, true );
 			}
 			else if ( TokenIs( "terrainDef" ) ) {
 				//% ParseTerrain();

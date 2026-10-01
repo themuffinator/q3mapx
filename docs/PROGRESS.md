@@ -3048,3 +3048,85 @@ source-token/include lookahead and multiline quote accounting remain open,
 together with the recorded compiler warnings, VIS discrepancy, raw sidecar
 publication and Windows process-delay findings. Recovery inference, intelligent
 VIS/geometry optimization and M11 Radiant authoring remain active.
+
+## 2026-10-01 — Native Radiant surface-density authoring
+
+Delivered the first M11 density slice: a maintained patch against NRC
+`8216133984031afaa9a857b56ea66dd9c3d54b26`, shared versioned MAP metadata and
+compiler propagation. The native Surface Inspector edits selected brush faces
+and whole patches in world units per lightmap texel, with Apply/Inherit actions,
+mixed-selection feedback and an optional bounded requested-spacing grid.
+The renderer uses actual face polygons and native patch tessellation; its camera
+pixels remain unqualified. Patch RGB/alpha painting is still planned.
+
+The editor retains settings in Face/Patch objects, copy constructors, undo
+mementos, MAP primitives and XML attributes. Nonzero values emit versioned
+`q3mapxBrushDef1` / `q3mapxPatchDef1` primitives; reset writes legacy syntax.
+The compiler strictly accepts decimal integers in 0..16384, honors positive
+overrides ahead of shader/entity settings, retains the compile minimum and
+vertex-lit classification, and carries source intent through meta assembly.
+Different authored values remain distinct even when clamped to equal spacing.
+SRF records authored and effective values without adding a BSP extension.
+
+Native editor qualification exposed and repaired inherited XML round-trip
+defects in the companion patch: unhandled derived polygon subtrees, misnamed
+brush-primitive matrices, missing Valve 220 bases and missing separators between
+patch control records. The test now compares serialized geometry/UVs as well as
+density. These are source-model checks, not a claim that every XML consumer or
+game-format conversion is qualified.
+
+Validation:
+
+- Windows NRC Release core/modules and the optional Qt 5.15.18 harness build.
+  206 native checks pass for actual parsers, worldspawn graph load/save/reopen,
+  copy independence, undo/redo mementos, XML geometry/UV persistence, selected-face
+  Apply/Inherit, unaffected unselected faces, malformed density, bounded grid
+  generation, renderer-state submission and widget painting to an owned QImage.
+  The editor's saved maps compile through q3mapx in axial/BP/Valve 220 formats.
+- Windows/Linux Release and Linux Debug ASan/UBSan each pass 24 native matrix
+  cases spanning three projections, Quake III/JA, ordinary/meta/patchmeta and
+  one/four workers. Checks also cover transformed entities, two clamping minima,
+  vertex-lit materials, exact preceding-binary legacy parity and explicit-zero
+  equivalence. Four lit axial Quake III cases per platform check actual packed
+  UV spans: 64-unit faces at spacing 8 and 32 occupy boundary-inclusive 81- and
+  9-texel chart footprints. No unused legacy width/height fields stand in for UVs.
+- Each compiler rejects 27 malformed inputs with status 1 and preserves previous
+  BSP/SRF/PRT/LIN/REG and source bytes. Eight related CTest groups pass per build;
+  the final expanded density matrix was also run directly with `--reference`.
+  The entire 81-test GUI-enabled inventory was not rerun. Sanitizers retain
+  assertions, address/undefined checks and the established lifetime-leak exclusion.
+- Hash-checked preparation from a fresh pinned Git archive reproduces all tested
+  modified/added source files. The NRC reference checkout remains clean. The
+  preparation tool accounts for mixed upstream line endings and user Git CRLF
+  attributes, refuses existing outputs and extracts no links or special files.
+
+No editor main window, game, OS capture or input injection was used. Native
+worldspawn parsing avoids upstream point-entity labels that allocate GL textures;
+the compiler fixture adds generated point/door entities after editor serialization.
+Widget/grid tests do not validate camera raster, seams or large-map performance.
+Native Linux editor delivery, material/effective-inheritance previews, atlas
+inspection, topology-changing editor operations, other game profiles and recovery
+of original authoring data from BSP remain open. No ready-to-install editor or
+updated portable compiler package is claimed.
+
+See [authoring/build/format documentation](RADIANT-AUTHORING.md),
+[manifest and source attribution](../integrations/nrc/manifest.json) and
+[validation record](validation/radiant-density.json). The modified NRC file
+licenses were checked for GPL-3.0-or-later compatibility and their original
+notices retained. Build logs, binaries and preparation diagnostics remain in
+`.agents/tmp/radiant-density/`; generated tests remain below each build's
+`tests/surface-density/` and `build/release/tests/nrc-authoring/`. The prepared
+source in `build/nrc-authoring/` is available for subsequent editor work.
+
+Automatic approval review rejected cleanup of the disposable
+`build/nrc-authoring-verify` directory with “blocked by policy.” It was not retried;
+that failed preparation and `build/nrc-authoring-verified` remain as preparation
+diagnostics. Earlier policy-blocked cleanup targets were untouched.
+
+One separate inherited compiler issue was found: repeated surface classification
+can reapply an absolute shader sample size after consuming entity scaling. The
+new authored override avoids that path, but legacy behavior is deliberately
+preserved and the fix remains an explicit plan item. Previously recorded numeric
+scale/shift, token/include lookahead, compiler-warning, VIS and raw sidecar
+publication issues remain open. The broader recovery, optimization and M11 goal
+continues.

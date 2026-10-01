@@ -452,7 +452,13 @@ void ClassifySurface( mapDrawSurface_t& ds ){
 		}
 
 		/* calculate lightmap sample size */
-		if ( ds.shaderInfo->lightmapSampleSize > 0 ) { /* shader value overrides every other */
+		if ( ds.lightmapSampleSizeOverride > 0 ) {
+			// An authored surface specifies final spacing, independent of shader or
+			// entity scaling. The global minimum below remains a compile limit.
+			ds.sampleSize = ds.lightmapSampleSizeOverride;
+			ds.lightmapScale = 0;
+		}
+		else if ( ds.shaderInfo->lightmapSampleSize > 0 ) { /* shader overrides inherited sizes */
 			ds.sampleSize = ds.shaderInfo->lightmapSampleSize;
 		}
 		else if ( ds.sampleSize <= 0 ) { /* may contain the entity asigned value */
@@ -672,6 +678,7 @@ mapDrawSurface_t *DrawSurfaceForSide( const entity_t& e, const brush_t& b, const
 	ds.addSideRef( &s );
 	ds.fogNum = FOG_INVALID;
 	ds.sampleSize = b.lightmapSampleSize;
+	ds.lightmapSampleSizeOverride = s.lightmapSampleSizeOverride;
 	ds.lightmapScale = b.lightmapScale;
 	ds.ambientColor = b.ambientColor;
 	ds.verts.resize( w.size(), c_bspDrawVert_t0 );
@@ -808,6 +815,7 @@ mapDrawSurface_t& DrawSurfaceForMesh( const entity_t& e, parseMesh_t& p ){
 
 	ds.sampleSize    = p.lightmapSampleSize;
 	ds.lightmapScale = p.lightmapScale;   /* ydnar */
+	ds.lightmapSampleSizeOverride = p.lightmapSampleSizeOverride;
 	ds.ambientColor  = p.ambientColor;
 	ds.patchWidth  = mesh.width;
 	ds.patchHeight = mesh.height;

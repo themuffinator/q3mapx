@@ -124,6 +124,18 @@ Do not introduce brittle tests that only mirror internal implementation details.
 Do not launch a game fullscreen or control input. For any idTech rendering checks,
 use only an engine-registered screenshot path; never substitute OS capture.
 
+## Native Radiant authoring validation
+
+The optional native NRC authoring build is separate from the compiler/workbench
+CMake build. See [Radiant authoring](RADIANT-AUTHORING.md#prepare-and-build-the-companion-editor)
+for the pinned patch, hash-checked preparation and native harness commands.
+`surface_density` is part of ordinary CTest and exercises the real compiler
+without an editor dependency. `tests/nrc_authoring.py` additionally requires the
+patched Qt 5 editor harness and format modules; it writes only to a marked
+project-local test profile, never an installed editor. The current editor tests
+cover persistence, actions, widget layout and grid submission, not viewport raster
+qualification. Patch RGB/alpha painting remains a separate M11 task.
+
 ## Performance evidence
 
 Record compiler revision/build mode, CPU/GPU, worker count, input identity, exact

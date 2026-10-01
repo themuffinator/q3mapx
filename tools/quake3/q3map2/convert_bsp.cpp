@@ -31,6 +31,7 @@
 /* dependencies */
 #include "q3map2.h"
 #include "decompile.h"
+#include "light_recovery.h"
 #include "export_mesh.h"
 
 
@@ -1148,6 +1149,10 @@ int ConvertBSPMain( Args& args, bool decompile ){
 			decompileOptions.report = args.takeNext();
 			if ( !path_extension_is( decompileOptions.report, "json" ) ) Error( "Recovery report must have a .json extension" );
 		}
+		while ( args.takeArg( "-light-proposals" ) ) {
+			if ( decompileOptions.lightProposals ) Error( "Only one light proposal report can be applied per export" );
+			decompileOptions.lightProposals = args.takeNext();
+		}
 		while ( args.takeArg( "-brush-order" ) ) {
 			brushOrderSpecified = true;
 			const char* order = args.takeNext();
@@ -1188,6 +1193,12 @@ int ConvertBSPMain( Args& args, bool decompile ){
 		}
 	}
 	if ( !args.empty() ) Error( "Unknown conversion option '%s'", args.takeFront() );
+	if ( decompileOptions.lightProposals ) {
+		if ( !map_allowed || convertGame || !g_game->write ) Error( "Light proposal export requires MAP export and a BSP-writing profile" );
+		if ( force_map || ( !force_bsp && path_extension_is( fileName, "map" ) ) ) Error( "Light proposal export requires a compiled BSP input" );
+		if ( g_decompile_wtf ) Error( "Light proposal export cannot be combined with -wtf material replacement" );
+		decompileOptions.automaticReport = true;
+	}
 	if ( uvPolicySpecified && ( !map_allowed || convertGame || fast ) )
 		Error( "-uv-policy requires MAP export without -fast" );
 	if ( brushOrderSpecified && ( !map_allowed || convertGame ) )
@@ -1251,6 +1262,10 @@ int ConvertBSPMain( Args& args, bool decompile ){
 	{
 		path_set_extension( source, ".bsp" );
 		Sys_Printf( "Loading %s\n", source );
+		if ( decompileOptions.lightProposals ) {
+			try { decompileOptions.lightRecovery = q3mapx::LightRecovery::load( source, decompileOptions.lightProposals ); }
+			catch ( const std::exception& error ) { Error( "Light proposal export: %s", error.what() ); }
+		}
 		LoadBSPFile( source );
 		ParseEntities();
 	}

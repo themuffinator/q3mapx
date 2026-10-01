@@ -1,0 +1,1344 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-01T12:14:05.505047+00:00",
+  "base_revision": "e0580c3e395909dd0af57db43f0cfc8397243d87",
+  "scope": "Opt-in application of one qualified native point/spot fitting report to recovered MAPs, including fixed light dependencies and checked target links. Stored evidence and BSP/report identity are checked; import does not authenticate predictions or rerun transport.",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "2a8fe313be19e7f2300f43b34a7092133c659e610793660e13ffb1febb9bbd95",
+    "CMakePresets.json": "11464c160caf523f92eee8411f1a183a887b6927fa74de29d22210caf8a8dc3b",
+    "tools/quake3/q3map2/light_recovery.cpp": "f88099b660ec3f7f2d710a284908798caf4fa89896bec38c4b5fe5d2836bdf57",
+    "tools/quake3/q3map2/light_recovery.h": "12f3559fcf9edc160db55c24b390cba9777c9f07617a47c1dd9a975583bffc0e",
+    "tools/quake3/q3map2/convert_bsp.cpp": "5fd911af551051e03820265fd63ffedefaf4a03bbe075a0bb1aa966cfdda18cc",
+    "tools/quake3/q3map2/convert_map.cpp": "dbc8a3e94487c66774f6dfe834fbc4276b091d990ca32ca6945a9f4f549e3ed2",
+    "tools/quake3/q3map2/decompile.h": "7163a09659079f00d46dfd3ab92b86948c4a66b46c249508a482ea5a0b8e5052",
+    "tools/quake3/q3map2/light_probes.cpp": "421200cf1d01346dd24ac650d2e4edf44f059a41b4b1665bbe2ce570403149a1",
+    "tools/quake3/q3map2/light_probes.h": "52dbec515e47f286a2458df8482ec9f4a089c1641d01713b1496a54fbc41787f",
+    "tools/quake3/q3map2/point_fitting.cpp": "1f2653e983dc36c9eb694c9c7178cdc04665edbf36c9d921f3bd5f5fc646babb",
+    "tools/quake3/q3map2/point_fitting.h": "7f0fab42b28c1c0ec6bf637bf56e48ea7cb2853067d6860b6e02622598ce322d",
+    "tools/quake3/q3map2/bsp_lighting_evidence.cpp": "817e0912a37abd42d7cb8da1985f750d7e0a9c2098b654852f7a8a4bb5b34c39",
+    "tools/quake3/q3map2/games.cpp": "2144840e955e49d8583a9f00bb332add432a6a4298ee1a0bcdaaf64cf2c27d05",
+    "tools/quake3/q3map2/help.cpp": "2d0ab255011b9aa6a35ca324b00eb60eb7c492670ac7c9ae0fda912bfbfe84ab",
+    "tests/light_recovery.py": "f86f0dd903d019972cfc829d670682b71d72f26c39ec516f58fa949533b1e8c1",
+    "tests/fixtures.py": "5cc300117041bc22a719451f9915bca17cc5af10094521408538b850284436c7",
+    "tests/integration.py": "3bb8e703e9e898a4c079f6a52321941aeb54876a7eac7804b8e1069c1541dfb3",
+    "tests/lighting_evidence.py": "e01a13f036e2328fd42e6c6aacab390200a43583487f1ce4ea8bdcc635db08e5",
+    "tests/light_probes.py": "03e5c9b6135464cb2eb1dad0e6b2ad3eb2cc9925ba732ce70bc2f330f2f09df0",
+    "tests/point_fitting.py": "a554301ecc31b46fae04f0f3ccd884864e65e1e86e6f00f57891beb14b7df130",
+    "tests/spot_fitting.py": "346c6edeb072e48d35345f6fdcd2d15d135b268aba7ded7494d224d48b16f664",
+    "tests/recovery_groups.py": "db4162d05d08ac43dc7ffb801a8a76c94e1327ba9077139db2645f859979b551"
+  },
+  "evidence_generator": {
+    "path": ".agents/tmp/continuation/light-export/record.py",
+    "sha256": "4005a66f39728ac9b1817e77ee8e0927f862af06a842583139c751491bbf642e"
+  },
+  "fixture_provenance": "Nine first-party generated native scenes per platform. Hidden light entities are removed, original MAP/SRF files are poisoned, and fits are applied by the actual decompiler before independent BSP/VIS/LIGHT rebuilds. Brush-entity evidence is translated from model-local coordinates using rebuilt entity origins. Samples match world position/normal/style, not atlas offsets.",
+  "platforms": {
+    "windows": {
+      "compiler": {
+        "path": "build/release/bin/q3mapx.exe",
+        "sha256": "8e8b3b69df3ffd919c6e665668521ec7dd2f8b0ecaa8fb3e8a02999f378e9fa6"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/light-export/build-windows.log",
+        "sha256": "da320753c3cb496c78762a97216b3d2a2a6812bf6230aa02d5504d2a28b107de"
+      },
+      "final_build_check": {
+        "path": ".agents/tmp/continuation/light-export/build-windows-final.log",
+        "sha256": "7716162f3cd3b99cf3b8a8dd6decf324e08c7e941aae7e730baba5e4fc8c075b"
+      },
+      "matrix_log": {
+        "path": ".agents/tmp/continuation/light-export/matrix-windows.log",
+        "sha256": "201d5cd2f3284eac313c55adf236871cf6e1787d624b660ba8a30da0e8879fa6"
+      },
+      "results": {
+        "path": "build/release/tests/light-recovery/results.json",
+        "sha256": "dbe91134cea1841973e1c7bb4daf0898f9a55e53f4fbd4ae5f48d703b0cb1d7d"
+      },
+      "rebuild_cases": [
+        {
+          "case": "point-recovered-map",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "point-recovered-map-fast",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "point-recovered-map_bp",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "point-recovered-map_bp-fast",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "point-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "point-recovered-map_220-fast",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "spot-recovered-map",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 2,
+          "rebuild_rmse": 0.06299407883487121,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 420
+        },
+        {
+          "case": "spot-recovered-map-fast",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 2,
+          "rebuild_rmse": 0.06299407883487121,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 420
+        },
+        {
+          "case": "spot-recovered-map_bp",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 2,
+          "rebuild_rmse": 0.06299407883487121,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 420
+        },
+        {
+          "case": "spot-recovered-map_bp-fast",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 2,
+          "rebuild_rmse": 0.06299407883487121,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 420
+        },
+        {
+          "case": "spot-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 2,
+          "rebuild_rmse": 0.06299407883487121,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 420
+        },
+        {
+          "case": "spot-recovered-map_220-fast",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 2,
+          "rebuild_rmse": 0.06299407883487121,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 420
+        },
+        {
+          "case": "retained-target-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 1,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.06900655593423542,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 420
+        },
+        {
+          "case": "entity-srgb-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.20863380394035105,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 291
+        },
+        {
+          "case": "provided-point-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 2,
+          "retained_target_links": 0,
+          "generated_entities": 4,
+          "rebuild_rmse": 0.028375217691958287,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 1242
+        },
+        {
+          "case": "provided-spot-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 1,
+          "retained_target_links": 0,
+          "generated_entities": 3,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "retained-source-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "wolf-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.22450148413829657,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 291
+        },
+        {
+          "case": "groups-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.11575981603464654,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 199
+        }
+      ],
+      "preserved_failures": [
+        "wrong-source",
+        "wrong-game",
+        "unqualified",
+        "wrong-status",
+        "two-families",
+        "empty-trial",
+        "too-many-lights",
+        "missing-origin",
+        "huge-origin",
+        "wrong-energy",
+        "wrong-flags",
+        "wrong-score",
+        "wrong-count",
+        "wrong-texel",
+        "duplicate-sample",
+        "wrong-split",
+        "score-gate",
+        "duplicate-property",
+        "deep-json",
+        "read-map",
+        "wtf",
+        "mesh",
+        "repeat-report",
+        "report-alias-False",
+        "report-alias-True",
+        "report-byte-limit",
+        "target-name-collision",
+        "target-class",
+        "target-injection",
+        "target-position",
+        "target-cone",
+        "target-direction",
+        "retarget-existing",
+        "false-support",
+        "missing-dependency",
+        "dependency-count",
+        "dependency-field",
+        "dependency-underflow",
+        "dependency-index"
+      ],
+      "qualified_fits": {
+        "point": {
+          "report": {
+            "path": "build/release/tests/light-recovery/point/fit.json",
+            "sha256": "06ac0eac8542f0c108b9be31918fad7e5dcdc847d607f598b553e8c76139ce3a"
+          },
+          "source_bsp_sha256": "a3bed65292446dc3d4ad673406139b559545e1ed7d17243f4e32382fe6aba2b4",
+          "fixed_dependencies": 0,
+          "status": "conditional_point_proposal"
+        },
+        "spot": {
+          "report": {
+            "path": "build/release/tests/light-recovery/spot/fit.json",
+            "sha256": "91288dd714f3b89f7da38f15e11ac4ee9c694858588307989cc0012fe91db4d8"
+          },
+          "source_bsp_sha256": "b91894df44926294ae45b31b2f8900bc01299bff07f99f99d214d2d2ee3188c5",
+          "fixed_dependencies": 0,
+          "status": "conditional_spot_proposal"
+        },
+        "retained-target": {
+          "report": {
+            "path": "build/release/tests/light-recovery/retained-target/fit.json",
+            "sha256": "402ee09cb23265232585c0a00380f9f490289d17ad0dc08d33a421bfd1662064"
+          },
+          "source_bsp_sha256": "e5639012498debb3c67f06300960236d3e10fbe78d99ff44270569a7a79f6b24",
+          "fixed_dependencies": 0,
+          "status": "conditional_spot_proposal"
+        },
+        "entity-srgb": {
+          "report": {
+            "path": "build/release/tests/light-recovery/entity-srgb/fit.json",
+            "sha256": "10158057b0afe841674ac3bcb39cf90a0b35d5aaa2dad966be25f26cab9d51d2"
+          },
+          "source_bsp_sha256": "949f1219f08b087a3166d4381bd696c05793b4940784807251cda0c5e6a903ef",
+          "fixed_dependencies": 0,
+          "status": "conditional_point_proposal"
+        },
+        "provided-point": {
+          "report": {
+            "path": "build/release/tests/light-recovery/provided-point/fit.json",
+            "sha256": "a12ee140ba2b20d616b71f6b9851a13a15f5f027395be84ad28204caa2456f2d"
+          },
+          "source_bsp_sha256": "a8b78af1e3bc1d811c2f45a50f15183c0e48928fbb451fff24e0631f034aceed",
+          "fixed_dependencies": 2,
+          "status": "conditional_spot_proposal"
+        },
+        "provided-spot": {
+          "report": {
+            "path": "build/release/tests/light-recovery/provided-spot/fit.json",
+            "sha256": "dec8f706eb8bd0239682c3b0e6f4d36c47506d02fcf04e4d59df51a515013205"
+          },
+          "source_bsp_sha256": "d99f7dc5b80a4dba6079bd6a7d098ba8f2b59a2c1e290c3425ab5cbe90f704d9",
+          "fixed_dependencies": 1,
+          "status": "conditional_point_proposal"
+        },
+        "retained-source": {
+          "report": {
+            "path": "build/release/tests/light-recovery/retained-source/fit.json",
+            "sha256": "83618cbf8ba75713f18d64f9e6630418ebf77bd26c128caeefbf8778ad9e3c59"
+          },
+          "source_bsp_sha256": "d2cb9062f5bca0b0b17354a7e83a9a442d4c9dfc48284aa93d0993b38b9d6179",
+          "fixed_dependencies": 0,
+          "status": "conditional_point_proposal"
+        },
+        "wolf": {
+          "report": {
+            "path": "build/release/tests/light-recovery/wolf/fit.json",
+            "sha256": "8a5c7f4da8641fb2abf83584b547edd8811ac8547bc93041943f95ddef0e631a"
+          },
+          "source_bsp_sha256": "de9c09869970c82809a7be2fe6fb2f483e9c9d0df7dd20cb84ed9a038a3162b2",
+          "fixed_dependencies": 0,
+          "status": "conditional_point_proposal"
+        },
+        "groups": {
+          "report": {
+            "path": "build/release/tests/light-recovery/groups/fit.json",
+            "sha256": "c1e8efa61071c28ac62309def0f24e85636636b3955c47bb9ad26ae61f7e7a74"
+          },
+          "source_bsp_sha256": "7861ec5969985467ccd874f883c8cd43f95edc641784886942359bb577d5024e",
+          "fixed_dependencies": 0,
+          "status": "conditional_point_proposal"
+        }
+      },
+      "maximum_rebuild_rmse_bytes": 0.25240594278759315,
+      "maximum_prediction_difference_bytes": 0,
+      "worker_determinism": "One/four-worker recovered MAP bytes agree exactly.",
+      "older_report_compatibility": "Reports lacking fixed_proposals export when no supplied dependencies exist; missing required dependency records are rejected.",
+      "catalog": {
+        "path": ".agents/tmp/continuation/light-export/catalog-windows.json",
+        "sha256": "fe8693be7ad1da9359bf58fb06d643b773729ed22f7b560d352d8f0fb60df865"
+      },
+      "help": {
+        "path": ".agents/tmp/continuation/light-export/help-windows.txt",
+        "sha256": "dbccafe22846c0b8d5f74b684ab6ebff9a5f99b7c6b10e4bc667fd782102d78c"
+      },
+      "suite": {
+        "path": ".agents/tmp/continuation/light-export/ctest-windows.log",
+        "sha256": "24507d33bf3d6a8a5aa76f67353deccdae74cd15ff29bd5a2f6bf5bcc015d549",
+        "groups": 77,
+        "passed": [
+          "workbench",
+          "brush_input",
+          "point_fitting",
+          "vis_passage_clipping",
+          "patch_input",
+          "lighting_curves",
+          "recovery_order",
+          "uv_recovery",
+          "vis_reproducible",
+          "recovery_groups",
+          "brush_cells",
+          "script_input",
+          "vis_merge",
+          "light_comparison",
+          "lighting_gpu",
+          "lighting_evidence",
+          "cell_adjacency",
+          "recovery_classification",
+          "light_probes",
+          "gpu_columns",
+          "uv_output",
+          "meta_order",
+          "game_profiles",
+          "bsp_inspect",
+          "portal_evidence",
+          "planar_reduction_native",
+          "geometry_optimize",
+          "planar_reduction_oracle",
+          "lighting_materials",
+          "vis_passage_storage",
+          "workbench_window",
+          "portal_validation",
+          "bsp_evidence",
+          "workbench_devices",
+          "index_validation_cli",
+          "native_early",
+          "native_fakk",
+          "binary_outputs",
+          "bsp_analyze",
+          "bsp_validation",
+          "cli_options",
+          "mesh_export",
+          "area_factors",
+          "raven_compat",
+          "workbench_inspector",
+          "bezier_uv",
+          "export_outputs",
+          "native_mohaa",
+          "recovery_outputs",
+          "uv_fit_oracle",
+          "minimap",
+          "game_catalog",
+          "lightgrid_cli",
+          "lightgrid",
+          "vis_clip",
+          "portal_graph",
+          "recovery_group_order",
+          "ftx",
+          "index_validation",
+          "cell_graph",
+          "compiler_pipeline",
+          "uv_fit",
+          "terrain",
+          "quake3_materials",
+          "vis_mask",
+          "decompile_recovery",
+          "lighting_math",
+          "planar_reduction",
+          "columns",
+          "atomic_file",
+          "job_pool",
+          "workbench_preview",
+          "cli_help",
+          "decompile_math",
+          "area_factors_disabled",
+          "cli_games",
+          "spot_fitting"
+        ],
+        "skipped": [],
+        "failed": []
+      },
+      "suite_scope": "All 77 preexisting CTest groups; the complete new light_recovery matrix runs separately."
+    },
+    "linux": {
+      "compiler": {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "8aa62a2daafef7baeff3e2a0282681b035ee580e7dca3e0a8076a060cd86d403"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/light-export/build-linux.log",
+        "sha256": "ae620e52adc02472067c8aaa7f87ccb49d794a8117880a048369c25306603715"
+      },
+      "final_build_check": {
+        "path": ".agents/tmp/continuation/light-export/build-linux-final.log",
+        "sha256": "c2ed93ffd93c840755c0e91392ae593b1b52de9b7aaf6c208123feaceb1dde2e"
+      },
+      "matrix_log": {
+        "path": ".agents/tmp/continuation/light-export/matrix-linux.log",
+        "sha256": "950fb7bbe944b2597873c25ba1b6f583ca041c69e8fe703261b13cceb0969728"
+      },
+      "results": {
+        "path": "build/linux-release/tests/light-recovery/results.json",
+        "sha256": "2b79b4a794120a55fea538b16004bc48ec751fda5e676cdb2ccaa6672d5c2ffb"
+      },
+      "rebuild_cases": [
+        {
+          "case": "point-recovered-map",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "point-recovered-map-fast",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "point-recovered-map_bp",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "point-recovered-map_bp-fast",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "point-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "point-recovered-map_220-fast",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "spot-recovered-map",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 2,
+          "rebuild_rmse": 0.06299407883487121,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 420
+        },
+        {
+          "case": "spot-recovered-map-fast",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 2,
+          "rebuild_rmse": 0.06299407883487121,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 420
+        },
+        {
+          "case": "spot-recovered-map_bp",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 2,
+          "rebuild_rmse": 0.06299407883487121,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 420
+        },
+        {
+          "case": "spot-recovered-map_bp-fast",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 2,
+          "rebuild_rmse": 0.06299407883487121,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 420
+        },
+        {
+          "case": "spot-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 2,
+          "rebuild_rmse": 0.06299407883487121,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 420
+        },
+        {
+          "case": "spot-recovered-map_220-fast",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 2,
+          "rebuild_rmse": 0.06299407883487121,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 420
+        },
+        {
+          "case": "retained-target-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 1,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.06900655593423542,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 420
+        },
+        {
+          "case": "entity-srgb-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.20863380394035105,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 291
+        },
+        {
+          "case": "provided-point-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 2,
+          "retained_target_links": 0,
+          "generated_entities": 4,
+          "rebuild_rmse": 0.028375217691958287,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 1242
+        },
+        {
+          "case": "provided-spot-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 1,
+          "retained_target_links": 0,
+          "generated_entities": 3,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "retained-source-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "wolf-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.22450148413829657,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 291
+        },
+        {
+          "case": "groups-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.11575981603464654,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 199
+        }
+      ],
+      "preserved_failures": [
+        "wrong-source",
+        "wrong-game",
+        "unqualified",
+        "wrong-status",
+        "two-families",
+        "empty-trial",
+        "too-many-lights",
+        "missing-origin",
+        "huge-origin",
+        "wrong-energy",
+        "wrong-flags",
+        "wrong-score",
+        "wrong-count",
+        "wrong-texel",
+        "duplicate-sample",
+        "wrong-split",
+        "score-gate",
+        "duplicate-property",
+        "deep-json",
+        "read-map",
+        "wtf",
+        "mesh",
+        "repeat-report",
+        "report-alias-False",
+        "report-alias-True",
+        "report-byte-limit",
+        "target-name-collision",
+        "target-class",
+        "target-injection",
+        "target-position",
+        "target-cone",
+        "target-direction",
+        "retarget-existing",
+        "false-support",
+        "missing-dependency",
+        "dependency-count",
+        "dependency-field",
+        "dependency-underflow",
+        "dependency-index"
+      ],
+      "qualified_fits": {
+        "point": {
+          "report": {
+            "path": "build/linux-release/tests/light-recovery/point/fit.json",
+            "sha256": "06ac0eac8542f0c108b9be31918fad7e5dcdc847d607f598b553e8c76139ce3a"
+          },
+          "source_bsp_sha256": "a3bed65292446dc3d4ad673406139b559545e1ed7d17243f4e32382fe6aba2b4",
+          "fixed_dependencies": 0,
+          "status": "conditional_point_proposal"
+        },
+        "spot": {
+          "report": {
+            "path": "build/linux-release/tests/light-recovery/spot/fit.json",
+            "sha256": "91288dd714f3b89f7da38f15e11ac4ee9c694858588307989cc0012fe91db4d8"
+          },
+          "source_bsp_sha256": "b91894df44926294ae45b31b2f8900bc01299bff07f99f99d214d2d2ee3188c5",
+          "fixed_dependencies": 0,
+          "status": "conditional_spot_proposal"
+        },
+        "retained-target": {
+          "report": {
+            "path": "build/linux-release/tests/light-recovery/retained-target/fit.json",
+            "sha256": "402ee09cb23265232585c0a00380f9f490289d17ad0dc08d33a421bfd1662064"
+          },
+          "source_bsp_sha256": "e5639012498debb3c67f06300960236d3e10fbe78d99ff44270569a7a79f6b24",
+          "fixed_dependencies": 0,
+          "status": "conditional_spot_proposal"
+        },
+        "entity-srgb": {
+          "report": {
+            "path": "build/linux-release/tests/light-recovery/entity-srgb/fit.json",
+            "sha256": "10158057b0afe841674ac3bcb39cf90a0b35d5aaa2dad966be25f26cab9d51d2"
+          },
+          "source_bsp_sha256": "949f1219f08b087a3166d4381bd696c05793b4940784807251cda0c5e6a903ef",
+          "fixed_dependencies": 0,
+          "status": "conditional_point_proposal"
+        },
+        "provided-point": {
+          "report": {
+            "path": "build/linux-release/tests/light-recovery/provided-point/fit.json",
+            "sha256": "fed86304b4299c263f291db432554bc7a2f3c25f3d5ca8f66887e39d7f5a2552"
+          },
+          "source_bsp_sha256": "a8b78af1e3bc1d811c2f45a50f15183c0e48928fbb451fff24e0631f034aceed",
+          "fixed_dependencies": 2,
+          "status": "conditional_spot_proposal"
+        },
+        "provided-spot": {
+          "report": {
+            "path": "build/linux-release/tests/light-recovery/provided-spot/fit.json",
+            "sha256": "dec8f706eb8bd0239682c3b0e6f4d36c47506d02fcf04e4d59df51a515013205"
+          },
+          "source_bsp_sha256": "d99f7dc5b80a4dba6079bd6a7d098ba8f2b59a2c1e290c3425ab5cbe90f704d9",
+          "fixed_dependencies": 1,
+          "status": "conditional_point_proposal"
+        },
+        "retained-source": {
+          "report": {
+            "path": "build/linux-release/tests/light-recovery/retained-source/fit.json",
+            "sha256": "83618cbf8ba75713f18d64f9e6630418ebf77bd26c128caeefbf8778ad9e3c59"
+          },
+          "source_bsp_sha256": "d2cb9062f5bca0b0b17354a7e83a9a442d4c9dfc48284aa93d0993b38b9d6179",
+          "fixed_dependencies": 0,
+          "status": "conditional_point_proposal"
+        },
+        "wolf": {
+          "report": {
+            "path": "build/linux-release/tests/light-recovery/wolf/fit.json",
+            "sha256": "8a5c7f4da8641fb2abf83584b547edd8811ac8547bc93041943f95ddef0e631a"
+          },
+          "source_bsp_sha256": "de9c09869970c82809a7be2fe6fb2f483e9c9d0df7dd20cb84ed9a038a3162b2",
+          "fixed_dependencies": 0,
+          "status": "conditional_point_proposal"
+        },
+        "groups": {
+          "report": {
+            "path": "build/linux-release/tests/light-recovery/groups/fit.json",
+            "sha256": "c1e8efa61071c28ac62309def0f24e85636636b3955c47bb9ad26ae61f7e7a74"
+          },
+          "source_bsp_sha256": "7861ec5969985467ccd874f883c8cd43f95edc641784886942359bb577d5024e",
+          "fixed_dependencies": 0,
+          "status": "conditional_point_proposal"
+        }
+      },
+      "maximum_rebuild_rmse_bytes": 0.25240594278759315,
+      "maximum_prediction_difference_bytes": 0,
+      "worker_determinism": "One/four-worker recovered MAP bytes agree exactly.",
+      "older_report_compatibility": "Reports lacking fixed_proposals export when no supplied dependencies exist; missing required dependency records are rejected.",
+      "catalog": {
+        "path": ".agents/tmp/continuation/light-export/catalog-linux.json",
+        "sha256": "3c64e88845df40da413d37bf0abc006f80628336433103057933dec2ceb85872"
+      },
+      "help": {
+        "path": ".agents/tmp/continuation/light-export/help-linux.txt",
+        "sha256": "178b535f4e357c2fc51f5adf6075efef97146ad6b7ab3f2c7df9d04afd86306c"
+      },
+      "suite": {
+        "path": ".agents/tmp/continuation/light-export/ctest-linux.log",
+        "sha256": "72d852255dd334fbcbbebadce8ba86a766871bf1cccd97108bd18c7e1628d951",
+        "groups": 77,
+        "passed": [
+          "workbench",
+          "brush_input",
+          "script_input",
+          "point_fitting",
+          "patch_input",
+          "vis_passage_clipping",
+          "uv_recovery",
+          "spot_fitting",
+          "recovery_groups",
+          "brush_cells",
+          "lighting_curves",
+          "light_comparison",
+          "recovery_order",
+          "meta_order",
+          "lighting_evidence",
+          "vis_merge",
+          "game_profiles",
+          "cell_adjacency",
+          "recovery_classification",
+          "light_probes",
+          "portal_evidence",
+          "vis_reproducible",
+          "uv_output",
+          "native_fakk",
+          "lighting_materials",
+          "geometry_optimize",
+          "bsp_evidence",
+          "bsp_validation",
+          "bsp_inspect",
+          "binary_outputs",
+          "portal_validation",
+          "native_early",
+          "index_validation_cli",
+          "gpu_columns",
+          "planar_reduction_native",
+          "mesh_export",
+          "cli_options",
+          "raven_compat",
+          "vis_passage_storage",
+          "recovery_outputs",
+          "bsp_analyze",
+          "minimap",
+          "workbench_window",
+          "native_mohaa",
+          "export_outputs",
+          "planar_reduction_oracle",
+          "workbench_inspector",
+          "compiler_pipeline",
+          "lighting_gpu",
+          "lightgrid_cli",
+          "game_catalog",
+          "decompile_recovery",
+          "bezier_uv",
+          "workbench_devices",
+          "uv_fit_oracle",
+          "atomic_file",
+          "lightgrid",
+          "vis_clip",
+          "recovery_group_order",
+          "uv_fit",
+          "portal_graph",
+          "vis_mask",
+          "index_validation",
+          "columns",
+          "workbench_preview",
+          "ftx",
+          "job_pool",
+          "area_factors_disabled",
+          "cli_games",
+          "lighting_math",
+          "planar_reduction",
+          "terrain",
+          "quake3_materials",
+          "decompile_math",
+          "cell_graph",
+          "cli_help"
+        ],
+        "skipped": [
+          "area_factors"
+        ],
+        "failed": []
+      },
+      "suite_scope": "All 77 preexisting CTest groups; the complete new light_recovery matrix runs separately."
+    },
+    "sanitized": {
+      "compiler": {
+        "path": "build/linux-sanitized/bin/q3mapx",
+        "sha256": "e16c0e13954d7d21f055ab0407fc54b0a4a694e62942f0b3aed3c8114a6dbeb5"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/light-export/build-sanitized.log",
+        "sha256": "3c79385756f03ea2132bb0c223abad61100d6c06592e36ce4ca63ce324242016"
+      },
+      "final_build_check": {
+        "path": ".agents/tmp/continuation/light-export/build-sanitized-final.log",
+        "sha256": "c2ed93ffd93c840755c0e91392ae593b1b52de9b7aaf6c208123feaceb1dde2e"
+      },
+      "matrix_log": {
+        "path": ".agents/tmp/continuation/light-export/matrix-sanitized.log",
+        "sha256": "950fb7bbe944b2597873c25ba1b6f583ca041c69e8fe703261b13cceb0969728"
+      },
+      "results": {
+        "path": "build/linux-sanitized/tests/light-recovery/results.json",
+        "sha256": "2b79b4a794120a55fea538b16004bc48ec751fda5e676cdb2ccaa6672d5c2ffb"
+      },
+      "rebuild_cases": [
+        {
+          "case": "point-recovered-map",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "point-recovered-map-fast",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "point-recovered-map_bp",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "point-recovered-map_bp-fast",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "point-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "point-recovered-map_220-fast",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "spot-recovered-map",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 2,
+          "rebuild_rmse": 0.06299407883487121,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 420
+        },
+        {
+          "case": "spot-recovered-map-fast",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 2,
+          "rebuild_rmse": 0.06299407883487121,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 420
+        },
+        {
+          "case": "spot-recovered-map_bp",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 2,
+          "rebuild_rmse": 0.06299407883487121,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 420
+        },
+        {
+          "case": "spot-recovered-map_bp-fast",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 2,
+          "rebuild_rmse": 0.06299407883487121,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 420
+        },
+        {
+          "case": "spot-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 2,
+          "rebuild_rmse": 0.06299407883487121,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 420
+        },
+        {
+          "case": "spot-recovered-map_220-fast",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 2,
+          "rebuild_rmse": 0.06299407883487121,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 420
+        },
+        {
+          "case": "retained-target-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 1,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.06900655593423542,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 420
+        },
+        {
+          "case": "entity-srgb-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.20863380394035105,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 291
+        },
+        {
+          "case": "provided-point-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 2,
+          "retained_target_links": 0,
+          "generated_entities": 4,
+          "rebuild_rmse": 0.028375217691958287,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 1242
+        },
+        {
+          "case": "provided-spot-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 1,
+          "retained_target_links": 0,
+          "generated_entities": 3,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "retained-source-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 293
+        },
+        {
+          "case": "wolf-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.22450148413829657,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 291
+        },
+        {
+          "case": "groups-recovered-map_220",
+          "fitted_lights": 1,
+          "fixed_lights": 0,
+          "retained_target_links": 0,
+          "generated_entities": 1,
+          "rebuild_rmse": 0.11575981603464654,
+          "maximum_prediction_difference": 0,
+          "matched_observations": 199
+        }
+      ],
+      "preserved_failures": [
+        "wrong-source",
+        "wrong-game",
+        "unqualified",
+        "wrong-status",
+        "two-families",
+        "empty-trial",
+        "too-many-lights",
+        "missing-origin",
+        "huge-origin",
+        "wrong-energy",
+        "wrong-flags",
+        "wrong-score",
+        "wrong-count",
+        "wrong-texel",
+        "duplicate-sample",
+        "wrong-split",
+        "score-gate",
+        "duplicate-property",
+        "deep-json",
+        "read-map",
+        "wtf",
+        "mesh",
+        "repeat-report",
+        "report-alias-False",
+        "report-alias-True",
+        "report-byte-limit",
+        "target-name-collision",
+        "target-class",
+        "target-injection",
+        "target-position",
+        "target-cone",
+        "target-direction",
+        "retarget-existing",
+        "false-support",
+        "missing-dependency",
+        "dependency-count",
+        "dependency-field",
+        "dependency-underflow",
+        "dependency-index"
+      ],
+      "qualified_fits": {
+        "point": {
+          "report": {
+            "path": "build/linux-sanitized/tests/light-recovery/point/fit.json",
+            "sha256": "06ac0eac8542f0c108b9be31918fad7e5dcdc847d607f598b553e8c76139ce3a"
+          },
+          "source_bsp_sha256": "a3bed65292446dc3d4ad673406139b559545e1ed7d17243f4e32382fe6aba2b4",
+          "fixed_dependencies": 0,
+          "status": "conditional_point_proposal"
+        },
+        "spot": {
+          "report": {
+            "path": "build/linux-sanitized/tests/light-recovery/spot/fit.json",
+            "sha256": "91288dd714f3b89f7da38f15e11ac4ee9c694858588307989cc0012fe91db4d8"
+          },
+          "source_bsp_sha256": "b91894df44926294ae45b31b2f8900bc01299bff07f99f99d214d2d2ee3188c5",
+          "fixed_dependencies": 0,
+          "status": "conditional_spot_proposal"
+        },
+        "retained-target": {
+          "report": {
+            "path": "build/linux-sanitized/tests/light-recovery/retained-target/fit.json",
+            "sha256": "402ee09cb23265232585c0a00380f9f490289d17ad0dc08d33a421bfd1662064"
+          },
+          "source_bsp_sha256": "e5639012498debb3c67f06300960236d3e10fbe78d99ff44270569a7a79f6b24",
+          "fixed_dependencies": 0,
+          "status": "conditional_spot_proposal"
+        },
+        "entity-srgb": {
+          "report": {
+            "path": "build/linux-sanitized/tests/light-recovery/entity-srgb/fit.json",
+            "sha256": "10158057b0afe841674ac3bcb39cf90a0b35d5aaa2dad966be25f26cab9d51d2"
+          },
+          "source_bsp_sha256": "949f1219f08b087a3166d4381bd696c05793b4940784807251cda0c5e6a903ef",
+          "fixed_dependencies": 0,
+          "status": "conditional_point_proposal"
+        },
+        "provided-point": {
+          "report": {
+            "path": "build/linux-sanitized/tests/light-recovery/provided-point/fit.json",
+            "sha256": "fed86304b4299c263f291db432554bc7a2f3c25f3d5ca8f66887e39d7f5a2552"
+          },
+          "source_bsp_sha256": "a8b78af1e3bc1d811c2f45a50f15183c0e48928fbb451fff24e0631f034aceed",
+          "fixed_dependencies": 2,
+          "status": "conditional_spot_proposal"
+        },
+        "provided-spot": {
+          "report": {
+            "path": "build/linux-sanitized/tests/light-recovery/provided-spot/fit.json",
+            "sha256": "dec8f706eb8bd0239682c3b0e6f4d36c47506d02fcf04e4d59df51a515013205"
+          },
+          "source_bsp_sha256": "d99f7dc5b80a4dba6079bd6a7d098ba8f2b59a2c1e290c3425ab5cbe90f704d9",
+          "fixed_dependencies": 1,
+          "status": "conditional_point_proposal"
+        },
+        "retained-source": {
+          "report": {
+            "path": "build/linux-sanitized/tests/light-recovery/retained-source/fit.json",
+            "sha256": "83618cbf8ba75713f18d64f9e6630418ebf77bd26c128caeefbf8778ad9e3c59"
+          },
+          "source_bsp_sha256": "d2cb9062f5bca0b0b17354a7e83a9a442d4c9dfc48284aa93d0993b38b9d6179",
+          "fixed_dependencies": 0,
+          "status": "conditional_point_proposal"
+        },
+        "wolf": {
+          "report": {
+            "path": "build/linux-sanitized/tests/light-recovery/wolf/fit.json",
+            "sha256": "8a5c7f4da8641fb2abf83584b547edd8811ac8547bc93041943f95ddef0e631a"
+          },
+          "source_bsp_sha256": "de9c09869970c82809a7be2fe6fb2f483e9c9d0df7dd20cb84ed9a038a3162b2",
+          "fixed_dependencies": 0,
+          "status": "conditional_point_proposal"
+        },
+        "groups": {
+          "report": {
+            "path": "build/linux-sanitized/tests/light-recovery/groups/fit.json",
+            "sha256": "c1e8efa61071c28ac62309def0f24e85636636b3955c47bb9ad26ae61f7e7a74"
+          },
+          "source_bsp_sha256": "7861ec5969985467ccd874f883c8cd43f95edc641784886942359bb577d5024e",
+          "fixed_dependencies": 0,
+          "status": "conditional_point_proposal"
+        }
+      },
+      "maximum_rebuild_rmse_bytes": 0.25240594278759315,
+      "maximum_prediction_difference_bytes": 0,
+      "worker_determinism": "One/four-worker recovered MAP bytes agree exactly.",
+      "older_report_compatibility": "Reports lacking fixed_proposals export when no supplied dependencies exist; missing required dependency records are rejected.",
+      "catalog": {
+        "path": ".agents/tmp/continuation/light-export/catalog-sanitized.json",
+        "sha256": "3c64e88845df40da413d37bf0abc006f80628336433103057933dec2ceb85872"
+      },
+      "help": {
+        "path": ".agents/tmp/continuation/light-export/help-sanitized.txt",
+        "sha256": "178b535f4e357c2fc51f5adf6075efef97146ad6b7ab3f2c7df9d04afd86306c"
+      },
+      "suite": {
+        "path": ".agents/tmp/continuation/light-export/ctest-sanitized.log",
+        "sha256": "26e64739b25e0a7d998530a21d3d7653089a826a7f334ac7dbad1ccd2bb1e37f",
+        "groups": 7,
+        "passed": [
+          "light_comparison",
+          "recovery_groups",
+          "lighting_evidence",
+          "recovery_order",
+          "recovery_classification",
+          "recovery_outputs",
+          "light_probes"
+        ],
+        "skipped": [],
+        "failed": []
+      },
+      "suite_scope": "Seven related native recovery/evidence/probe/comparison groups; the complete new light_recovery matrix runs separately."
+    }
+  },
+  "cross_platform_rebuild_outcomes": "All 19 case result objects agree exactly across Windows Release, Linux Release and Linux Debug ASan/UBSan.",
+  "default_export_reference_parity": {
+    "reference": {
+      "path": ".agents/tmp/continuation/light-export/reference/q3mapx.exe",
+      "sha256": "2fa146bdfd3e51d41768315ab8dc1edb1b4fd189ffd223f91973dad2c61b2fbe"
+    },
+    "reference_revision": "e0580c3e395909dd0af57db43f0cfc8397243d87",
+    "reference_validation": "docs/validation/spot-fitting.json",
+    "current_map": {
+      "path": "build/release/tests/light-recovery/point/baseq3/maps/default-current.map",
+      "sha256": "d9a2f4423dcc06386b66f65fa882f300a047caa564903522be7183f43db47937"
+    },
+    "reference_map": {
+      "path": "build/release/tests/light-recovery/point/baseq3/maps/default-reference.map",
+      "sha256": "d9a2f4423dcc06386b66f65fa882f300a047caa564903522be7183f43db47937"
+    },
+    "result": "Exact default classic MAP byte parity without -light-proposals on the stripped point fixture."
+  },
+  "sanitizer_configuration": {
+    "build_type": "Debug",
+    "optimization": "-g -O1",
+    "assertions": true,
+    "checks": [
+      "AddressSanitizer",
+      "UndefinedBehaviorSanitizer"
+    ],
+    "environment": {
+      "ASAN_OPTIONS": "detect_leaks=0:abort_on_error=1",
+      "UBSAN_OPTIONS": "print_stacktrace=1"
+    },
+    "qualification": "Existing process-lifetime leaks remain excluded. The complete new export matrix and seven related groups passed; this round does not repeat the complete sanitizer spotlight search matrix or entire sanitizer suite."
+  },
+  "superseded_fixture_investigations": [
+    "The initial appended relay entity lacked a newline and failed native MAP parsing; the final generated fixture uses valid syntax.",
+    "A black supplied light still has an active native envelope. The final culled-dependency control places it deep inside a solid wall and asserts only one of two supplied lights remains active while both are exported.",
+    "The first grouped-geometry comparison treated model-local evidence as world-space. Applying the preserved inline door origin fixes the association without dropping observations or changing production geometry."
+  ],
+  "retained_evidence": {
+    "logs_reference_and_generator": ".agents/tmp/continuation/light-export",
+    "native_fixtures": [
+      "build/release/tests/light-recovery",
+      "build/linux-release/tests/light-recovery",
+      "build/linux-sanitized/tests/light-recovery"
+    ],
+    "qualification": "Logs and native fixtures are retained as reproducible validation evidence. Earlier policy-blocked cleanup paths were not retried."
+  },
+  "scratch_cleanup": {
+    "status": "automatic_approval_review_rejected",
+    "reason": "blocked by policy",
+    "retained_disposable_paths": [
+      "build/release/tests/light-recovery-controls",
+      "build/release/tests/light-recovery-groups"
+    ],
+    "qualification": "The requested cleanup named explicit project-local directories and included absolute-path and link checks before deletion. The tool rejected the command before execution, so neither the preflight nor deletion ran. Removal was not retried."
+  },
+  "limits": [
+    "Qualification rechecks stored predictions against native observed texels, scores, partitions and gates. It does not rerun transport, authenticate report authorship, or prove coherent edited predictions came from the compiler.",
+    "Independent rebuilt-lighting equivalence is measured on nine synthetic scenes and 19 format/mode combinations per platform. This does not establish original author light/target identity or general real-map accuracy.",
+    "Global lighting settings are recorded for explicit rebuilds; MAP entities cannot encode all compiler options. Original bake calibration, indirect effects, asset provenance and arbitrary shader/material reconstruction remain open.",
+    "The CLI applies one point or spot report. Joint family selection and GUI review/fitting controls remain open. The ordinary headless CLI remains supported.",
+    "Atomic MAP/report publication retains existing rollback behavior; concurrent writers and process/power-loss durability are outside the contract.",
+    "Linux Release skips GPU area_factors. This round adds no GPU backend or performance claim; portable packages were not refreshed.",
+    "No external code, editor/game launch, operating-system screen capture or user-input control was used. Existing parser-sign/include-line, compiler-warning, VIS discrepancy, raw-sidecar publication and Windows process-delay findings remain outside this round; no new unrelated production defect was reproduced.",
+    "Intelligent compiler optimization, broader recovery, M11 Radiant patch RGB/alpha painting and per-surface lightmap density/preview remain open."
+  ]
+}

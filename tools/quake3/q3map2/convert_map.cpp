@@ -36,6 +36,7 @@
 #include "bspfile_rbsp.h"
 #include "qspatial.h"
 #include "decompile.h"
+#include "light_recovery.h"
 #include "bsp_evidence.h"
 #include "recovery_groups.h"
 #include "q3mapx/affine.h"
@@ -1409,6 +1410,7 @@ static void WriteGroupInferenceReport( rapidjson::PrettyWriter<rapidjson::String
 }
 
 static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
+	if ( decompileOptions.lightRecovery ) decompileOptions.lightRecovery->prepare();
 	recovery = {};
 	uvRecoveryRecords.clear(); uvRecoveryCounts.clear(); omittedUVRecoveryRecords = 0;
 	detailDecisions.clear(); detailEvidence.reset();
@@ -1455,6 +1457,7 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 	// so only the smaller companion needs a rollback copy if MAP replacement fails.
 	const bool wantReport = decompileOptions.report || decompileOptions.automaticReport;
 	const auto report = decompileOptions.report ? StringStream( decompileOptions.report ) : StringStream( name, ".recovery.json" );
+	if ( decompileOptions.lightRecovery ) decompileOptions.lightRecovery->protectOutputs( name.c_str(), report.c_str() );
 	q3mapx::OutputFiles outputs;
 	FILE* reportFile = wantReport ? outputs.open( report.c_str() ) : nullptr;
 	FILE* f = outputs.open( name.c_str() );
@@ -1518,6 +1521,8 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		}
 	}
 
+	const size_t firstLightEntity = entities.size() + ( groupRecovery ? groupRecovery->plan.emissionOrder.size() : 0 );
+	if ( decompileOptions.lightRecovery ) decompileOptions.lightRecovery->writeEntities( f, firstLightEntity );
 	if ( wantReport ) {
 		rapidjson::StringBuffer buffer;
 		rapidjson::PrettyWriter<rapidjson::StringBuffer> writer( buffer );
@@ -1590,7 +1595,8 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 			}
 		}
 		const auto count = [&]( const char* key, size_t value ){ writer.Key( key ); writer.Uint64( value ); };
-		count( "entities", entities.size() + ( groupRecovery ? groupRecovery->plan.emissionOrder.size() : 0 ) );
+		count( "entities", firstLightEntity + ( decompileOptions.lightRecovery ? decompileOptions.lightRecovery->entityCount() : 0 ) );
+		if ( decompileOptions.lightRecovery ) decompileOptions.lightRecovery->writeReport( writer, firstLightEntity );
 		count( "brushes", recovery.brushes );
 		writer.Key( "detail_classification" ); writer.StartObject();
 		writer.Key( "method" ); writer.String( detailEvidence ? "convex_interior_witnesses_with_material_protection" : "nonopaque_leaf_reference_heuristic" );
@@ -1698,7 +1704,9 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		writer.Key( "limitations" );
 		writer.StartArray();
 		writer.String( "Original editor groups are unavailable; removed entities and some source model instances may not be stored in the BSP." );
-		writer.String( "Baked lightmaps and lightgrid data are not reconstructed as source lights by MAP export." );
+		writer.String( decompileOptions.lightRecovery
+		    ? "Selected conditional light proposals are exported under their recorded bake hypothesis. Stored observations/scores and BSP identity are checked; native lighting is not recomputed here. Original author lights, target identity and rebuilt lighting equivalence remain unproven."
+		    : "Baked lightmaps and lightgrid data are not reconstructed as source lights by MAP export." );
 		if(!g_game->write) writer.String("Native shader flags and subdivisions are retained in this report; standard MAP syntax does not reproduce all native compiler semantics. Native BSP writing is unavailable.");
 		if(!bspNativeFenceMasks.empty()) writer.String("Native terrain is retained in this report and OBJ/ASE export, not as MAP brushes or Bezier patches. Static-model placements are retained here; their external model meshes are not imported.");
 		if(bspEarlyVersion) writer.String("Early BSP model origins/head nodes are retained here. Fog visible sides depend on native shader semantics and are not reconstructed. The native shader dialect is only partially supported.");
@@ -1712,10 +1720,11 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		if ( rebuildOrder ) writer.String( "Rebuild brush order depends on the current shader assets and q3mapx loader semantics. Discarded source flags, plane/side ordering and other compiler differences can still change partitions or visibility." );
 		writer.EndArray();
 		writer.EndObject();
-		if ( ( detailEvidence || groupRecovery ) && buffer.GetSize() > 64 * 1024 * 1024 ) throw std::runtime_error( "Recovery inference report exceeds 64 MiB" );
+		if ( ( detailEvidence || groupRecovery || decompileOptions.lightRecovery ) && buffer.GetSize() > 64 * 1024 * 1024 ) throw std::runtime_error( "Recovery inference report exceeds 64 MiB" );
 		if ( std::fwrite( buffer.GetString(), 1, buffer.GetSize(), reportFile ) != buffer.GetSize() )
 			throw std::runtime_error( "Cannot write recovery report " + std::string( report.c_str() ) );
 	}
+	if ( decompileOptions.lightRecovery ) decompileOptions.lightRecovery->verifyInputs();
 	outputs.commit();
 	Sys_Printf( "Recovered %zu brushes, %zu patches; %zu/%zu faces matched texture coordinates, %zu used fallback\n",
 	    recovery.brushes, recovery.patches, recovery.matchedFaces, recovery.faces, recovery.fallbackFaces );

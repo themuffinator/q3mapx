@@ -321,8 +321,10 @@ limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md
   positions/directions/cones and nonnegative colors/intensities, with fixed native
   falloff, joint refinement and separate illuminated-support qualification.
   It proposes compatible surviving static marker links or uniquely named new
-  markers. These are read-only hypotheses; custom falloff, automatic entity
-  export, GUI review and broad real-map/target-identity qualification remain open.
+  markers. [Explicit report application](LIGHT-RECOVERY.md) now exports qualified
+  fits and their fixed-light dependencies during decompilation, preserving target
+  relationships and recording provenance. Custom falloff, GUI review and broad
+  real-map/target-identity qualification remain open.
 - [ ] Improve multi-triangle UV fitting, compatible brush-fragment reconstruction,
   plane/grid recovery, patches/model instances, hidden faces and entity relationships.
   [Multi-triangle UV consensus](UV-RECOVERY.md) is now implemented in the native

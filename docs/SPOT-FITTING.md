@@ -144,8 +144,9 @@ To evaluate a trial as explicit probe `lights`, copy `origin`, `intensity`,
 diagnostic fields. For a separately recovered MAP, a light's string `target`
 must name `target_link.targetname`; create the proposed marker only when its
 `bsp_entity` is null. Recompile and compare corresponding world samples before
-adopting the proposal. Automatic entity export and GUI accept/reject review
-remain open.
+adopting the proposal. [`-decompile -light-proposals`](LIGHT-RECOVERY.md) now applies
+qualified reports, including their fixed-light dependencies, with source/score
+checks and protected target links. GUI accept/reject review remains open.
 
 ## Validation
 

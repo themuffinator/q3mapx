@@ -1073,6 +1073,7 @@ int PrintGameCatalog(){
 		writer.Key( "bsp_version" ); writer.Int( game.bspVersion );
 		writer.Key( "lightmap_size" ); writer.Int( game.lightmapSize );
 		writer.Key( "native_write" ); writer.Bool( game.write != nullptr );
+		writer.Key( "recovery_light_proposals" ); writer.Bool( game.write != nullptr && ( game.load == LoadIBSPFile || game.load == LoadRBSPFile ) );
 		writer.Key( "recovery_brush_orders" ); writer.StartArray();
 		if ( game.load ) {
 			writer.String( "bsp" );

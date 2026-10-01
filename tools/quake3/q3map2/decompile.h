@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include <memory>
+namespace q3mapx { class LightRecovery; }
 
 struct DecompileOptions {
 	enum class BrushOrder { Bsp, Rebuild };
@@ -8,6 +10,8 @@ struct DecompileOptions {
 	enum class UVPolicy { Consensus, Triangle };
 	const char* output = nullptr;
 	const char* report = nullptr;
+	const char* lightProposals = nullptr;
+	std::shared_ptr<q3mapx::LightRecovery> lightRecovery;
 	bool automaticReport = false;
 	BrushOrder brushOrder = BrushOrder::Bsp;
 	DetailPolicy detailPolicy = DetailPolicy::Legacy;

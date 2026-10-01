@@ -736,6 +736,35 @@ when changing this path. See [the spotlight contract](SPOT-FITTING.md) and
 [validation evidence](validation/spot-fitting.json) for assumptions, measured
 errors and unsupported recovery cases. No renderer or input control is used.
 
+## Applying light proposals to recovered MAPs
+
+`light_recovery` fits stripped native point/spot scenes and applies their reports
+through `-decompile -light-proposals`. It then runs independent BSP/VIS/LIGHT
+rebuilds, matching world positions, normals and styles across changed atlas
+packing. Evidence for inline brush models is translated by the rebuilt entity's
+origin before comparison. Original MAP/SRF files are poisoned before fitting.
+
+```sh
+ctest --test-dir build/release -R '^light_recovery$' -V
+python tests/light_recovery.py --compiler build/release/bin/q3mapx --work-dir build/release/tests/light-recovery
+```
+
+Use `.exe` on Windows and the corresponding Linux/sanitizer build directories.
+The group timeout is 1800 seconds. `--case <name>` selects an investigation;
+the complete matrix covers all three MAP formats, fast/full recovery, native
+styles, sRGB colors, Wolf falloff, retained targets/sources, fixed point/spot and
+culled dependencies, and detail/group recovery with an inline brush model.
+Malformed reports, inconsistent scores/texels, unsafe target links, excessive
+resources and direct/hard-link output aliases must preserve existing outputs.
+An optional `--reference <prior-compiler>` checks default MAP byte parity.
+
+Keep the shared `recovery_outputs` publication checks and related native
+probe/comparison/fitting groups passing. Stored-score consistency checks do not
+rerun transport or authenticate a report: actual MAP rebuild comparisons are
+separate validation. See [the export contract](LIGHT-RECOVERY.md) and
+[validation evidence](validation/light-recovery.json). No renderer or user-input
+control is needed for these tests.
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

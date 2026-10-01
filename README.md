@@ -38,8 +38,10 @@ lightmaps with explicit sampling assumptions and unknown/excluded observations.
 Optional [point-light fitting](docs/POINT-FITTING.md) searches BSP space for
 conditional missing-light proposals, with native tracing, bounded parallel work,
 material checks and withheld-texel validation. Optional [spotlight fitting](docs/SPOT-FITTING.md)
-also fits directions/cones and proposes retained or new target links. Unknown
-bake calibration, automatic entity export and broader recovery accuracy remain open.
+also fits directions/cones and proposes retained or new target links.
+[Apply qualified reports during decompilation](docs/LIGHT-RECOVERY.md) to produce
+editable light entities and their target links. Unknown bake calibration,
+interactive review and broader recovery accuracy remain open.
 Optional [detail and group inference](docs/DECOMPILATION.md#group-inference-policy)
 can now export cell-supported detail flags and surface-supported `func_group`
 assemblies, with bounded work, rebuild-order protection and explicit uncertainty.

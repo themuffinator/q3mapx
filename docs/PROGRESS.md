@@ -2847,3 +2847,78 @@ No new unrelated production defect was reproduced. Previously documented parser,
 VIS, compiler-warning, sidecar-publication and Windows process-delay findings
 remain outside this round. Intelligent compiler optimization and M11 Radiant
 patch RGB/alpha painting and per-surface density/preview remain active.
+
+## 2026-10-01 — Applying inferred lights during MAP recovery
+
+Added `-decompile -light-proposals <report.json>` to apply a qualified native
+point or spotlight fit to an editable recovered MAP. The option appends fitted
+lights, required fixed light hypotheses and new target markers after surviving
+entities and inferred groups. Compatible retained targets keep their existing
+links. Classic, brush-primitive and Valve 220 formats, fast/full recovery,
+detail/groups and legacy MAP conversion share the implementation. Default MAP
+output remains unchanged, and the game catalog advertises support.
+
+The importer verifies the exact BSP/report identities, native game/header,
+report family/status, actual observed lightmap texels, stored score arithmetic,
+atlas-block partitions, qualification gates and native entity parameters.
+Spotlights also require consistent illuminated-support scores, direction, cone
+and target metadata. Generated names cannot collide with existing targetnames
+or generated-name tokens in custom/dangling references. Original entities are
+not retargeted. Bounded iterative JSON parsing rejects duplicate properties,
+malformed fields, excessive structure and unsafe MAP strings. Output aliases
+are rejected, inputs are rechecked before publication, and MAP/report output
+uses the existing transactional writer.
+
+Fitting reports now retain the original validated `fixed_proposals` request,
+including sources culled by native envelope setup. Import preserves these
+dependencies instead of reconstructing only active sources. Older reports remain
+usable when no supplied dependencies existed; otherwise they must be regenerated.
+The recovery report records hashes, settings, scores, entity indices and exact
+emitted keys. These are consistency checks on stored predictions, not fresh
+transport evaluation, report authentication or proof of original authorship.
+Independent rebuilt-lighting validation remains necessary.
+
+Windows Release, Linux Release and Linux Debug ASan/UBSan each pass 19 complete
+export/BSP/VIS/LIGHT rebuilds and 39 preserved-output failures across nine native
+scenes. The matrix covers all MAP formats, fast/full recovery, retained targets
+and light sources, supplied point/spot and culled dependencies, styled Raven
+lighting, Qfusion sRGB, Wolf attenuation and inferred groups with an inline door.
+Every checked rebuilt texel exactly matches its proposed native prediction;
+maximum RMSE against the original hidden-light bake is 0.253 byte units.
+All 19 result objects agree across the three builds. One/four-worker MAP bytes
+agree, and default classic MAP bytes match the preceding validated executable.
+These synthetic controls do not establish general real-map reconstruction accuracy.
+
+All 77 preexisting Windows CTest groups pass. Linux passes 76 of the same groups
+and skips GPU `area_factors`. Seven related recovery/evidence/probe/comparison
+groups pass under ASan/UBSan, in addition to the complete new export matrix.
+The established Debug `-g -O1`, assertions, address/undefined checks and lifetime-
+leak exclusion remain unchanged. The broader sanitizer spotlight search matrix
+and entire sanitizer suite were not repeated. CLI help and capability checks
+pass on all three builds. No editor/game launch, operating-system screen capture
+or user-input control was used.
+
+Initial fixture checks exposed a malformed relay block, an incorrect assumption
+that black lights are culled, and a model-local/world-space comparison mismatch.
+The final relay syntax is valid, the culled dependency is inside a solid wall,
+and rebuilt inline-model evidence is translated by its surviving entity origin
+without dropping observations or changing production geometry.
+
+See [the export contract](LIGHT-RECOVERY.md),
+[reproduction instructions](DEVELOPMENT.md#applying-light-proposals-to-recovered-maps)
+and [validation evidence](validation/light-recovery.json). Logs, the reference
+binary and evidence generator remain in `.agents/tmp/continuation/light-export/`;
+final native fixtures/reports remain in each build's `tests/light-recovery/`.
+Automatic approval review rejected cleanup of the redundant Windows
+`tests/light-recovery-controls/` and `tests/light-recovery-groups/` directories
+as "blocked by policy" before the command ran. They remain; removal was not
+retried, and earlier policy-blocked targets were untouched.
+
+Unknown bake calibration, joint point/spot model selection, indirect effects,
+complete asset provenance, broad real-map qualification and GUI fitting/review
+remain open. No GPU backend or performance gain is claimed; portable packages
+were not refreshed and no external code was incorporated. No new unrelated
+production defect was reproduced. Previously documented parser-sign/include-line,
+compiler-warning, VIS discrepancy, raw-sidecar publication and Windows process-
+delay findings remain outside this round. Intelligent compiler optimization and
+M11 Radiant patch RGB/alpha painting and per-surface density/preview remain active.

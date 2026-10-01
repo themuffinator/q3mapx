@@ -196,6 +196,10 @@ if(BUILD_TESTING)
     if(Q3MAPX_ENABLE_SANITIZERS)
         set_tests_properties(spot_fitting PROPERTIES TIMEOUT 5400)
     endif()
+    add_test(NAME light_recovery COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/light_recovery.py --compiler $<TARGET_FILE:q3mapx>
+        --work-dir ${CMAKE_BINARY_DIR}/tests/light-recovery)
+    set_tests_properties(light_recovery PROPERTIES TIMEOUT 1800)
     add_executable(ftx_test tests/ftx.cpp)
     target_include_directories(ftx_test PRIVATE libs)
     add_test(NAME ftx COMMAND ftx_test)

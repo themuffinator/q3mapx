@@ -34,8 +34,9 @@ The next fidelity work is specified in [recovery inference](RECOVERY-INFERENCE.m
   evidence, applying manual corrections and comparing rebuilt geometry and lighting.
 
 The first optional geometric detail and surface-supported group policies are
-implemented below; broader grouping, light inference and authoring review remain
-planned. Known-source
+implemented below. Qualified point/spot fits can now be
+[applied during MAP export](LIGHT-RECOVERY.md); broader grouping, calibration and
+authoring review remain planned. Known-source
 fixtures, held-out lighting samples and recorded uncertainty will distinguish a
 close visual recreation from recovery of uniquely identifiable authoring data.
 The separate [intelligent compiler options](COMPILER-OPTIMIZATION.md) optimize new
@@ -49,6 +50,7 @@ q3mapx -decompile -format map_bp -report recovery.json maps/example.bsp
 q3mapx -decompile -brush-order rebuild -o recovered.map maps/example.bsp
 q3mapx -decompile -detail-policy cells -brush-order rebuild -o candidate.map maps/example.bsp
 q3mapx -decompile -group-policy surfaces -detail-policy cells -o assemblies.map maps/example.bsp
+q3mapx -decompile -light-proposals fit-report.json -brush-order rebuild -o relit.map maps/example.bsp
 q3mapx -decompile -uv-policy triangle -o comparison.map maps/example.bsp
 q3mapx -convert -format map_220 maps/example.bsp
 ```
@@ -68,6 +70,11 @@ published first; if MAP replacement then fails, the old report is restored, or
 the newly created report is removed. Legacy conversion without a report uses
 one atomic MAP replacement. Directories and symbolic links are rejected as output
 destinations. A failed rollback identifies the retained original backup.
+
+`-light-proposals` requires a qualified report for the identical source BSP/game
+and appends its fitted lights, fixed proposal dependencies and target markers.
+It always writes a recovery report. See [light recovery](LIGHT-RECOVERY.md) for
+stored-evidence checks, target protection, resource bounds and rebuild assumptions.
 
 The MAP and report are separate filesystem names: process/power loss between
 their replacements can leave different generations. Concurrent writers, metadata

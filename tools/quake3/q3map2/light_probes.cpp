@@ -549,6 +549,13 @@ void LightProbes::run(const Vector3& ambient,size_t generated) {
         {"saturation",g_lightmapSaturation},{"maximum_light",maxLight},{"falloff_tolerance",falloffTolerance}}}) value(w,key,n);
     flag(w,"half_lambert",lightAngleHL); flag(w,"wolf",wolfLight); flag(w,"trace_occlusion",!noTrace); flag(w,"fast",fast); flag(w,"faster",faster);
     flag(w,"lightmaps_srgb",lightmapsRGB); flag(w,"textures_srgb",texturesRGB); flag(w,"entity_colors_srgb",colorsRGB); w.EndObject();
+    if(d.fit.enabled) {
+        // Retain every fixed caller-supplied dependency, including culled lights.
+        // A MAP export must not silently omit sources assumed by the fit.
+        w.Key("fixed_proposals");
+        if(d.input.HasMember("lights")) d.input["lights"].Accept(w);
+        else { w.StartArray(); w.EndArray(); }
+    }
     if(d.baked.enabled) {
         w.Key("baked_comparison"); w.StartObject();
         text(w,"status",d.samples.empty()?"no_usable_observations":"direct_encoding_hypothesis");

@@ -9,8 +9,9 @@ form the same baseline as [direct lighting probes](LIGHT-PROBES.md).
 The result is a conditional lighting explanation. It does not establish the
 author's original lights or recover unknown bake settings. The command writes
 only its checked JSON report. Separate [spotlight fitting](SPOT-FITTING.md) now
-proposes directions, cones and target links. Automatic MAP/entity export,
-calibration and workbench review remain open.
+proposes directions, cones and target links. Qualified reports can be
+[applied to a recovered MAP](LIGHT-RECOVERY.md) through `-decompile -light-proposals`.
+Calibration and workbench review remain open.
 
 ## Running a fit
 

@@ -62,7 +62,7 @@ static void color_saturate( Vector3& color, float saturation ){
 	lightmapExposure is something special here, doing clamp/bump, god knows what's proper order for it
 	lmscale, lightmapCompensate are applied last, since they try to emulate engine effects (bitshift, clamp)
 */
-Vector3b ColorToBytes( const Vector3& color, float scale/* = 1*/, float lmscale/* = 1*/ ){
+Vector3 ColorToFloat( const Vector3& color, float scale, float lmscale ){
 	/* user inputs are not range checked, sanitize here... */
 	if ( scale <= 0 ) scale = 1;
 	if ( lmscale <= 0 ) lmscale = 1;
@@ -118,6 +118,10 @@ Vector3b ColorToBytes( const Vector3& color, float scale/* = 1*/, float lmscale/
 
 	/* store it off */
 	return sample;
+}
+
+Vector3b ColorToBytes( const Vector3& color, float scale/* = 1*/, float lmscale/* = 1*/ ){
+	return ColorToFloat(color, scale, lmscale);
 }
 
 

@@ -1829,6 +1829,8 @@ void                        RadCreateDiffuseLights();
 
 /* light_ydnar.c */
 Vector3b                    ColorToBytes( const Vector3& color, float scale = 1, float lmscale = 1 );
+// Same encoding before byte conversion, for checked diagnostic comparisons.
+Vector3                     ColorToFloat( const Vector3& color, float scale, float lmscale );
 void                        SmoothNormals();
 
 void                        MapRawLightmap( int num );

@@ -624,6 +624,46 @@ every scene/source/serialization ceiling and complete missing-asset provenance
 still need dedicated qualification. No editor or renderer is launched by these
 tests.
 
+## Baked-lightmap hypothesis comparison
+
+`light_comparison` exercises automatic `baked_lightmaps` requests through the
+native CLI. Closed-room bakes in IBSP, Raven RBSP and Qfusion FBSP cover linear,
+gamma/compensated, sRGB, exposure/contrast/saturation/brightness and clipped-light
+settings. Selected interior texels must match the actual bake exactly. Raven and
+Qfusion add styled spotlights to verify slot/style separation and that secondary
+slots do not acquire global ambient/minlight. One/four-worker reports agree.
+
+```sh
+ctest --test-dir build/release -R '^light_comparison$' -V
+python tests/light_comparison.py --compiler build/release/bin/q3mapx --work-dir build/release/tests/light-comparison
+```
+
+Use `.exe` on Windows and the corresponding Linux/sanitizer directories. The
+group has a 600-second timeout. Independent scalar transfer arithmetic checks
+the encoded floats within 2e-3 component units; native lump reads independently
+check every observed RGB, and recomputed errors check summary accounting. Wrong
+encoding and misplaced proposals must score worse. Restoring supplied known
+parameters after stripping a light must reproduce the baseline score; this is
+not a candidate-generation or localization test.
+
+Additional bakes exercise stored curves, surviving inline-model origins,
+sun-only/emitter-only/mixed material lighting and an unexplained bounce component.
+These cases retain measured residuals and unknown traces rather than asserting
+full-bake equivalence. Missing/constant/zero-normal observations must produce null
+error metrics; an overflowing encoding must remain unknown without unsafe byte
+conversion. Malformed selection, work/observation/sample limits and nonfinite
+active UVs preserve source and previous report files. Exact work/observation/sample
+ceilings pass, while one unit less fails; selecting one surface retains the same
+associations and whole-scene extraction costs. Constant-region exclusions count
+all primitives even when the representative records are strided. Poisoned MAP/SRF files and
+a generated-shader sentinel check read-only behavior.
+
+Inputs, requests, reports, logs and `results.json` remain in the build's
+`tests/light-comparison/`. See [the request/report contract](LIGHT-PROBES.md#automatic-internal-lightmap-comparison)
+and [validation evidence](validation/light-comparison.json). The shared encoding
+extraction also requires normal-bake reference parity through `tests/lighting.py`;
+synthetic arithmetic checks alone do not establish unchanged compiler output.
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

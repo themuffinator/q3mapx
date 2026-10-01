@@ -1,0 +1,2945 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-01T09:05:49.028582+00:00",
+  "base_revision": "e59a32f703f3ac41c6a78e0266d06d8c10388914",
+  "scope": "Bounded automatic geometric internal-lightmap observations evaluated through the direct CPU reference and shared native color encoding; explicit hypothesis scoring, no inverse light fitting or calibration",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "5f66379488fdacf193802909fcb348be27a9aa6c25413e953e4ea32934ead5bb",
+    "tools/quake3/q3map2/light_probes.cpp": "b4ac23c6f9d7c7058247e7a832d5c016e3d7906cdc85214e8ef4c11e12dc8611",
+    "tools/quake3/q3map2/light_probes.h": "52dbec515e47f286a2458df8482ec9f4a089c1641d01713b1496a54fbc41787f",
+    "tools/quake3/q3map2/light.cpp": "a3d07de368682f14ee3c11951fde8029d0c6ebb9d6dc6d2e584750f2193780df",
+    "tools/quake3/q3map2/light_ydnar.cpp": "26e1d29cdbbc1870c980a70a27ad8c1d16cd4eab5b2a34719dde9176d0bb5a2e",
+    "tools/quake3/q3map2/light_bounce.cpp": "3ccc87e1b931a47f21325e6b4f174b7a10d4c8a7ad616ffcf3edf2926f5463b0",
+    "tools/quake3/q3map2/lightmaps_ydnar.cpp": "895d7264a33aa694aab7089e139305c84757a04a17d5d8f17e8b63d11f9ecf9e",
+    "tools/quake3/q3map2/patch.cpp": "3d60d55682ea3f7c4dfe4a30664eaa0573fefde9742d5f9d78eff6d23dded10a",
+    "tools/quake3/q3map2/bsp_lighting_evidence.cpp": "817e0912a37abd42d7cb8da1985f750d7e0a9c2098b654852f7a8a4bb5b34c39",
+    "tools/quake3/q3map2/bsp_lighting_evidence.h": "a0a4d5fdb682e5d7d4ce54ae0b58e5c71834c64793319521fc7cf31215d4325a",
+    "tools/quake3/q3map2/bsp_validation.cpp": "24a639933e180fbf3446b13e9b419b9634835e3637f0842e32cf303fb49efdba",
+    "tools/quake3/q3map2/q3map2.h": "b22b9c3c409dcca822ef9147e2656cbd4d4ac4d787d27bf4db0beb0453a9514a",
+    "tools/quake3/q3map2/help.cpp": "2e6309d627a5a933c0d93dbf7e806e7b8ce8def7409f9a9efa32010668afc6f1",
+    "tests/light_comparison.py": "418016b59fb1a65dea6cbe008efd66254eff6fad8d112085167da99785472d04",
+    "tests/light_probes.py": "4c8e6184fee9e46f119e6a81a7b4e8351bcc58ed7ba314eaa5a837a41fa67de4",
+    "tests/lighting.py": "c549759cfd1daa5ec2cc17e90b682623a9e17a90199c8af706de4ade994515c4",
+    "tests/lighting_evidence.py": "e01a13f036e2328fd42e6c6aacab390200a43583487f1ce4ea8bdcc635db08e5",
+    "tests/fixtures.py": "5cc300117041bc22a719451f9915bca17cc5af10094521408538b850284436c7",
+    "tests/integration.py": "3bb8e703e9e898a4c079f6a52321941aeb54876a7eac7804b8e1069c1541dfb3"
+  },
+  "fixture_provenance": "First-party closed rooms and curved/inline material scenes, actual native BSP/VIS/LIGHT bakes, independent native RGB/error accounting and scalar transfer oracle. Restored-light cases supply known source parameters, never discover them.",
+  "platforms": {
+    "windows": {
+      "compiler": {
+        "path": "build/release/bin/q3mapx.exe",
+        "sha256": "26001faef845ee7aa5f38db03f9f261221261a393d675840c0a25220c2295c53"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/light-comparison/build-windows-checked.log",
+        "sha256": "032f2606183d5f305471e5719e4b2ef95b533e5df5ae3c211788a0084e1b3534"
+      },
+      "comparison_results": {
+        "path": "build/release/tests/light-comparison/results.json",
+        "sha256": "a2749b841b132a89e4ea01f59a39fe4643c716e5b942670aebcb9e8df5ae187a",
+        "reports": 67,
+        "cases": [
+          {
+            "case": "quake3-linear",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-linear-one",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-gamma",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-gamma-wrong-encoding",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 19.556613756613757,
+              "rmse_bytes": 24.625834930652523,
+              "maximum_error_bytes": 125.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-srgb",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-transfer",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-transfer-wrong-encoding",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 26.405820105820105,
+              "rmse_bytes": 38.088625418140076,
+              "maximum_error_bytes": 114.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-clipped",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-exact-budgets",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-surface-selector",
+            "selected": 210,
+            "errors": {
+              "samples": 210,
+              "components": 630,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-poisoned-sidecars",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-stripped",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 36.2037037037037,
+              "rmse_bytes": 54.8156940798921,
+              "maximum_error_bytes": 252.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-restored",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-misplaced",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 23.862962962962964,
+              "rmse_bytes": 37.912269935209785,
+              "maximum_error_bytes": 205.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-inside-solid",
+            "selected": 60,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 60
+          },
+          {
+            "case": "quake3-encoding-overflow",
+            "selected": 1260,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 1260
+          },
+          {
+            "case": "quake3-absent",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-constant",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-constant-stride",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-zero-normal",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-linear",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-linear-one",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-gamma",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-gamma-wrong-encoding",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 19.556613756613757,
+              "rmse_bytes": 24.625834930652523,
+              "maximum_error_bytes": 125.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-srgb",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-transfer",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-transfer-wrong-encoding",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 26.405820105820105,
+              "rmse_bytes": 38.088625418140076,
+              "maximum_error_bytes": 114.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-clipped",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-exact-budgets",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-surface-selector",
+            "selected": 210,
+            "errors": {
+              "samples": 210,
+              "components": 630,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-poisoned-sidecars",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-stripped",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 36.2037037037037,
+              "rmse_bytes": 54.8156940798921,
+              "maximum_error_bytes": 252.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-restored",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-misplaced",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 23.862962962962964,
+              "rmse_bytes": 37.912269935209785,
+              "maximum_error_bytes": 205.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-inside-solid",
+            "selected": 60,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 60
+          },
+          {
+            "case": "ja-encoding-overflow",
+            "selected": 1260,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 1260
+          },
+          {
+            "case": "ja-absent",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-constant",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-constant-stride",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-zero-normal",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-linear",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-linear-one",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-gamma",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-gamma-wrong-encoding",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 19.556613756613757,
+              "rmse_bytes": 24.625834930652523,
+              "maximum_error_bytes": 125.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-srgb",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-transfer",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-transfer-wrong-encoding",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 26.405820105820105,
+              "rmse_bytes": 38.088625418140076,
+              "maximum_error_bytes": 114.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-clipped",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-exact-budgets",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-surface-selector",
+            "selected": 210,
+            "errors": {
+              "samples": 210,
+              "components": 630,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-poisoned-sidecars",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-stripped",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 36.2037037037037,
+              "rmse_bytes": 54.8156940798921,
+              "maximum_error_bytes": 252.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-restored",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-misplaced",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 23.862962962962964,
+              "rmse_bytes": 37.912269935209785,
+              "maximum_error_bytes": 205.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-inside-solid",
+            "selected": 60,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 60
+          },
+          {
+            "case": "qfusion-encoding-overflow",
+            "selected": 1260,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 1260
+          },
+          {
+            "case": "qfusion-absent",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-constant",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-constant-stride",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-zero-normal",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-styles-styled-spot",
+            "selected": 2310,
+            "errors": {
+              "samples": 2310,
+              "components": 6930,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-styles-styled-spot",
+            "selected": 2310,
+            "errors": {
+              "samples": 2310,
+              "components": 6930,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "curves-model-comparison",
+            "selected": 832,
+            "errors": {
+              "samples": 826,
+              "components": 2478,
+              "mae_bytes": 0.015738498789346248,
+              "rmse_bytes": 0.1434611926670512,
+              "maximum_error_bytes": 2.0
+            },
+            "unknown": 6
+          },
+          {
+            "case": "sun-comparison",
+            "selected": 544,
+            "errors": {
+              "samples": 538,
+              "components": 1614,
+              "mae_bytes": 0.013011152416356878,
+              "rmse_bytes": 0.11406643860644058,
+              "maximum_error_bytes": 1.0
+            },
+            "unknown": 6
+          },
+          {
+            "case": "emitter-comparison",
+            "selected": 930,
+            "errors": {
+              "samples": 924,
+              "components": 2772,
+              "mae_bytes": 0.0021645021645021645,
+              "rmse_bytes": 0.046524210519923545,
+              "maximum_error_bytes": 1.0
+            },
+            "unknown": 6
+          },
+          {
+            "case": "mixed-comparison",
+            "selected": 762,
+            "errors": {
+              "samples": 756,
+              "components": 2268,
+              "mae_bytes": 0.014991181657848324,
+              "rmse_bytes": 0.15713484026367722,
+              "maximum_error_bytes": 2.0
+            },
+            "unknown": 6
+          },
+          {
+            "case": "mixed-bounced",
+            "selected": 769,
+            "errors": {
+              "samples": 763,
+              "components": 2289,
+              "mae_bytes": 8.61555264307558,
+              "rmse_bytes": 9.409637846573572,
+              "maximum_error_bytes": 22.0
+            },
+            "unknown": 6
+          }
+        ],
+        "output_preservation_cases": [
+          "quake3-both",
+          "quake3-offset",
+          "quake3-stride-0",
+          "quake3-max_samples-1",
+          "quake3-max_observations-1",
+          "quake3-max_work-1",
+          "quake3-surfaces-[0, 0]",
+          "quake3-surfaces-[199999]",
+          "quake3-max_samples-one-below",
+          "quake3-max_observations-one-below",
+          "quake3-max_work-one-below",
+          "quake3-nonfinite",
+          "ja-both",
+          "ja-offset",
+          "ja-stride-0",
+          "ja-max_samples-1",
+          "ja-max_observations-1",
+          "ja-max_work-1",
+          "ja-surfaces-[0, 0]",
+          "ja-surfaces-[199999]",
+          "ja-max_samples-one-below",
+          "ja-max_observations-one-below",
+          "ja-max_work-one-below",
+          "ja-nonfinite",
+          "qfusion-both",
+          "qfusion-offset",
+          "qfusion-stride-0",
+          "qfusion-max_samples-1",
+          "qfusion-max_observations-1",
+          "qfusion-max_work-1",
+          "qfusion-surfaces-[0, 0]",
+          "qfusion-surfaces-[199999]",
+          "qfusion-max_samples-one-below",
+          "qfusion-max_observations-one-below",
+          "qfusion-max_work-one-below",
+          "qfusion-nonfinite"
+        ],
+        "max_transfer_component_error": 3.301533251942601e-05,
+        "absolute_transfer_component_tolerance": 0.002
+      },
+      "actual_bakes": 22,
+      "zero_byte_error_controlled_bakes": 17,
+      "matrix_logs_scanned_for_sanitizer_diagnostics": 147,
+      "sanitizer_diagnostics": [],
+      "broad_suite_before_final_counter_correction": {
+        "path": ".agents/tmp/continuation/light-comparison/ctest-windows.log",
+        "sha256": "4b2f788c280e14338e1cc730dd1bdcafd58a2687782dfb945a637d1b2d3e62fe",
+        "groups": 75,
+        "passed": [
+          "workbench",
+          "patch_input",
+          "vis_passage_clipping",
+          "recovery_order",
+          "brush_input",
+          "uv_recovery",
+          "lighting_curves",
+          "recovery_groups",
+          "vis_merge",
+          "brush_cells",
+          "script_input",
+          "light_comparison",
+          "vis_reproducible",
+          "lighting_evidence",
+          "cell_adjacency",
+          "recovery_classification",
+          "lighting_gpu",
+          "meta_order",
+          "light_probes",
+          "gpu_columns",
+          "uv_output",
+          "planar_reduction_native",
+          "game_profiles",
+          "portal_evidence",
+          "bsp_inspect",
+          "planar_reduction_oracle",
+          "vis_passage_storage",
+          "geometry_optimize",
+          "workbench_devices",
+          "workbench_window",
+          "index_validation_cli",
+          "bsp_evidence",
+          "portal_validation",
+          "lighting_materials",
+          "binary_outputs",
+          "native_early",
+          "native_fakk",
+          "mesh_export",
+          "bsp_analyze",
+          "area_factors",
+          "bezier_uv",
+          "raven_compat",
+          "cli_options",
+          "workbench_inspector",
+          "uv_fit_oracle",
+          "bsp_validation",
+          "export_outputs",
+          "recovery_outputs",
+          "native_mohaa",
+          "vis_clip",
+          "lightgrid_cli",
+          "game_catalog",
+          "uv_fit",
+          "minimap",
+          "lightgrid",
+          "portal_graph",
+          "ftx",
+          "index_validation",
+          "planar_reduction",
+          "cell_graph",
+          "recovery_group_order",
+          "vis_mask",
+          "terrain",
+          "compiler_pipeline",
+          "quake3_materials",
+          "columns",
+          "lighting_math",
+          "decompile_recovery",
+          "atomic_file",
+          "workbench_preview",
+          "cli_help",
+          "job_pool",
+          "decompile_math",
+          "area_factors_disabled",
+          "cli_games"
+        ],
+        "skipped": [],
+        "failed": []
+      },
+      "post_counter_correction_suite": {
+        "path": ".agents/tmp/continuation/light-comparison/ctest-windows-checked.log",
+        "sha256": "7008ce1af9568c178ddf35c028e9175b7da7239a97a253945bc44114cba81245",
+        "groups": 5,
+        "passed": [
+          "light_probes",
+          "lighting_materials",
+          "lighting_evidence",
+          "lighting_curves"
+        ],
+        "skipped": [],
+        "failed": [
+          "light_comparison"
+        ],
+        "failure_explanation": "The new constant-region oracle counted the shared index table rather than per-surface triangle references. Only that assertion was corrected; the complete comparison matrix was rerun separately on the same binary."
+      },
+      "final_comparison_suite": {
+        "path": ".agents/tmp/continuation/light-comparison/ctest-windows-comparison.log",
+        "sha256": "7dedf1106f11b30d5f7989eada3a63d1731e8b491a84f217ccdeca0b7965ad56",
+        "groups": 1,
+        "passed": [
+          "light_comparison"
+        ],
+        "skipped": [],
+        "failed": []
+      }
+    },
+    "linux": {
+      "compiler": {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "e0e0fd0e870b5076dfee5c96cf2dc6377566b2d613639e762c7cc0df68b30ac7"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/light-comparison/build-linux-checked.log",
+        "sha256": "546ac394c1159534e2c743b673b06edd571ac41c58bae5f4297cdc6d9d2340a3"
+      },
+      "comparison_results": {
+        "path": "build/linux-release/tests/light-comparison/results.json",
+        "sha256": "f01da01e76b1e8d40583b23ae716acaf792a759cc516dd1a8c959ce854d79c3b",
+        "reports": 67,
+        "cases": [
+          {
+            "case": "quake3-linear",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-linear-one",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-gamma",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-gamma-wrong-encoding",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 19.556613756613757,
+              "rmse_bytes": 24.625834930652523,
+              "maximum_error_bytes": 125.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-srgb",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-transfer",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-transfer-wrong-encoding",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 26.405820105820105,
+              "rmse_bytes": 38.088625418140076,
+              "maximum_error_bytes": 114.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-clipped",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-exact-budgets",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-surface-selector",
+            "selected": 210,
+            "errors": {
+              "samples": 210,
+              "components": 630,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-poisoned-sidecars",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-stripped",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 36.2037037037037,
+              "rmse_bytes": 54.8156940798921,
+              "maximum_error_bytes": 252.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-restored",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-misplaced",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 23.862962962962964,
+              "rmse_bytes": 37.912269935209785,
+              "maximum_error_bytes": 205.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-inside-solid",
+            "selected": 60,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 60
+          },
+          {
+            "case": "quake3-encoding-overflow",
+            "selected": 1260,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 1260
+          },
+          {
+            "case": "quake3-absent",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-constant",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-constant-stride",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-zero-normal",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-linear",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-linear-one",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-gamma",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-gamma-wrong-encoding",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 19.556613756613757,
+              "rmse_bytes": 24.625834930652523,
+              "maximum_error_bytes": 125.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-srgb",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-transfer",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-transfer-wrong-encoding",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 26.405820105820105,
+              "rmse_bytes": 38.088625418140076,
+              "maximum_error_bytes": 114.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-clipped",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-exact-budgets",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-surface-selector",
+            "selected": 210,
+            "errors": {
+              "samples": 210,
+              "components": 630,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-poisoned-sidecars",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-stripped",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 36.2037037037037,
+              "rmse_bytes": 54.8156940798921,
+              "maximum_error_bytes": 252.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-restored",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-misplaced",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 23.862962962962964,
+              "rmse_bytes": 37.912269935209785,
+              "maximum_error_bytes": 205.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-inside-solid",
+            "selected": 60,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 60
+          },
+          {
+            "case": "ja-encoding-overflow",
+            "selected": 1260,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 1260
+          },
+          {
+            "case": "ja-absent",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-constant",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-constant-stride",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-zero-normal",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-linear",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-linear-one",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-gamma",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-gamma-wrong-encoding",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 19.556613756613757,
+              "rmse_bytes": 24.625834930652523,
+              "maximum_error_bytes": 125.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-srgb",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-transfer",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-transfer-wrong-encoding",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 26.405820105820105,
+              "rmse_bytes": 38.088625418140076,
+              "maximum_error_bytes": 114.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-clipped",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-exact-budgets",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-surface-selector",
+            "selected": 210,
+            "errors": {
+              "samples": 210,
+              "components": 630,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-poisoned-sidecars",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-stripped",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 36.2037037037037,
+              "rmse_bytes": 54.8156940798921,
+              "maximum_error_bytes": 252.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-restored",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-misplaced",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 23.862962962962964,
+              "rmse_bytes": 37.912269935209785,
+              "maximum_error_bytes": 205.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-inside-solid",
+            "selected": 60,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 60
+          },
+          {
+            "case": "qfusion-encoding-overflow",
+            "selected": 1260,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 1260
+          },
+          {
+            "case": "qfusion-absent",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-constant",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-constant-stride",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-zero-normal",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-styles-styled-spot",
+            "selected": 2310,
+            "errors": {
+              "samples": 2310,
+              "components": 6930,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-styles-styled-spot",
+            "selected": 2310,
+            "errors": {
+              "samples": 2310,
+              "components": 6930,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "curves-model-comparison",
+            "selected": 832,
+            "errors": {
+              "samples": 826,
+              "components": 2478,
+              "mae_bytes": 0.015738498789346248,
+              "rmse_bytes": 0.1434611926670512,
+              "maximum_error_bytes": 2.0
+            },
+            "unknown": 6
+          },
+          {
+            "case": "sun-comparison",
+            "selected": 544,
+            "errors": {
+              "samples": 538,
+              "components": 1614,
+              "mae_bytes": 0.013011152416356878,
+              "rmse_bytes": 0.11406643860644058,
+              "maximum_error_bytes": 1.0
+            },
+            "unknown": 6
+          },
+          {
+            "case": "emitter-comparison",
+            "selected": 930,
+            "errors": {
+              "samples": 924,
+              "components": 2772,
+              "mae_bytes": 0.0021645021645021645,
+              "rmse_bytes": 0.046524210519923545,
+              "maximum_error_bytes": 1.0
+            },
+            "unknown": 6
+          },
+          {
+            "case": "mixed-comparison",
+            "selected": 762,
+            "errors": {
+              "samples": 756,
+              "components": 2268,
+              "mae_bytes": 0.014991181657848324,
+              "rmse_bytes": 0.15713484026367722,
+              "maximum_error_bytes": 2.0
+            },
+            "unknown": 6
+          },
+          {
+            "case": "mixed-bounced",
+            "selected": 769,
+            "errors": {
+              "samples": 763,
+              "components": 2289,
+              "mae_bytes": 8.61555264307558,
+              "rmse_bytes": 9.409637846573572,
+              "maximum_error_bytes": 22.0
+            },
+            "unknown": 6
+          }
+        ],
+        "output_preservation_cases": [
+          "quake3-both",
+          "quake3-offset",
+          "quake3-stride-0",
+          "quake3-max_samples-1",
+          "quake3-max_observations-1",
+          "quake3-max_work-1",
+          "quake3-surfaces-[0, 0]",
+          "quake3-surfaces-[199999]",
+          "quake3-max_samples-one-below",
+          "quake3-max_observations-one-below",
+          "quake3-max_work-one-below",
+          "quake3-nonfinite",
+          "ja-both",
+          "ja-offset",
+          "ja-stride-0",
+          "ja-max_samples-1",
+          "ja-max_observations-1",
+          "ja-max_work-1",
+          "ja-surfaces-[0, 0]",
+          "ja-surfaces-[199999]",
+          "ja-max_samples-one-below",
+          "ja-max_observations-one-below",
+          "ja-max_work-one-below",
+          "ja-nonfinite",
+          "qfusion-both",
+          "qfusion-offset",
+          "qfusion-stride-0",
+          "qfusion-max_samples-1",
+          "qfusion-max_observations-1",
+          "qfusion-max_work-1",
+          "qfusion-surfaces-[0, 0]",
+          "qfusion-surfaces-[199999]",
+          "qfusion-max_samples-one-below",
+          "qfusion-max_observations-one-below",
+          "qfusion-max_work-one-below",
+          "qfusion-nonfinite"
+        ],
+        "max_transfer_component_error": 3.301533251942601e-05,
+        "absolute_transfer_component_tolerance": 0.002
+      },
+      "actual_bakes": 22,
+      "zero_byte_error_controlled_bakes": 17,
+      "matrix_logs_scanned_for_sanitizer_diagnostics": 147,
+      "sanitizer_diagnostics": [],
+      "broad_suite_before_final_counter_correction": {
+        "path": ".agents/tmp/continuation/light-comparison/ctest-linux.log",
+        "sha256": "0fb1e5cfee808daee483cfc4c20a4aca19a8b6af9e67aae132876eb4fdb21432",
+        "groups": 75,
+        "passed": [
+          "workbench",
+          "vis_passage_clipping",
+          "patch_input",
+          "script_input",
+          "brush_input",
+          "recovery_groups",
+          "uv_recovery",
+          "brush_cells",
+          "recovery_order",
+          "lighting_curves",
+          "meta_order",
+          "lighting_evidence",
+          "cell_adjacency",
+          "game_profiles",
+          "vis_merge",
+          "recovery_classification",
+          "portal_evidence",
+          "uv_output",
+          "light_probes",
+          "vis_reproducible",
+          "geometry_optimize",
+          "bsp_evidence",
+          "lighting_materials",
+          "native_fakk",
+          "portal_validation",
+          "bsp_validation",
+          "binary_outputs",
+          "bsp_inspect",
+          "index_validation_cli",
+          "gpu_columns",
+          "native_early",
+          "planar_reduction_native",
+          "vis_passage_storage",
+          "mesh_export",
+          "raven_compat",
+          "cli_options",
+          "bsp_analyze",
+          "recovery_outputs",
+          "minimap",
+          "export_outputs",
+          "planar_reduction_oracle",
+          "native_mohaa",
+          "workbench_window",
+          "lighting_gpu",
+          "lightgrid_cli",
+          "workbench_inspector",
+          "workbench_devices",
+          "bezier_uv",
+          "decompile_recovery",
+          "uv_fit_oracle",
+          "lightgrid",
+          "game_catalog",
+          "atomic_file",
+          "recovery_group_order",
+          "vis_clip",
+          "columns",
+          "index_validation",
+          "planar_reduction",
+          "workbench_preview",
+          "job_pool",
+          "quake3_materials",
+          "lighting_math",
+          "cli_help",
+          "vis_mask",
+          "portal_graph",
+          "ftx",
+          "cli_games",
+          "terrain",
+          "area_factors_disabled",
+          "cell_graph",
+          "uv_fit",
+          "decompile_math",
+          "compiler_pipeline",
+          "light_comparison"
+        ],
+        "skipped": [
+          "area_factors"
+        ],
+        "failed": []
+      },
+      "post_counter_correction_suite": {
+        "path": ".agents/tmp/continuation/light-comparison/ctest-linux-checked.log",
+        "sha256": "93afcae0fd15139ecd4aa6f7b04fbf7087c7030d55aa7badc69954d9a651ffb7",
+        "groups": 5,
+        "passed": [
+          "lighting_evidence",
+          "light_probes",
+          "lighting_curves",
+          "lighting_materials"
+        ],
+        "skipped": [],
+        "failed": [
+          "light_comparison"
+        ],
+        "failure_explanation": "The new constant-region oracle counted the shared index table rather than per-surface triangle references. Only that assertion was corrected; the complete comparison matrix was rerun separately on the same binary."
+      },
+      "final_comparison_suite": {
+        "path": ".agents/tmp/continuation/light-comparison/ctest-linux-comparison.log",
+        "sha256": "bedfdf48cb7fa14bc1137560c9345c885b92ebb05799f184147dae12c78dda29",
+        "groups": 1,
+        "passed": [
+          "light_comparison"
+        ],
+        "skipped": [],
+        "failed": []
+      }
+    },
+    "sanitized": {
+      "compiler": {
+        "path": "build/linux-sanitized/bin/q3mapx",
+        "sha256": "cb289c5db02a943e49eefb4a32c809163f5738425b995364c8bab5f0dd09e9b4"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/light-comparison/build-sanitized-checked.log",
+        "sha256": "546ac394c1159534e2c743b673b06edd571ac41c58bae5f4297cdc6d9d2340a3"
+      },
+      "comparison_results": {
+        "path": "build/linux-sanitized/tests/light-comparison/results.json",
+        "sha256": "f01da01e76b1e8d40583b23ae716acaf792a759cc516dd1a8c959ce854d79c3b",
+        "reports": 67,
+        "cases": [
+          {
+            "case": "quake3-linear",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-linear-one",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-gamma",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-gamma-wrong-encoding",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 19.556613756613757,
+              "rmse_bytes": 24.625834930652523,
+              "maximum_error_bytes": 125.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-srgb",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-transfer",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-transfer-wrong-encoding",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 26.405820105820105,
+              "rmse_bytes": 38.088625418140076,
+              "maximum_error_bytes": 114.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-clipped",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-exact-budgets",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-surface-selector",
+            "selected": 210,
+            "errors": {
+              "samples": 210,
+              "components": 630,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-poisoned-sidecars",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-stripped",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 36.2037037037037,
+              "rmse_bytes": 54.8156940798921,
+              "maximum_error_bytes": 252.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-restored",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-misplaced",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 23.862962962962964,
+              "rmse_bytes": 37.912269935209785,
+              "maximum_error_bytes": 205.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-inside-solid",
+            "selected": 60,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 60
+          },
+          {
+            "case": "quake3-encoding-overflow",
+            "selected": 1260,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 1260
+          },
+          {
+            "case": "quake3-absent",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-constant",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-constant-stride",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "quake3-zero-normal",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-linear",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-linear-one",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-gamma",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-gamma-wrong-encoding",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 19.556613756613757,
+              "rmse_bytes": 24.625834930652523,
+              "maximum_error_bytes": 125.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-srgb",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-transfer",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-transfer-wrong-encoding",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 26.405820105820105,
+              "rmse_bytes": 38.088625418140076,
+              "maximum_error_bytes": 114.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-clipped",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-exact-budgets",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-surface-selector",
+            "selected": 210,
+            "errors": {
+              "samples": 210,
+              "components": 630,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-poisoned-sidecars",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-stripped",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 36.2037037037037,
+              "rmse_bytes": 54.8156940798921,
+              "maximum_error_bytes": 252.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-restored",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-misplaced",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 23.862962962962964,
+              "rmse_bytes": 37.912269935209785,
+              "maximum_error_bytes": 205.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-inside-solid",
+            "selected": 60,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 60
+          },
+          {
+            "case": "ja-encoding-overflow",
+            "selected": 1260,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 1260
+          },
+          {
+            "case": "ja-absent",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-constant",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-constant-stride",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-zero-normal",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-linear",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-linear-one",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-gamma",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-gamma-wrong-encoding",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 19.556613756613757,
+              "rmse_bytes": 24.625834930652523,
+              "maximum_error_bytes": 125.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-srgb",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-transfer",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-transfer-wrong-encoding",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 26.405820105820105,
+              "rmse_bytes": 38.088625418140076,
+              "maximum_error_bytes": 114.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-clipped",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-exact-budgets",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-surface-selector",
+            "selected": 210,
+            "errors": {
+              "samples": 210,
+              "components": 630,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-poisoned-sidecars",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-stripped",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 36.2037037037037,
+              "rmse_bytes": 54.8156940798921,
+              "maximum_error_bytes": 252.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-restored",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-misplaced",
+            "selected": 1260,
+            "errors": {
+              "samples": 1260,
+              "components": 3780,
+              "mae_bytes": 23.862962962962964,
+              "rmse_bytes": 37.912269935209785,
+              "maximum_error_bytes": 205.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-inside-solid",
+            "selected": 60,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 60
+          },
+          {
+            "case": "qfusion-encoding-overflow",
+            "selected": 1260,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 1260
+          },
+          {
+            "case": "qfusion-absent",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-constant",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-constant-stride",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-zero-normal",
+            "selected": 0,
+            "errors": {
+              "samples": 0,
+              "components": 0,
+              "mae_bytes": null,
+              "rmse_bytes": null,
+              "maximum_error_bytes": null
+            },
+            "unknown": 0
+          },
+          {
+            "case": "ja-styles-styled-spot",
+            "selected": 2310,
+            "errors": {
+              "samples": 2310,
+              "components": 6930,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "qfusion-styles-styled-spot",
+            "selected": 2310,
+            "errors": {
+              "samples": 2310,
+              "components": 6930,
+              "mae_bytes": 0.0,
+              "rmse_bytes": 0.0,
+              "maximum_error_bytes": 0.0
+            },
+            "unknown": 0
+          },
+          {
+            "case": "curves-model-comparison",
+            "selected": 832,
+            "errors": {
+              "samples": 826,
+              "components": 2478,
+              "mae_bytes": 0.015738498789346248,
+              "rmse_bytes": 0.1434611926670512,
+              "maximum_error_bytes": 2.0
+            },
+            "unknown": 6
+          },
+          {
+            "case": "sun-comparison",
+            "selected": 544,
+            "errors": {
+              "samples": 538,
+              "components": 1614,
+              "mae_bytes": 0.013011152416356878,
+              "rmse_bytes": 0.11406643860644058,
+              "maximum_error_bytes": 1.0
+            },
+            "unknown": 6
+          },
+          {
+            "case": "emitter-comparison",
+            "selected": 930,
+            "errors": {
+              "samples": 924,
+              "components": 2772,
+              "mae_bytes": 0.0021645021645021645,
+              "rmse_bytes": 0.046524210519923545,
+              "maximum_error_bytes": 1.0
+            },
+            "unknown": 6
+          },
+          {
+            "case": "mixed-comparison",
+            "selected": 762,
+            "errors": {
+              "samples": 756,
+              "components": 2268,
+              "mae_bytes": 0.014991181657848324,
+              "rmse_bytes": 0.15713484026367722,
+              "maximum_error_bytes": 2.0
+            },
+            "unknown": 6
+          },
+          {
+            "case": "mixed-bounced",
+            "selected": 769,
+            "errors": {
+              "samples": 763,
+              "components": 2289,
+              "mae_bytes": 8.61555264307558,
+              "rmse_bytes": 9.409637846573572,
+              "maximum_error_bytes": 22.0
+            },
+            "unknown": 6
+          }
+        ],
+        "output_preservation_cases": [
+          "quake3-both",
+          "quake3-offset",
+          "quake3-stride-0",
+          "quake3-max_samples-1",
+          "quake3-max_observations-1",
+          "quake3-max_work-1",
+          "quake3-surfaces-[0, 0]",
+          "quake3-surfaces-[199999]",
+          "quake3-max_samples-one-below",
+          "quake3-max_observations-one-below",
+          "quake3-max_work-one-below",
+          "quake3-nonfinite",
+          "ja-both",
+          "ja-offset",
+          "ja-stride-0",
+          "ja-max_samples-1",
+          "ja-max_observations-1",
+          "ja-max_work-1",
+          "ja-surfaces-[0, 0]",
+          "ja-surfaces-[199999]",
+          "ja-max_samples-one-below",
+          "ja-max_observations-one-below",
+          "ja-max_work-one-below",
+          "ja-nonfinite",
+          "qfusion-both",
+          "qfusion-offset",
+          "qfusion-stride-0",
+          "qfusion-max_samples-1",
+          "qfusion-max_observations-1",
+          "qfusion-max_work-1",
+          "qfusion-surfaces-[0, 0]",
+          "qfusion-surfaces-[199999]",
+          "qfusion-max_samples-one-below",
+          "qfusion-max_observations-one-below",
+          "qfusion-max_work-one-below",
+          "qfusion-nonfinite"
+        ],
+        "max_transfer_component_error": 3.301533251942601e-05,
+        "absolute_transfer_component_tolerance": 0.002
+      },
+      "actual_bakes": 22,
+      "zero_byte_error_controlled_bakes": 17,
+      "matrix_logs_scanned_for_sanitizer_diagnostics": 147,
+      "sanitizer_diagnostics": [],
+      "final_selected_suite": {
+        "path": ".agents/tmp/continuation/light-comparison/ctest-sanitized-checked.log",
+        "sha256": "064620c3c414ffaa5e94402235db6af339d65d2cb71b643f6c0cfb428f08c1c5",
+        "groups": 11,
+        "passed": [
+          "lighting_evidence",
+          "lighting_curves",
+          "bsp_validation",
+          "light_probes",
+          "compiler_pipeline",
+          "lightgrid",
+          "lighting_math",
+          "job_pool",
+          "lightgrid_cli",
+          "lighting_materials",
+          "light_comparison"
+        ],
+        "skipped": [],
+        "failed": []
+      }
+    }
+  },
+  "case_results_identical_across_platforms": true,
+  "cross_platform_response_objects": {
+    "compared": 67,
+    "exactly_equal": 64,
+    "fields": [
+      "sources",
+      "samples",
+      "settings",
+      "world_ambient",
+      "world_minlight",
+      "baked_comparison",
+      "comparison_summary"
+    ],
+    "different": [
+      "ja/gamma.json",
+      "qfusion/gamma.json",
+      "quake3/gamma.json"
+    ],
+    "numeric_difference_fields": [
+      "/samples/*/baked_lightmap/encoded_before_byte_conversion/*"
+    ],
+    "maximum_numeric_difference": 3.814697265625e-06,
+    "predicted_bytes_and_error_metrics_identical": true,
+    "qualification": "Input hashes and material filenames are workspace-specific and excluded. Each platform independently satisfies the transfer/error oracle; exact floating-point equality is observed, not guaranteed on other hardware or toolchains."
+  },
+  "normal_bake_reference_parity": {
+    "reference": {
+      "path": ".agents/tmp/continuation/light-comparison/reference/q3mapx.exe",
+      "sha256": "1c23177a825e1bde87f6f8ba005839c4dab850e4ec195e16cfc81dc6ad9081e7"
+    },
+    "reference_validation": "docs/validation/light-probes.json",
+    "reference_revision": "e59a32f703f3ac41c6a78e0266d06d8c10388914",
+    "report": {
+      "path": ".agents/tmp/continuation/light-comparison/reference-parity/lighting-report.json",
+      "sha256": "7aefa7f8098eede5893cb9085e5735fe4447b377050a6403d6575223f5e5a801"
+    },
+    "completion_log": {
+      "path": ".agents/tmp/continuation/light-comparison/reference-parity-checked.log",
+      "sha256": "df3bb581c4390be846ce316d15cb57e22efbaa3d9d9aaf5d1a66f188a04bc75e"
+    },
+    "bakes": 28,
+    "modes": [
+      "adaptive",
+      "bounce",
+      "deluxe",
+      "dirt",
+      "flood",
+      "random",
+      "supersampled"
+    ],
+    "runs_per_mode": [
+      "preceding compiler / 1 worker",
+      "current / 1 worker",
+      "current / 4 workers",
+      "current / 4 workers / disabled sample culling"
+    ],
+    "exact_lumps": [
+      "vertices",
+      "surfaces",
+      "lightmaps",
+      "lightgrid"
+    ],
+    "additional_checks": "The same completed harness checks alpha/filter material mutations, disabled shadows, a dense grid, and current 1/4/20/70-worker parity."
+  },
+  "limits": [
+    "Windows/Linux broad suites precede the final constant-region counter correction. Four related groups passed on each final Release binary; an erroneous new shared-index-table oracle failed and was corrected before rerunning the complete comparison matrix. The final sanitizer selection includes the corrected matrix.",
+    "The sanitizer run interrupted by the explicit pause has no completion result; the fresh eleven-group sanitizer run is recorded instead.",
+    "ASan lifetime-leak detection remains disabled; address and undefined-behavior checks remain active.",
+    "Linux area_factors is skipped without an available GPU. This CPU diagnostic has no performance claim.",
+    "Current profile/CLI encoding and materials form an explicit hypothesis, not recovered bake settings. Ambient/minlight uses world values on slot zero only; original surface overrides, normals/nudges and asset identities remain unknown.",
+    "Curved/material fixtures retain small direct residuals and six unknown traces each; the bounced fixture retains substantial unexplained error. Subsampling is reported but not executed. Residual error alone does not establish a missing light.",
+    "Only unambiguous, resolved, nonboundary internal texel associations with nonzero stored normals are compared. Constant regions, external/deluxe channels, vertex/grid lighting and missing pages are excluded. Empty/unknown cases have null metrics.",
+    "All extracted geometry/vertex/grid observations count toward work and observation limits, including surfaces outside the selection. Shared atlas associations receive equal observation weights, not independent statistical confidence.",
+    "No missing-light candidate generation, transfer calibration, spotlight-target inference, entity export, GUI workflow, renderer/editor/input automation or archive refresh was performed.",
+    "The fixed trace-node exhaustion branch and every scene/source/serialization ceiling still lack dedicated fixtures. Pair counts do not bound ray steps or wall time.",
+    "M11 Radiant patch RGB/alpha painting without alphaMod brushes and per-surface lightmap density with preview remain planned.",
+    "Automatic approval review rejected cleanup of .agents/tmp/continuation/light-comparison/explore, probe.py and probe.log as blocked by policy. Those disposable prototype files remain in the task area; deletion was not retried.",
+    "No new unrelated defect was reproduced. Previously documented parser-sign/include-line findings, compiler warnings, VIS discrepancies, raw-sidecar publication and intermittent Windows process delays remain outside this round."
+  ]
+}

@@ -2598,3 +2598,72 @@ findings, compiler warnings (including `UnsortedSet` layout and an untouched
 meta-surface initialization warning), VIS discrepancies, raw-sidecar publication
 and intermittent Windows process delays remain outside this round. Intelligent
 compiler optimization, light inference and Radiant integration remain active.
+
+## 2026-10-01 — Baked-lightmap hypothesis comparison
+
+Added automatic `baked_lightmaps` selection to `-light -probes`. The request selects
+bounded geometric texel associations from native IBSP/RBSP/FBSP lightmaps and
+evaluates retained or supplied lights through the real CPU forward reference.
+World ambient/minlight on slot zero, current material brightness and the shared
+native color encoder produce predicted bytes and per-style residuals. Explicit
+normal offsets and stored-normal/model-origin assumptions remain in the report.
+This provides a measurable objective for future fitting without claiming to
+discover missing lights or original bake settings.
+
+Selection excludes ambiguous, unresolved, boundary and zero-normal associations,
+constant-UV regions and unavailable pages. Unknown clusters/trace limits and
+unrepresentable encoded values contribute no numeric error; an empty selection
+has null metrics. Observation and work budgets cover complete extraction even
+when only particular surfaces are requested. Shared atlas associations retain
+separate surface provenance and are not independent statistical samples. Input
+and existing report files remain protected by the prior checked output contract.
+
+The final matrix passes 67 reports and 36 preserved-output failures on Windows
+Release, Linux Release and Linux ASan/UBSan. Twenty-two actual lighting bakes
+include 17 closed-room/native-style controls with exactly matching selected
+interior texels. An independent scalar transfer oracle has maximum component
+error 3.31e-5 against a 2e-3 tolerance. Wrong encoding, removed lights, misplaced
+proposals and correctly supplied parameters exercise useful score differences.
+Curves, model origins, sun-only and emitter-only scenes retain their measured
+small residuals and six unknown traces each; the bounced scene has MAE 8.62 byte
+units, exposing the direct model's omitted contribution.
+
+Final review corrected constant-region exclusions to count every primitive,
+including those skipped when extraction strides representative records. Added
+exact-limit/one-below controls and a valid surface selector check. The new
+constant-region test initially counted the shared index table instead of
+per-surface triangle references; its independent oracle was corrected before
+the final matrix passed. All 67 case summaries and predicted bytes agree across
+platforms. Sixty-four complete response objects agree exactly; three gamma
+cases differ only in floats before byte conversion.
+
+All 75 Windows CTest groups and 74 of 75 Linux groups pass before the final
+counter correction; Linux skips unavailable GPU `area_factors`. Four related
+groups pass on each final Release binary, followed by the corrected comparison
+matrix. The fresh final sanitizer run passes all 11 selected groups with the
+established lifetime-leak exclusion, replacing the incomplete run interrupted
+by the pause. The 147 retained comparison logs per platform contain no
+address/undefined-behavior sanitizer diagnostics. Twenty-eight ordinary bakes
+across seven modes preserve exact vertex/surface/lightmap/grid bytes against the
+preceding validated executable, including one/four-worker and unculled controls;
+the same harness also passes material mutations, dense-grid and 1/4/20/70-worker
+checks. No renderer, editor or user-input automation was used.
+
+See [the comparison contract](LIGHT-PROBES.md#automatic-internal-lightmap-comparison),
+[reproduction instructions](DEVELOPMENT.md#baked-lightmap-hypothesis-comparison) and
+[validation evidence](validation/light-comparison.json). Build/test logs, the
+preceding executable and evidence generator remain under
+`.agents/tmp/continuation/light-comparison/`; native fixtures and reports remain
+under each build's `tests/light-comparison/`. Automatic approval review rejected
+cleanup of the disposable `explore/`, `probe.py` and `probe.log` prototypes as
+"blocked by policy"; these remain in that task area. Cleanup was not retried,
+and older policy-blocked targets were not touched.
+
+Original bake calibration, source-light localization, spotlight/target recovery,
+complete asset provenance and broader resource/trace-cap qualification remain
+open. The CLI feature adds no GUI workflow, GPU acceleration or measured speedup;
+portable archives were not refreshed. No new external code was incorporated.
+No new unrelated source defect was reproduced. Previously documented parser,
+VIS, compiler-warning, sidecar-publication and Windows process-delay findings
+remain outside this round. The intelligent compiler work and M11 Radiant
+RGB/alpha painting and per-surface density/preview plan remain active.

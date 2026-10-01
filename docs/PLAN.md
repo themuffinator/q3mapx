@@ -300,6 +300,11 @@ limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md
   per-source/style provenance, bounded jobs and protected input/report files.
   [Direct lighting probes](LIGHT-PROBES.md) now provide this prerequisite;
   byte-transfer calibration, complete bake effects and inverse fitting remain open.
+- [x] Connect geometric internal-lightmap observations to the CPU reference and
+  shared native encoding, with explicit sampling/ambient assumptions, exclusions,
+  per-style byte residuals and bounded automatic selection. Validate actual bakes,
+  known supplied proposals and wrong-encoding/position controls. This evaluates
+  hypotheses; unknown bake calibration and candidate generation remain open.
 - [ ] Infer stripped entity lights from baked lightmaps, vertex/grid and available
   directional lighting. Explain sky/sun, surface emitters, ambient and indirect
   contributions before fitting residual point/spot lights; account for bake settings.

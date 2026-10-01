@@ -2,7 +2,9 @@
 
 `-light -probes` evaluates explicit world-space points using the compiler's CPU
 direct-light transport. It reports contributions from retained entity lights,
-shader emitters, sun/sky and optional proposed lights separately. This supplies
+shader emitters, sun/sky and optional proposed lights separately. It can also
+select geometric internal-lightmap observations and compare an encoded direct
+hypothesis with the stored texels. This supplies
 a reference model for the [light recovery roadmap](RECOVERY-INFERENCE.md).
 It does not discover missing lights, export entities or reproduce a complete bake.
 
@@ -48,7 +50,8 @@ Positions and normals are world-space, including for inline brush models.
 Normals are normalized and `offset` moves the point along that normalized normal.
 No hidden luxel nudge, phong interpolation or bump-normal reconstruction occurs.
 
-`samples` is required and contains 1–10,000 entries. Each entry requires `surface`,
+Choose either `samples` or `baked_lightmaps`, never both. Explicit `samples`
+contains 1–10,000 entries. Each entry requires `surface`,
 `position` and `normal`; `offset` defaults to zero and accepts −16 through 16 map
 units. Vector components must be finite, between −1,000,000 and 1,000,000, and
 representable as native floats without underflow to zero. Normal magnitude must
@@ -76,6 +79,82 @@ into a spotlight, or a sun when requested. Private target names avoid surviving
 targetnames, and no existing entity links are changed. Proposals are supplied
 hypotheses; recreating a stripped light by supplying its known parameters is a
 forward-equivalence check, not evidence of inverse localization.
+
+## Automatic internal-lightmap comparison
+
+Replace `samples` with `baked_lightmaps` to select texel centers from the existing
+geometric lighting-evidence analysis. The same command and optional `lights` array
+then evaluate the direct hypothesis at those points:
+
+```json
+{
+  "schema_version": 1,
+  "baked_lightmaps": {
+    "stride": 4,
+    "normal_offset": 1,
+    "max_samples": 10000,
+    "max_observations": 200000,
+    "max_work": 50000000
+  },
+  "lights": []
+}
+```
+
+`normal_offset` is required. It is an explicit sampling assumption in −16 through
+16 map units, not an inferred bake nudge. `stride` defaults to four and accepts
+1–1024; eligible atlas x/y coordinates must be multiples of it. Optional `surfaces`
+is a nonempty list of distinct native surface indices. Omission selects all
+surfaces. `max_samples` accepts 1–10,000, `max_observations` 1–200,000, and `max_work`
+1–1,000,000,000; the example shows their defaults. The observation/work budgets
+cover the underlying extraction, including vertex/grid records and surfaces that
+are later excluded by the selection. Surface selection does not bypass those
+extraction limits. Budget exhaustion fails without publishing a partial report.
+
+Selection supports indexed triangles and stored biquadratic patches. It excludes
+ambiguous, unresolved, boundary and zero-normal mappings, constant-UV regions and
+unavailable internal pages. Surviving inline-model origins convert selected
+positions to world space. It uses interpolated stored normals and the requested
+normal offset; original triangle-edge nudges, axial offsets on oblique surfaces,
+phong/bump normals, curve tessellation and source surface extras remain unknown.
+Vertex/grid lighting, external lightmaps and deluxe directions are not compared.
+
+For each selected surface/style, the comparison sums direct responses, adds
+world ambient and applies world minimum light on slot zero, then uses the current
+material's lightmap brightness and the compiler's shared color-encoding function.
+The function retains the actual contrast, gamma, exposure, saturation,
+compensation, RGB range normalization, sRGB and byte-conversion order. It does not
+invert stored bytes. CLI/profile settings and current materials describe the
+tested hypothesis; they are not recovered original bake settings. Discarded
+per-surface ambient/shadow overrides, bounce, filtering, dirt, floodlight and
+supersampling can all leave residuals even when the original direct lights survive.
+
+The optional `baked_comparison` object records sampling, budgets, work, exclusions
+and assumptions. An empty `selected_surfaces` array in the report means all
+surfaces were considered. Exclusion names identify their units: `surface_*`
+counts surfaces, `slot_*` counts slots, `*_triangles`/`constant_regions` count
+primitives before representative-record striding, and mapping exclusions count
+sampled texel associations.
+
+Each selected sample has a `baked_lightmap` object containing slot/style/page,
+texel coordinates, observed RGB, current material brightness, predicted RGB and
+signed `residual_bytes` (predicted minus observed). It also retains the hypothesis
+before encoding and encoded values before native byte conversion. A trace with
+unknown illumination produces `unknown_trace`; a nonfinite or out-of-byte-range
+transfer produces `unrepresentable_encoding`. Neither contributes a numeric error.
+Subsampling requests remain marked on comparisons that did not execute them.
+
+`comparison_summary` reports MAE, RMSE and maximum absolute component error in byte
+units for all compared observations, each style, and the subset without an
+observed channel equal to 255. A 255 channel can indicate lost information; lower
+values do not prove an invertible transfer. Shared atlas texels may occur in
+multiple surface associations, so these equal-observation-weight summaries are
+not independent statistical estimates. With no usable observations, status is
+`no_usable_observations` and error metrics are null, not zero.
+
+This mode can compare retained lights, a missing-light baseline and supplied
+proposals under one fixed hypothesis. It does not generate positions, fit light
+parameters, calibrate unknown encoding, prove that a residual needs an entity
+light or establish the author's original light arrangement.
 
 ## Evaluation and report
 
@@ -110,7 +189,8 @@ and minimum light are separate metadata and are not added to these sums.
 An empty array on an unknown sample is not measured darkness. Requested
 subsampling is reported but not executed. Gamma, exposure, compensation,
 brightness, contrast and saturation are recorded as context; output encoding is
-not applied. Bounce, dirt, floodlight, filtering, luxel reconstruction,
+not applied to the direct response arrays. The optional baked comparison applies
+them in its separate hypothesis result. Bounce, dirt, floodlight, filtering, luxel reconstruction,
 supersampling and final clamping are absent. Do not subtract these floating-point
 responses directly from stored RGB bytes. Calibration and complete bake effects
 remain prerequisites for qualified inverse fitting.
@@ -158,9 +238,13 @@ setup estimates may reject a scene that would
 ultimately create fewer sources. Pair limits bound evaluations, not ray steps or
 elapsed time. Other scene/asset setup still uses existing compiler algorithms.
 
-See [reproduction instructions](DEVELOPMENT.md#direct-lighting-probes) and
-[recorded validation](validation/light-probes.json). Qualification covers synthetic
+See [reproduction instructions](DEVELOPMENT.md#direct-lighting-probes),
+[direct-probe validation](validation/light-probes.json) and
+[baked-comparison validation](validation/light-comparison.json). Qualification covers synthetic
 IBSP/RBSP/FBSP fields, real material tracing and output preservation. The fixed
 trace-node exhaustion branch and every resource ceiling do not yet have dedicated
 fixtures; no full-bake equivalence or source-light discovery claim follows from
-these checks.
+these checks. Controlled axial-room bakes qualify the encoded comparison across
+native formats and several transfer settings. Curved/material scenes retain
+small residuals and unknown samples; bounced lighting retains a larger unexplained
+component. These distinctions are recorded rather than hidden by a zero-error claim.

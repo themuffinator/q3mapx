@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "q3map2.h"
 #include "light_probes.h"
+#include "bsp_lighting_evidence.h"
 #include "bspfile_ibsp.h"
 #include "bspfile_rbsp.h"
 #include "q3mapx/atomic_file.h"
@@ -140,7 +141,31 @@ void allowedOptions(Args& args) {
         else if(!flags.contains(option)) throw std::runtime_error("Light probe mode does not support option: "+option);
     }
 }
-struct Sample { int surface; Vector3 position,normal; float offset=0; };
+struct Sample {
+    int surface; Vector3 position,normal; float offset=0;
+    int slot=-1,page=-1,x=0,y=0,style=0; bool patch=false;
+    Vector3b observed{0};
+};
+struct BakedOptions {
+    bool enabled=false;
+    unsigned stride=4;
+    uint64_t maxWork=50'000'000,maxObservations=200'000;
+    size_t sampleLimit=maxSamples;
+    float offset=0;
+    std::set<int> surfaces;
+};
+struct ErrorTotals {
+    uint64_t samples=0,components=0;
+    double absolute=0,squared=0,maximum=0;
+    void add(const Vector3b& prediction,const Vector3b& observed) {
+        ++samples;
+        for(int a=0;a<3;++a) {
+            const double error=double(prediction[a])-observed[a];
+            ++components; absolute+=std::abs(error); squared+=error*error;
+            maximum=std::max(maximum,std::abs(error));
+        }
+    }
+};
 struct Response { size_t light; Vector3 color; float subsampling; };
 struct Result { int cluster=-1; bool traceLimit=false; Vector3 origin; std::vector<Response> responses; };
 class Stream {
@@ -158,6 +183,13 @@ void value(Writer& w,const char* key,double n) { if(!std::isfinite(n)) throw std
 void vec(Writer& w,const char* key,const Vector3& v) { if(!finite(v)) throw std::runtime_error("Non-finite probe vector"); w.Key(key); w.StartArray(); for(int a=0;a<3;++a) w.Double(v[a]); w.EndArray(); }
 void text(Writer& w,const char* key,const char* v) { w.Key(key); w.String(v); }
 void flag(Writer& w,const char* key,bool v) { w.Key(key); w.Bool(v); }
+void rgb(Writer& w,const char* key,const Vector3b& v) { w.Key(key); w.StartArray(); for(int a=0;a<3;++a) w.Uint(v[a]); w.EndArray(); }
+void errors(Writer& w,const char* key,const ErrorTotals& e) {
+    w.Key(key); w.StartObject(); number(w,"samples",e.samples); number(w,"components",e.components);
+    if(e.components) { value(w,"mae_bytes",e.absolute/e.components); value(w,"rmse_bytes",std::sqrt(e.squared/e.components)); value(w,"maximum_error_bytes",e.maximum); }
+    else for(const char* field:{"mae_bytes","rmse_bytes","maximum_error_bytes"}) { w.Key(field); w.Null(); }
+    w.EndObject();
+}
 const char* type(const light_t& light) {
     switch(light.type) { case ELightType::Point:return "point"; case ELightType::Spot:return "spot"; case ELightType::Area:return "area"; case ELightType::Sun:return "sun_sky"; }
     return "unknown";
@@ -173,9 +205,50 @@ struct LightProbes::Data {
     std::vector<int> candidateEntities;
     std::set<std::string> targets;
     std::vector<const light_t*> activeLights;
+    BakedOptions baked;
+    std::map<std::string,uint64_t> exclusions;
+    uint64_t evidenceWork=0,evidenceObservations=0;
     size_t originalEntities=0;
     uint64_t pairLimit=5'000'000;
     std::atomic<size_t> next{0},responses{0};
+    void selectBakedSamples() {
+        BSPEvidence budget;
+        const auto evidence=analyzeBSPLighting(budget,baked.maxWork,{baked.stride,baked.maxObservations});
+        evidenceWork=budget.workUsed; evidenceObservations=evidence.observations;
+        std::vector<Vector3> offsets(bspModels.size(),Vector3(0));
+        for(const auto& e:entities) if(const char* m=e.valueForKey("model"); *m=='*') offsets[std::atoi(m+1)]=e.vectorForKey("origin");
+        for(int index:baked.surfaces) if(size_t(index)>=bspDrawSurfaces.size()) throw std::runtime_error("Baked probe surface index is outside the BSP");
+        for(size_t i=0;i<evidence.surfaces.size();++i) {
+            if(!baked.surfaces.empty() && !baked.surfaces.contains(int(i))) { ++exclusions["surface_not_selected"]; continue; }
+            const auto& surface=evidence.surfaces[i]; const auto& ds=bspDrawSurfaces[i];
+            for(int slot=0;slot<MAX_LIGHTMAPS;++slot) {
+                const auto& item=surface.slots[slot];
+                if(std::string_view(item.status)!="analyzed" && std::string_view(item.status)!="bezier_analyzed") {
+                    ++exclusions[std::string("slot_")+item.status]; continue;
+                }
+                exclusions["constant_regions"]+=item.constantRegions;
+                exclusions["degenerate_geometry_triangles"]+=item.degenerateGeometryTriangles;
+                exclusions["degenerate_uv_triangles"]+=item.degenerateUVTriangles;
+                const auto add=[&](const auto& point,bool patch,bool unresolved) {
+                    if(unresolved) { ++exclusions["unresolved_mapping"]; return; }
+                    if(point.ambiguous) { ++exclusions["ambiguous_mapping"]; return; }
+                    if(point.boundary) { ++exclusions["mapping_boundary"]; return; }
+                    if(point.normal==std::array<double,3>{}) { ++exclusions["zero_normal"]; return; }
+                    if(samples.size()>=baked.sampleLimit) throw std::runtime_error("Baked probe sample limit exceeded; increase stride or restrict surfaces");
+                    Sample sample{}; sample.surface=int(i); sample.slot=slot; sample.page=ds.lightmapNum[slot];
+                    sample.style=ds.lightmapStyles[slot]; sample.x=point.x; sample.y=point.y; sample.patch=patch; sample.offset=baked.offset;
+                    for(int a=0;a<3;++a) { sample.position[a]=float(point.position[a])+offsets[surface.model][a]; sample.normal[a]=float(point.normal[a]); }
+                    vector3_normalise(sample.normal);
+                    if(!finite(sample.position) || !finite(sample.normal)) throw std::runtime_error("Invalid baked probe geometry");
+                    const size_t offset=((size_t(sample.page)*evidence.pageSize+sample.y)*evidence.pageSize+sample.x)*3;
+                    for(int a=0;a<3;++a) sample.observed[a]=bspLightBytes[offset+a];
+                    samples.push_back(sample);
+                };
+                for(const auto& p:item.observations) add(p,false,false);
+                for(const auto& p:item.patchObservations) add(p,true,p.unresolved || !p.rootHits);
+            }
+        }
+    }
     void sample(size_t index) {
         const auto& s=samples[index]; auto& result=results[index]; const auto& info=surfaceInfos[s.surface];
         result.origin=s.position+s.normal*s.offset;
@@ -229,18 +302,36 @@ std::unique_ptr<LightProbes> LightProbes::parse(Args& args,const char* source) {
     data->input.Parse<rapidjson::kParseValidateEncodingFlag|rapidjson::kParseIterativeFlag>(content.data(),content.size());
     if(data->input.HasParseError()) throw std::runtime_error("Invalid probe JSON at byte "+std::to_string(data->input.GetErrorOffset()));
     const auto& doc=data->input;
-    fields(doc,{"schema_version","samples","lights"}); integer(required(doc,"schema_version"),1,1);
-    const auto& samples=required(doc,"samples");
-    if(!samples.IsArray() || samples.Empty() || samples.Size()>maxSamples) throw std::runtime_error("Light probes require 1..10000 samples");
-    for(const auto& s:samples.GetArray()) {
-        fields(s,{"surface","position","normal","offset"});
-        Sample sample; sample.surface=integer(required(s,"surface"),0,200'000);
-        sample.position=vector(required(s,"position")); sample.normal=vector(required(s,"normal"));
-        const double n=std::hypot(double(sample.normal[0]),double(sample.normal[1]),double(sample.normal[2]));
-        if(n<1e-12) throw std::runtime_error("Light probe normals must be nonzero");
-        sample.normal/=n;
-        if(s.HasMember("offset")) sample.offset=floatValue(s["offset"],-16,16);
-        data->samples.push_back(sample);
+    fields(doc,{"schema_version","samples","baked_lightmaps","lights"}); integer(required(doc,"schema_version"),1,1);
+    if(doc.HasMember("samples")==doc.HasMember("baked_lightmaps")) throw std::runtime_error("Choose exactly one of samples or baked_lightmaps");
+    if(doc.HasMember("samples")) {
+        const auto& samples=doc["samples"];
+        if(!samples.IsArray() || samples.Empty() || samples.Size()>maxSamples) throw std::runtime_error("Light probes require 1..10000 samples");
+        for(const auto& s:samples.GetArray()) {
+            fields(s,{"surface","position","normal","offset"});
+            Sample sample; sample.surface=integer(required(s,"surface"),0,200'000);
+            sample.position=vector(required(s,"position")); sample.normal=vector(required(s,"normal"));
+            const double n=std::hypot(double(sample.normal[0]),double(sample.normal[1]),double(sample.normal[2]));
+            if(n<1e-12) throw std::runtime_error("Light probe normals must be nonzero");
+            sample.normal/=n;
+            if(s.HasMember("offset")) sample.offset=floatValue(s["offset"],-16,16);
+            data->samples.push_back(sample);
+        }
+    }
+    else {
+        const auto& settings=doc["baked_lightmaps"]; auto& baked=data->baked; baked.enabled=true;
+        fields(settings,{"stride","normal_offset","max_samples","max_observations","max_work","surfaces"});
+        baked.offset=floatValue(required(settings,"normal_offset"),-16,16);
+        if(settings.HasMember("stride")) baked.stride=integer(settings["stride"],1,1024);
+        if(settings.HasMember("max_samples")) baked.sampleLimit=integer(settings["max_samples"],1,int(maxSamples));
+        if(settings.HasMember("max_observations")) baked.maxObservations=integer(settings["max_observations"],1,200'000);
+        if(settings.HasMember("max_work")) baked.maxWork=integer(settings["max_work"],1,1'000'000'000);
+        if(settings.HasMember("surfaces")) {
+            const auto& surfaces=settings["surfaces"];
+            if(!surfaces.IsArray() || surfaces.Empty() || surfaces.Size()>200'000) throw std::runtime_error("Invalid baked probe surface selection");
+            for(const auto& surface:surfaces.GetArray()) if(!baked.surfaces.insert(integer(surface,0,199'999)).second)
+                throw std::runtime_error("Duplicate baked probe surface selection");
+        }
     }
     if(doc.HasMember("lights") && (!doc["lights"].IsArray() || doc["lights"].Size()>256)) throw std::runtime_error("At most 256 proposed probe lights are supported");
     return std::unique_ptr<LightProbes>(new LightProbes(std::move(data)));
@@ -268,6 +359,7 @@ void LightProbes::prepare() {
         if(const char* target=e.valueForKey("targetname"); *target) d.targets.insert(target);
     }
     for(size_t i=1;i<poses.size();++i) if(poses[i]!=1) throw std::runtime_error("Inline probe model needs exactly one surviving entity pose");
+    if(d.baked.enabled) d.selectBakedSamples();
     d.originalEntities=entities.size();
     if(d.input.HasMember("lights")) for(const auto& light:d.input["lights"].GetArray()) {
         fields(light,{"origin","intensity","color","spawnflags","fade","angle_scale","extra_distance","style","target","radius","sun"});
@@ -335,7 +427,7 @@ void LightProbes::run(const Vector3& ambient,size_t generated) {
     number(w,"pair_tests_upper_bound",lights.size()*d.samples.size()); number(w,"pair_limit",d.pairLimit);
     number(w,"response_limit",maxResponses); number(w,"nonzero_responses",d.responses); number(w,"max_active_workers",32);
     number(w,"trace_node_capacity",MAX_TRACE_TEST_NODES); value(w,"cluster_tolerance",0.125);
-    text(w,"coordinates","explicit_world_space_with_requested_normal_offset");
+    text(w,"coordinates",d.baked.enabled?"bsp_geometric_associations_with_model_origins_and_requested_normal_offset":"explicit_world_space_with_requested_normal_offset");
     vec(w,"world_ambient",ambient); vec(w,"world_minlight",minLight);
     w.Key("settings"); w.StartObject();
     for(const auto& [key,n]:std::array<std::pair<const char*,double>,12>{{{"point_scale",pointScale},{"spot_scale",spotScale},{"area_scale",areaScale},{"sky_scale",skyScale},
@@ -343,6 +435,24 @@ void LightProbes::run(const Vector3& ambient,size_t generated) {
         {"saturation",g_lightmapSaturation},{"maximum_light",maxLight},{"falloff_tolerance",falloffTolerance}}}) value(w,key,n);
     flag(w,"half_lambert",lightAngleHL); flag(w,"wolf",wolfLight); flag(w,"trace_occlusion",!noTrace); flag(w,"fast",fast); flag(w,"faster",faster);
     flag(w,"lightmaps_srgb",lightmapsRGB); flag(w,"textures_srgb",texturesRGB); flag(w,"entity_colors_srgb",colorsRGB); w.EndObject();
+    if(d.baked.enabled) {
+        w.Key("baked_comparison"); w.StartObject();
+        text(w,"status",d.samples.empty()?"no_usable_observations":"direct_encoding_hypothesis");
+        flag(w,"original_bake_settings_known",false); flag(w,"encoding_calibrated",false);
+        text(w,"sampling","unambiguous_nonboundary_internal_texel_centers_with_explicit_normal_offset");
+        text(w,"normal_source","interpolated_stored_vertex_or_patch_control_normals");
+        text(w,"encoding","current_compiler_ColorToFloat_then_native_byte_conversion");
+        text(w,"ambient_minlight","world_values_on_slot_zero_only_unknown_source_overrides");
+        text(w,"weighting","equal_per_surface_slot_texel_observation_not_independent_texels");
+        number(w,"stride",d.baked.stride); value(w,"normal_offset",d.baked.offset);
+        number(w,"page_size",g_game->lightmapSize); number(w,"max_samples",d.baked.sampleLimit);
+        number(w,"max_observations",d.baked.maxObservations); number(w,"max_work",d.baked.maxWork);
+        number(w,"evidence_observations",d.evidenceObservations); number(w,"evidence_work",d.evidenceWork);
+        number(w,"selected_samples",d.samples.size());
+        w.Key("selected_surfaces"); w.StartArray(); for(int i:d.baked.surfaces) w.Int(i); w.EndArray();
+        w.Key("exclusions"); w.StartObject(); for(const auto& [key,count]:d.exclusions) number(w,key.c_str(),count); w.EndObject();
+        w.EndObject();
+    }
     w.Key("proposed_entity_indices"); w.StartArray(); for(int e:d.candidateEntities) w.Int(e); w.EndArray();
     w.Key("sources"); w.StartArray();
     for(size_t i=0;i<d.activeLights.size();++i) {
@@ -369,6 +479,8 @@ void LightProbes::run(const Vector3& ambient,size_t generated) {
         flag(w,"sky",bool(si.compileFlags&C_SKY)); value(w,"surface_light",si.value); value(w,"floodlight_intensity",si.floodlightIntensity);
         value(w,"filter_radius",si.lmFilterRadius); value(w,"lightmap_brightness",si.lmBrightness); w.EndObject();
     } w.EndArray();
+    ErrorTotals allErrors,non255Errors; std::map<int,ErrorTotals> styleErrors;
+    uint64_t unknownComparisons=0,invalidEncoding=0,subsamplingComparisons=0;
     w.Key("samples"); w.StartArray();
     for(size_t i=0;i<d.samples.size();++i) {
         const auto& sample=d.samples[i]; const auto& r=d.results[i]; w.StartObject(); number(w,"index",i); number(w,"surface",sample.surface);
@@ -382,8 +494,51 @@ void LightProbes::run(const Vector3& ambient,size_t generated) {
             auto [entry,inserted]=total.try_emplace(style,Vector3(0)); entry->second+=response.color;
         } w.EndArray();
         w.Key("direct_by_style"); w.StartArray(); for(const auto& [style,color]:total) { w.StartObject(); number(w,"style",style); vec(w,"linear_rgb",color); w.EndObject(); } w.EndArray();
+        if(sample.slot>=0) {
+            w.Key("baked_lightmap"); w.StartObject(); number(w,"slot",sample.slot); number(w,"style",sample.style); number(w,"page",sample.page);
+            w.Key("texel"); w.StartArray(); w.Int(sample.x); w.Int(sample.y); w.EndArray();
+            text(w,"geometry",sample.patch?"stored_bezier":"indexed_triangles"); rgb(w,"observed_rgb",sample.observed);
+            const bool has255=sample.observed[0]==255 || sample.observed[1]==255 || sample.observed[2]==255;
+            flag(w,"observed_has_255_channel",has255);
+            const float brightness=surfaceInfos[sample.surface].si->lmBrightness;
+            value(w,"material_lightmap_brightness",brightness);
+            const bool subsampling=std::any_of(r.responses.begin(),r.responses.end(),[&](const auto& response) {
+                return d.activeLights[response.light]->style==sample.style && response.subsampling!=0;
+            });
+            flag(w,"subsampling_requested",subsampling);
+            if(r.cluster<0 || r.traceLimit) {
+                ++unknownComparisons; text(w,"status","unknown_trace");
+            }
+            else {
+                Vector3 color(0);
+                if(auto found=total.find(sample.style);found!=total.end()) color=found->second;
+                if(sample.slot==0) { color+=ambient; for(int a=0;a<3;++a) color[a]=std::max(color[a],minLight[a]); }
+                vec(w,"hypothesis_linear_rgb",color);
+                const Vector3 encoded=ColorToFloat(color,1,brightness);
+                if(!finite(encoded) || std::any_of(encoded.data(),encoded.data()+3,[](float v) { return v<0 || v>=256; })) {
+                    ++invalidEncoding; text(w,"status","unrepresentable_encoding");
+                }
+                else {
+                    const Vector3b predicted=encoded;
+                    text(w,"status",subsampling?"compared_without_requested_subsampling":"compared");
+                    vec(w,"encoded_before_byte_conversion",encoded); rgb(w,"predicted_rgb",predicted);
+                    w.Key("residual_bytes"); w.StartArray(); for(int a=0;a<3;++a) w.Int(int(predicted[a])-sample.observed[a]); w.EndArray();
+                    allErrors.add(predicted,sample.observed); styleErrors[sample.style].add(predicted,sample.observed);
+                    if(!has255) non255Errors.add(predicted,sample.observed);
+                    if(subsampling) ++subsamplingComparisons;
+                }
+            }
+            w.EndObject();
+        }
         w.EndObject();
     } w.EndArray();
+    if(d.baked.enabled) {
+        w.Key("comparison_summary"); w.StartObject(); errors(w,"all_compared",allErrors); errors(w,"without_observed_255_channel",non255Errors);
+        number(w,"unknown_trace",unknownComparisons); number(w,"unrepresentable_encoding",invalidEncoding);
+        number(w,"compared_without_requested_subsampling",subsamplingComparisons);
+        w.Key("by_style"); w.StartArray(); for(const auto& [style,e]:styleErrors) { w.StartObject(); number(w,"style",style); errors(w,"errors",e); w.EndObject(); } w.EndArray();
+        w.EndObject();
+    }
     w.Key("limitations"); w.StartArray();
     for(const char* s:{
         "This is the current compiler's direct CPU forward model with current assets and explicit points/normals. No original lights, bake settings or source entities are inferred or exported.",
@@ -394,6 +549,11 @@ void LightProbes::run(const Vector3& ambient,size_t generated) {
         "Zero responses are omitted only for sampled points. An unusable cluster or trace reaching its fixed node capacity has unknown illumination, not a measured zero; partial responses are discarded. Alpha/filter traces can request subsampling; the diagnostic does not supersample them.",
         "Pair/source/response limits and a 64 MiB report ceiling bound this diagnostic's retained data. Scene preparation and each trace use existing compiler algorithms; pair work is not a ray-step count or elapsed-time guarantee.",
         "No BSP, MAP, SRF, lightmap or generated shader output is written. Source/request hashes are rechecked before publishing the staged report. Concurrent changes to source, assets or destinations are unsupported."
+    }) w.String(s);
+    if(d.baked.enabled) for(const char* s:{
+        "Automatic internal-lightmap comparisons apply current compiler encoding, world ambient/minlight on slot zero, and current material brightness to the direct hypothesis. These are declared assumptions, not recovered or calibrated bake settings. Residuals are predicted minus stored bytes, not decoded irradiance or evidence of missing entity lights.",
+        "Ambiguous/unresolved/boundary/zero-normal mappings and constant-UV regions are excluded. Vertex/grid/external/deluxe channels are not compared. Stored normals, an explicit normal offset and surviving model origins do not reconstruct original luxel nudges, normals, tessellation or discarded source ambient/shadow overrides.",
+        "Different surfaces can reference the same stored texel. Error summaries weight observations equally and are not statistical confidence. A channel equal to 255 flags possible information loss; values below 255 do not prove an invertible transfer. Unknown traces and unrepresentable encodings are excluded from numeric errors, never counted as a match."
     }) w.String(s);
     w.EndArray(); w.EndObject(); stream.Put('\n'); stream.Flush(); output.commit();
     Sys_Printf("Light probes: %zu samples, %zu active sources, %zu nonzero responses\n",d.samples.size(),d.activeLights.size(),size_t(d.responses));

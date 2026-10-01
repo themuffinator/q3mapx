@@ -162,7 +162,13 @@ fitting weights.
 A first direct CPU forward reference is now available through
 [`-light -probes`](LIGHT-PROBES.md). It evaluates explicit points/normals with the
 compiler's own retained/proposed lights, shader emitters, sun/sky, attenuation and
-material traces, and separates source/style responses. It reads no original MAP
+material traces, and separates source/style responses. Its `baked_lightmaps`
+request mode now connects qualified geometric texel associations to the same
+reference and native color encoding. Per-style byte residuals compare a declared
+direct-light hypothesis with stored RGB; ambiguous mappings and unknown traces
+remain explicit, and no usable observations produce null metrics. Controlled
+real bakes qualify several encoding choices, while curved/material and bounced
+fixtures expose residual model error. It reads no original MAP
 or SRF and writes no source geometry or entities. Supplied proposals are hypotheses;
 the mode does not generate candidates or infer spotlight targets. Transfer-function
 calibration, deluxe/external channels, bounce and other bake effects remain open

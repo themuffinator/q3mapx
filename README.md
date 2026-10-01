@@ -32,7 +32,9 @@ with stored colors/styles, curved-patch inverses, constant-UV primitive footprin
 and explicit mapping uncertainty; source-light fitting remains planned.
 Use [`-light -probes`](docs/LIGHT-PROBES.md) to evaluate explicit points and
 proposed lights with the compiler's direct CPU model, separating retained lights,
-surface emitters and sun/sky without writing source or bake outputs.
+surface emitters and sun/sky without writing source or bake outputs. Its optional
+automatic texel comparison scores the encoded hypothesis against internal
+lightmaps with explicit sampling assumptions and unknown/excluded observations.
 Optional [detail and group inference](docs/DECOMPILATION.md#group-inference-policy)
 can now export cell-supported detail flags and surface-supported `func_group`
 assemblies, with bounded work, rebuild-order protection and explicit uncertainty.

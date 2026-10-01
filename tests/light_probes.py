@@ -32,8 +32,8 @@ def floor_surface(native,game):
     raise AssertionError('Missing floor surface')
 
 
-def plain_scene(root,game):
-    source=create_fixture(root,patch=False,shader_directory='shaders' if game=='ja' else 'scripts')
+def plain_scene(root,game,game_directory='baseq3'):
+    source=create_fixture(root,patch=False,game_directory=game_directory,shader_directory='shaders' if game=='ja' else 'scripts')
     walls=[((-144,-144,-16),(144,144,0)),((-144,-144,256),(144,144,272)),
            ((-144,-144,0),(-128,144,256)),((128,-144,0),(144,144,256)),
            ((-128,-144,0),(128,-128,256)),((-128,128,0),(128,144,256))]

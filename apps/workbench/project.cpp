@@ -8,6 +8,7 @@
 #include <QJsonDocument>
 #include <QSaveFile>
 #include <QUuid>
+#include <QCryptographicHash>
 #include <stdexcept>
 
 namespace workbench {
@@ -26,6 +27,8 @@ QJsonObject Project::toJson() const {
         {"mesh_patch_steps",meshPatchSteps},{"brush_order",brushOrder},
         {"detail_policy",detailPolicy},{"group_policy",groupPolicy},
         {"detail_work_limit",detailWorkLimit},{"group_work_limit",groupWorkLimit},
+        {"light_fit",lightFit.toJson()},{"apply_light_report",applyLightReport},
+        {"light_report",lightReport},{"light_report_sha256",lightReportHash},
         {"bsp_options",QJsonArray::fromStringList(bspOptions)},{"vis_options",QJsonArray::fromStringList(visOptions)},
         {"light_options",QJsonArray::fromStringList(lightOptions)}};
 }
@@ -42,6 +45,15 @@ Project Project::fromJson(const QJsonObject& o){
     string("backend",p.backend); string("map_format",p.mapFormat);
     string("brush_order",p.brushOrder);
     string("detail_policy",p.detailPolicy); string("group_policy",p.groupPolicy);
+    string("light_report",p.lightReport); string("light_report_sha256",p.lightReportHash);
+    if(o.contains("light_fit")) {
+        if(!o["light_fit"].isObject()) fail("Invalid light fitting settings");
+        p.lightFit=LightFitSettings::fromJson(o["light_fit"].toObject());
+    }
+    if(o.contains("apply_light_report")) {
+        if(!o["apply_light_report"].isBool()) fail("Invalid light report selection");
+        p.applyLightReport=o["apply_light_report"].toBool();
+    }
     const auto integer=[&](const char* key,int& value,int low,int high){
         if (!o.contains(key)) return;
         if (!o[key].isDouble() || o[key].toDouble()!=o[key].toInt() || o[key].toInt()<low || o[key].toInt()>high)
@@ -80,7 +92,7 @@ Project Project::load(const QString& path){
     if (error.error!=QJsonParseError::NoError || !document.isObject()) fail("Invalid project JSON: "+error.errorString());
     auto project=fromJson(document.object());
     const QDir directory(QFileInfo(path).absolutePath());
-    for (auto* value:{&project.source,&project.gameRoot,&project.outputRoot,&project.compiler})
+    for (auto* value:{&project.source,&project.gameRoot,&project.outputRoot,&project.compiler,&project.lightReport})
         if (!value->isEmpty() && QDir::isRelativePath(*value)) *value=directory.absoluteFilePath(*value);
     return project;
 }
@@ -95,7 +107,13 @@ QStringList Project::validate(const QString& workflow) const {
     const auto extension=QFileInfo(source).suffix().toLower();
     if ((workflow=="build" || workflow=="bsp") && extension!="map") errors << "BSP construction needs a .map source.";
     if (workflow!="build" && workflow!="bsp" && extension!="bsp") errors << "This workflow needs a .bsp source.";
-    if (!QStringList{"build","bsp","vis","light","minimap","decompile","obj","ase","geometry-analyze","geometry-optimize"}.contains(workflow)) errors << "Unknown workflow.";
+    if (!QStringList{"build","bsp","vis","light","light-fit","minimap","decompile","obj","ase","geometry-analyze","geometry-optimize"}.contains(workflow)) errors << "Unknown workflow.";
+    if(workflow=="light-fit") errors+=lightFit.validate();
+    if(workflow=="decompile" && applyLightReport) {
+        if(!QFileInfo(lightReport).isFile()) errors << "Choose an existing light fitting report.";
+        if(lightReportHash.size()!=64 || QByteArray::fromHex(lightReportHash.toLatin1()).toHex()!=lightReportHash.toLatin1())
+            errors << "Review the light fitting report and select Use for MAP recovery.";
+    }
     if (meshPatchSteps<1 || meshPatchSteps>32) errors << "Mesh curve detail must be between 1 and 32.";
     if (!QStringList{"bsp","rebuild"}.contains(brushOrder)) errors << "Unknown recovery brush order.";
     if (!QStringList{"legacy","cells"}.contains(detailPolicy)) errors << "Unknown recovery detail policy.";
@@ -142,7 +160,12 @@ QVector<Job> buildPlan(const Project& p,const QString& workflow,const QString& d
         if (p.brushOrder=="rebuild") options << "-brush-order" << "rebuild";
         if (p.detailPolicy=="cells") options << "-detail-policy" << "cells" << "-detail-max-work" << QString::number(p.detailWorkLimit);
         if (p.groupPolicy=="surfaces") options << "-group-policy" << "surfaces" << "-group-max-work" << QString::number(p.groupWorkLimit);
+        if (p.applyLightReport) options << "-light-proposals" << output.filePath("selected-light-report.json");
         add("DECOMPILE",options,staged,output.filePath("recovered.map"));
+    }
+    if(workflow=="light-fit") {
+        add("LIGHT-FIT",QStringList{"-light","-probes",output.filePath("light-request.json"),"-probe-report",output.filePath("light-fit.json")}
+            +p.lightFit.arguments(),staged,output.filePath("light-fit.json"));
     }
     if (workflow=="obj" || workflow=="ase")
         add(workflow.toUpper(),{"-convert","-format",workflow,"-patchsteps",QString::number(p.meshPatchSteps)},staged,
@@ -165,6 +188,15 @@ QVector<Job> buildPlan(const Project& p,const QString& workflow,const QString& d
 QString prepareRun(const Project& project,const QString& workflow){
     const auto errors=project.validate(workflow);
     if (!errors.isEmpty()) fail(errors.join('\n'));
+    QByteArray lightReport;
+    if(workflow=="decompile" && project.applyLightReport) {
+        QFile report(project.lightReport);
+        if(!report.open(QIODevice::ReadOnly) || report.size()>64*1024*1024) fail("Light report is unavailable or exceeds 64 MiB");
+        lightReport=report.read(64*1024*1024+1);
+        if(report.error()!=QFile::NoError || lightReport.size()!=report.size() || lightReport.size()>64*1024*1024
+            || QCryptographicHash::hash(lightReport,QCryptographicHash::Sha256).toHex()!=project.lightReportHash.toLatin1())
+            fail("The selected light report changed. Review it again before recovery.");
+    }
     const QString name=QFileInfo(project.source).completeBaseName()+"-"+QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss-zzz")+"-"+QUuid::createUuid().toString(QUuid::Id128).left(6);
     const QString directory=QDir(project.outputRoot).absoluteFilePath(name);
     if (!QDir().mkpath(directory)) fail("Cannot create output folder: "+directory);
@@ -176,6 +208,12 @@ QString prepareRun(const Project& project,const QString& workflow){
     }
     Project snapshot=project;
     snapshot.source=QDir(directory).filePath(QFileInfo(project.source).fileName());
+    if(workflow=="light-fit") saveJson(QDir(directory).filePath("light-request.json"),project.lightFit.request());
+    if(!lightReport.isEmpty()) {
+        snapshot.lightReport=QDir(directory).filePath("selected-light-report.json");
+        QSaveFile report(snapshot.lightReport);
+        if(!report.open(QIODevice::WriteOnly) || report.write(lightReport)!=lightReport.size() || !report.commit()) fail("Cannot stage selected light report");
+    }
     snapshot.save(QDir(directory).filePath("project.q3mapx.json"));
     return directory;
 }

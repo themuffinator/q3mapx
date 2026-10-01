@@ -421,13 +421,16 @@ if(Q3MAPX_BUILD_GUI)
     add_library(q3mapx_workbench_core STATIC apps/workbench/project.cpp apps/workbench/job_queue.cpp apps/workbench/job_queue.h
         apps/workbench/game_catalog.cpp apps/workbench/game_catalog.h
         apps/workbench/bsp_inspector.cpp apps/workbench/bsp_inspector.h
-        apps/workbench/device_inventory.cpp apps/workbench/device_inventory.h)
+        apps/workbench/device_inventory.cpp apps/workbench/device_inventory.h
+        apps/workbench/light_fit.cpp apps/workbench/light_fit.h)
     set_target_properties(q3mapx_workbench_core PROPERTIES AUTOMOC ON)
     target_include_directories(q3mapx_workbench_core PUBLIC apps/workbench)
+    target_include_directories(q3mapx_workbench_core PRIVATE libs)
     target_link_libraries(q3mapx_workbench_core PUBLIC Qt6::Core)
     set(Q3MAPX_WORKBENCH_UI apps/workbench/window.cpp apps/workbench/window.h
         apps/workbench/inspection_page.cpp apps/workbench/inspection_page.h
-        apps/workbench/hardware_page.cpp apps/workbench/hardware_page.h)
+        apps/workbench/hardware_page.cpp apps/workbench/hardware_page.h
+        apps/workbench/light_recovery_page.cpp apps/workbench/light_recovery_page.h)
     qt_add_executable(q3mapx-workbench WIN32 apps/workbench/main.cpp ${Q3MAPX_WORKBENCH_UI})
     set_target_properties(q3mapx-workbench PROPERTIES AUTOMOC ON)
     target_link_libraries(q3mapx-workbench PRIVATE q3mapx_workbench_core Qt6::Widgets)
@@ -461,6 +464,14 @@ if(Q3MAPX_BUILD_GUI)
             ${CMAKE_BINARY_DIR}/tests/workbench/project.q3mapx.json
             ${CMAKE_BINARY_DIR}/tests/workbench/window-state $<TARGET_FILE:device_inventory_test>)
         set_tests_properties(workbench_window PROPERTIES TIMEOUT 45 FIXTURES_REQUIRED workbench_run)
+        add_executable(workbench_lights_test tests/workbench_lights.cpp ${Q3MAPX_WORKBENCH_UI})
+        set_target_properties(workbench_lights_test PROPERTIES AUTOMOC ON)
+        target_compile_definitions(workbench_lights_test PRIVATE Q3MAPX_VERSION="${PROJECT_VERSION}")
+        target_link_libraries(workbench_lights_test PRIVATE q3mapx_workbench_core Qt6::Widgets)
+        add_test(NAME workbench_lights COMMAND ${Python3_EXECUTABLE}
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/workbench_lights.py --test $<TARGET_FILE:workbench_lights_test>
+            --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/workbench-lights)
+        set_tests_properties(workbench_lights PROPERTIES TIMEOUT 1800)
         add_test(NAME workbench_preview COMMAND q3mapx-workbench -platform offscreen
             --project ${CMAKE_BINARY_DIR}/tests/workbench/project.q3mapx.json
             --state-dir ${CMAKE_BINARY_DIR}/tests/workbench/ui-state

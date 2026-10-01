@@ -84,6 +84,10 @@ QVector<GameProfile> parseGameCatalog(const QByteArray& bytes) {
         policies("recovery_brush_orders",profile.recoveryBrushOrders);
         policies("recovery_detail_policies",profile.recoveryDetailPolicies);
         policies("recovery_group_policies",profile.recoveryGroupPolicies);
+        if(source.contains("recovery_light_proposals")) {
+            if(!source["recovery_light_proposals"].isBool()) invalid();
+            profile.recoveryLightProposals=source["recovery_light_proposals"].toBool() && profile.nativeWrite;
+        }
         profiles.append(profile);
     }
     return profiles;

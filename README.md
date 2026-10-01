@@ -29,7 +29,7 @@ Use `-cell-adjacency` to [reconstruct bounded BSP leaf-path cells and interfaces
 without the original PRT, with explicit enclosure and numerical limits.
 Use `-lighting` for [bounded baked-lighting observations](docs/LIGHTING-EVIDENCE.md)
 with stored colors/styles, curved-patch inverses, constant-UV primitive footprints
-and explicit mapping uncertainty; source-light fitting remains planned.
+and explicit mapping uncertainty.
 Use [`-light -probes`](docs/LIGHT-PROBES.md) to evaluate explicit points and
 proposed lights with the compiler's direct CPU model, separating retained lights,
 surface emitters and sun/sky without writing source or bake outputs. Its optional
@@ -40,8 +40,10 @@ conditional missing-light proposals, with native tracing, bounded parallel work,
 material checks and withheld-texel validation. Optional [spotlight fitting](docs/SPOT-FITTING.md)
 also fits directions/cones and proposes retained or new target links.
 [Apply qualified reports during decompilation](docs/LIGHT-RECOVERY.md) to produce
-editable light entities and their target links. Unknown bake calibration,
-interactive review and broader recovery accuracy remain open.
+editable light entities and their target links. The [workbench light recovery page](docs/WORKBENCH.md#light-recovery)
+provides native fitting controls, scored proposal review and explicit report selection
+for MAP export. Unknown bake calibration, spatial proposal overlays and broader
+recovery accuracy remain open.
 Optional [detail and group inference](docs/DECOMPILATION.md#group-inference-policy)
 can now export cell-supported detail flags and surface-supported `func_group`
 assemblies, with bounded work, rebuild-order protection and explicit uncertainty.

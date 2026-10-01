@@ -58,6 +58,8 @@ with its discovery failure shown beside the selection.
   compare ambiguous directory layouts, and save the full JSON report. The
   optional profile check uses the project's selected game. The inspection file
   is independent of the project source; no game assets are needed.
+- Light recovery: fit missing point lights or spotlights, review scores and target
+  proposals, then select a qualified report for MAP export.
 - View: light/dark themes. Standard Qt focus navigation and label mnemonics apply.
 
 **Ctrl+N/O/S** create/open/save projects, **Ctrl+Shift+S** saves a copy,
@@ -145,6 +147,70 @@ memory, which can include shared host memory. Compute-unit counts are not a
 performance ranking across vendors. Different OpenCL implementations may list
 the same physical GPU more than once; the page preserves these separate indices.
 
+## Light recovery
+
+Development builds after 0.3.0 add **06 Light recovery**. Select a baked BSP,
+matching assets and its game profile in Project, then:
+
+1. In **Fit lights**, select point lights or spotlights. Set the sample stride,
+   search grid, maximum lights, refinement count, style and work limit.
+2. Enter the hypothesized original gamma, compensation, extra distance, Wolf
+   defaults and individual lightmap/texture/entity sRGB settings. These controls
+   are saved with the project. Larger strides cost less but can miss small spots.
+3. Optionally load a JSON array of fixed light hypotheses in the native
+   [probe format](LIGHT-PROBES.md). These remain fixed during search and are
+   included when applying the result. Surviving BSP lights and current material
+   and sky sources are already considered by the native fitter.
+4. Press **Fit missing lights**, or choose that workflow in Project. The queue
+   runs the compiler in a new output folder with `light-request.json`, a project
+   snapshot, logs and `light-fit.json`. Cancel uses the normal process queue.
+5. Open **Review report** after completion. Review training/withheld RMSE,
+   spotlight illuminated-support scores, positions, colors, intensity and target
+   details. Unscored results show an em dash. **Recorded bake settings** contains
+   the report's hypothesis and source/report hashes. The queue's Reports tab can
+   also open a selected report on this page.
+6. Press **Use for MAP recovery**, then run **Decompile BSP**. This exports into a
+   separate run folder using the exact reviewed report. Rebuild with compatible
+   assets/settings and compare lighting before adopting the result.
+
+Fitting uses explicit controls, with native inverse-square point/spot semantics,
+`-lightanglehl 0` and `-nofastpoint`. Quality presets and Advanced LIGHT arguments
+do not alter this request. CPU workers and asset/mod paths still come from the
+project. The work limit is a charged search-operation budget, not a time estimate.
+Limits are 16 fitted lights, ten refinement steps, stride 1–256 and one billion
+work units. Fixed hypotheses are limited to 256 objects and 64 KiB; the compiler
+validates their native fields. Defaults are hypotheses, not recovered bake metadata.
+
+Fitting requires the selected compiler/profile to advertise `light-fit`; applying
+a report also requires `recovery_light_proposals`. Older compilers retain their
+ordinary workflows. A saved unsupported report selection remains visible and
+blocks decompilation until corrected or unchecked. Project, menu and queue
+actions all check support before staging inputs.
+
+Report review reads at most 64 MiB of UTF-8 JSON in a background worker, rejects
+duplicate/invalid fields and excessive structure, and hashes the selected BSP
+(up to 2 GiB). Cancel clears the usable result; changing context supersedes old
+replies. Source/game mismatches and rejected fits cannot be selected. The review
+checks report summary and identity; the native exporter remains authoritative
+for the complete [stored-evidence checks](LIGHT-RECOVERY.md#qualification-checks).
+Neither step authenticates a report or proves original authorship.
+
+Selecting a report pins its SHA-256. Export rereads it before creating a run
+directory and stages those exact bytes as `selected-light-report.json`; changed
+bytes require another review. The snapshot refers to this copy. The native
+importer separately checks the staged BSP/report relationship. A later file
+change is not automatically monitored: use **Refresh** to update the displayed
+review. Export does not overwrite the project BSP, change build settings or
+modify existing gameplay target links.
+
+Schema 1 adds optional `light_fit`, `apply_light_report`, `light_report` and
+`light_report_sha256` fields. Older projects keep report application off. Relative
+report paths resolve beside the project file; only decompile jobs receive an
+enabled report, and only fitting jobs receive a generated probe request. The
+selection applies the report's complete qualified set and fixed dependencies;
+per-light editing/exclusion, spatial overlays and joint point/spot fitting remain
+planned. General real-map accuracy and unknown bake calibration remain open.
+
 ## Validation and limits
 
 Development builds also provide **Analyze geometry · Quake3e GL** and **Optimize
@@ -183,6 +249,12 @@ cancellation, failed starts and supersession. The window test checks device
 selection, compiler changes and cancellation, then paints standard and compact
 hardware layouts in both themes. [Recorded validation](validation/hardware-inventory.json)
 includes Windows and Linux results and the generated preview locations.
+Light-recovery tests operate the actual offscreen window and native queue, then
+independently rebuild point, spot and Qfusion sRGB scenes. They check saved numeric
+precision, legacy compiler gates, report/source changes, malformed/oversized
+reports, unavailable scores, asynchronous cancellation and compact/full layouts
+in both themes. See [the recorded results](validation/workbench-light-recovery.json)
+and [reproduction instructions](DEVELOPMENT.md#workbench-light-recovery).
 The GUI can render its own widget tree directly to PNG:
 
 ```sh

@@ -14,6 +14,7 @@ struct GameProfile {
     QStringList recoveryDetailPolicies{"legacy"}, recoveryGroupPolicies{"none"};
     int bspVersion = 0;
     bool nativeWrite = false;
+    bool recoveryLightProposals = false;
     bool supportsRebuildOrder() const { return nativeWrite && recoveryBrushOrders.contains("rebuild"); }
     bool supportsCellDetail() const { return nativeWrite && recoveryDetailPolicies.contains("cells"); }
     bool supportsSurfaceGroups() const { return supportsRebuildOrder() && recoveryGroupPolicies.contains("surfaces"); }

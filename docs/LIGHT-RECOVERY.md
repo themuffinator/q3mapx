@@ -120,6 +120,9 @@ formats, fast/full recovery, retained and new targets, supplied point/spot and
 culled dependencies, native styles, sRGB entity colors, Wolf attenuation flags,
 detail/groups and preserved-output failures for inconsistent or malformed input.
 
-The CLI provides the application step. Interactive proposal review, native fitting
-controls in the workbench, joint point/spot model selection, unknown bake
-calibration and general real-map reconstruction accuracy remain open.
+The [workbench light recovery page](WORKBENCH.md#light-recovery) provides fitting
+controls, score/proposal tables and explicit report selection for this same native
+export path. It pins the reviewed report's bytes and checks the selected BSP/game;
+the native importer performs the complete stored-evidence checks. Spatial overlays,
+per-light edits, joint point/spot model selection, unknown bake calibration and
+general real-map reconstruction accuracy remain open.

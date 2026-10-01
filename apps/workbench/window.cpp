@@ -2,6 +2,7 @@
 #include "window.h"
 #include "inspection_page.h"
 #include "hardware_page.h"
+#include "light_recovery_page.h"
 #include <QtWidgets>
 #include <QDesktopServices>
 #include <QJsonDocument>
@@ -36,11 +37,12 @@ Window::Window(const QString& stateDirectory):stateDirectory_(stateDirectory),qu
     header->addWidget(cancel_); header->addWidget(run_); outer->addLayout(header);
     auto* body=new QHBoxLayout; body->setSpacing(22);
     navigation_=new QListWidget; navigation_->setObjectName("navigation"); navigation_->setFixedWidth(172);
-    navigation_->addItems({"01   Project","02   Build queue","03   History","04   Hardware","05   BSP inspection"});
+    navigation_->addItems({"01   Project","02   Build queue","03   History","04   Hardware","05   BSP inspection","06   Light recovery"});
     navigation_->setSpacing(5); navigation_->setCurrentRow(0); navigation_->setAccessibleName("Workbench pages");
     pages_=new QStackedWidget; pages_->addWidget(configuration()); pages_->addWidget(queuePage()); pages_->addWidget(historyPage());
     hardware_=new HardwarePage; pages_->addWidget(hardware_);
     inspection_=new InspectionPage; pages_->addWidget(inspection_);
+    lightRecovery_=new LightRecoveryPage; pages_->addWidget(lightRecovery_);
     body->addWidget(navigation_); body->addWidget(pages_,1); outer->addLayout(body,1);
     auto* footer=new QHBoxLayout; status_=new QLabel("Ready · configure a project to begin");
     progress_=new QProgressBar; progress_->setFixedWidth(240); progress_->setRange(0,1); progress_->setValue(0); progress_->setTextVisible(false);
@@ -61,10 +63,21 @@ Window::Window(const QString& stateDirectory):stateDirectory_(stateDirectory),qu
     menuBar()->addMenu("&Help")->addAction("About q3mapx",this,[this]{ QMessageBox::about(this,"q3mapx", "q3mapx Workbench " Q3MAPX_VERSION "\nStandalone map compilation and BSP recovery.\nBased on NetRadiant-custom q3map2.\nGPL-3.0-or-later · Qt 6\nGPU acceleration currently applies to minimaps."); });
     connect(navigation_,&QListWidget::currentRowChanged,pages_,&QStackedWidget::setCurrentIndex);
     connect(run_,&QPushButton::clicked,this,[this]{ enqueue(true); }); connect(cancel_,&QPushButton::clicked,&queue_,&JobQueue::cancel);
+    connect(lightRecovery_,&LightRecoveryPage::settingsChanged,this,&Window::updatePreview);
+    connect(lightRecovery_,&LightRecoveryPage::eligibilityChanged,this,&Window::refreshGameHint);
+    connect(lightRecovery_,&LightRecoveryPage::fitRequested,this,[this]{ workflow_->setCurrentIndex(workflow_->findData("light-fit")); enqueue(true); });
+    connect(lightRecovery_,&LightRecoveryPage::useReportRequested,this,[this]{
+        workflow_->setCurrentIndex(workflow_->findData("decompile"));
+        status_->setText("Light report selected · run Decompile BSP to export into a new folder");
+    });
     connect(&queue_,&JobQueue::changed,this,&Window::refreshQueue);
     connect(&queue_,&JobQueue::output,this,&Window::appendOutput);
     connect(&queue_,&JobQueue::activity,status_,&QLabel::setText);
-    connect(&queue_,&JobQueue::completed,this,[this](int){ recordHistory(); selectJob(); });
+    connect(&queue_,&JobQueue::completed,this,[this](int index){
+        recordHistory(); selectJob();
+        const auto& job=queue_.jobs()[index];
+        if(job.label=="LIGHT-FIT" && job.state=="Succeeded") lightRecovery_->reviewReport(job.outputPath);
+    });
     connect(&queue_,&JobQueue::idle,this,[this]{
         int succeeded=0,failed=0,remaining=0;
         for(const auto& job:queue_.jobs()) { succeeded+=job.state=="Succeeded"; failed+=job.state=="Failed" || job.state=="Cancelled"; remaining+=job.state=="Queued"; }
@@ -232,6 +245,7 @@ QWidget* Window::configuration(){
     workflow_=new QComboBox; workflow_->addItem("Full build · BSP → VIS → LIGHT","build"); workflow_->addItem("BSP only","bsp"); workflow_->addItem("Visibility","vis"); workflow_->addItem("Lighting","light"); workflow_->addItem("Minimap","minimap"); workflow_->addItem("Decompile BSP","decompile");
     workflow_->addItem("Export OBJ mesh","obj"); workflow_->addItem("Export ASE mesh","ase");
     workflow_->addItem("Analyze geometry · Quake3e GL","geometry-analyze"); workflow_->addItem("Optimize geometry · Quake3e GL","geometry-optimize");
+    workflow_->addItem("Fit missing lights","light-fit");
     for(const auto* value:{"geometry-analyze","geometry-optimize"})
         workflow_->setItemData(workflow_->findData(value),"For Quake3e OpenGL: final baked Quake III BSP and matching shader assets required. Only eligible horizontal surfaces with authored nomarks and nodlight are reduced. Outputs go into a new run folder.",Qt::ToolTipRole);
     workflow_->setObjectName("workflow");
@@ -266,6 +280,12 @@ QWidget* Window::queuePage(){
     auto* reportsPage=new QWidget; auto* reportLayout=new QVBoxLayout(reportsPage); reports_=new QComboBox; reports_->setAccessibleName("Generated report"); reportView_=codeView(); reportLayout->addWidget(reports_); reportLayout->addWidget(reportView_);
     auto* reportLimit=new QLabel("Preview shows up to 5 MiB. Open the run folder for complete report files.");
     reportLimit->setWordWrap(true); reportLayout->addWidget(reportLimit);
+    auto* reviewLights=new QPushButton("Review selected light fit"); reviewLights->setObjectName("reviewSelectedLightFit");
+    connect(reviewLights,&QPushButton::clicked,this,[this]{
+        if(reports_->currentData().toString().isEmpty()) return;
+        lightRecovery_->reviewReport(reports_->currentData().toString()); navigation_->setCurrentRow(5);
+    });
+    reportLayout->addWidget(reviewLights,0,Qt::AlignLeft);
     connect(reports_,&QComboBox::currentIndexChanged,this,[this]{ QFile file(reports_->currentData().toString()); reportView_->clear(); if(file.open(QIODevice::ReadOnly)) reportView_->setPlainText(QString::fromUtf8(file.read(5*1024*1024))); }); tabs->addTab(reportsPage,"Reports && profiles");
     layout->addWidget(tabs,1); return page;
 }
@@ -288,7 +308,8 @@ Project Window::project() const {
     p.workers=workers_->value(); p.gpuDevice=gpu_->value(); p.minimapSize=size_->value(); p.minimapSamples=samples_->value();
     p.meshPatchSteps=patchSteps_->value();
     p.reproducibleVis=reproducibleVis_->isChecked();
-    p.bspOptions=optionLines(bspOptions_); p.visOptions=optionLines(visOptions_); p.lightOptions=optionLines(lightOptions_); return p;
+    p.bspOptions=optionLines(bspOptions_); p.visOptions=optionLines(visOptions_); p.lightOptions=optionLines(lightOptions_);
+    lightRecovery_->applyTo(p); return p;
 }
 void Window::setProject(const Project& p){
     populating_=true;
@@ -302,6 +323,7 @@ void Window::setProject(const Project& p){
     patchSteps_->setValue(p.meshPatchSteps);
     reproducibleVis_->setChecked(p.reproducibleVis);
     bspOptions_->setPlainText(p.bspOptions.join('\n')); visOptions_->setPlainText(p.visOptions.join('\n')); lightOptions_->setPlainText(p.lightOptions.join('\n'));
+    lightRecovery_->setProject(p);
     workflow_->setCurrentIndex(QFileInfo(p.source).suffix().compare("bsp",Qt::CaseInsensitive)==0 ? 5 : 0);
     populating_=false; updatePreview(); dirty_=false; setWindowModified(false); refreshGames();
 }
@@ -314,6 +336,7 @@ void Window::updatePreview(){
     QStringList lines;
     if(workflow_->currentData().toString().startsWith("geometry-"))
         lines << "For Quake3e OpenGL: use a final baked BSP and matching shader assets.\nOnly eligible horizontal surfaces already disabling marks and dynamic lights can be reduced.";
+    if(workflow_->currentData()=="light-fit") lines << "Native fitting request\n"+QString::fromUtf8(QJsonDocument(p.lightFit.request()).toJson());
     for(const auto& job:commands) lines << job.label+"\n"+displayCommand(job);
     preview_->setPlainText(lines.join("\n\n"));
     inspection_->setContext(p.compiler,QDir::toNativeSeparators(p.source),p.game);
@@ -332,9 +355,13 @@ void Window::enqueue(bool start){
         const auto* profile=catalog_.find(p.game);
         if(workflow.startsWith("geometry-") && (!profile || !profile->workflows.contains(workflow)))
             throw std::runtime_error("Geometry analysis and optimization require advertised support from the selected compiler and game profile.");
+        if(workflow=="light-fit" && (!profile || !profile->nativeWrite || !profile->workflows.contains(workflow)))
+            throw std::runtime_error("Light fitting requires advertised support from the selected compiler and game profile.");
         if(workflow=="decompile") {
             const auto error=recoverySupportError(profile,p.brushOrder,p.detailPolicy,p.groupPolicy);
             if(!error.isEmpty()) throw std::runtime_error(error.toStdString());
+            const auto lightError=lightRecovery_->applicationError();
+            if(!lightError.isEmpty()) throw std::runtime_error(lightError.toStdString());
         }
         if(!catalog_.profiles().isEmpty()) {
             if(!profile) throw std::runtime_error("Select a game profile supported by this compiler.");
@@ -416,13 +443,15 @@ void Window::refreshGameHint(){
     const auto enable=[](QComboBox* combo,const char* value,bool available){
         if(auto* model=qobject_cast<QStandardItemModel*>(combo->model())) model->item(combo->findData(value))->setEnabled(available);
     };
-    for(const auto* value:{"geometry-analyze","geometry-optimize"})
+    for(const auto* value:{"geometry-analyze","geometry-optimize","light-fit"})
         enable(workflow_,value,profile && profile->workflows.contains(value));
+    lightRecovery_->setContext(QDir::fromNativeSeparators(source_->text()),profile?profile->id:game_->currentText(),
+        profile && profile->nativeWrite && profile->workflows.contains("light-fit"),profile && profile->recoveryLightProposals);
     enable(brushOrder_,"rebuild",canRebuild); enable(brushOrder_,"bsp",!grouped);
     enable(detailPolicy_,"cells",canDetail); enable(groupPolicy_,"surfaces",canGroup);
     detailWork_->setEnabled(cells && canDetail); groupWork_->setEnabled(grouped && canGroup);
     const auto recoveryError=recoverySupportError(profile,brushOrder_->currentData().toString(),detailPolicy_->currentData().toString(),groupPolicy_->currentData().toString());
-    const bool recoveryAllowed=workflow_->currentData()!="decompile" || recoveryError.isEmpty();
+    const bool recoveryAllowed=workflow_->currentData()!="decompile" || (recoveryError.isEmpty() && lightRecovery_->applicationError().isEmpty());
     if(!recoveryError.isEmpty()) recoveryHint_->setText(recoveryError);
     else if(grouped) recoveryHint_->setText("Groups require Rebuild order. Shared surfaces suggest assemblies; detail flags are evaluated separately.");
     else if(cells) recoveryHint_->setText("Brush interiors and materials guide detail proposals. Uncertain cases retain legacy flags; rebuilt visibility is not guaranteed.");
@@ -445,7 +474,7 @@ void Window::refreshGameHint(){
     }
     else {
         gameHint_->setText(catalog_.error()+". Enter a legacy profile manually or choose another compiler.");
-        run_->setEnabled(recoveryAllowed && !workflow_->currentData().toString().startsWith("geometry-"));
+        run_->setEnabled(recoveryAllowed && !workflow_->currentData().toString().startsWith("geometry-") && workflow_->currentData()!="light-fit");
     }
 }
 void Window::applyTheme(){
@@ -459,8 +488,8 @@ void Window::applyTheme(){
         QLabel#muted { color:%4; margin-bottom:12px; } QLabel#sectionTitle { font-size:11pt; font-weight:600; margin:8px 0; }
         QLabel#notice { background:%2; border-left:3px solid #37b99c; padding:12px; color:%4; }
         QLabel#recoveryLimitations { color:%4; padding-left:12px; }
-        QLineEdit,QSpinBox,QComboBox,QPlainTextEdit,QTableWidget,QTreeWidget { background:%2; border:1px solid %5; border-radius:5px; padding:7px; selection-background-color:#276b64; selection-color:white; }
-        QPlainTextEdit { padding:10px; font-family:'Consolas','Liberation Mono',monospace; } QLineEdit:focus,QSpinBox:focus,QComboBox:focus { border:1px solid #4fd1bb; }
+        QLineEdit,QSpinBox,QDoubleSpinBox,QComboBox,QPlainTextEdit,QTableWidget,QTreeWidget { background:%2; border:1px solid %5; border-radius:5px; padding:7px; selection-background-color:#276b64; selection-color:white; }
+        QPlainTextEdit { padding:10px; font-family:'Consolas','Liberation Mono',monospace; } QLineEdit:focus,QSpinBox:focus,QDoubleSpinBox:focus,QComboBox:focus { border:1px solid #4fd1bb; }
         QPushButton { background:%2; border:1px solid %5; border-radius:5px; padding:8px 14px; font-weight:600; }
         QPushButton:hover { border-color:#4fd1bb; } QPushButton:disabled { color:%4; border-color:%5; }
         QPushButton#primary { background:#4fd1bb; color:#102823; border:none; padding:10px 20px; }

@@ -765,6 +765,36 @@ separate validation. See [the export contract](LIGHT-RECOVERY.md) and
 [validation evidence](validation/light-recovery.json). No renderer or user-input
 control is needed for these tests.
 
+## Workbench light recovery
+
+`workbench_lights` runs the real Qt window against native point, spot and Qfusion
+sRGB fixtures. Hidden light entities are stripped and source MAP/SRF files are
+poisoned. Direct widget actions submit fitting jobs, review reports, select exact
+report bytes and decompile through the queue. The Python harness then runs
+independent BSP/VIS/LIGHT rebuilds and compares corresponding world observations
+with the source bake and the fit's predictions.
+
+```sh
+ctest --test-dir build/release -R '^(workbench_lights|game_catalog|workbench|workbench_window|workbench_preview|workbench_devices|workbench_inspector|game_profiles)$' --output-on-failure -j 2
+python tests/workbench_lights.py --test build/release/bin/workbench_lights_test --compiler build/release/bin/q3mapx --work-dir build/release/tests/workbench-lights
+```
+
+Use `.exe` for both binaries on Windows. The new group has a 1800-second timeout
+and needs Qt Widgets; `QT_QPA_PLATFORM=offscreen` is set by the harness. All inputs,
+state, snapshots, PNGs and outputs remain in the requested test folder. The window
+is painted directly into QImages, without OS capture or input injection. Tests
+also cover precision-preserving settings, old compiler/menu guards, pinning before
+directory creation, source/game mismatch, malformed/deep/oversized JSON, unavailable
+scores, selection stability, stale replies and native process cancellation.
+
+For address/undefined checks, enable `Q3MAPX_BUILD_GUI=ON` in a Linux sanitizer
+build, build `q3mapx` and `workbench_lights_test`, then run only `workbench_lights`.
+This is a local override; the standard sanitizer preset remains Qt-free. Retain
+its Debug `-g -O1`, assertions and established `ASAN_OPTIONS=detect_leaks=0`
+configuration. Record which targets and groups were actually tested rather than
+claiming a complete sanitizer run. [Validation evidence](validation/workbench-light-recovery.json)
+records final binaries, sources, logs and independent rebuild results.
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

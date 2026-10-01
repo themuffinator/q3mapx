@@ -2922,3 +2922,73 @@ production defect was reproduced. Previously documented parser-sign/include-line
 compiler-warning, VIS discrepancy, raw-sidecar publication and Windows process-
 delay findings remain outside this round. Intelligent compiler optimization and
 M11 Radiant patch RGB/alpha painting and per-surface density/preview remain active.
+
+## 2026-10-01 — Workbench light fitting, review and MAP export
+
+Added a native Light recovery page with saved point/spot fitting controls,
+explicit bake settings and optional fixed-light hypotheses. Jobs use the existing
+compiler queue and isolated input copies, with a generated request, snapshot,
+logs and report in each run folder. The game catalog advertises fitting separately
+from report application; older compilers retain ordinary workflows without
+silently dropping an enabled recovery choice. Project, menu and queue paths reject
+unsupported application before creating output directories.
+
+Report review now parses bounded UTF-8 JSON in a cancellable background worker,
+rejects duplicate/excessive structures and checks the current BSP hash and game.
+Stale replies cannot replace current results. Training/withheld and spotlight
+illuminated-support scores, fitted sources, target proposals and recorded bake
+settings have dedicated views. Unavailable scores display an em dash; rejected
+or mismatched reports cannot be applied. Selecting a report pins its exact bytes;
+decompilation rereads and stages that report with its snapshot before invoking
+the existing native importer. Full stored-evidence validation remains native,
+and neither summary review nor import authenticates a report or proves authorship.
+
+Controls preserve saved numeric precision and selected proposal rows across
+unrelated settings changes. Fit/export actions stay visible below scrollable
+content, and decimal controls use the workbench theme. The report selection
+applies its complete qualified set and fixed dependencies; individual source
+edits, spatial overlays and joint point/spot selection remain future work.
+
+All eight selected Windows Release and Linux Release groups pass: workbench,
+window, preview, light recovery, game catalog/profiles, inspector and hardware.
+The complete new light-recovery window matrix also passes Debug ASan/UBSan with
+the existing `-g -O1`, assertions and lifetime-leak exclusion. Qt was enabled as
+a local sanitizer-build override; only the compiler and window-test targets were
+built, and the full sanitizer suite was not repeated. Retained matrix logs contain
+no address/undefined-behavior diagnostics. The new group brings the GUI-enabled
+CTest inventory to 79; this round does not claim rerunning all 79 groups.
+
+Each platform completes three actual GUI fitting/export jobs and independent
+BSP/VIS/LIGHT rebuilds: point, spot and Qfusion sRGB with a fixed point hypothesis.
+Hidden source lights/targets are stripped and MAP/SRF sources are poisoned before
+fitting. All nine rebuilt results match their predicted native bytes exactly;
+the greatest RMSE against the original synthetic bake is 0.252405943 byte units.
+Case results agree across all three builds. Sixteen controls per scene cover
+schema defaults, precision, request/snapshot identity, changed reports, old compiler
+menu guards, source/profile mismatch, rejected/unscored results, bounded parsing,
+stale reads, cancellation, selection stability and protected inputs. Both themes
+are painted at standard and compact sizes; visible pinned actions and absence
+of horizontal page scrolling are checked. Final representative Windows images
+were inspected. No OS capture, user-input control or game launch was used.
+
+An initial helper-name conflict was fixed before successful builds. A Qfusion
+fixture initially placed assets in `baseq3` while the GUI used the profile's
+correct `base` directory; its unresolved-material result exposed the missing
+nullable-score review case. The fixture and UI were corrected and an unscored
+regression control added. Visual inspection then led to pinned actions and
+consistent numeric styling, followed by final builds and regression runs.
+
+See [workbench usage](WORKBENCH.md#light-recovery),
+[reproduction instructions](DEVELOPMENT.md#workbench-light-recovery) and
+[validation evidence](validation/workbench-light-recovery.json). Logs and the
+evidence generator remain in `.agents/tmp/continuation/light-workbench/`; native
+fixtures, snapshots, reports and Qt-rendered previews remain in each build's
+`tests/workbench-lights/`. Previously policy-blocked cleanup targets were untouched.
+
+Unknown bake calibration, indirect effects, complete asset provenance and broad
+real-map qualification remain open. No GPU/backend speed improvement is claimed;
+portable packages were not refreshed and no external code was incorporated.
+No new unrelated production issue was found. Previously recorded parser-sign/
+include-line, compiler-warning, VIS discrepancy, raw-sidecar publication and Windows
+process-delay findings remain outside this round. Intelligent compiler work and
+M11 Radiant patch RGB/alpha painting and per-surface density/preview remain active.

@@ -56,6 +56,8 @@ int main(int argc, char** argv) {
         require(profile.workflows.contains("geometry-analyze")== (profile.id=="quake3")
             && profile.workflows.contains("geometry-optimize")== (profile.id=="quake3"),"Geometry workflow advertised for an unsupported profile");
         require(profile.recoveryBrushOrders.contains("bsp"),"Current compiler omitted default recovery policy");
+        require(profile.recoveryLightProposals==profile.nativeWrite && profile.workflows.contains("light-fit")==profile.nativeWrite,
+            "Light recovery capability does not match native writing support");
         require(profile.supportsRebuildOrder()==profile.nativeWrite,"Rebuild order capability does not match the current compiler");
         require(profile.recoveryDetailPolicies.contains("legacy") && profile.recoveryGroupPolicies.contains("none"),"Current catalog omitted baseline inference policies");
         require(profile.supportsCellDetail()==profile.nativeWrite && profile.supportsSurfaceGroups()==profile.nativeWrite,"Inference capabilities do not match the current compiler");
@@ -87,6 +89,7 @@ int main(int argc, char** argv) {
         require(!catalog.find("fixture")->supportsCellDetail() && !catalog.find("fixture")->supportsSurfaceGroups()
                 && catalog.find("fixture")->recoveryDetailPolicies==QStringList{"legacy"}
                 && catalog.find("fixture")->recoveryGroupPolicies==QStringList{"none"},"Older catalog enabled inference");
+        require(!catalog.find("fixture")->recoveryLightProposals && !catalog.find("fixture")->workflows.contains("light-fit"),"Older catalog enabled light recovery");
     }
     qputenv("Q3MAPX_TEST_CATALOG_MODE","slow"); catalog.refresh(QCoreApplication::applicationFilePath());
     qputenv("Q3MAPX_TEST_CATALOG_MODE","valid"); catalog.refresh(QCoreApplication::applicationFilePath()); finish(catalog);
@@ -128,6 +131,13 @@ int main(int argc, char** argv) {
         }
     }
     workbench::GameProfile synthetic;
+    for(const auto& value:QJsonArray{17,"yes",QJsonValue(QJsonValue::Null),QJsonArray{}}) {
+        auto o=original; auto profiles=o["profiles"].toArray(); auto first=profiles[0].toObject();
+        first["recovery_light_proposals"]=value; profiles[0]=first; o["profiles"]=profiles;
+        bool rejected=false;
+        try { (void)workbench::parseGameCatalog(QJsonDocument(o).toJson()); } catch(const std::exception&) { rejected=true; }
+        require(rejected,"Malformed light recovery capability accepted");
+    }
     synthetic.nativeWrite=true; synthetic.recoveryDetailPolicies={"legacy","cells"}; synthetic.recoveryGroupPolicies={"none","surfaces"};
     require(synthetic.supportsCellDetail() && !synthetic.supportsSurfaceGroups(),"Group support ignored its rebuild-order dependency");
     require(!workbench::recoverySupportError(&synthetic,"rebuild","legacy","surfaces").isEmpty(),"Missing group dependency accepted");

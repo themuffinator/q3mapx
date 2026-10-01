@@ -3,6 +3,7 @@
 #include <QJsonObject>
 #include <QStringList>
 #include <QVector>
+#include "light_fit.h"
 
 namespace workbench {
 struct Project {
@@ -14,6 +15,9 @@ struct Project {
     int detailWorkLimit = 50'000'000, groupWorkLimit = 50'000'000;
     int workers = 0, gpuDevice = -1, minimapSize = 1024, minimapSamples = 4, meshPatchSteps = 8;
     bool reproducibleVis = true;
+    LightFitSettings lightFit;
+    bool applyLightReport = false;
+    QString lightReport, lightReportHash;
     QStringList bspOptions, visOptions, lightOptions;
     QJsonObject toJson() const;
     static Project fromJson(const QJsonObject& object);

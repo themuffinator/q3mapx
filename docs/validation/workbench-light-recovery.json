@@ -1,0 +1,1021 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-01T14:06:43.236677+00:00",
+  "base_revision": "924e9a420bb9f89d59469e48139088c2a2bcc22e",
+  "scope": "Native workbench point/spot fitting controls, conditional report review and explicit exact-byte report staging for existing MAP export. Complete native transport/export algorithms are unchanged in this round.",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "5ec489da1efbaa4aca4c961281d51414244413dec0d96145b1524794369a8be6",
+    "CMakePresets.json": "11464c160caf523f92eee8411f1a183a887b6927fa74de29d22210caf8a8dc3b",
+    "apps/workbench/bsp_inspector.cpp": "c6c8a6b45e6381ab89bf0d89aec6077f2e139a79b3180369334651276abbf272",
+    "apps/workbench/bsp_inspector.h": "fd9011d157f2bdf14328053895b5135a789a335b3300aaaa09479c8a61f8dae4",
+    "apps/workbench/device_inventory.cpp": "250f53da1818509141d19f96c16edde70d18f5ffa8a7fe72f6253c1c4acf1fbb",
+    "apps/workbench/device_inventory.h": "eb44c7ad504700426592e252a41c86a1c7a25aa481575204f8e97bea89cb268c",
+    "apps/workbench/game_catalog.cpp": "53b0a056e89d149c14ec9026bdfe97599af583b8e7c865654d3d8af09e5f5704",
+    "apps/workbench/game_catalog.h": "4bcf4bd3e6d89cff56edaa1db78bfd3d62846b8dc2dc4d278f8b78617351ee02",
+    "apps/workbench/hardware_page.cpp": "3dabd0cc8d3cc48723df0fc9eb0bbde3d04cfa0b0952696c4b7173590f706e20",
+    "apps/workbench/hardware_page.h": "49a36e47060a792e3b465392015f057b170b4fb3d70ae4c4327f4aef50dd0791",
+    "apps/workbench/inspection_page.cpp": "622e1dea87c1aeca2eb3693b6540cbdffb3dfd565451b3765d8e541cf50e21c6",
+    "apps/workbench/inspection_page.h": "fc6e9892ababe43ada7fc5a355e316ee35b6edea754d304d09271cf81066b8a0",
+    "apps/workbench/job_queue.cpp": "c468f02ff5c02dfbdffcbd8f0611a3c50c81ba8eb05da873a88bb52ade130a75",
+    "apps/workbench/job_queue.h": "0ff91cfff1a205d1e8a5e471edfac63d5166cedd7bd08965c80ba2acf858c742",
+    "apps/workbench/light_fit.cpp": "dc84a69f4a967592d87dc04d23590d283fcbc59145153bcba81de9b4313b7f51",
+    "apps/workbench/light_fit.h": "c115d99f3c3d27b835327d749bda74f153574febfa275e2f6c067860286398a9",
+    "apps/workbench/light_recovery_page.cpp": "46c693c178b22f6135630b772d8a4dd206068c19d619a0ad6e4b9bcd56c4f060",
+    "apps/workbench/light_recovery_page.h": "3c06eaa9fc4a01b427d05bef8eb33cd87a193ff20c5cf1d7028ea56fe4aa579e",
+    "apps/workbench/main.cpp": "b04cbabe7c0a1e6f835c01a40d3ec0734c8f2d04542e55c41696aaad57067a82",
+    "apps/workbench/project.cpp": "18518c167c0d2d2efbb4992cd415cf47f8ed07d92f3cde87dd18afdef16d2c4f",
+    "apps/workbench/project.h": "016dd4ed046b9b2e9938895583baa3d57221fd4bace88574fa996b7733e8263d",
+    "apps/workbench/window.cpp": "330b300baacda872b69db2c330fcacdc58fcb77c26a6766c4eb92404b9a9ccb1",
+    "apps/workbench/window.h": "066a7094803f6f134cc7b1f0f7e270d686f663e223550073a4b5f3eb6e520f02",
+    "tools/quake3/q3map2/games.cpp": "bc8c902eef709f16401d7a29b649e15b8efdd9528e525132ddde56f506522603",
+    "tools/quake3/q3map2/light_recovery.cpp": "f88099b660ec3f7f2d710a284908798caf4fa89896bec38c4b5fe5d2836bdf57",
+    "tools/quake3/q3map2/light_recovery.h": "12f3559fcf9edc160db55c24b390cba9777c9f07617a47c1dd9a975583bffc0e",
+    "tools/quake3/q3map2/light_probes.cpp": "421200cf1d01346dd24ac650d2e4edf44f059a41b4b1665bbe2ce570403149a1",
+    "tools/quake3/q3map2/light_probes.h": "52dbec515e47f286a2458df8482ec9f4a089c1641d01713b1496a54fbc41787f",
+    "tools/quake3/q3map2/point_fitting.cpp": "1f2653e983dc36c9eb694c9c7178cdc04665edbf36c9d921f3bd5f5fc646babb",
+    "tools/quake3/q3map2/point_fitting.h": "7f0fab42b28c1c0ec6bf637bf56e48ea7cb2853067d6860b6e02622598ce322d",
+    "tools/quake3/q3map2/bsp_lighting_evidence.cpp": "817e0912a37abd42d7cb8da1985f750d7e0a9c2098b654852f7a8a4bb5b34c39",
+    "tests/workbench_lights.cpp": "cfd918ae71b1b09ba0a11d3e2e9a587a79be5438c788a4be0d0abe5eeaf82017",
+    "tests/workbench_lights.py": "b901cae9a08eb676a475b41abf27c95779e0ff28c41284bb49537ce290fde693",
+    "tests/game_catalog.cpp": "688e523bf73614fefa14c787e14ad18aac21a085a083cec8903f1cf146f7e4e9",
+    "tests/fixtures.py": "5cc300117041bc22a719451f9915bca17cc5af10094521408538b850284436c7",
+    "tests/integration.py": "3bb8e703e9e898a4c079f6a52321941aeb54876a7eac7804b8e1069c1541dfb3",
+    "tests/lighting_evidence.py": "e01a13f036e2328fd42e6c6aacab390200a43583487f1ce4ea8bdcc635db08e5",
+    "tests/light_probes.py": "4cc354db4ff6fcb54a1a7bb6a8075e37fd49dda37c4a1aef5c31c04df68c7cb2",
+    "tests/point_fitting.py": "a554301ecc31b46fae04f0f3ccd884864e65e1e86e6f00f57891beb14b7df130",
+    "tests/spot_fitting.py": "346c6edeb072e48d35345f6fdcd2d15d135b268aba7ded7494d224d48b16f664"
+  },
+  "evidence_generator": {
+    "path": ".agents/tmp/continuation/light-workbench/record.py",
+    "sha256": "23ee11f06b3c38af62f948640adda6cbe1bb46dafc268ca072947e8c89bfc593"
+  },
+  "fixture_provenance": "Three generated native scenes per platform: point, spotlight with new target and Qfusion sRGB with a fixed point hypothesis. Original light/target entities are stripped and MAP/SRF sources poisoned. The actual offscreen window queues fitting and decompilation. Independent native BSP/VIS/LIGHT rebuilds are compared by world position/normal/style, never by assumed atlas offsets.",
+  "platforms": {
+    "windows": {
+      "compiler": {
+        "path": "build/release/bin/q3mapx.exe",
+        "sha256": "5ba73f7c9e3fbc652f17efaf3a1f9680151c684d8861a380881d4ac34356f61a"
+      },
+      "window_test_executable": {
+        "path": "build/release/bin/workbench_lights_test.exe",
+        "sha256": "9bdedcbd42b85b1531b4fbd2fda3e13be429b123095880d8fd27d1622d00be5d"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/light-workbench/build-windows.log",
+        "sha256": "ae3cbf6641a2492f40110c1035db92a5f4ad8fbe54b07a7bdf7cd3f4460f9bfa"
+      },
+      "final_build_log": {
+        "path": ".agents/tmp/continuation/light-workbench/build-windows-final.log",
+        "sha256": "fd848220ec4ad1421a247b1cdaa74e61687842e17f27fddb21dbe3354e0ac860"
+      },
+      "ctest": {
+        "path": ".agents/tmp/continuation/light-workbench/ctest-windows-final.log",
+        "sha256": "17f74e4367e28c48bf9669bfb6baddcdf780e6856c232268020625c58a8679f2",
+        "passed": [
+          "game_catalog",
+          "game_profiles",
+          "workbench",
+          "workbench_devices",
+          "workbench_inspector",
+          "workbench_lights",
+          "workbench_preview",
+          "workbench_window"
+        ],
+        "failed": [],
+        "skipped": []
+      },
+      "results": {
+        "path": "build/release/tests/workbench-lights/results.json",
+        "sha256": "a3f4608270a933ee6e739e94551c389720f624ea3eba0724076012d0fa8ab4ff"
+      },
+      "rebuild_cases": [
+        {
+          "case": "point",
+          "checks": {
+            "both_themes_and_compact_actions_accessible": true,
+            "bounded_report_parser": true,
+            "changed_report_rejected_before_staging": true,
+            "fitting_controls_preserve_numeric_precision": true,
+            "legacy_compiler_and_menu_guard": true,
+            "mismatched_sources_and_rejected_trials": true,
+            "native_fit_cancellation_preserves_prior_report": true,
+            "native_fit_from_window_and_snapshot": true,
+            "no_os_input_or_capture": true,
+            "project_schema_and_legacy_defaults": true,
+            "reader_cancellation_and_stale_result_guard": true,
+            "review_selection_survives_settings_changes": true,
+            "reviewed_native_export_and_isolated_snapshot": true,
+            "source_preserved_and_other_workflows_unchanged": true,
+            "typed_settings_and_request_preview": true,
+            "unscored_rejections_display_unavailable_metrics": true
+          },
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "observations": 293,
+          "source_sha256": "f086c7434401452dac4aa9beae0fc7c881cfd451f03233f3a55b881a8171bc4d"
+        },
+        {
+          "case": "spot",
+          "checks": {
+            "both_themes_and_compact_actions_accessible": true,
+            "bounded_report_parser": true,
+            "changed_report_rejected_before_staging": true,
+            "fitting_controls_preserve_numeric_precision": true,
+            "legacy_compiler_and_menu_guard": true,
+            "mismatched_sources_and_rejected_trials": true,
+            "native_fit_cancellation_preserves_prior_report": true,
+            "native_fit_from_window_and_snapshot": true,
+            "no_os_input_or_capture": true,
+            "project_schema_and_legacy_defaults": true,
+            "reader_cancellation_and_stale_result_guard": true,
+            "review_selection_survives_settings_changes": true,
+            "reviewed_native_export_and_isolated_snapshot": true,
+            "source_preserved_and_other_workflows_unchanged": true,
+            "typed_settings_and_request_preview": true,
+            "unscored_rejections_display_unavailable_metrics": true
+          },
+          "rebuild_rmse": 0.06299407883487121,
+          "maximum_prediction_difference": 0,
+          "observations": 420,
+          "source_sha256": "54598c967ba5c06642a0535ea662fe33bc203e11101749ba51e558b7b402b165"
+        },
+        {
+          "case": "fixed-srgb",
+          "checks": {
+            "both_themes_and_compact_actions_accessible": true,
+            "bounded_report_parser": true,
+            "changed_report_rejected_before_staging": true,
+            "fitting_controls_preserve_numeric_precision": true,
+            "legacy_compiler_and_menu_guard": true,
+            "mismatched_sources_and_rejected_trials": true,
+            "native_fit_cancellation_preserves_prior_report": true,
+            "native_fit_from_window_and_snapshot": true,
+            "no_os_input_or_capture": true,
+            "project_schema_and_legacy_defaults": true,
+            "reader_cancellation_and_stale_result_guard": true,
+            "review_selection_survives_settings_changes": true,
+            "reviewed_native_export_and_isolated_snapshot": true,
+            "source_preserved_and_other_workflows_unchanged": true,
+            "typed_settings_and_request_preview": true,
+            "unscored_rejections_display_unavailable_metrics": true
+          },
+          "rebuild_rmse": 0.18876489055978068,
+          "maximum_prediction_difference": 0,
+          "observations": 290,
+          "source_sha256": "44d9796ce8c04075fa1ebaa7e0dc6fd1994dec4b3c64dbcc03c114ad1abd3cf7"
+        }
+      ],
+      "artifacts": {
+        "point": {
+          "window_result": {
+            "path": "build/release/tests/workbench-lights/point/window/result.json",
+            "sha256": "561f4d2970ad27bea683c3605e4dc5c13e77bdcbd63b04ce384b9022be8915c8"
+          },
+          "fitting_report": {
+            "path": "build/release/tests/workbench-lights/point/runs/fixture-20261001-150412-741-a4bb5a/light-fit.json",
+            "sha256": "9ef1e7b5b622916b8852b9d00fe7917789973d64d87a825f6c797da3cd76bf66"
+          },
+          "generated_request": {
+            "path": "build/release/tests/workbench-lights/point/runs/fixture-20261001-150412-741-a4bb5a/light-request.json",
+            "sha256": "2d068d69e20c97985b7861d1bb7749943daaedbd7f4e00de11034846a00272c2"
+          },
+          "recovered_map": {
+            "path": "build/release/tests/workbench-lights/point/runs/fixture-20261001-150415-222-5a6417/recovered.map",
+            "sha256": "459d423ba88d30f1eac46b0a333a83f3be489e184884cc619e7d6e8ba97d74f8"
+          },
+          "recovery_report": {
+            "path": "build/release/tests/workbench-lights/point/runs/fixture-20261001-150415-222-5a6417/recovered.map.recovery.json",
+            "sha256": "0c921c5dac4ed0bd04a77cfc104c1b92f98dd382d2b4602346bcf18e6810a49f"
+          },
+          "rebuilt_bsp": {
+            "path": "build/release/tests/workbench-lights/point/runs/fixture-20261001-150415-222-5a6417/recovered.bsp",
+            "sha256": "6cdeff0c1168570a0556c77ab231a6dc44e9f29f8114db803a9decdfde719c7c"
+          },
+          "rebuilt_evidence": {
+            "path": "build/release/tests/workbench-lights/point/rebuilt-evidence.json",
+            "sha256": "70ca6c1a5e8dcc3a903b630dc77069bcb91e64331c37d81555cbe56cf4b9f73a"
+          },
+          "previews": [
+            {
+              "path": "build/release/tests/workbench-lights/point/window/0-1024-0.png",
+              "sha256": "0728961bd3ba41c2bc61542a05c067b2444328796b5a07d7f963f0cf60a467cc"
+            },
+            {
+              "path": "build/release/tests/workbench-lights/point/window/0-1024-1.png",
+              "sha256": "ee9412bee263abbbd51758754085946da756a661e2deb0f9665af03c036680ba"
+            },
+            {
+              "path": "build/release/tests/workbench-lights/point/window/0-1380-0.png",
+              "sha256": "11fe44139d09e167e5605a877e4f25193fbebb230745c84fc96053d9dcbc3f33"
+            },
+            {
+              "path": "build/release/tests/workbench-lights/point/window/0-1380-1.png",
+              "sha256": "fcbfc2a71db608680462795b8d8a0604d03d2ecf3942e5268a34ab628d5f88a7"
+            },
+            {
+              "path": "build/release/tests/workbench-lights/point/window/1-1024-0.png",
+              "sha256": "4ae3ded01deae97f7a46384dd99bb0d3bfa0278e556c1190f12bfa73c754b3b7"
+            },
+            {
+              "path": "build/release/tests/workbench-lights/point/window/1-1024-1.png",
+              "sha256": "c32e8f74bd6bbab6e6e6ebace068db98561289c6b2967425ff1e1cdbc46db3cf"
+            },
+            {
+              "path": "build/release/tests/workbench-lights/point/window/1-1380-0.png",
+              "sha256": "abe90f9927c41a74da6a89016c112149edd08a7eff1335939099abb3f77dc359"
+            },
+            {
+              "path": "build/release/tests/workbench-lights/point/window/1-1380-1.png",
+              "sha256": "23c3625a66b859948e666332b0b36b3e0208020892ad44452aca55bb9e341e9d"
+            }
+          ]
+        },
+        "spot": {
+          "window_result": {
+            "path": "build/release/tests/workbench-lights/spot/window/result.json",
+            "sha256": "525b14a095296b5f35be3fa1bbaeae4367d973f5efd79f845b6685a3d6174bd3"
+          },
+          "fitting_report": {
+            "path": "build/release/tests/workbench-lights/spot/runs/fixture-20261001-150416-783-72d457/light-fit.json",
+            "sha256": "2ba026292d4368f8e74230ff8d6152368afdb87dea58b41e5667621cf92b5929"
+          },
+          "generated_request": {
+            "path": "build/release/tests/workbench-lights/spot/runs/fixture-20261001-150416-783-72d457/light-request.json",
+            "sha256": "e3f8d68a72829d680fd25c3fcc16c9bcecfdea250246faaee7918b6162df9e20"
+          },
+          "recovered_map": {
+            "path": "build/release/tests/workbench-lights/spot/runs/fixture-20261001-150424-769-b57a6e/recovered.map",
+            "sha256": "a36f5f19e1ef5c415772409834ff5f226c32d61bd5b598a152dfedf7515ab2ce"
+          },
+          "recovery_report": {
+            "path": "build/release/tests/workbench-lights/spot/runs/fixture-20261001-150424-769-b57a6e/recovered.map.recovery.json",
+            "sha256": "175cbd20db0b3a79602adb6850bd873d4715b3a4e10a093597205700786e66b6"
+          },
+          "rebuilt_bsp": {
+            "path": "build/release/tests/workbench-lights/spot/runs/fixture-20261001-150424-769-b57a6e/recovered.bsp",
+            "sha256": "d1d908a84e696c91a28baa89ddd589d7f3f2508848ccc088a6baf63de149a1ac"
+          },
+          "rebuilt_evidence": {
+            "path": "build/release/tests/workbench-lights/spot/rebuilt-evidence.json",
+            "sha256": "727ab4804c26de771a7b3cd01adf0a29a5d2beb4a68bb99ce18ad4b4f1da004b"
+          },
+          "previews": [
+            {
+              "path": "build/release/tests/workbench-lights/spot/window/0-1024-0.png",
+              "sha256": "fa93eeef8dfcc6dd15cc4309799e7d72e3903bec85113e0ecf6b336d535ae75a"
+            },
+            {
+              "path": "build/release/tests/workbench-lights/spot/window/0-1024-1.png",
+              "sha256": "cc94aa93c97ddc2ad5dd4a98904e6a4d9f51b20279c8fa8f280a51157ffaf0e6"
+            },
+            {
+              "path": "build/release/tests/workbench-lights/spot/window/0-1380-0.png",
+              "sha256": "65e26ed55e7be263830c20c52f21e9783368fd047213b4aad003b48231bbf39e"
+            },
+            {
+              "path": "build/release/tests/workbench-lights/spot/window/0-1380-1.png",
+              "sha256": "8f47bf7de4ed46caf9ff522a98968bcab085bc2c16ba068c872059c1c8df0cab"
+            },
+            {
+              "path": "build/release/tests/workbench-lights/spot/window/1-1024-0.png",
+              "sha256": "0876dc3c3d60f7c888a6f41bcb08bcecee0011e9f909951ba6ec82068a1c0da4"
+            },
+            {
+              "path": "build/release/tests/workbench-lights/spot/window/1-1024-1.png",
+              "sha256": "34a8fc8e2dade0451f1ccdaa5da38fb2916e3f29eae290379d5dab7143a3d802"
+            },
+            {
+              "path": "build/release/tests/workbench-lights/spot/window/1-1380-0.png",
+              "sha256": "56f9fe5a5f0d8d8a7ce68c2016fe5cab7fd2f8c9662adf94abf43f6023904717"
+            },
+            {
+              "path": "build/release/tests/workbench-lights/spot/window/1-1380-1.png",
+              "sha256": "24233ccd1d681625729f7eed6d0ae427891e22a6e52c805f8f5ee37184fedebd"
+            }
+          ]
+        },
+        "fixed-srgb": {
+          "window_result": {
+            "path": "build/release/tests/workbench-lights/fixed-srgb/window/result.json",
+            "sha256": "5863dab5da74e8f0db6d1653d9657c7755f9cf32acb3a9dc1f4f407fecf11c96"
+          },
+          "fitting_report": {
+            "path": "build/release/tests/workbench-lights/fixed-srgb/runs/fixture-20261001-150427-703-8f2c75/light-fit.json",
+            "sha256": "785dab97d4cf9f77829c0bd994d00c804f938c7d22444f0eedb0709cd844e1a8"
+          },
+          "generated_request": {
+            "path": "build/release/tests/workbench-lights/fixed-srgb/runs/fixture-20261001-150427-703-8f2c75/light-request.json",
+            "sha256": "759fea38512c131d45c8f43deb6cf549b71cc8cf66feb303cf3bf114f3a10eed"
+          },
+          "recovered_map": {
+            "path": "build/release/tests/workbench-lights/fixed-srgb/runs/fixture-20261001-150430-968-25d56d/recovered.map",
+            "sha256": "e690df3ff2236ba8ece8d108222be6dc8857a1c1fbcaf5a118222b0a1469a8d9"
+          },
+          "recovery_report": {
+            "path": "build/release/tests/workbench-lights/fixed-srgb/runs/fixture-20261001-150430-968-25d56d/recovered.map.recovery.json",
+            "sha256": "b685a3e041c011abb4d1d9b751f76a9d293da715aea3647da3a1c06f9587d280"
+          },
+          "rebuilt_bsp": {
+            "path": "build/release/tests/workbench-lights/fixed-srgb/runs/fixture-20261001-150430-968-25d56d/recovered.bsp",
+            "sha256": "e936c94fb9fb7bb2481585473d388011cd2141c59e4d69a413767cddd06b8885"
+          },
+          "rebuilt_evidence": {
+            "path": "build/release/tests/workbench-lights/fixed-srgb/rebuilt-evidence.json",
+            "sha256": "a791d828e3ad8136f591e543598316c2d87f99f2b5b07ef2aa73032b8fc543c1"
+          },
+          "previews": [
+            {
+              "path": "build/release/tests/workbench-lights/fixed-srgb/window/0-1024-0.png",
+              "sha256": "fc1b3bb0aaac7c11528e5c3a5823e73eebc5825f1bf46aab840f485c448e1658"
+            },
+            {
+              "path": "build/release/tests/workbench-lights/fixed-srgb/window/0-1024-1.png",
+              "sha256": "6b537f10654dff8c23f5e7fe572afaf966e3456ca935423735dd6df4a2c08007"
+            },
+            {
+              "path": "build/release/tests/workbench-lights/fixed-srgb/window/0-1380-0.png",
+              "sha256": "7f932e6c4411823ddd776d0ae2cd807f80d7b6946e2b4f8f1cb67074aabb5289"
+            },
+            {
+              "path": "build/release/tests/workbench-lights/fixed-srgb/window/0-1380-1.png",
+              "sha256": "2d428fd61f2ca0a9b08d2948616095f741a8f8ec2987c9ed0434670d4be4424e"
+            },
+            {
+              "path": "build/release/tests/workbench-lights/fixed-srgb/window/1-1024-0.png",
+              "sha256": "e86e5c7026a532fec9a4b8d27076b322a07c4db58ca8ecaa0957cdf94fdbaac9"
+            },
+            {
+              "path": "build/release/tests/workbench-lights/fixed-srgb/window/1-1024-1.png",
+              "sha256": "9c9cdfa4695221e558bb2377c2a681a3e333cc6d575c2ce11796416e1d7ea7c4"
+            },
+            {
+              "path": "build/release/tests/workbench-lights/fixed-srgb/window/1-1380-0.png",
+              "sha256": "5caa4db3cf3fd7075413169d4f769a269c73107313b853059c27d5722c545420"
+            },
+            {
+              "path": "build/release/tests/workbench-lights/fixed-srgb/window/1-1380-1.png",
+              "sha256": "39a81604e2e7fa0137f9da9899b847f75dbd0744261b53fd11e7ca0f7c53d7e6"
+            }
+          ]
+        }
+      },
+      "workbench_executable": {
+        "path": "build/release/bin/q3mapx-workbench.exe",
+        "sha256": "d77588f508aa06bbe2feaf2901fc4e0ecfb63cdea30fee958e7e71e76ca002c8"
+      }
+    },
+    "linux": {
+      "compiler": {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "71cfcd847ff9234b0e377749f8ca6d23566c25f21901a1ae90d024abfaa0309b"
+      },
+      "window_test_executable": {
+        "path": "build/linux-release/bin/workbench_lights_test",
+        "sha256": "5ec54b0231b454c5e736c9fd3155dd0ad5fb64484c9c57fb5bbc70e26b995494"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/light-workbench/build-linux.log",
+        "sha256": "0efc7799c9e23de092046128fd6f6c5b3206860092e6e23685e1b7dca15cc55a"
+      },
+      "final_build_log": {
+        "path": ".agents/tmp/continuation/light-workbench/build-linux-final.log",
+        "sha256": "6179de1d97d10921dad7986c191c46bcf9df9a4c7466b5f3d8838fd8d55f3af0"
+      },
+      "ctest": {
+        "path": ".agents/tmp/continuation/light-workbench/ctest-linux-final.log",
+        "sha256": "375e09f1ca6502778ec66a52a5016b8457c059dd066ca822c02e25a6beaaa74b",
+        "passed": [
+          "game_catalog",
+          "game_profiles",
+          "workbench",
+          "workbench_devices",
+          "workbench_inspector",
+          "workbench_lights",
+          "workbench_preview",
+          "workbench_window"
+        ],
+        "failed": [],
+        "skipped": []
+      },
+      "results": {
+        "path": "build/linux-release/tests/workbench-lights/results.json",
+        "sha256": "3b2507f6df75ac1368473240392150f0eff4ef93271bf8c61d1bb95eb5eecbc1"
+      },
+      "rebuild_cases": [
+        {
+          "case": "point",
+          "checks": {
+            "both_themes_and_compact_actions_accessible": true,
+            "bounded_report_parser": true,
+            "changed_report_rejected_before_staging": true,
+            "fitting_controls_preserve_numeric_precision": true,
+            "legacy_compiler_and_menu_guard": true,
+            "mismatched_sources_and_rejected_trials": true,
+            "native_fit_cancellation_preserves_prior_report": true,
+            "native_fit_from_window_and_snapshot": true,
+            "no_os_input_or_capture": true,
+            "project_schema_and_legacy_defaults": true,
+            "reader_cancellation_and_stale_result_guard": true,
+            "review_selection_survives_settings_changes": true,
+            "reviewed_native_export_and_isolated_snapshot": true,
+            "source_preserved_and_other_workflows_unchanged": true,
+            "typed_settings_and_request_preview": true,
+            "unscored_rejections_display_unavailable_metrics": true
+          },
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "observations": 293,
+          "source_sha256": "f086c7434401452dac4aa9beae0fc7c881cfd451f03233f3a55b881a8171bc4d"
+        },
+        {
+          "case": "spot",
+          "checks": {
+            "both_themes_and_compact_actions_accessible": true,
+            "bounded_report_parser": true,
+            "changed_report_rejected_before_staging": true,
+            "fitting_controls_preserve_numeric_precision": true,
+            "legacy_compiler_and_menu_guard": true,
+            "mismatched_sources_and_rejected_trials": true,
+            "native_fit_cancellation_preserves_prior_report": true,
+            "native_fit_from_window_and_snapshot": true,
+            "no_os_input_or_capture": true,
+            "project_schema_and_legacy_defaults": true,
+            "reader_cancellation_and_stale_result_guard": true,
+            "review_selection_survives_settings_changes": true,
+            "reviewed_native_export_and_isolated_snapshot": true,
+            "source_preserved_and_other_workflows_unchanged": true,
+            "typed_settings_and_request_preview": true,
+            "unscored_rejections_display_unavailable_metrics": true
+          },
+          "rebuild_rmse": 0.06299407883487121,
+          "maximum_prediction_difference": 0,
+          "observations": 420,
+          "source_sha256": "54598c967ba5c06642a0535ea662fe33bc203e11101749ba51e558b7b402b165"
+        },
+        {
+          "case": "fixed-srgb",
+          "checks": {
+            "both_themes_and_compact_actions_accessible": true,
+            "bounded_report_parser": true,
+            "changed_report_rejected_before_staging": true,
+            "fitting_controls_preserve_numeric_precision": true,
+            "legacy_compiler_and_menu_guard": true,
+            "mismatched_sources_and_rejected_trials": true,
+            "native_fit_cancellation_preserves_prior_report": true,
+            "native_fit_from_window_and_snapshot": true,
+            "no_os_input_or_capture": true,
+            "project_schema_and_legacy_defaults": true,
+            "reader_cancellation_and_stale_result_guard": true,
+            "review_selection_survives_settings_changes": true,
+            "reviewed_native_export_and_isolated_snapshot": true,
+            "source_preserved_and_other_workflows_unchanged": true,
+            "typed_settings_and_request_preview": true,
+            "unscored_rejections_display_unavailable_metrics": true
+          },
+          "rebuild_rmse": 0.18876489055978068,
+          "maximum_prediction_difference": 0,
+          "observations": 290,
+          "source_sha256": "44d9796ce8c04075fa1ebaa7e0dc6fd1994dec4b3c64dbcc03c114ad1abd3cf7"
+        }
+      ],
+      "artifacts": {
+        "point": {
+          "window_result": {
+            "path": "build/linux-release/tests/workbench-lights/point/window/result.json",
+            "sha256": "a60493d77130654a067d52870bccbfa02960c3bdb5cc1ff11aee0afb65b27c82"
+          },
+          "fitting_report": {
+            "path": "build/linux-release/tests/workbench-lights/point/runs/fixture-20261001-150416-330-471eb8/light-fit.json",
+            "sha256": "9ef1e7b5b622916b8852b9d00fe7917789973d64d87a825f6c797da3cd76bf66"
+          },
+          "generated_request": {
+            "path": "build/linux-release/tests/workbench-lights/point/runs/fixture-20261001-150416-330-471eb8/light-request.json",
+            "sha256": "2d068d69e20c97985b7861d1bb7749943daaedbd7f4e00de11034846a00272c2"
+          },
+          "recovered_map": {
+            "path": "build/linux-release/tests/workbench-lights/point/runs/fixture-20261001-150419-409-7b23ac/recovered.map",
+            "sha256": "459d423ba88d30f1eac46b0a333a83f3be489e184884cc619e7d6e8ba97d74f8"
+          },
+          "recovery_report": {
+            "path": "build/linux-release/tests/workbench-lights/point/runs/fixture-20261001-150419-409-7b23ac/recovered.map.recovery.json",
+            "sha256": "a25656e81015b25b340fe440508d6ed1c2b2f6c421340e6fb0fbccfbd9a2915a"
+          },
+          "rebuilt_bsp": {
+            "path": "build/linux-release/tests/workbench-lights/point/runs/fixture-20261001-150419-409-7b23ac/recovered.bsp",
+            "sha256": "829c2e4966b24f23f2105bae5c4da2f5ca366baf89fdaf954b356320f0f09520"
+          },
+          "rebuilt_evidence": {
+            "path": "build/linux-release/tests/workbench-lights/point/rebuilt-evidence.json",
+            "sha256": "69f1f1fc768d84e5824368a39075d49e5e6ee25988995e1174ecde4243293754"
+          },
+          "previews": [
+            {
+              "path": "build/linux-release/tests/workbench-lights/point/window/0-1024-0.png",
+              "sha256": "3fbc6da6d358ba6ece8ffa5ca608a976599aea7f06f209e05a273fe08cbfaf25"
+            },
+            {
+              "path": "build/linux-release/tests/workbench-lights/point/window/0-1024-1.png",
+              "sha256": "5144364032387bf5affff035331847157bacc71942fb0b3831cf9e695f386267"
+            },
+            {
+              "path": "build/linux-release/tests/workbench-lights/point/window/0-1380-0.png",
+              "sha256": "66977a9b1476ad3df4b052666b93cc2ba28afb09542119df0f3d4d0e6d2eeb12"
+            },
+            {
+              "path": "build/linux-release/tests/workbench-lights/point/window/0-1380-1.png",
+              "sha256": "d5b5e029f722364cefe6f01c8dd021c7c3603ad77f19048c4b498e16b97fff90"
+            },
+            {
+              "path": "build/linux-release/tests/workbench-lights/point/window/1-1024-0.png",
+              "sha256": "7eac0288fd8479c0a5650646c8d47ea8ed8a5f81a23c7885ca77ae3c48f307f8"
+            },
+            {
+              "path": "build/linux-release/tests/workbench-lights/point/window/1-1024-1.png",
+              "sha256": "2bb964229ebce684cba98fa2f4e3c4bdef7d6c83529add60bc8726cb5b83741a"
+            },
+            {
+              "path": "build/linux-release/tests/workbench-lights/point/window/1-1380-0.png",
+              "sha256": "06aec65f3f4306b3f108f53e145a4dabf475783e50ab0733e9277fd2a8025557"
+            },
+            {
+              "path": "build/linux-release/tests/workbench-lights/point/window/1-1380-1.png",
+              "sha256": "e8cbb1d0acc4bf68c953d15b110cf38cb7585b1b4b4bb4df9bc277f3842b7116"
+            }
+          ]
+        },
+        "spot": {
+          "window_result": {
+            "path": "build/linux-release/tests/workbench-lights/spot/window/result.json",
+            "sha256": "dd03272bdd8ed879bc2748b6e1e1025bf763923a62b69adc3ee86fbcd12e344e"
+          },
+          "fitting_report": {
+            "path": "build/linux-release/tests/workbench-lights/spot/runs/fixture-20261001-150420-891-233fe2/light-fit.json",
+            "sha256": "2ba026292d4368f8e74230ff8d6152368afdb87dea58b41e5667621cf92b5929"
+          },
+          "generated_request": {
+            "path": "build/linux-release/tests/workbench-lights/spot/runs/fixture-20261001-150420-891-233fe2/light-request.json",
+            "sha256": "e3f8d68a72829d680fd25c3fcc16c9bcecfdea250246faaee7918b6162df9e20"
+          },
+          "recovered_map": {
+            "path": "build/linux-release/tests/workbench-lights/spot/runs/fixture-20261001-150428-039-633b7c/recovered.map",
+            "sha256": "a36f5f19e1ef5c415772409834ff5f226c32d61bd5b598a152dfedf7515ab2ce"
+          },
+          "recovery_report": {
+            "path": "build/linux-release/tests/workbench-lights/spot/runs/fixture-20261001-150428-039-633b7c/recovered.map.recovery.json",
+            "sha256": "c73ad5056320c2230c14474cb275bed4b62c7ca5afd3ff5cb8f10746607943ea"
+          },
+          "rebuilt_bsp": {
+            "path": "build/linux-release/tests/workbench-lights/spot/runs/fixture-20261001-150428-039-633b7c/recovered.bsp",
+            "sha256": "5a11d8ae6f33d33f279ed0147013b428585a15239a09ba715cc504fbbed44c8e"
+          },
+          "rebuilt_evidence": {
+            "path": "build/linux-release/tests/workbench-lights/spot/rebuilt-evidence.json",
+            "sha256": "b88de36793b4e2f415796039fab1d3e248b8ccce3d935da96b76e6daf2444cfb"
+          },
+          "previews": [
+            {
+              "path": "build/linux-release/tests/workbench-lights/spot/window/0-1024-0.png",
+              "sha256": "95b3833f069db4f7e02d4307905944bba476779c05421caf40883af678d45cf1"
+            },
+            {
+              "path": "build/linux-release/tests/workbench-lights/spot/window/0-1024-1.png",
+              "sha256": "b4bf5a32b896610f0e11cd5962d288ad9437e9c9edc35521aeb9349c1ea54f04"
+            },
+            {
+              "path": "build/linux-release/tests/workbench-lights/spot/window/0-1380-0.png",
+              "sha256": "cdb5cfdf183022c28f70fc652e7134015ab0e3f64e52e4c479d9d61102f9e531"
+            },
+            {
+              "path": "build/linux-release/tests/workbench-lights/spot/window/0-1380-1.png",
+              "sha256": "723bf6f5601bdc40d8c9a5b1a412b01a7584a4b2e8c51c3f9759601a6e98e575"
+            },
+            {
+              "path": "build/linux-release/tests/workbench-lights/spot/window/1-1024-0.png",
+              "sha256": "f093d02029af6323bbee16225a789ab33e4d84364c47e5b779ab9a871d0aa234"
+            },
+            {
+              "path": "build/linux-release/tests/workbench-lights/spot/window/1-1024-1.png",
+              "sha256": "cf7d2bcb370bde891b59327d44aa22455555804299b4219dcac9177f105b60d5"
+            },
+            {
+              "path": "build/linux-release/tests/workbench-lights/spot/window/1-1380-0.png",
+              "sha256": "c2bae10ed1831df8ed87300431c8e24d447c16b116c0d872c3936d597f79e6fc"
+            },
+            {
+              "path": "build/linux-release/tests/workbench-lights/spot/window/1-1380-1.png",
+              "sha256": "973383dc6c5e7db0f270c2817d228660277deff532a3e8c73f374a8dcffc63d2"
+            }
+          ]
+        },
+        "fixed-srgb": {
+          "window_result": {
+            "path": "build/linux-release/tests/workbench-lights/fixed-srgb/window/result.json",
+            "sha256": "77ce363c5d8d81ebc8c0039cd3a4ee9b238fa395398688018880b1f61aa3649f"
+          },
+          "fitting_report": {
+            "path": "build/linux-release/tests/workbench-lights/fixed-srgb/runs/fixture-20261001-150429-711-392d08/light-fit.json",
+            "sha256": "785dab97d4cf9f77829c0bd994d00c804f938c7d22444f0eedb0709cd844e1a8"
+          },
+          "generated_request": {
+            "path": "build/linux-release/tests/workbench-lights/fixed-srgb/runs/fixture-20261001-150429-711-392d08/light-request.json",
+            "sha256": "759fea38512c131d45c8f43deb6cf549b71cc8cf66feb303cf3bf114f3a10eed"
+          },
+          "recovered_map": {
+            "path": "build/linux-release/tests/workbench-lights/fixed-srgb/runs/fixture-20261001-150432-963-343b33/recovered.map",
+            "sha256": "e690df3ff2236ba8ece8d108222be6dc8857a1c1fbcaf5a118222b0a1469a8d9"
+          },
+          "recovery_report": {
+            "path": "build/linux-release/tests/workbench-lights/fixed-srgb/runs/fixture-20261001-150432-963-343b33/recovered.map.recovery.json",
+            "sha256": "4c4ccb1f460761130f16c42372b69e679f49e3aaafe541d3977cd3e37c1704af"
+          },
+          "rebuilt_bsp": {
+            "path": "build/linux-release/tests/workbench-lights/fixed-srgb/runs/fixture-20261001-150432-963-343b33/recovered.bsp",
+            "sha256": "77fb974737501028ed4d23c1528163319acddf49196e841746eda5a296a1db56"
+          },
+          "rebuilt_evidence": {
+            "path": "build/linux-release/tests/workbench-lights/fixed-srgb/rebuilt-evidence.json",
+            "sha256": "0429b01864a95a195266616a68cd79ada6e750f598adaa592aa7608b87b5ee5a"
+          },
+          "previews": [
+            {
+              "path": "build/linux-release/tests/workbench-lights/fixed-srgb/window/0-1024-0.png",
+              "sha256": "d523c1213457825d55a7d73a7046c52f96ee6049fba0aafbec9b5fc5a866c983"
+            },
+            {
+              "path": "build/linux-release/tests/workbench-lights/fixed-srgb/window/0-1024-1.png",
+              "sha256": "7bc58a5d260a22b4707bd7b3d90b496a869e914b76e15f66d903a4eeaeb17f61"
+            },
+            {
+              "path": "build/linux-release/tests/workbench-lights/fixed-srgb/window/0-1380-0.png",
+              "sha256": "efec64bbfc3c9ac1788c46ef9a0a5cbb24161a75086bc996262ca310a0d5ccc8"
+            },
+            {
+              "path": "build/linux-release/tests/workbench-lights/fixed-srgb/window/0-1380-1.png",
+              "sha256": "858b5d95003ea3946e6756fc83d025f0e9964235a74de10ed19cb05f9c443e78"
+            },
+            {
+              "path": "build/linux-release/tests/workbench-lights/fixed-srgb/window/1-1024-0.png",
+              "sha256": "36f6a32bf064b03f9aa9336e75c62e4c90d01a61f184b00cad6230861625c4ec"
+            },
+            {
+              "path": "build/linux-release/tests/workbench-lights/fixed-srgb/window/1-1024-1.png",
+              "sha256": "e2898cf3bcfda061e38b72c02ad4ff8da520c9f08b62280bdd0384602b7d44ee"
+            },
+            {
+              "path": "build/linux-release/tests/workbench-lights/fixed-srgb/window/1-1380-0.png",
+              "sha256": "d3f0f46dc0d3fe506d037d29a35e79dcf987d65676470b77dc55c812113012dd"
+            },
+            {
+              "path": "build/linux-release/tests/workbench-lights/fixed-srgb/window/1-1380-1.png",
+              "sha256": "0cda8f4267b15bf492bb8b646cb4b1226021d089ef705706bc37586540bb4f9a"
+            }
+          ]
+        }
+      },
+      "workbench_executable": {
+        "path": "build/linux-release/bin/q3mapx-workbench",
+        "sha256": "99397ff4b97be5c320149f34e193e1a134e8f353eea3608a91e02685b73169c4"
+      }
+    },
+    "sanitized": {
+      "compiler": {
+        "path": "build/linux-sanitized/bin/q3mapx",
+        "sha256": "adaa1b19aff6dc61d0dc8ad6aaefc9a4e9393cca7ac3f5a2525f9d7b936bcf1f"
+      },
+      "window_test_executable": {
+        "path": "build/linux-sanitized/bin/workbench_lights_test",
+        "sha256": "c422af31ad853a4ff7aa3ecc4a46f2d0634714ec56312b4ac30f386397ae34ab"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/light-workbench/build-sanitized.log",
+        "sha256": "378e1fc08ed97fc55829f01f9c0a90f6862ce6a2d219b9fb741711f4e7a6696f"
+      },
+      "final_build_log": {
+        "path": ".agents/tmp/continuation/light-workbench/build-sanitized-final.log",
+        "sha256": "49f660c9738f7dd53a64dea269933af5776e1527bfca5b16b8acf11f95ef311e"
+      },
+      "ctest": {
+        "path": ".agents/tmp/continuation/light-workbench/ctest-sanitized-final.log",
+        "sha256": "fb4d2dbbe79dafe83493c194a5942f5ceb5e31432aec42ac455e26d8ae50a1aa",
+        "passed": [
+          "workbench_lights"
+        ],
+        "failed": [],
+        "skipped": []
+      },
+      "results": {
+        "path": "build/linux-sanitized/tests/workbench-lights/results.json",
+        "sha256": "3b2507f6df75ac1368473240392150f0eff4ef93271bf8c61d1bb95eb5eecbc1"
+      },
+      "rebuild_cases": [
+        {
+          "case": "point",
+          "checks": {
+            "both_themes_and_compact_actions_accessible": true,
+            "bounded_report_parser": true,
+            "changed_report_rejected_before_staging": true,
+            "fitting_controls_preserve_numeric_precision": true,
+            "legacy_compiler_and_menu_guard": true,
+            "mismatched_sources_and_rejected_trials": true,
+            "native_fit_cancellation_preserves_prior_report": true,
+            "native_fit_from_window_and_snapshot": true,
+            "no_os_input_or_capture": true,
+            "project_schema_and_legacy_defaults": true,
+            "reader_cancellation_and_stale_result_guard": true,
+            "review_selection_survives_settings_changes": true,
+            "reviewed_native_export_and_isolated_snapshot": true,
+            "source_preserved_and_other_workflows_unchanged": true,
+            "typed_settings_and_request_preview": true,
+            "unscored_rejections_display_unavailable_metrics": true
+          },
+          "rebuild_rmse": 0.25240594278759315,
+          "maximum_prediction_difference": 0,
+          "observations": 293,
+          "source_sha256": "f086c7434401452dac4aa9beae0fc7c881cfd451f03233f3a55b881a8171bc4d"
+        },
+        {
+          "case": "spot",
+          "checks": {
+            "both_themes_and_compact_actions_accessible": true,
+            "bounded_report_parser": true,
+            "changed_report_rejected_before_staging": true,
+            "fitting_controls_preserve_numeric_precision": true,
+            "legacy_compiler_and_menu_guard": true,
+            "mismatched_sources_and_rejected_trials": true,
+            "native_fit_cancellation_preserves_prior_report": true,
+            "native_fit_from_window_and_snapshot": true,
+            "no_os_input_or_capture": true,
+            "project_schema_and_legacy_defaults": true,
+            "reader_cancellation_and_stale_result_guard": true,
+            "review_selection_survives_settings_changes": true,
+            "reviewed_native_export_and_isolated_snapshot": true,
+            "source_preserved_and_other_workflows_unchanged": true,
+            "typed_settings_and_request_preview": true,
+            "unscored_rejections_display_unavailable_metrics": true
+          },
+          "rebuild_rmse": 0.06299407883487121,
+          "maximum_prediction_difference": 0,
+          "observations": 420,
+          "source_sha256": "54598c967ba5c06642a0535ea662fe33bc203e11101749ba51e558b7b402b165"
+        },
+        {
+          "case": "fixed-srgb",
+          "checks": {
+            "both_themes_and_compact_actions_accessible": true,
+            "bounded_report_parser": true,
+            "changed_report_rejected_before_staging": true,
+            "fitting_controls_preserve_numeric_precision": true,
+            "legacy_compiler_and_menu_guard": true,
+            "mismatched_sources_and_rejected_trials": true,
+            "native_fit_cancellation_preserves_prior_report": true,
+            "native_fit_from_window_and_snapshot": true,
+            "no_os_input_or_capture": true,
+            "project_schema_and_legacy_defaults": true,
+            "reader_cancellation_and_stale_result_guard": true,
+            "review_selection_survives_settings_changes": true,
+            "reviewed_native_export_and_isolated_snapshot": true,
+            "source_preserved_and_other_workflows_unchanged": true,
+            "typed_settings_and_request_preview": true,
+            "unscored_rejections_display_unavailable_metrics": true
+          },
+          "rebuild_rmse": 0.18876489055978068,
+          "maximum_prediction_difference": 0,
+          "observations": 290,
+          "source_sha256": "44d9796ce8c04075fa1ebaa7e0dc6fd1994dec4b3c64dbcc03c114ad1abd3cf7"
+        }
+      ],
+      "artifacts": {
+        "point": {
+          "window_result": {
+            "path": "build/linux-sanitized/tests/workbench-lights/point/window/result.json",
+            "sha256": "a52a1b16ba45fb5bbd5a858446645f5791d9855b43d8b26eed3e248503e49387"
+          },
+          "fitting_report": {
+            "path": "build/linux-sanitized/tests/workbench-lights/point/runs/fixture-20261001-150418-207-d0b728/light-fit.json",
+            "sha256": "9ef1e7b5b622916b8852b9d00fe7917789973d64d87a825f6c797da3cd76bf66"
+          },
+          "generated_request": {
+            "path": "build/linux-sanitized/tests/workbench-lights/point/runs/fixture-20261001-150418-207-d0b728/light-request.json",
+            "sha256": "2d068d69e20c97985b7861d1bb7749943daaedbd7f4e00de11034846a00272c2"
+          },
+          "recovered_map": {
+            "path": "build/linux-sanitized/tests/workbench-lights/point/runs/fixture-20261001-150431-690-14bccb/recovered.map",
+            "sha256": "459d423ba88d30f1eac46b0a333a83f3be489e184884cc619e7d6e8ba97d74f8"
+          },
+          "recovery_report": {
+            "path": "build/linux-sanitized/tests/workbench-lights/point/runs/fixture-20261001-150431-690-14bccb/recovered.map.recovery.json",
+            "sha256": "6d62d070585fa50be7cc3bd515c3b382d9e3e151837620fc2d48e05acfeb0133"
+          },
+          "rebuilt_bsp": {
+            "path": "build/linux-sanitized/tests/workbench-lights/point/runs/fixture-20261001-150431-690-14bccb/recovered.bsp",
+            "sha256": "2c532fd3c076aac65dc77714733f17a70ac2903607be22ba9fa8c4ad47909d86"
+          },
+          "rebuilt_evidence": {
+            "path": "build/linux-sanitized/tests/workbench-lights/point/rebuilt-evidence.json",
+            "sha256": "3c2c57fd40d105cf1433f94ab27bdda734f39ae6db217c5c3ff10c848f16311c"
+          },
+          "previews": [
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/point/window/0-1024-0.png",
+              "sha256": "3fbc6da6d358ba6ece8ffa5ca608a976599aea7f06f209e05a273fe08cbfaf25"
+            },
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/point/window/0-1024-1.png",
+              "sha256": "f9803ff378e32e19c0edc6e0995669de8aa60ba48235dec482c71b3a5ae5a8bd"
+            },
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/point/window/0-1380-0.png",
+              "sha256": "66977a9b1476ad3df4b052666b93cc2ba28afb09542119df0f3d4d0e6d2eeb12"
+            },
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/point/window/0-1380-1.png",
+              "sha256": "9d412ad20d6619414e9c6b969ec303d5803acd1871cb1d2587eee15b14ee7847"
+            },
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/point/window/1-1024-0.png",
+              "sha256": "7eac0288fd8479c0a5650646c8d47ea8ed8a5f81a23c7885ca77ae3c48f307f8"
+            },
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/point/window/1-1024-1.png",
+              "sha256": "be7aaf6f782d08a2f85fd899fbd67be2ecc530e982450e836fd911feded95273"
+            },
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/point/window/1-1380-0.png",
+              "sha256": "06aec65f3f4306b3f108f53e145a4dabf475783e50ab0733e9277fd2a8025557"
+            },
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/point/window/1-1380-1.png",
+              "sha256": "1642d846a66046514963d6cb021c1886efdebb2a9d3cda3f434ac75214765c20"
+            }
+          ]
+        },
+        "spot": {
+          "window_result": {
+            "path": "build/linux-sanitized/tests/workbench-lights/spot/window/result.json",
+            "sha256": "5b9c2c44390c026c173edec07e630fcaf1bdf691ef2f829961a94c794098c00d"
+          },
+          "fitting_report": {
+            "path": "build/linux-sanitized/tests/workbench-lights/spot/runs/fixture-20261001-150436-437-fd6013/light-fit.json",
+            "sha256": "2ba026292d4368f8e74230ff8d6152368afdb87dea58b41e5667621cf92b5929"
+          },
+          "generated_request": {
+            "path": "build/linux-sanitized/tests/workbench-lights/spot/runs/fixture-20261001-150436-437-fd6013/light-request.json",
+            "sha256": "e3f8d68a72829d680fd25c3fcc16c9bcecfdea250246faaee7918b6162df9e20"
+          },
+          "recovered_map": {
+            "path": "build/linux-sanitized/tests/workbench-lights/spot/runs/fixture-20261001-150518-939-6925ac/recovered.map",
+            "sha256": "a36f5f19e1ef5c415772409834ff5f226c32d61bd5b598a152dfedf7515ab2ce"
+          },
+          "recovery_report": {
+            "path": "build/linux-sanitized/tests/workbench-lights/spot/runs/fixture-20261001-150518-939-6925ac/recovered.map.recovery.json",
+            "sha256": "56bfc6f5fd7783b248ed7c4b7497644f99853b1017f8b7176b33fd7d8dbb7786"
+          },
+          "rebuilt_bsp": {
+            "path": "build/linux-sanitized/tests/workbench-lights/spot/runs/fixture-20261001-150518-939-6925ac/recovered.bsp",
+            "sha256": "931a1e3f29c77a8737515ebd21776a0e75cea76433a0f9fe8c0d6187b6ac852e"
+          },
+          "rebuilt_evidence": {
+            "path": "build/linux-sanitized/tests/workbench-lights/spot/rebuilt-evidence.json",
+            "sha256": "6657a36f4a19ef0644480b719ca75d1721ad06c31f60497b44e10ec0c8612c05"
+          },
+          "previews": [
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/spot/window/0-1024-0.png",
+              "sha256": "95b3833f069db4f7e02d4307905944bba476779c05421caf40883af678d45cf1"
+            },
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/spot/window/0-1024-1.png",
+              "sha256": "368be8004376cd82851c3c3375b46e370eb16c321ad485a70ce9822e8e0ac42f"
+            },
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/spot/window/0-1380-0.png",
+              "sha256": "cdb5cfdf183022c28f70fc652e7134015ab0e3f64e52e4c479d9d61102f9e531"
+            },
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/spot/window/0-1380-1.png",
+              "sha256": "b3651b4b857cc6308d9de0144bf8fd30cc43ff22120c620d4ed31a635d3e5eeb"
+            },
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/spot/window/1-1024-0.png",
+              "sha256": "f093d02029af6323bbee16225a789ab33e4d84364c47e5b779ab9a871d0aa234"
+            },
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/spot/window/1-1024-1.png",
+              "sha256": "85c13cd4f7e7e6711291943e98b036e6346122a9eaa3436a94e51a68a29ae72c"
+            },
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/spot/window/1-1380-0.png",
+              "sha256": "c2bae10ed1831df8ed87300431c8e24d447c16b116c0d872c3936d597f79e6fc"
+            },
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/spot/window/1-1380-1.png",
+              "sha256": "05c2c8f8766f40a0138eb30079d507147fc8b26d6cd86a8c916ad4f696b08c73"
+            }
+          ]
+        },
+        "fixed-srgb": {
+          "window_result": {
+            "path": "build/linux-sanitized/tests/workbench-lights/fixed-srgb/window/result.json",
+            "sha256": "04c300978a4b0d4d5a37031279dcfc63e33b60f3536db9836b29bd951adab8a1"
+          },
+          "fitting_report": {
+            "path": "build/linux-sanitized/tests/workbench-lights/fixed-srgb/runs/fixture-20261001-150523-812-03aeff/light-fit.json",
+            "sha256": "785dab97d4cf9f77829c0bd994d00c804f938c7d22444f0eedb0709cd844e1a8"
+          },
+          "generated_request": {
+            "path": "build/linux-sanitized/tests/workbench-lights/fixed-srgb/runs/fixture-20261001-150523-812-03aeff/light-request.json",
+            "sha256": "759fea38512c131d45c8f43deb6cf549b71cc8cf66feb303cf3bf114f3a10eed"
+          },
+          "recovered_map": {
+            "path": "build/linux-sanitized/tests/workbench-lights/fixed-srgb/runs/fixture-20261001-150533-862-199cfe/recovered.map",
+            "sha256": "e690df3ff2236ba8ece8d108222be6dc8857a1c1fbcaf5a118222b0a1469a8d9"
+          },
+          "recovery_report": {
+            "path": "build/linux-sanitized/tests/workbench-lights/fixed-srgb/runs/fixture-20261001-150533-862-199cfe/recovered.map.recovery.json",
+            "sha256": "a9fa24eee6531e33226f32a94b14228334d6bf0646510f8ca05bac3a4305e355"
+          },
+          "rebuilt_bsp": {
+            "path": "build/linux-sanitized/tests/workbench-lights/fixed-srgb/runs/fixture-20261001-150533-862-199cfe/recovered.bsp",
+            "sha256": "eb1d205f112a58c79437684d9d10d8934bbb48fa15a03fc97659274e73e2367b"
+          },
+          "rebuilt_evidence": {
+            "path": "build/linux-sanitized/tests/workbench-lights/fixed-srgb/rebuilt-evidence.json",
+            "sha256": "8ad279e4e5401abe9e50dc921b78761b285bde690171b60db0ecd26409660132"
+          },
+          "previews": [
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/fixed-srgb/window/0-1024-0.png",
+              "sha256": "d523c1213457825d55a7d73a7046c52f96ee6049fba0aafbec9b5fc5a866c983"
+            },
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/fixed-srgb/window/0-1024-1.png",
+              "sha256": "3407d048953b94d49305a7f9ef4f35fc8780dd1ec3afd9fefc94e3f9f065978b"
+            },
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/fixed-srgb/window/0-1380-0.png",
+              "sha256": "efec64bbfc3c9ac1788c46ef9a0a5cbb24161a75086bc996262ca310a0d5ccc8"
+            },
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/fixed-srgb/window/0-1380-1.png",
+              "sha256": "7fb98d6bacac72483ef92f39016ab903b2fd0eef9b30edad5feceff09db6e40a"
+            },
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/fixed-srgb/window/1-1024-0.png",
+              "sha256": "36f6a32bf064b03f9aa9336e75c62e4c90d01a61f184b00cad6230861625c4ec"
+            },
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/fixed-srgb/window/1-1024-1.png",
+              "sha256": "0e89cf170697fbd62180e7c0d9f4165c8139a92ebd97b5826815175623521d80"
+            },
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/fixed-srgb/window/1-1380-0.png",
+              "sha256": "d3f0f46dc0d3fe506d037d29a35e79dcf987d65676470b77dc55c812113012dd"
+            },
+            {
+              "path": "build/linux-sanitized/tests/workbench-lights/fixed-srgb/window/1-1380-1.png",
+              "sha256": "87e7bcb2b5f8be750eb2ae11546674c864a720d75912b89762c56a270b643e2c"
+            }
+          ]
+        }
+      },
+      "configure_log": {
+        "path": ".agents/tmp/continuation/light-workbench/configure-sanitized.log",
+        "sha256": "11ef97fd2d7efdf2e306750f00d3cda905f199ad09981b8bee36000612710df6"
+      },
+      "sanitizers": {
+        "configuration": "Debug -g -O1, ASan/UBSan on first-party targets, assertions retained; GUI ON local override, GPU OFF",
+        "environment": {
+          "ASAN_OPTIONS": "detect_leaks=0:abort_on_error=1",
+          "UBSAN_OPTIONS": "print_stacktrace=1"
+        },
+        "compile_commands": {
+          "path": "build/linux-sanitized/compile_commands.json",
+          "sha256": "e4d98805b89008d298e4d9baaad06192ee28078521f9b64964e8ef72029a54e5"
+        },
+        "matrix_logs_scanned": 33,
+        "address_or_undefined_diagnostics": [],
+        "scope": "Only q3mapx and workbench_lights_test targets built; full sanitizer suite and standalone sanitized GUI executable not claimed."
+      }
+    }
+  },
+  "cross_platform": {
+    "identical_case_results": true,
+    "independent_complete_rebuilds": 9,
+    "maximum_original_bake_rmse_bytes": 0.25240594278759315,
+    "maximum_prediction_difference_bytes": 0,
+    "visual_review": "Final Windows dark compact fit, dark standard spotlight review and light compact fixed-sRGB review PNGs inspected directly. All platform fixtures paint both themes at 1380x920 and 1024x720, assert no horizontal page scroll and pinned visible primary actions. No OS capture or input injection."
+  },
+  "investigations": [
+    "Initial helper name conflicted with QWidget::scroll; renamed before successful builds.",
+    "The Qfusion fixture initially used baseq3 while the GUI correctly used the native base asset folder. Its unresolved-material report exposed a missing nullable-score review state. Both fixture directory and report review were corrected; unscored rejection is retained as a regression control.",
+    "Visual review found unstyled decimal controls and primary actions below scrollable content. Styling and pinned action footers were added, followed by final rebuilds and regression runs."
+  ],
+  "limits": [
+    "GUI review validates bounded summary fields, source identity and selected game. Native MAP export remains authoritative for complete stored-evidence checks; neither path authenticates reports or reruns transport during import.",
+    "Explicit bake hypotheses, complete report selection only. Unknown calibration, source uniqueness, mixed point/spot model selection, spatial overlays, individual edits and broad real-map accuracy remain open.",
+    "Existing release archives are unchanged; no GPU or performance improvement is claimed in this GUI round.",
+    "Qt shared libraries are not rebuilt with instrumentation; the inherited compiler lifetime-leak exclusion remains in use.",
+    "Only the eight related Windows/Linux groups and the new complete sanitizer matrix were rerun. Earlier complete compiler suites are recorded in the prior light-recovery round.",
+    "Previously policy-blocked cleanup targets were not touched. Final fixtures, snapshots, logs and renders remain under designated build/test and task evidence directories."
+  ]
+}

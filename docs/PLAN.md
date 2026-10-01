@@ -312,8 +312,9 @@ limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md
   refines nonnegative point colors/intensities/positions using native transport,
   fixed retained/material/sky sources and withheld texel blocks. Blind synthetic
   localization, overlapping sources and full recovered-map lighting rebuilds
-  provide initial qualification. Unknown encoding/bake calibration, indirect
-  contributions, broader real-map accuracy, entity export and GUI review remain.
+  provide initial qualification. Qualified fits can now be exported as entities
+  through the CLI and the workbench's explicit report selection. Unknown
+  encoding/bake calibration, indirect contributions and broader real-map accuracy remain.
 - [ ] Infer spotlight position, aim, cone and falloff; find compatible surviving
   targets and connect them appropriately, or propose clearly labelled replacement
   target entities without disturbing existing gameplay links.
@@ -323,7 +324,9 @@ limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md
   It proposes compatible surviving static marker links or uniquely named new
   markers. [Explicit report application](LIGHT-RECOVERY.md) now exports qualified
   fits and their fixed-light dependencies during decompilation, preserving target
-  relationships and recording provenance. Custom falloff, GUI review and broad
+  relationships and recording provenance. Typed workbench controls now run native
+  fitting jobs and show score, source and target details before selecting a report
+  for MAP export. Custom falloff, spatial overlays and broad
   real-map/target-identity qualification remain open.
 - [ ] Improve multi-triangle UV fitting, compatible brush-fragment reconstruction,
   plane/grid recovery, patches/model instances, hidden faces and entity relationships.
@@ -339,6 +342,11 @@ limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md
   stored-plane rebuild controls across six dominant-axis/sign orientations.
 - [ ] Add CLI/workbench review, confidence/provenance overlays, manual corrections
   and iterative rebuild comparisons for geometry, collision, visibility and lighting.
+  Initial [light recovery review](WORKBENCH.md#light-recovery) now includes bounded
+  background report parsing, BSP/game checks, training/withheld scores, proposal
+  details, recorded settings and exact report staging. Native queue export and
+  independent rebakes cover point/spot and supplied-light sRGB scenes. Spatial
+  overlays, interactive edits and a general iterative comparison workflow remain.
 
 Acceptance: known-source tests separate extraction fidelity, inference accuracy
 and rebuild similarity. Stripped-light fixtures include sun-only/emissive-only

@@ -9,7 +9,7 @@ class QCheckBox; class QComboBox; class QLabel; class QLineEdit; class QListWidg
 class QPushButton; class QProgressBar; class QSpinBox; class QStackedWidget; class QTableWidget; class QTreeWidget;
 
 namespace workbench {
-class InspectionPage; class HardwarePage;
+class InspectionPage; class HardwarePage; class LightRecoveryPage;
 class Window : public QMainWindow {
     Q_OBJECT
 public:
@@ -41,6 +41,7 @@ private:
     QStackedWidget* pages_;
     InspectionPage* inspection_;
     HardwarePage* hardware_;
+    LightRecoveryPage* lightRecovery_;
     bool dirty_=false, populating_=false;
     Project project() const;
     void setProject(const Project& project);

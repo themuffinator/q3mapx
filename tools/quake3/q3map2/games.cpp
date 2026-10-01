@@ -1098,6 +1098,7 @@ int PrintGameCatalog(){
 		}
 		if ( game.write ) {
 			writer.String( "build" ); writer.String( "bsp" ); writer.String( "vis" ); writer.String( "light" );
+			if ( game.load == LoadIBSPFile || game.load == LoadRBSPFile ) writer.String( "light-fit" );
 		}
 		if ( game.load ) {
 			if(game.supportsMinimap) writer.String( "minimap" );

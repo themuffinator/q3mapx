@@ -1,0 +1,838 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-01T14:30:46.588527+00:00",
+  "base_revision": "587295f988ee00a182e133a557134ddeb37b9e55",
+  "scope": "Reject malformed leading double signs in shared integer/double/float CLI option parsing, preserving existing valid grammar, bounds and stage semantics.",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "88b573d5a855b06ee8e39a162b74b1e62d335e01024688c054bebbe537f6fc4d",
+    "CMakePresets.json": "11464c160caf523f92eee8411f1a183a887b6927fa74de29d22210caf8a8dc3b",
+    "tools/quake3/common/arguments.h": "2a93c72a22d5073dc9501b328120f9cc99bd5b0506daefa7c2dabbcf60ddc710",
+    "tools/quake3/q3map2/q3map2.h": "397904387fa3b9217ae93b3ccbc661f9ae50f6f24d3449c63d20da86c4ca0785",
+    "tools/quake3/q3map2/main.cpp": "5fa4f041bd6c5423bd81d69a291c5da4745ea3f8acb337846df9eff2d5957169",
+    "tools/quake3/q3map2/bsp.cpp": "072b5c700589a1c19ce78e4a8715ea70da28f3015cced414772cb71d2480f003",
+    "tools/quake3/q3map2/light.cpp": "a3d07de368682f14ee3c11951fde8029d0c6ebb9d6dc6d2e584750f2193780df",
+    "tools/quake3/q3map2/minimap.cpp": "f0e0102f2a90aeb161540ec4077e3608c530296e3f82c64198a099cb653dc2cd",
+    "tools/quake3/q3map2/convert_bsp.cpp": "5fd911af551051e03820265fd63ffedefaf4a03bbe075a0bb1aa966cfdda18cc",
+    "tools/quake3/q3map2/bsp_evidence_cli.cpp": "43b0d7b4abe6567ca09f12beb927a1438da82799ecb555807a92c9f13b776ba5",
+    "tests/cli_numbers.py": "83546785cacf55d012d5fa13813a1d6c3a6991f34ab0eec93bfa92a1efe873de",
+    "tests/cli_options.py": "a457207e46750e49788405d18e5da39c2cf8db06b13baf372f640ba7a4a86b10",
+    "tests/fixtures.py": "5cc300117041bc22a719451f9915bca17cc5af10094521408538b850284436c7",
+    "tests/integration.py": "3bb8e703e9e898a4c079f6a52321941aeb54876a7eac7804b8e1069c1541dfb3"
+  },
+  "evidence_generator": {
+    "path": ".agents/tmp/continuation/cli-numbers/record.py",
+    "sha256": "138f18028c063cb26c3413448dba1956de4c9f2f4836feda9c7a360e3ed24821"
+  },
+  "before_reproduction": {
+    "results": {
+      "path": ".agents/tmp/continuation/cli-numbers/before.json",
+      "sha256": "a7295b4301dba94a3c3c33ddaaeb951396342e1ac445855abf6108c5cc8f5eb8"
+    },
+    "script": {
+      "path": ".agents/tmp/continuation/cli-numbers/probe.py",
+      "sha256": "82dea09e400f0ec7c06d78e91a5d59ee70be60ac0f3e7116ce9e5ecdc03b64fd"
+    },
+    "cases": [
+      {
+        "path": "integer",
+        "options": [
+          "-meta",
+          "-metaadequatescore",
+          "+-1"
+        ],
+        "exit_code": 0,
+        "invalid_double_sign_accepted": true
+      },
+      {
+        "path": "double",
+        "options": [
+          "-light",
+          "-fast",
+          "-contrast",
+          "+-12.5"
+        ],
+        "exit_code": 0,
+        "invalid_double_sign_accepted": true
+      },
+      {
+        "path": "float",
+        "options": [
+          "-minimap",
+          "-backend",
+          "cpu",
+          "-size",
+          "32",
+          "-brightness",
+          "+-0.25",
+          "-o",
+          "E:\\Repositories\\q3mapx\\.agents\\tmp\\continuation\\cli-numbers\\before\\old.tga"
+        ],
+        "exit_code": 0,
+        "invalid_double_sign_accepted": true
+      }
+    ]
+  },
+  "platforms": {
+    "windows": {
+      "compiler": {
+        "path": "build/release/bin/q3mapx.exe",
+        "sha256": "b7b5bcecb1889cbcf496f806878a913cbb08c2ac2d8664b835d05a78d8d74d59"
+      },
+      "reference": {
+        "path": ".agents/tmp/continuation/cli-numbers/q3mapx-before.exe",
+        "sha256": "5ba73f7c9e3fbc652f17efaf3a1f9680151c684d8861a380881d4ac34356f61a"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/cli-numbers/build-windows.log",
+        "sha256": "7b76fd15e15186bfe46c03f6d8f54aad8f275a66144b83d26f017584b441e595"
+      },
+      "matrix_log": {
+        "path": ".agents/tmp/continuation/cli-numbers/matrix-windows.log",
+        "sha256": "ee64e21d13093a7f5f443a8f5555c3f387b70f36a5086fddd57962459f209a5d"
+      },
+      "results": {
+        "path": "build/release/tests/cli-numbers/results.json",
+        "sha256": "753d936ae69b42cb6187709d95f399d4093cba907bb7325b09e2a330ea1a2803"
+      },
+      "ctest": {
+        "path": ".agents/tmp/continuation/cli-numbers/ctest-windows.log",
+        "sha256": "775c8f83c52d2c13801d9cf843c3ca2bf1de56dcec2cb14f05dbcd0907bcafdf",
+        "passed": [
+          "bsp_evidence",
+          "cli_options",
+          "compiler_pipeline",
+          "decompile_recovery",
+          "minimap"
+        ],
+        "skipped": [],
+        "failed": []
+      },
+      "valid_native_comparisons": [
+        {
+          "case": "bsp",
+          "matching_outputs": 3,
+          "reference_exact_raw_parity": true,
+          "comparison_sha256": [
+            "19b5ccece1ba75914e480ff7235b1929debe90fab64a6c0dce4fac63d0e68c0b",
+            "35863b0e9a2f176afa82c1acee0f9259c458fee7780d8b5efa687b95617da949",
+            "3d86b1ca68cf49afbfaf010aa0eee3e6a44d492e522726fdea628c4d80000c9d",
+            "8662dfb8c690eeb3bed39e8555c0b6ee8254c96b522e6e1aa7c43812487b9353",
+            "516ec07274898d0acc5b07fe8457ac9e8f57cd031403eff4248487a80bc74223",
+            "06b6768d404042ef0f3df51c993d0ff21630b44fcbab807b64546544c740576a",
+            "728e4603edabf7707e5761240973a531a497bcdc20462c140d7173e728729ffb",
+            "b196e63bf58a60360848fe1519f384710ea9cf8e562291b4a7b5bc4a7c75e7a2",
+            "32166badcc15ff822473c1047e02ef613bbe5a05a36cd4eb2a5fb5a9a1c8238f",
+            "6c645265cd4259e5660b4dc97db1873546d430921de6b6cd2814014b88931dec",
+            "22a5904ec30267670226798bfa653d70f01b0672c55faf63cccd44a546e7de46",
+            "57648a007051ec1e784e66b9006dc07047b443cf9bcfd76dbefed26d9776925f",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "0ec7ca5503ff5a2dc08e8f13b7c50f242ff7cf5278908d4aee54e4daabcd694f",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ]
+        },
+        {
+          "case": "integer-minimum",
+          "matching_outputs": 3,
+          "reference_exact_raw_parity": true,
+          "comparison_sha256": [
+            "19b5ccece1ba75914e480ff7235b1929debe90fab64a6c0dce4fac63d0e68c0b",
+            "35863b0e9a2f176afa82c1acee0f9259c458fee7780d8b5efa687b95617da949",
+            "3d86b1ca68cf49afbfaf010aa0eee3e6a44d492e522726fdea628c4d80000c9d",
+            "8662dfb8c690eeb3bed39e8555c0b6ee8254c96b522e6e1aa7c43812487b9353",
+            "516ec07274898d0acc5b07fe8457ac9e8f57cd031403eff4248487a80bc74223",
+            "06b6768d404042ef0f3df51c993d0ff21630b44fcbab807b64546544c740576a",
+            "728e4603edabf7707e5761240973a531a497bcdc20462c140d7173e728729ffb",
+            "b196e63bf58a60360848fe1519f384710ea9cf8e562291b4a7b5bc4a7c75e7a2",
+            "32166badcc15ff822473c1047e02ef613bbe5a05a36cd4eb2a5fb5a9a1c8238f",
+            "6c645265cd4259e5660b4dc97db1873546d430921de6b6cd2814014b88931dec",
+            "22a5904ec30267670226798bfa653d70f01b0672c55faf63cccd44a546e7de46",
+            "57648a007051ec1e784e66b9006dc07047b443cf9bcfd76dbefed26d9776925f",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "0ec7ca5503ff5a2dc08e8f13b7c50f242ff7cf5278908d4aee54e4daabcd694f",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ]
+        },
+        {
+          "case": "integer-maximum",
+          "matching_outputs": 3,
+          "reference_exact_raw_parity": true,
+          "comparison_sha256": [
+            "19b5ccece1ba75914e480ff7235b1929debe90fab64a6c0dce4fac63d0e68c0b",
+            "35863b0e9a2f176afa82c1acee0f9259c458fee7780d8b5efa687b95617da949",
+            "3d86b1ca68cf49afbfaf010aa0eee3e6a44d492e522726fdea628c4d80000c9d",
+            "8662dfb8c690eeb3bed39e8555c0b6ee8254c96b522e6e1aa7c43812487b9353",
+            "a92d85e9f2b9182ae5ef3ee4e73be0671402cd1d11e46c4c835481793a4e62cf",
+            "f8ccab3a0a577d5ce22f201dec989b6c650597ce56b33dcad34a29f43e0ddd80",
+            "728e4603edabf7707e5761240973a531a497bcdc20462c140d7173e728729ffb",
+            "51b233ae9c2ec7e75f4f6012c9e2262638eb48b9aa7c96b289bc598a823bfc61",
+            "32166badcc15ff822473c1047e02ef613bbe5a05a36cd4eb2a5fb5a9a1c8238f",
+            "6c645265cd4259e5660b4dc97db1873546d430921de6b6cd2814014b88931dec",
+            "e60861c56c30389d63f259aa0db0dbadbf38765e3d635784ae61aced5fd73822",
+            "fe78c65211dd0b56a97024fb61111e686ef1fe054aa132ba58e2891ac496f1ee",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "50f5fe09897dc7320da5f8a1b0636b31d1eb820bf37a15d6e070a4a9af2f4c6a",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ]
+        },
+        {
+          "case": "light",
+          "matching_outputs": 3,
+          "reference_exact_raw_parity": true,
+          "comparison_sha256": [
+            "19b5ccece1ba75914e480ff7235b1929debe90fab64a6c0dce4fac63d0e68c0b",
+            "35863b0e9a2f176afa82c1acee0f9259c458fee7780d8b5efa687b95617da949",
+            "3d86b1ca68cf49afbfaf010aa0eee3e6a44d492e522726fdea628c4d80000c9d",
+            "8662dfb8c690eeb3bed39e8555c0b6ee8254c96b522e6e1aa7c43812487b9353",
+            "516ec07274898d0acc5b07fe8457ac9e8f57cd031403eff4248487a80bc74223",
+            "06b6768d404042ef0f3df51c993d0ff21630b44fcbab807b64546544c740576a",
+            "728e4603edabf7707e5761240973a531a497bcdc20462c140d7173e728729ffb",
+            "b196e63bf58a60360848fe1519f384710ea9cf8e562291b4a7b5bc4a7c75e7a2",
+            "32166badcc15ff822473c1047e02ef613bbe5a05a36cd4eb2a5fb5a9a1c8238f",
+            "6c645265cd4259e5660b4dc97db1873546d430921de6b6cd2814014b88931dec",
+            "50224a97616acd5fd2e80be045e07e00c08a3269c72d757de9e19f3cbc1fb063",
+            "57648a007051ec1e784e66b9006dc07047b443cf9bcfd76dbefed26d9776925f",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "b775adee5d69b975c97ea567326c5cddccc06f8546d2222a2d5fb8b43dd1be8a",
+            "08b30b02f6f7d13fff54b93b14764f3a3e1ac3cff2d280d5bbc7fe1cd2631dc7",
+            "4b8cd0b689ba972ef13501a02bf4b6d89546116fcb1b0062550c8e9d4fd80bc7",
+            "14d5c74dfd1ad94f7c40dda722179101fcbadbb2abfc7ba8276ebfd1c2d1dfcc"
+          ]
+        },
+        {
+          "case": "minimap",
+          "matching_outputs": 3,
+          "reference_exact_raw_parity": true,
+          "comparison_sha256": "8bfa74e74de201c7c00aa8865647c6f978f1ea92483c42f5c207cbbe9b0425ba"
+        },
+        {
+          "case": "decompile",
+          "matching_outputs": 3,
+          "reference_exact_raw_parity": true,
+          "comparison_sha256": "3df2ba172a780c6d772820dea0457903fd84d624777c4ea99704f28787578118"
+        }
+      ],
+      "numeric_failures_preserving_outputs": 204,
+      "failures_by_call_path": {
+        "bsp-score": 24,
+        "decompile-epsilon": 20,
+        "evidence-depth": 24,
+        "global-patches": 24,
+        "global-workers": 24,
+        "light-bounces": 24,
+        "light-contrast": 20,
+        "minimap-brightness": 20,
+        "minimap-seed": 24
+      },
+      "protected_files": [
+        "baseq3/maps/fixture.map",
+        "baseq3/maps/fixture.bsp",
+        "baseq3/maps/fixture.prt",
+        "baseq3/maps/fixture.srf",
+        "recovered.map",
+        "recovered.map.recovery.json",
+        "minimap.tga",
+        "report.json",
+        "profile.json",
+        "compute.json",
+        "baseq3/maps/fixture.lin",
+        "baseq3/maps/fixture.reg"
+      ],
+      "retained_native_outputs": [
+        {
+          "path": "build/release/tests/cli-numbers/bsp-canonical.bsp",
+          "sha256": "87f5db8600df4c8db9bc1c7ade28f9c656e45692fce36ce36a10554a0ebb216f"
+        },
+        {
+          "path": "build/release/tests/cli-numbers/bsp-decorated.bsp",
+          "sha256": "48c7882fc6515c4578b76d0cb7a825464d730e3f901f03bfdd30dd07f7a3a7fd"
+        },
+        {
+          "path": "build/release/tests/cli-numbers/bsp-reference.bsp",
+          "sha256": "48c7882fc6515c4578b76d0cb7a825464d730e3f901f03bfdd30dd07f7a3a7fd"
+        },
+        {
+          "path": "build/release/tests/cli-numbers/integer-minimum-canonical.bsp",
+          "sha256": "95274d6c4e493f7560e18fe98d372ebc4ffba7877b3206487c2fa75d77c81ca1"
+        },
+        {
+          "path": "build/release/tests/cli-numbers/integer-minimum-decorated.bsp",
+          "sha256": "5095138d471bafc1959d2d55fcf3f9a8081658a4eeac1a7c22dfd76212b16092"
+        },
+        {
+          "path": "build/release/tests/cli-numbers/integer-minimum-reference.bsp",
+          "sha256": "5095138d471bafc1959d2d55fcf3f9a8081658a4eeac1a7c22dfd76212b16092"
+        },
+        {
+          "path": "build/release/tests/cli-numbers/integer-maximum-canonical.bsp",
+          "sha256": "dc413ab0704c1a30e2f78c0c8f1d5c62ea38f1fcf54e2a87eca4257d2e9aea6f"
+        },
+        {
+          "path": "build/release/tests/cli-numbers/integer-maximum-decorated.bsp",
+          "sha256": "6878c0f20a7f04bcd22580be1e78ef166cdbf9b5cc7f9a336d0c58c2b279d046"
+        },
+        {
+          "path": "build/release/tests/cli-numbers/integer-maximum-reference.bsp",
+          "sha256": "6878c0f20a7f04bcd22580be1e78ef166cdbf9b5cc7f9a336d0c58c2b279d046"
+        },
+        {
+          "path": "build/release/tests/cli-numbers/light-canonical.bsp",
+          "sha256": "ca297a35890e53b6fc25eb2b44c78d76468b433fc439c4abe2e8611886fa59c0"
+        },
+        {
+          "path": "build/release/tests/cli-numbers/light-decorated.bsp",
+          "sha256": "901cd7d7d2e5e92c5985a0aa5c7fb12e9cdf0295964a6a16538c7a9e9ddb1170"
+        },
+        {
+          "path": "build/release/tests/cli-numbers/light-reference.bsp",
+          "sha256": "901cd7d7d2e5e92c5985a0aa5c7fb12e9cdf0295964a6a16538c7a9e9ddb1170"
+        },
+        {
+          "path": "build/release/tests/cli-numbers/minimap-canonical.tga",
+          "sha256": "8bfa74e74de201c7c00aa8865647c6f978f1ea92483c42f5c207cbbe9b0425ba"
+        },
+        {
+          "path": "build/release/tests/cli-numbers/minimap-decorated.tga",
+          "sha256": "8bfa74e74de201c7c00aa8865647c6f978f1ea92483c42f5c207cbbe9b0425ba"
+        },
+        {
+          "path": "build/release/tests/cli-numbers/minimap-reference.tga",
+          "sha256": "8bfa74e74de201c7c00aa8865647c6f978f1ea92483c42f5c207cbbe9b0425ba"
+        },
+        {
+          "path": "build/release/tests/cli-numbers/decompile-canonical.map",
+          "sha256": "3df2ba172a780c6d772820dea0457903fd84d624777c4ea99704f28787578118"
+        },
+        {
+          "path": "build/release/tests/cli-numbers/decompile-decorated.map",
+          "sha256": "3df2ba172a780c6d772820dea0457903fd84d624777c4ea99704f28787578118"
+        },
+        {
+          "path": "build/release/tests/cli-numbers/decompile-reference.map",
+          "sha256": "3df2ba172a780c6d772820dea0457903fd84d624777c4ea99704f28787578118"
+        }
+      ]
+    },
+    "linux": {
+      "compiler": {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "35bcbb43a720e755ee166debcaf146b0a4797476025fc9687e189cd4a06c5b50"
+      },
+      "reference": {
+        "path": ".agents/tmp/continuation/cli-numbers/q3mapx-before-linux",
+        "sha256": "71cfcd847ff9234b0e377749f8ca6d23566c25f21901a1ae90d024abfaa0309b"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/cli-numbers/build-linux.log",
+        "sha256": "489913bc5dc4f7f558d1f53b17e4a98b4b0ad0a1f56119cda986757830d10ad1"
+      },
+      "matrix_log": {
+        "path": ".agents/tmp/continuation/cli-numbers/matrix-linux.log",
+        "sha256": "37cdb667bc4e2b9216fa6263a928a200ca3a8b55522f354cb95433c5c4ec13f8"
+      },
+      "results": {
+        "path": "build/linux-release/tests/cli-numbers/results.json",
+        "sha256": "aa56278246f9b312a4089e1173846ea1869a60279cd4b1e8b07d7f6449bf7fed"
+      },
+      "ctest": {
+        "path": ".agents/tmp/continuation/cli-numbers/ctest-linux.log",
+        "sha256": "6c41ddd2044f5edf8d973ede43e680cf69ceb6450cd5243828a5046dffc0ec83",
+        "passed": [
+          "bsp_evidence",
+          "cli_options",
+          "compiler_pipeline",
+          "decompile_recovery",
+          "minimap"
+        ],
+        "skipped": [],
+        "failed": []
+      },
+      "valid_native_comparisons": [
+        {
+          "case": "bsp",
+          "matching_outputs": 3,
+          "reference_exact_raw_parity": true,
+          "comparison_sha256": [
+            "19b5ccece1ba75914e480ff7235b1929debe90fab64a6c0dce4fac63d0e68c0b",
+            "35863b0e9a2f176afa82c1acee0f9259c458fee7780d8b5efa687b95617da949",
+            "3d86b1ca68cf49afbfaf010aa0eee3e6a44d492e522726fdea628c4d80000c9d",
+            "8662dfb8c690eeb3bed39e8555c0b6ee8254c96b522e6e1aa7c43812487b9353",
+            "516ec07274898d0acc5b07fe8457ac9e8f57cd031403eff4248487a80bc74223",
+            "06b6768d404042ef0f3df51c993d0ff21630b44fcbab807b64546544c740576a",
+            "728e4603edabf7707e5761240973a531a497bcdc20462c140d7173e728729ffb",
+            "b196e63bf58a60360848fe1519f384710ea9cf8e562291b4a7b5bc4a7c75e7a2",
+            "32166badcc15ff822473c1047e02ef613bbe5a05a36cd4eb2a5fb5a9a1c8238f",
+            "6c645265cd4259e5660b4dc97db1873546d430921de6b6cd2814014b88931dec",
+            "22a5904ec30267670226798bfa653d70f01b0672c55faf63cccd44a546e7de46",
+            "57648a007051ec1e784e66b9006dc07047b443cf9bcfd76dbefed26d9776925f",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "0ec7ca5503ff5a2dc08e8f13b7c50f242ff7cf5278908d4aee54e4daabcd694f",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ]
+        },
+        {
+          "case": "integer-minimum",
+          "matching_outputs": 3,
+          "reference_exact_raw_parity": true,
+          "comparison_sha256": [
+            "19b5ccece1ba75914e480ff7235b1929debe90fab64a6c0dce4fac63d0e68c0b",
+            "35863b0e9a2f176afa82c1acee0f9259c458fee7780d8b5efa687b95617da949",
+            "3d86b1ca68cf49afbfaf010aa0eee3e6a44d492e522726fdea628c4d80000c9d",
+            "8662dfb8c690eeb3bed39e8555c0b6ee8254c96b522e6e1aa7c43812487b9353",
+            "516ec07274898d0acc5b07fe8457ac9e8f57cd031403eff4248487a80bc74223",
+            "06b6768d404042ef0f3df51c993d0ff21630b44fcbab807b64546544c740576a",
+            "728e4603edabf7707e5761240973a531a497bcdc20462c140d7173e728729ffb",
+            "b196e63bf58a60360848fe1519f384710ea9cf8e562291b4a7b5bc4a7c75e7a2",
+            "32166badcc15ff822473c1047e02ef613bbe5a05a36cd4eb2a5fb5a9a1c8238f",
+            "6c645265cd4259e5660b4dc97db1873546d430921de6b6cd2814014b88931dec",
+            "22a5904ec30267670226798bfa653d70f01b0672c55faf63cccd44a546e7de46",
+            "57648a007051ec1e784e66b9006dc07047b443cf9bcfd76dbefed26d9776925f",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "0ec7ca5503ff5a2dc08e8f13b7c50f242ff7cf5278908d4aee54e4daabcd694f",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ]
+        },
+        {
+          "case": "integer-maximum",
+          "matching_outputs": 3,
+          "reference_exact_raw_parity": true,
+          "comparison_sha256": [
+            "19b5ccece1ba75914e480ff7235b1929debe90fab64a6c0dce4fac63d0e68c0b",
+            "35863b0e9a2f176afa82c1acee0f9259c458fee7780d8b5efa687b95617da949",
+            "3d86b1ca68cf49afbfaf010aa0eee3e6a44d492e522726fdea628c4d80000c9d",
+            "8662dfb8c690eeb3bed39e8555c0b6ee8254c96b522e6e1aa7c43812487b9353",
+            "a92d85e9f2b9182ae5ef3ee4e73be0671402cd1d11e46c4c835481793a4e62cf",
+            "f8ccab3a0a577d5ce22f201dec989b6c650597ce56b33dcad34a29f43e0ddd80",
+            "728e4603edabf7707e5761240973a531a497bcdc20462c140d7173e728729ffb",
+            "51b233ae9c2ec7e75f4f6012c9e2262638eb48b9aa7c96b289bc598a823bfc61",
+            "32166badcc15ff822473c1047e02ef613bbe5a05a36cd4eb2a5fb5a9a1c8238f",
+            "6c645265cd4259e5660b4dc97db1873546d430921de6b6cd2814014b88931dec",
+            "e60861c56c30389d63f259aa0db0dbadbf38765e3d635784ae61aced5fd73822",
+            "fe78c65211dd0b56a97024fb61111e686ef1fe054aa132ba58e2891ac496f1ee",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "50f5fe09897dc7320da5f8a1b0636b31d1eb820bf37a15d6e070a4a9af2f4c6a",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ]
+        },
+        {
+          "case": "light",
+          "matching_outputs": 3,
+          "reference_exact_raw_parity": true,
+          "comparison_sha256": [
+            "19b5ccece1ba75914e480ff7235b1929debe90fab64a6c0dce4fac63d0e68c0b",
+            "35863b0e9a2f176afa82c1acee0f9259c458fee7780d8b5efa687b95617da949",
+            "3d86b1ca68cf49afbfaf010aa0eee3e6a44d492e522726fdea628c4d80000c9d",
+            "8662dfb8c690eeb3bed39e8555c0b6ee8254c96b522e6e1aa7c43812487b9353",
+            "516ec07274898d0acc5b07fe8457ac9e8f57cd031403eff4248487a80bc74223",
+            "06b6768d404042ef0f3df51c993d0ff21630b44fcbab807b64546544c740576a",
+            "728e4603edabf7707e5761240973a531a497bcdc20462c140d7173e728729ffb",
+            "b196e63bf58a60360848fe1519f384710ea9cf8e562291b4a7b5bc4a7c75e7a2",
+            "32166badcc15ff822473c1047e02ef613bbe5a05a36cd4eb2a5fb5a9a1c8238f",
+            "6c645265cd4259e5660b4dc97db1873546d430921de6b6cd2814014b88931dec",
+            "50224a97616acd5fd2e80be045e07e00c08a3269c72d757de9e19f3cbc1fb063",
+            "57648a007051ec1e784e66b9006dc07047b443cf9bcfd76dbefed26d9776925f",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "b775adee5d69b975c97ea567326c5cddccc06f8546d2222a2d5fb8b43dd1be8a",
+            "08b30b02f6f7d13fff54b93b14764f3a3e1ac3cff2d280d5bbc7fe1cd2631dc7",
+            "4b8cd0b689ba972ef13501a02bf4b6d89546116fcb1b0062550c8e9d4fd80bc7",
+            "14d5c74dfd1ad94f7c40dda722179101fcbadbb2abfc7ba8276ebfd1c2d1dfcc"
+          ]
+        },
+        {
+          "case": "minimap",
+          "matching_outputs": 3,
+          "reference_exact_raw_parity": true,
+          "comparison_sha256": "8bfa74e74de201c7c00aa8865647c6f978f1ea92483c42f5c207cbbe9b0425ba"
+        },
+        {
+          "case": "decompile",
+          "matching_outputs": 3,
+          "reference_exact_raw_parity": true,
+          "comparison_sha256": "3df2ba172a780c6d772820dea0457903fd84d624777c4ea99704f28787578118"
+        }
+      ],
+      "numeric_failures_preserving_outputs": 204,
+      "failures_by_call_path": {
+        "bsp-score": 24,
+        "decompile-epsilon": 20,
+        "evidence-depth": 24,
+        "global-patches": 24,
+        "global-workers": 24,
+        "light-bounces": 24,
+        "light-contrast": 20,
+        "minimap-brightness": 20,
+        "minimap-seed": 24
+      },
+      "protected_files": [
+        "baseq3/maps/fixture.map",
+        "baseq3/maps/fixture.bsp",
+        "baseq3/maps/fixture.prt",
+        "baseq3/maps/fixture.srf",
+        "recovered.map",
+        "recovered.map.recovery.json",
+        "minimap.tga",
+        "report.json",
+        "profile.json",
+        "compute.json",
+        "baseq3/maps/fixture.lin",
+        "baseq3/maps/fixture.reg"
+      ],
+      "retained_native_outputs": [
+        {
+          "path": "build/linux-release/tests/cli-numbers/bsp-canonical.bsp",
+          "sha256": "67360f8d8213e31d85f4d1cd65418570a1e936548c8caae9452cf1c8a5c3ffeb"
+        },
+        {
+          "path": "build/linux-release/tests/cli-numbers/bsp-decorated.bsp",
+          "sha256": "7c861bc84ab8de941c1b46be0e20f1f506f70594808677bfa81b46f01d51f488"
+        },
+        {
+          "path": "build/linux-release/tests/cli-numbers/bsp-reference.bsp",
+          "sha256": "7c861bc84ab8de941c1b46be0e20f1f506f70594808677bfa81b46f01d51f488"
+        },
+        {
+          "path": "build/linux-release/tests/cli-numbers/integer-minimum-canonical.bsp",
+          "sha256": "da498c12f48b4cee0d8640891774a3530d1ee1d151b4865cda2626f88c795b53"
+        },
+        {
+          "path": "build/linux-release/tests/cli-numbers/integer-minimum-decorated.bsp",
+          "sha256": "e6c846027863524f88534a5e047c7ec9aae397051814511e742d9177b571efeb"
+        },
+        {
+          "path": "build/linux-release/tests/cli-numbers/integer-minimum-reference.bsp",
+          "sha256": "e6c846027863524f88534a5e047c7ec9aae397051814511e742d9177b571efeb"
+        },
+        {
+          "path": "build/linux-release/tests/cli-numbers/integer-maximum-canonical.bsp",
+          "sha256": "093e84b1a6b4a0274b6d7e4106ddda2e20953f9e409ba7a3e477d7e30ad258ed"
+        },
+        {
+          "path": "build/linux-release/tests/cli-numbers/integer-maximum-decorated.bsp",
+          "sha256": "62d5ca60778aae54d6009d462765356b4aff2ad6279338add907a036bfa6ff9a"
+        },
+        {
+          "path": "build/linux-release/tests/cli-numbers/integer-maximum-reference.bsp",
+          "sha256": "62d5ca60778aae54d6009d462765356b4aff2ad6279338add907a036bfa6ff9a"
+        },
+        {
+          "path": "build/linux-release/tests/cli-numbers/light-canonical.bsp",
+          "sha256": "40a2c3835a2f379af23dd40b9c810fdff6e164fb0240ec5bceeb7284f8b6bccf"
+        },
+        {
+          "path": "build/linux-release/tests/cli-numbers/light-decorated.bsp",
+          "sha256": "3b7fd36ca4707409d71f767c0c39d27a032ecbb1a328505dbf09f996add398ee"
+        },
+        {
+          "path": "build/linux-release/tests/cli-numbers/light-reference.bsp",
+          "sha256": "3b7fd36ca4707409d71f767c0c39d27a032ecbb1a328505dbf09f996add398ee"
+        },
+        {
+          "path": "build/linux-release/tests/cli-numbers/minimap-canonical.tga",
+          "sha256": "8bfa74e74de201c7c00aa8865647c6f978f1ea92483c42f5c207cbbe9b0425ba"
+        },
+        {
+          "path": "build/linux-release/tests/cli-numbers/minimap-decorated.tga",
+          "sha256": "8bfa74e74de201c7c00aa8865647c6f978f1ea92483c42f5c207cbbe9b0425ba"
+        },
+        {
+          "path": "build/linux-release/tests/cli-numbers/minimap-reference.tga",
+          "sha256": "8bfa74e74de201c7c00aa8865647c6f978f1ea92483c42f5c207cbbe9b0425ba"
+        },
+        {
+          "path": "build/linux-release/tests/cli-numbers/decompile-canonical.map",
+          "sha256": "3df2ba172a780c6d772820dea0457903fd84d624777c4ea99704f28787578118"
+        },
+        {
+          "path": "build/linux-release/tests/cli-numbers/decompile-decorated.map",
+          "sha256": "3df2ba172a780c6d772820dea0457903fd84d624777c4ea99704f28787578118"
+        },
+        {
+          "path": "build/linux-release/tests/cli-numbers/decompile-reference.map",
+          "sha256": "3df2ba172a780c6d772820dea0457903fd84d624777c4ea99704f28787578118"
+        }
+      ]
+    },
+    "sanitized": {
+      "compiler": {
+        "path": "build/linux-sanitized/bin/q3mapx",
+        "sha256": "d5d4540cb64c4b13ac787ed66721a609af36a8436c1bf8075b1de48e3f72d564"
+      },
+      "reference": {
+        "path": ".agents/tmp/continuation/cli-numbers/q3mapx-before-sanitized",
+        "sha256": "adaa1b19aff6dc61d0dc8ad6aaefc9a4e9393cca7ac3f5a2525f9d7b936bcf1f"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/cli-numbers/build-sanitized.log",
+        "sha256": "51b6f33d86a5230b8481792dec783a386e8261678b213408e61cff07eea47904"
+      },
+      "matrix_log": {
+        "path": ".agents/tmp/continuation/cli-numbers/matrix-sanitized.log",
+        "sha256": "37cdb667bc4e2b9216fa6263a928a200ca3a8b55522f354cb95433c5c4ec13f8"
+      },
+      "results": {
+        "path": "build/linux-sanitized/tests/cli-numbers/results.json",
+        "sha256": "05433bab7b6d0f7cfb30fac650a0ce7fb042b6a5956a348069a7a8a7d6579567"
+      },
+      "ctest": {
+        "path": ".agents/tmp/continuation/cli-numbers/ctest-sanitized.log",
+        "sha256": "61c42d218e1a6dfb9219806b21a32788862e940d432ce0619ddc75e88cbd4912",
+        "passed": [
+          "bsp_evidence",
+          "cli_options",
+          "compiler_pipeline",
+          "decompile_recovery",
+          "minimap"
+        ],
+        "skipped": [],
+        "failed": []
+      },
+      "valid_native_comparisons": [
+        {
+          "case": "bsp",
+          "matching_outputs": 3,
+          "reference_exact_raw_parity": true,
+          "comparison_sha256": [
+            "19b5ccece1ba75914e480ff7235b1929debe90fab64a6c0dce4fac63d0e68c0b",
+            "35863b0e9a2f176afa82c1acee0f9259c458fee7780d8b5efa687b95617da949",
+            "3d86b1ca68cf49afbfaf010aa0eee3e6a44d492e522726fdea628c4d80000c9d",
+            "8662dfb8c690eeb3bed39e8555c0b6ee8254c96b522e6e1aa7c43812487b9353",
+            "516ec07274898d0acc5b07fe8457ac9e8f57cd031403eff4248487a80bc74223",
+            "06b6768d404042ef0f3df51c993d0ff21630b44fcbab807b64546544c740576a",
+            "728e4603edabf7707e5761240973a531a497bcdc20462c140d7173e728729ffb",
+            "b196e63bf58a60360848fe1519f384710ea9cf8e562291b4a7b5bc4a7c75e7a2",
+            "32166badcc15ff822473c1047e02ef613bbe5a05a36cd4eb2a5fb5a9a1c8238f",
+            "6c645265cd4259e5660b4dc97db1873546d430921de6b6cd2814014b88931dec",
+            "22a5904ec30267670226798bfa653d70f01b0672c55faf63cccd44a546e7de46",
+            "57648a007051ec1e784e66b9006dc07047b443cf9bcfd76dbefed26d9776925f",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "0ec7ca5503ff5a2dc08e8f13b7c50f242ff7cf5278908d4aee54e4daabcd694f",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ]
+        },
+        {
+          "case": "integer-minimum",
+          "matching_outputs": 3,
+          "reference_exact_raw_parity": true,
+          "comparison_sha256": [
+            "19b5ccece1ba75914e480ff7235b1929debe90fab64a6c0dce4fac63d0e68c0b",
+            "35863b0e9a2f176afa82c1acee0f9259c458fee7780d8b5efa687b95617da949",
+            "3d86b1ca68cf49afbfaf010aa0eee3e6a44d492e522726fdea628c4d80000c9d",
+            "8662dfb8c690eeb3bed39e8555c0b6ee8254c96b522e6e1aa7c43812487b9353",
+            "516ec07274898d0acc5b07fe8457ac9e8f57cd031403eff4248487a80bc74223",
+            "06b6768d404042ef0f3df51c993d0ff21630b44fcbab807b64546544c740576a",
+            "728e4603edabf7707e5761240973a531a497bcdc20462c140d7173e728729ffb",
+            "b196e63bf58a60360848fe1519f384710ea9cf8e562291b4a7b5bc4a7c75e7a2",
+            "32166badcc15ff822473c1047e02ef613bbe5a05a36cd4eb2a5fb5a9a1c8238f",
+            "6c645265cd4259e5660b4dc97db1873546d430921de6b6cd2814014b88931dec",
+            "22a5904ec30267670226798bfa653d70f01b0672c55faf63cccd44a546e7de46",
+            "57648a007051ec1e784e66b9006dc07047b443cf9bcfd76dbefed26d9776925f",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "0ec7ca5503ff5a2dc08e8f13b7c50f242ff7cf5278908d4aee54e4daabcd694f",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ]
+        },
+        {
+          "case": "integer-maximum",
+          "matching_outputs": 3,
+          "reference_exact_raw_parity": true,
+          "comparison_sha256": [
+            "19b5ccece1ba75914e480ff7235b1929debe90fab64a6c0dce4fac63d0e68c0b",
+            "35863b0e9a2f176afa82c1acee0f9259c458fee7780d8b5efa687b95617da949",
+            "3d86b1ca68cf49afbfaf010aa0eee3e6a44d492e522726fdea628c4d80000c9d",
+            "8662dfb8c690eeb3bed39e8555c0b6ee8254c96b522e6e1aa7c43812487b9353",
+            "a92d85e9f2b9182ae5ef3ee4e73be0671402cd1d11e46c4c835481793a4e62cf",
+            "f8ccab3a0a577d5ce22f201dec989b6c650597ce56b33dcad34a29f43e0ddd80",
+            "728e4603edabf7707e5761240973a531a497bcdc20462c140d7173e728729ffb",
+            "51b233ae9c2ec7e75f4f6012c9e2262638eb48b9aa7c96b289bc598a823bfc61",
+            "32166badcc15ff822473c1047e02ef613bbe5a05a36cd4eb2a5fb5a9a1c8238f",
+            "6c645265cd4259e5660b4dc97db1873546d430921de6b6cd2814014b88931dec",
+            "e60861c56c30389d63f259aa0db0dbadbf38765e3d635784ae61aced5fd73822",
+            "fe78c65211dd0b56a97024fb61111e686ef1fe054aa132ba58e2891ac496f1ee",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "50f5fe09897dc7320da5f8a1b0636b31d1eb820bf37a15d6e070a4a9af2f4c6a",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ]
+        },
+        {
+          "case": "light",
+          "matching_outputs": 3,
+          "reference_exact_raw_parity": true,
+          "comparison_sha256": [
+            "19b5ccece1ba75914e480ff7235b1929debe90fab64a6c0dce4fac63d0e68c0b",
+            "35863b0e9a2f176afa82c1acee0f9259c458fee7780d8b5efa687b95617da949",
+            "3d86b1ca68cf49afbfaf010aa0eee3e6a44d492e522726fdea628c4d80000c9d",
+            "8662dfb8c690eeb3bed39e8555c0b6ee8254c96b522e6e1aa7c43812487b9353",
+            "516ec07274898d0acc5b07fe8457ac9e8f57cd031403eff4248487a80bc74223",
+            "06b6768d404042ef0f3df51c993d0ff21630b44fcbab807b64546544c740576a",
+            "728e4603edabf7707e5761240973a531a497bcdc20462c140d7173e728729ffb",
+            "b196e63bf58a60360848fe1519f384710ea9cf8e562291b4a7b5bc4a7c75e7a2",
+            "32166badcc15ff822473c1047e02ef613bbe5a05a36cd4eb2a5fb5a9a1c8238f",
+            "6c645265cd4259e5660b4dc97db1873546d430921de6b6cd2814014b88931dec",
+            "50224a97616acd5fd2e80be045e07e00c08a3269c72d757de9e19f3cbc1fb063",
+            "57648a007051ec1e784e66b9006dc07047b443cf9bcfd76dbefed26d9776925f",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "b775adee5d69b975c97ea567326c5cddccc06f8546d2222a2d5fb8b43dd1be8a",
+            "08b30b02f6f7d13fff54b93b14764f3a3e1ac3cff2d280d5bbc7fe1cd2631dc7",
+            "4b8cd0b689ba972ef13501a02bf4b6d89546116fcb1b0062550c8e9d4fd80bc7",
+            "14d5c74dfd1ad94f7c40dda722179101fcbadbb2abfc7ba8276ebfd1c2d1dfcc"
+          ]
+        },
+        {
+          "case": "minimap",
+          "matching_outputs": 3,
+          "reference_exact_raw_parity": true,
+          "comparison_sha256": "8bfa74e74de201c7c00aa8865647c6f978f1ea92483c42f5c207cbbe9b0425ba"
+        },
+        {
+          "case": "decompile",
+          "matching_outputs": 3,
+          "reference_exact_raw_parity": true,
+          "comparison_sha256": "3df2ba172a780c6d772820dea0457903fd84d624777c4ea99704f28787578118"
+        }
+      ],
+      "numeric_failures_preserving_outputs": 204,
+      "failures_by_call_path": {
+        "bsp-score": 24,
+        "decompile-epsilon": 20,
+        "evidence-depth": 24,
+        "global-patches": 24,
+        "global-workers": 24,
+        "light-bounces": 24,
+        "light-contrast": 20,
+        "minimap-brightness": 20,
+        "minimap-seed": 24
+      },
+      "protected_files": [
+        "baseq3/maps/fixture.map",
+        "baseq3/maps/fixture.bsp",
+        "baseq3/maps/fixture.prt",
+        "baseq3/maps/fixture.srf",
+        "recovered.map",
+        "recovered.map.recovery.json",
+        "minimap.tga",
+        "report.json",
+        "profile.json",
+        "compute.json",
+        "baseq3/maps/fixture.lin",
+        "baseq3/maps/fixture.reg"
+      ],
+      "retained_native_outputs": [
+        {
+          "path": "build/linux-sanitized/tests/cli-numbers/bsp-canonical.bsp",
+          "sha256": "67360f8d8213e31d85f4d1cd65418570a1e936548c8caae9452cf1c8a5c3ffeb"
+        },
+        {
+          "path": "build/linux-sanitized/tests/cli-numbers/bsp-decorated.bsp",
+          "sha256": "7c861bc84ab8de941c1b46be0e20f1f506f70594808677bfa81b46f01d51f488"
+        },
+        {
+          "path": "build/linux-sanitized/tests/cli-numbers/bsp-reference.bsp",
+          "sha256": "acb7a414d8eeade9ffc23bd877029bad875c782c46998d2096ff4fc9bc1eb1f4"
+        },
+        {
+          "path": "build/linux-sanitized/tests/cli-numbers/integer-minimum-canonical.bsp",
+          "sha256": "12606fcf0043e92dbbcd662eee73c970054725a960b0c20b77de3f3ca3677a68"
+        },
+        {
+          "path": "build/linux-sanitized/tests/cli-numbers/integer-minimum-decorated.bsp",
+          "sha256": "304bae6ed70a0294359f3bed727762bc905b77a13736b3dee8bfea6dde7d2303"
+        },
+        {
+          "path": "build/linux-sanitized/tests/cli-numbers/integer-minimum-reference.bsp",
+          "sha256": "cd5854cc8757714e40ecd1695773fe46c59f1157c8ad0c7bd28f1b7d62947813"
+        },
+        {
+          "path": "build/linux-sanitized/tests/cli-numbers/integer-maximum-canonical.bsp",
+          "sha256": "3d7565ffad907bf5b7101cb9672045709d259fa3fcef3eb132f41ef942597b01"
+        },
+        {
+          "path": "build/linux-sanitized/tests/cli-numbers/integer-maximum-decorated.bsp",
+          "sha256": "1d6ca03598ac1e96368d6ab46e4d7b5d6767cf8a7d648db6768d91e78933a009"
+        },
+        {
+          "path": "build/linux-sanitized/tests/cli-numbers/integer-maximum-reference.bsp",
+          "sha256": "b4569433fad2f9ff2d3652fed5c8cafbd92559892d475592a01fa9d712bdf10b"
+        },
+        {
+          "path": "build/linux-sanitized/tests/cli-numbers/light-canonical.bsp",
+          "sha256": "dd02a4cd8db0b7c482151efb8b78f7905aa6a0ce147b0fb3e925d9edf3bfacbd"
+        },
+        {
+          "path": "build/linux-sanitized/tests/cli-numbers/light-decorated.bsp",
+          "sha256": "5bdb673db01bdff1437ec2420bf169da0692b71e962865b28a126eb4a680be65"
+        },
+        {
+          "path": "build/linux-sanitized/tests/cli-numbers/light-reference.bsp",
+          "sha256": "1e81156531e7060d17175b50eeb7547c4ab6491b665ac06ebe2b7cccca058b69"
+        },
+        {
+          "path": "build/linux-sanitized/tests/cli-numbers/minimap-canonical.tga",
+          "sha256": "8bfa74e74de201c7c00aa8865647c6f978f1ea92483c42f5c207cbbe9b0425ba"
+        },
+        {
+          "path": "build/linux-sanitized/tests/cli-numbers/minimap-decorated.tga",
+          "sha256": "8bfa74e74de201c7c00aa8865647c6f978f1ea92483c42f5c207cbbe9b0425ba"
+        },
+        {
+          "path": "build/linux-sanitized/tests/cli-numbers/minimap-reference.tga",
+          "sha256": "8bfa74e74de201c7c00aa8865647c6f978f1ea92483c42f5c207cbbe9b0425ba"
+        },
+        {
+          "path": "build/linux-sanitized/tests/cli-numbers/decompile-canonical.map",
+          "sha256": "3df2ba172a780c6d772820dea0457903fd84d624777c4ea99704f28787578118"
+        },
+        {
+          "path": "build/linux-sanitized/tests/cli-numbers/decompile-decorated.map",
+          "sha256": "3df2ba172a780c6d772820dea0457903fd84d624777c4ea99704f28787578118"
+        },
+        {
+          "path": "build/linux-sanitized/tests/cli-numbers/decompile-reference.map",
+          "sha256": "3df2ba172a780c6d772820dea0457903fd84d624777c4ea99704f28787578118"
+        }
+      ],
+      "sanitizers": {
+        "configuration": "Debug -g -O1 with assertions and address/undefined checks; established process-lifetime leak exclusion retained",
+        "environment": {
+          "ASAN_OPTIONS": "detect_leaks=0:abort_on_error=1",
+          "UBSAN_OPTIONS": "print_stacktrace=1"
+        },
+        "matrix_logs_scanned": 225,
+        "address_or_undefined_diagnostics": []
+      }
+    }
+  },
+  "cross_platform": {
+    "identical_valid_comparison_and_failure_results": true,
+    "valid_native_cases_per_platform": 6,
+    "native_executions_per_case": 3,
+    "total_preserved_output_failures": 612
+  },
+  "comparison_contract": "Equivalent spelling comparisons remove only the literal _q3map2_cmdline provenance property from the entity lump, retaining every other entity byte and all other BSP lumps. Preceding-compiler runs use identical decorated arguments and require exact stored BSP lumps, including that provenance. MAP/TGA comparisons use full bytes.",
+  "investigations": [
+    "Initial Windows/Linux comparison correctly observed differing literal command-line provenance for equivalent spellings. The harness now makes that sole expected metadata difference explicit and separately checks complete raw reference parity. No production output normalization was added."
+  ],
+  "limits": [
+    "The matrix uses generated native Quake III content. It does not claim a fresh complete game/profile or performance qualification.",
+    "Only the shared option parsers changed. Legacy positional scale/shift atof parsing, optional source-token/include lookahead and multiline quote accounting remain separate audit tasks.",
+    "Existing float narrowing and stage-specific clamping semantics are retained. Strict MAP/script numeric parsing is independent.",
+    "The complete new matrix was invoked directly with --reference on all three builds; five related CTest groups also passed on each. The entire 80-group GUI-enabled suite was not rerun.",
+    "No editor/game launch, OS input or screen capture, new external code, package refresh or GPU/performance claim. Existing compiler warnings and previously policy-blocked cleanup targets remain."
+  ]
+}

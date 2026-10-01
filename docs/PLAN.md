@@ -212,10 +212,12 @@ not a redefinition of the overall goal around the existing release:
 - [ ] Continue the source-parser audit with optional-token lookahead across
   includes and multiline quoted-token line accounting. Strict primitive parsing
   does not make every shared script consumer strict.
-- [ ] Audit CLI numeric helpers for malformed leading signs; source review found
-  that stripping `+` can leave a second `-` accepted by `from_chars` when the
-  resulting value is within the option's range. Reproduce through real options
-  and preserve valid signed/scientific forms before changing behavior.
+- [x] Reproduce and repair malformed leading signs in the shared CLI numeric
+  helpers. `+-1`/`+-0` now fail instead of being normalized into valid values;
+  native option tests cover preserved outputs and unchanged valid signed,
+  decimal/scientific and integer-limit behavior. See [numeric input](CLI-INPUT.md).
+- [ ] Audit the separate legacy positional BSP scale/shift parsers, which still
+  use `atof`; retain valid numeric/vector semantics and protect existing BSPs.
 - [ ] Profile larger recovery workloads and address measured costs with geometry,
   UV/material and worker-count parity evidence before claiming speedups.
   Initial whole-command comparisons now cover a dense generated room and private

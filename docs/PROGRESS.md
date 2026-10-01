@@ -2992,3 +2992,59 @@ No new unrelated production issue was found. Previously recorded parser-sign/
 include-line, compiler-warning, VIS discrepancy, raw-sidecar publication and Windows
 process-delay findings remain outside this round. Intelligent compiler work and
 M11 Radiant patch RGB/alpha painting and per-surface density/preview remain active.
+
+## 2026-10-01 — Strict leading signs in numeric CLI options
+
+Reproduced the queued numeric-sign defect through the preceding real compiler:
+BSP `-metaadequatescore +-1`, LIGHT `-contrast +-12.5` and minimap
+`-brightness +-0.25` all completed successfully. The common integer/double
+parsers now reject the extra minus after a stripped leading plus. Float-valued
+options share that repair through the double parser. Existing option diagnostics,
+ranges, valid signs, decimal/scientific forms, float narrowing and stage clamps
+retain their behavior. No geometry or lighting algorithm changed.
+
+Added `cli_numbers`, a native regression matrix spanning nine global/BSP/LIGHT/
+minimap/decompile/evidence option paths. Windows Release, Linux Release and
+Debug ASan/UBSan each pass 204 malformed values with status 1, an option-specific
+diagnostic and unchanged source/previous outputs: 612 preserved failures total.
+Protected files include the MAP/BSP, PRT/SRF/LIN/REG, recovered MAP/report,
+minimap and profile/compute/evidence reports. Empty and sign-only arguments,
+double signs, whitespace, junk suffixes, hex/nonfinite forms, malformed exponents,
+overflow/underflow and non-integer integer spellings are covered.
+
+Each build also passes six successful native equivalence/reference cases,
+including signed 32-bit endpoints, BSP geometry/patches, LIGHT, CPU minimaps and
+decompilation. Canonical/decorated forms preserve every BSP lump and entity byte
+except the intentionally different literal `_q3map2_cmdline` value. Identical-
+argument runs against each preceding platform binary match all stored BSP lumps,
+including that provenance. MAP/TGA comparisons use complete bytes. The 18 native
+runs per build, all comparison hashes and rejected-case results agree across
+the three builds. The initial Windows/Linux harness comparison exposed that
+expected command-provenance distinction; only the test comparison was adjusted,
+with no production metadata normalization or broad entity exclusions.
+
+Five related CTest groups pass on each build: CLI options/VIS profiles, compiler
+pipeline, minimap, decompile recovery and BSP evidence. The complete new matrix
+was invoked directly with `--reference`, rather than claiming it was part of
+those five CTest groups. It is registered as an additional 300-second CTest,
+bringing the GUI-enabled inventory to 80; the entire suite was not repeated.
+The sanitizer run retains Debug `-g -O1`, assertions, address/undefined checks
+and the established process-lifetime leak exclusion. Its 225 matrix logs contain
+no address/undefined diagnostics. No renderer, editor, OS input or capture was used.
+
+See [numeric input behavior](CLI-INPUT.md),
+[reproduction instructions](DEVELOPMENT.md#numeric-cli-validation) and
+[validation evidence](validation/cli-numbers.json). Pre-fix reproductions,
+reference binaries, build/matrix/suite logs and the evidence generator remain in
+`.agents/tmp/continuation/cli-numbers/`. Generated native output variants and
+failure logs remain in each build's `tests/cli-numbers/`. Previously policy-blocked
+cleanup targets were untouched. No new external code, portable package refresh
+or GPU/performance claim is included.
+
+Source review also found that positional BSP scale/shift components still use
+legacy `atof` parsing. This separate, unqualified path is now an explicit plan
+item; it was not changed or claimed safe by the shared-helper tests. Optional
+source-token/include lookahead and multiline quote accounting remain open,
+together with the recorded compiler warnings, VIS discrepancy, raw sidecar
+publication and Windows process-delay findings. Recovery inference, intelligent
+VIS/geometry optimization and M11 Radiant authoring remain active.

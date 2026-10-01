@@ -308,6 +308,10 @@ if(BUILD_TESTING)
         --compiler $<TARGET_FILE:q3mapx>
         --work-dir ${CMAKE_BINARY_DIR}/tests/cli-options)
     set_tests_properties(cli_options PROPERTIES TIMEOUT 90)
+    add_test(NAME cli_numbers COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_numbers.py --compiler $<TARGET_FILE:q3mapx>
+        --work-dir ${CMAKE_BINARY_DIR}/tests/cli-numbers)
+    set_tests_properties(cli_numbers PROPERTIES TIMEOUT 300)
     add_executable(atomic_file_test tests/atomic_file.cpp)
     target_link_libraries(atomic_file_test PRIVATE q3mapx_io)
     add_test(NAME atomic_file COMMAND atomic_file_test ${CMAKE_BINARY_DIR}/tests/atomic-file)

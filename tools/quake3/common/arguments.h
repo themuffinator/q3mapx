@@ -10,7 +10,9 @@ inline int ParseIntegerOption( const char* option, const char* text, int minimum
 	const char* end = text + std::strlen( text );
 	int value = 0;
 	const auto result = std::from_chars( begin, end, value );
-	if ( result.ec != std::errc{} || result.ptr != end || value < minimum || value > maximum ) {
+	// from_chars accepts a minus; stripping a plus must not accept a second sign.
+	if ( ( text[0] == '+' && text[1] == '-' )
+	     || result.ec != std::errc{} || result.ptr != end || value < minimum || value > maximum ) {
 		Error( "%s expects an integer in %d..%d, got '%s'", option, minimum, maximum, text );
 	}
 	return value;
@@ -21,7 +23,8 @@ inline double ParseDoubleOption( const char* option, const char* text, double mi
 	const char* end = text + std::strlen(text);
 	double value = 0;
 	const auto result = std::from_chars(begin, end, value);
-	if ( result.ec != std::errc{} || result.ptr != end || !std::isfinite(value) || value < minimum || value > maximum )
+	if ( ( text[0] == '+' && text[1] == '-' )
+	     || result.ec != std::errc{} || result.ptr != end || !std::isfinite(value) || value < minimum || value > maximum )
 		Error("%s expects a finite number in %g..%g, got '%s'", option, minimum, maximum, text);
 	return value;
 }

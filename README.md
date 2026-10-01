@@ -69,7 +69,7 @@ See [decompilation options and limits](docs/DECOMPILATION.md). The traditional
   culling, safe polygon-light scratch storage and repaired floodlight sampling.
 - Spatially indexed CPU minimaps and actual OpenCL GPU sampling, device inventory,
   explicit backend selection, deterministic random samples and automatic fallback.
-- BSP/PRT range, reference and geometry checks; strict numeric options; atomic BSP
+- BSP/PRT range, reference and geometry checks; [strict numeric options](docs/CLI-INPUT.md); atomic BSP
   replacement and safer diagnostics.
 - [MAP brush, patch and entity validation](docs/MAP-INPUT.md), bounded iterative
   script includes, safe degenerate-side handling and preservation of previous

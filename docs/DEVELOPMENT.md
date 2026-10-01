@@ -436,6 +436,32 @@ It records the preceding parser's uninitialized-coordinate counts separately.
 A changed-vertex negative control verifies that geometry remains significant.
 `validation.json` and command logs stay in the specified test directory.
 
+## Numeric CLI validation
+
+`cli_numbers` exercises integer, double and float options through the real
+compiler. Nine call paths cover global settings, BSP, LIGHT, minimaps,
+decompilation and BSP evidence. Malformed values must exit normally with an
+option-specific diagnostic while preserving source and previous outputs.
+Equivalent valid spellings compile actual geometry, bake lighting, generate a
+CPU minimap and recover a MAP; all stored BSP lumps or complete output bytes
+must agree, except the entity `_q3map2_cmdline` provenance value when argument
+spellings differ. The reference comparison uses identical arguments and requires
+all stored BSP lumps, including that value, to match. Signed 32-bit endpoints are
+exercised with native BSP controls.
+
+```sh
+ctest --test-dir build/release -R '^(cli_numbers|cli_options|compiler_pipeline|minimap|decompile_recovery|bsp_evidence)$' --output-on-failure -j 2
+python tests/cli_numbers.py --compiler build/release/bin/q3mapx --reference /path/to/preceding/q3mapx --work-dir build/release/tests/cli-numbers
+```
+
+Use `.exe` on Windows and the matching Linux/sanitizer build directory.
+`--reference` runs only valid cases through the preceding binary, comparing
+equivalent numeric spellings with current results. The normal CTest needs no
+reference binary, assets or GUI and has a 300-second timeout. Per-command logs
+and `results.json` remain in the test directory. Keep the existing `cli_options`
+VIS/profile checks alongside this matrix. See [accepted syntax](CLI-INPUT.md)
+and [validation evidence](validation/cli-numbers.json).
+
 ## MAP patch input validation
 
 `patch_input` covers dimensions before allocation, strict patch numbers, matrix

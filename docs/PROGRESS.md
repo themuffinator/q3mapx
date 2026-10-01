@@ -2667,3 +2667,86 @@ No new unrelated source defect was reproduced. Previously documented parser,
 VIS, compiler-warning, sidecar-publication and Windows process-delay findings
 remain outside this round. The intelligent compiler work and M11 Radiant
 RGB/alpha painting and per-surface density/preview plan remain active.
+
+## 2026-10-01 — Conditional point-light reconstruction
+
+Added optional `fit_point_lights` to `-light -probes`. It searches BSP space for
+missing nonnegative inverse-square point lights, fitting position, color and
+intensity with native attenuation and material tracing. Retained lights,
+supplied proposals, surface emitters and sun/sky stay fixed. Search bounds,
+candidate counts, light counts, refinement and work budgets are explicit;
+initial candidates use the persistent CPU pool. The JSON report contains trial
+parameters, alternatives, exclusions and validation observations. It writes no
+entities or recovered MAP and makes no claim to recover original author metadata.
+
+Training and qualification use separate deterministic atlas blocks. Withheld
+colors do not guide selection, stopping or refinement; both sets must pass
+improvement and absolute byte-RMSE gates. Missing material prerequisites prevent
+fitting, including an explicitly missing light image even when a fallback texture
+exists. An explicit implicit-material assumption relaxes only missing shader
+text. Empty/unknown cases retain their statuses and null scores; budget and
+request failures preserve the BSP and previous report.
+
+The native matrix passes 27 reports and eight preserved-output failures on
+Windows Release, Linux Release and Linux ASan/UBSan. Original lights are stripped
+and MAP/SRF files poisoned before inference. Off-grid/overlapping colored lights,
+retained sources, opaque occlusion, styles and multiple encoding modes are
+covered. Maximum measured position error is 1.031 map units. Nine successful
+cases per platform run full decompile, BSP, VIS and LIGHT rebuilds; observations
+are matched by world position/normal/style rather than atlas coordinates.
+Maximum rebuilt-lighting RMSE is 0.719 byte units, and reconstructed bakes differ
+from the fitted native predictions by at most one byte. These are synthetic
+controls under explicit bake assumptions, not general author-light accuracy.
+
+Changing only withheld colors preserves the selected lights, training scores and
+work while failing validation. Sun-only/emitter-only baselines require no added
+point source; incorrect gamma and the bounced scene reject qualification. All
+27 cases have identical final trials, scores, predictions, statuses and charged
+work across the three builds. Twenty-four full `point_fit` objects agree exactly;
+two gamma cases differ in alternative-objective floats, and the missing-material
+case differs because the final Windows matrix uses the strengthened fixture.
+
+The first 76-group Windows suite passed 75 and exposed a repeat-run fixture
+assumption: a valid leftover fallback texture defeated its missing-image setup.
+The control now explicitly requests an unavailable `q3map_lightimage`. The full
+corrected point matrix and CLI help pass on the final Windows binary. Linux
+passes 75 of 76 groups, skipping unavailable GPU `area_factors`; all 12 selected
+ASan/UBSan groups pass with the established lifetime-leak exclusion. Those broad
+suites precede the final help-text change. Final CLI/light-stage help and a
+three-report explicit missing-light-image/fallback control pass on all three
+binaries, including both implicit-material policies. The 344 retained matrix
+logs per platform contain no address/undefined-behavior sanitizer diagnostics.
+
+This round also corrects earlier evidence qualifications. Previous sRGB-labelled
+comparison fixtures supplied both global `-nosRGB` and per-channel `-sRGBlight`;
+the fixed-order native parser applied the global override last, so those runs
+were linear. Qfusion plain-room fixtures used `shaders/` although that profile
+uses `scripts/`, leaving fallback material images. Corrected 67-report/36-failure
+comparison and 26-report/45-failure probe matrices pass on every platform, with
+effective sRGB and actual shader/image loading asserted. Historical records are
+retained, with these qualifications recorded in the new evidence.
+
+The shared envelope routine was extracted without changing normal light setup.
+Twenty-eight ordinary bakes across seven modes preserve exact vertices, surfaces,
+lightmaps and grids against the preceding validated executable, at one/four
+workers and without sample culling. The same harness passes material mutations,
+dense-grid and 1/4/20/70-worker controls. No editor, game renderer, screen capture,
+user-input control, GPU performance measurement or portable archive refresh was
+performed. No external code was incorporated.
+
+See [the fitting contract](POINT-FITTING.md),
+[reproduction instructions](DEVELOPMENT.md#point-light-fitting) and
+[validation evidence](validation/point-fitting.json). Logs, the reference binary
+and evidence generator remain in `.agents/tmp/continuation/point-fitting/`;
+native fixtures/reports remain in each build's `tests/point-fitting/` and
+`tests/point-materials/`. One obsolete scratch rebuild was removed after checking
+its project path and links; final rebuild evidence was retained. Older
+policy-blocked cleanup targets were not retried.
+
+Unknown bake calibration, indirect effects, spotlight/target inference, complete
+asset provenance, broader real-map qualification, automatic entity export and
+GUI review remain open. No new unrelated production defect was reproduced.
+Previously documented parser-sign/include-line findings, compiler warnings, VIS
+discrepancies, raw-sidecar publication and intermittent Windows process delays
+remain outside this round. Intelligent compiler optimization and M11 Radiant
+patch RGB/alpha painting and per-surface density/preview remain active.

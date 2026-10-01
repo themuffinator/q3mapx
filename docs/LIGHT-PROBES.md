@@ -6,7 +6,8 @@ shader emitters, sun/sky and optional proposed lights separately. It can also
 select geometric internal-lightmap observations and compare an encoded direct
 hypothesis with the stored texels. This supplies
 a reference model for the [light recovery roadmap](RECOVERY-INFERENCE.md).
-It does not discover missing lights, export entities or reproduce a complete bake.
+Optional [point fitting](POINT-FITTING.md) can now propose missing point lights
+under that fixed hypothesis. It does not export entities or reproduce a complete bake.
 
 ```sh
 q3mapx -game quake3 -fs_basepath /path/to/game -threads 4 \
@@ -155,6 +156,11 @@ This mode can compare retained lights, a missing-light baseline and supplied
 proposals under one fixed hypothesis. It does not generate positions, fit light
 parameters, calibrate unknown encoding, prove that a residual needs an entity
 light or establish the author's original light arrangement.
+
+Add the optional [`fit_point_lights` request](POINT-FITTING.md) to run bounded
+point-position/color/intensity search after the baseline comparison. Its separate
+`point_fit` report records conditional proposals, alternatives, withheld validation
+and rejection reasons. Existing baseline fields retain their prior interpretation.
 
 ## Evaluation and report
 

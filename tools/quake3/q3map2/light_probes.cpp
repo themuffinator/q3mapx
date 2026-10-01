@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "q3map2.h"
 #include "light_probes.h"
+#include "point_fitting.h"
 #include "bsp_lighting_evidence.h"
 #include "bspfile_ibsp.h"
 #include "bspfile_rbsp.h"
@@ -206,11 +207,49 @@ struct LightProbes::Data {
     std::set<std::string> targets;
     std::vector<const light_t*> activeLights;
     BakedOptions baked;
+    PointFitOptions fit;
     std::map<std::string,uint64_t> exclusions;
     uint64_t evidenceWork=0,evidenceObservations=0;
     size_t originalEntities=0;
     uint64_t pairLimit=5'000'000;
     std::atomic<size_t> next{0},responses{0};
+    PointFitResult fitPoints(const Vector3& ambient) {
+        PointFitResult unavailable;
+        std::set<int> shaders;
+        for(const auto& surface:bspDrawSurfaces) shaders.insert(surface.shaderNum);
+        for(int index:shaders) {
+            const auto& si=ShaderInfoForShader(bspShaders[index].shader);
+            if(!si.shaderText && !fit.allowImplicitMaterials) ++unavailable.exclusions["unresolved_shader_text"];
+            if(!si.shaderImage || strEqual(si.shaderImage->name.c_str(),DEFAULT_IMAGE)) ++unavailable.exclusions["unresolved_shader_image"];
+            if(!si.lightImagePath.empty() && !ImageLoad(si.lightImagePath)) ++unavailable.exclusions["missing_requested_light_image"];
+            if(!si.normalImagePath.empty() && !si.normalImage) ++unavailable.exclusions["missing_requested_normal_image"];
+        }
+        if(!unavailable.exclusions.empty()) { unavailable.status="unresolved_materials"; return unavailable; }
+        std::vector<PointFitReceiver> receivers;
+        std::map<std::string,uint64_t> excluded;
+        for(size_t i=0;i<samples.size();++i) {
+            const auto& s=samples[i]; const auto& r=results[i];
+            if(unsigned(s.style)!=fit.style) { ++excluded["different_style"]; continue; }
+            if(r.cluster<0 || r.traceLimit) { ++excluded["unknown_baseline_trace"]; continue; }
+            if(std::any_of(s.observed.data(),s.observed.data()+3,[](byte b){ return b==255; })) {
+                ++excluded["observed_255_channel"]; continue;
+            }
+            Vector3 baseline(0);
+            for(const auto& response:r.responses) if(activeLights[response.light]->style==s.style) baseline+=response.color;
+            if(s.slot==0) baseline+=ambient;
+            Vector3 color=baseline;
+            if(s.slot==0) for(int a=0;a<3;++a) color[a]=std::max(color[a],minLight[a]);
+            const float brightness=surfaceInfos[s.surface].si->lmBrightness;
+            const Vector3 encoded=ColorToFloat(color,1,brightness);
+            if(!finite(encoded) || std::any_of(encoded.data(),encoded.data()+3,[](float v){ return v<0 || v>=256; })) {
+                ++excluded["unrepresentable_baseline_encoding"]; continue;
+            }
+            receivers.push_back({i,s.surface,r.cluster,s.slot,s.page,s.x,s.y,r.origin,s.normal,baseline,s.observed,brightness});
+        }
+        auto result=fitPointLights(fit,std::move(receivers));
+        result.exclusions=std::move(excluded);
+        return result;
+    }
     void selectBakedSamples() {
         BSPEvidence budget;
         const auto evidence=analyzeBSPLighting(budget,baked.maxWork,{baked.stride,baked.maxObservations});
@@ -302,7 +341,7 @@ std::unique_ptr<LightProbes> LightProbes::parse(Args& args,const char* source) {
     data->input.Parse<rapidjson::kParseValidateEncodingFlag|rapidjson::kParseIterativeFlag>(content.data(),content.size());
     if(data->input.HasParseError()) throw std::runtime_error("Invalid probe JSON at byte "+std::to_string(data->input.GetErrorOffset()));
     const auto& doc=data->input;
-    fields(doc,{"schema_version","samples","baked_lightmaps","lights"}); integer(required(doc,"schema_version"),1,1);
+    fields(doc,{"schema_version","samples","baked_lightmaps","lights","fit_point_lights"}); integer(required(doc,"schema_version"),1,1);
     if(doc.HasMember("samples")==doc.HasMember("baked_lightmaps")) throw std::runtime_error("Choose exactly one of samples or baked_lightmaps");
     if(doc.HasMember("samples")) {
         const auto& samples=doc["samples"];
@@ -334,6 +373,31 @@ std::unique_ptr<LightProbes> LightProbes::parse(Args& args,const char* source) {
         }
     }
     if(doc.HasMember("lights") && (!doc["lights"].IsArray() || doc["lights"].Size()>256)) throw std::runtime_error("At most 256 proposed probe lights are supported");
+    if(doc.HasMember("fit_point_lights")) {
+        if(!data->baked.enabled) throw std::runtime_error("Point fitting requires baked_lightmaps observations");
+        const auto& settings=doc["fit_point_lights"]; auto& fit=data->fit; fit.enabled=true;
+        fields(settings,{"grid_spacing","mins","maxs","max_candidates","max_lights","max_intensity","refinement_steps","style",
+                         "min_improvement_rmse","max_rmse","max_work","allow_implicit_materials"});
+        if(settings.HasMember("grid_spacing")) fit.spacing=floatValue(settings["grid_spacing"],1,1e6);
+        if(settings.HasMember("max_candidates")) fit.maxCandidates=integer(settings["max_candidates"],1,4096);
+        if(settings.HasMember("max_lights")) fit.maxLights=integer(settings["max_lights"],1,16);
+        if(settings.HasMember("max_intensity")) fit.maxIntensity=floatValue(settings["max_intensity"],0.01,1e6);
+        if(settings.HasMember("refinement_steps")) fit.refinementSteps=integer(settings["refinement_steps"],0,10);
+        if(settings.HasMember("style")) fit.style=integer(settings["style"],0,253);
+        if(settings.HasMember("min_improvement_rmse")) fit.minImprovement=floatValue(settings["min_improvement_rmse"],0.01,64);
+        if(settings.HasMember("max_rmse")) fit.maxRMSE=floatValue(settings["max_rmse"],0.01,64);
+        if(settings.HasMember("max_work")) fit.maxWork=integer(settings["max_work"],1,1'000'000'000);
+        if(settings.HasMember("allow_implicit_materials")) {
+            if(!settings["allow_implicit_materials"].IsBool()) throw std::runtime_error("allow_implicit_materials must be boolean");
+            fit.allowImplicitMaterials=settings["allow_implicit_materials"].GetBool();
+        }
+        if(settings.HasMember("mins")!=settings.HasMember("maxs")) throw std::runtime_error("Point fitting needs both mins and maxs");
+        if(settings.HasMember("mins")) {
+            fit.explicitBounds=true; fit.mins=vector(settings["mins"]); fit.maxs=vector(settings["maxs"]);
+            for(int a=0;a<3;++a) if(fit.mins[a]>=fit.maxs[a]) throw std::runtime_error("Invalid point fitting bounds");
+        }
+        fit.blockSize=std::max(4u,data->baked.stride*2);
+    }
     return std::unique_ptr<LightProbes>(new LightProbes(std::move(data)));
 }
 
@@ -360,6 +424,10 @@ void LightProbes::prepare() {
     }
     for(size_t i=1;i<poses.size();++i) if(poses[i]!=1) throw std::runtime_error("Inline probe model needs exactly one surviving entity pose");
     if(d.baked.enabled) d.selectBakedSamples();
+    if(d.fit.enabled && !d.fit.explicitBounds) {
+        d.fit.mins=bspModels[0].minmax.mins; d.fit.maxs=bspModels[0].minmax.maxs;
+        if(!finite(d.fit.mins) || !finite(d.fit.maxs)) throw std::runtime_error("Invalid world bounds for point fitting");
+    }
     d.originalEntities=entities.size();
     if(d.input.HasMember("lights")) for(const auto& light:d.input["lights"].GetArray()) {
         fields(light,{"origin","intensity","color","spawnflags","fade","angle_scale","extra_distance","style","target","radius","sun"});
@@ -418,10 +486,13 @@ void LightProbes::run(const Vector3& ambient,size_t generated) {
     d.results.resize(d.samples.size()); Data::active=&d;
     struct Reset { ~Reset(){ Data::active=nullptr; } } reset;
     RunThreadsOnIndividual(int(std::min({d.samples.size(),size_t(std::max(numthreads,1)),size_t(32)})),true,Data::worker,"TraceLightProbes",1);
+    PointFitResult fit;
+    if(d.fit.enabled) fit=d.fitPoints(ambient);
     unchanged(d.source,d.sourceIdentity,true); unchanged(d.request,d.requestIdentity,false);
     OutputFiles output; Stream stream(output.open(d.destination)); Writer w(stream);
-    w.StartObject(); number(w,"schema_version",1); text(w,"status","direct_forward_observations_only");
-    text(w,"game",g_game->arg); flag(w,"light_inference_performed",false);
+    w.StartObject(); number(w,"schema_version",1);
+    text(w,"status",d.fit.enabled?"point_fitting_diagnostic":"direct_forward_observations_only");
+    text(w,"game",g_game->arg); flag(w,"light_inference_performed",d.fit.enabled && fit.gridPoints>0);
     text(w,"source_sha256",d.sourceIdentity.sha.c_str()); text(w,"request_sha256",d.requestIdentity.sha.c_str());
     number(w,"generated_sources",generated); number(w,"active_sources",lights.size()); number(w,"culled_sources",generated-lights.size());
     number(w,"pair_tests_upper_bound",lights.size()*d.samples.size()); number(w,"pair_limit",d.pairLimit);
@@ -539,9 +610,57 @@ void LightProbes::run(const Vector3& ambient,size_t generated) {
         w.Key("by_style"); w.StartArray(); for(const auto& [style,e]:styleErrors) { w.StartObject(); number(w,"style",style); errors(w,"errors",e); w.EndObject(); } w.EndArray();
         w.EndObject();
     }
+    if(d.fit.enabled) {
+        w.Key("point_fit"); w.StartObject(); text(w,"status",fit.status); flag(w,"accepted",fit.accepted);
+        text(w,"qualification","conditional_current_assets_and_encoding_not_original_author_metadata");
+        text(w,"family","nonnegative_inverse_square_point_with_native_angle_and_extra_distance");
+        text(w,"validation_split","one_in_five_hashed_atlas_blocks_never_used_for_search_or_stopping");
+        number(w,"atlas_block_size",d.fit.blockSize); number(w,"style",d.fit.style);
+        flag(w,"original_bake_settings_known",false); flag(w,"encoding_calibrated",false);
+        flag(w,"allow_implicit_materials",d.fit.allowImplicitMaterials);
+        vec(w,"mins",d.fit.mins); vec(w,"maxs",d.fit.maxs); value(w,"grid_spacing",d.fit.spacing);
+        value(w,"max_intensity",d.fit.maxIntensity); number(w,"max_lights",d.fit.maxLights);
+        number(w,"max_candidates",d.fit.maxCandidates); number(w,"refinement_steps",d.fit.refinementSteps);
+        value(w,"min_improvement_rmse",d.fit.minImprovement); value(w,"max_rmse",d.fit.maxRMSE);
+        number(w,"max_work",d.fit.maxWork); number(w,"work_used",fit.work); number(w,"grid_points",fit.gridPoints);
+        number(w,"usable_candidates",fit.usableCandidates); number(w,"positions_tested",fit.positionsTested);
+        number(w,"unknown_trace_evaluations",fit.unknownCandidates); number(w,"unrepresentable_evaluations",fit.encodingFailures);
+        w.Key("exclusions"); w.StartObject(); for(const auto& [key,count]:fit.exclusions) number(w,key.c_str(),count); w.EndObject();
+        const auto metric=[&](const char* name,const PointFitMetrics& m) {
+            w.Key(name); w.StartObject(); number(w,"samples",m.samples);
+            if(m.samples) { value(w,"mae_bytes",m.mae); value(w,"rmse_bytes",m.rmse); value(w,"maximum_error_bytes",m.maximum); }
+            else for(const char* key:{"mae_bytes","rmse_bytes","maximum_error_bytes"}) { w.Key(key); w.Null(); }
+            w.EndObject();
+        };
+        for(int split=0;split<2;++split) {
+            w.Key(split==0?"training":"withheld"); w.StartObject();
+            metric("baseline",fit.baseline[split]); metric("trial",fit.trial[split]); w.EndObject();
+        }
+        w.Key("initial_grid_alternatives"); w.StartArray();
+        for(const auto& alternative:fit.trainingAlternatives) {
+            w.StartObject(); vec(w,"origin",alternative.light.origin); vec(w,"linear_intensity_rgb",alternative.light.energy);
+            value(w,"training_quantization_center_rmse",alternative.trainingRMSE); w.EndObject();
+        } w.EndArray();
+        w.Key("best_trial"); w.StartArray();
+        for(const auto& source:fit.lights) {
+            w.StartObject(); vec(w,"origin",source.origin); vec(w,"linear_intensity_rgb",source.energy);
+            const float intensity=vector3_max_component(source.energy); value(w,"intensity",intensity);
+            Vector3 color=intensity>0?source.energy/intensity:Vector3(0);
+            if(colorsRGB) for(int a=0;a<3;++a) color[a]=std::clamp(Image_sRGBFloatFromLinearFloat(color[a]),0.f,1.f);
+            vec(w,"color",color); number(w,"style",d.fit.style); number(w,"spawnflags",wolfLight?1:0);
+            value(w,"extra_distance",extraDist); w.EndObject();
+        } w.EndArray();
+        w.Key("validation_observations"); w.StartArray();
+        for(size_t i=0;i<fit.receivers.size();++i) {
+            w.StartObject(); number(w,"sample",fit.receivers[i].sample); flag(w,"withheld",fit.receivers[i].withheld);
+            if(i<fit.subsampling.size()) flag(w,"subsampling_requested",fit.subsampling[i]!=0);
+            if(i<fit.prediction.size()) rgb(w,"trial_rgb",fit.prediction[i]);
+            w.EndObject();
+        } w.EndArray(); w.EndObject();
+    }
     w.Key("limitations"); w.StartArray();
     for(const char* s:{
-        "This is the current compiler's direct CPU forward model with current assets and explicit points/normals. No original lights, bake settings or source entities are inferred or exported.",
+        "This is the current compiler's direct CPU forward model with current assets and explicit points/normals. Optional point fitting proposes a conditional explanation; no original author metadata or bake settings are recovered and no entities are exported.",
         "BSP entities are retained and proposals exist only in memory. MAP/SRF files are not read; shader scripts, images and referenced model assets use the selected filesystem settings. Missing shader text is unresolved material provenance, not proof that a shader was originally implicit.",
         "Surface metadata uses compiler defaults without the original SRF; patch lengths are recomputed from stored controls using the compiler's curve metric. Inline geometry uses surviving entity origins. Probe coordinates/normals are explicitly world-space; runtime poses, bake nudges, phong/bump normals and original tessellation settings are not reconstructed.",
         "Responses are pre-encoding direct contributions, separated by source/style. Ambient and minimum light are separate metadata. Bounce, dirt, floodlight, filtering, luxel reconstruction, supersampling, clamping and output encoding are not applied. Never subtract these values directly from stored RGB bytes.",
@@ -549,6 +668,11 @@ void LightProbes::run(const Vector3& ambient,size_t generated) {
         "Zero responses are omitted only for sampled points. An unusable cluster or trace reaching its fixed node capacity has unknown illumination, not a measured zero; partial responses are discarded. Alpha/filter traces can request subsampling; the diagnostic does not supersample them.",
         "Pair/source/response limits and a 64 MiB report ceiling bound this diagnostic's retained data. Scene preparation and each trace use existing compiler algorithms; pair work is not a ray-step count or elapsed-time guarantee.",
         "No BSP, MAP, SRF, lightmap or generated shader output is written. Source/request hashes are rechecked before publishing the staged report. Concurrent changes to source, assets or destinations are unsupported."
+    }) w.String(s);
+    if(d.fit.enabled) for(const char* s:{
+        "Point fitting holds retained lights, supplied proposals, current shader emitters and sun/sky fixed. Its nonnegative inverse-square point family does not calibrate encoding or model bounce, dirt, floodlight, filter reconstruction, spotlights or target links. A low residual does not prove a missing entity light or a unique solution.",
+        "Candidate positions use a bounded BSP-world grid and local refinement. Colors/intensities minimize a pre-byte quantization-centre training objective; acceptance uses byte RMSE improvement and absolute RMSE limits in both training and withheld atlas blocks. This split withholds texel blocks, not independent scenes or assets, and supplies no calibrated confidence probability.",
+        "Observed 255 channels and unknown baseline illumination are excluded from fitting. Missing shader text is unresolved unless implicit materials were explicitly allowed; known missing/default images prevent fitting. Existing assets may still differ from the original bake. best_trial remains a rejected trial unless accepted is true; inference is read-only and requires author review."
     }) w.String(s);
     if(d.baked.enabled) for(const char* s:{
         "Automatic internal-lightmap comparisons apply current compiler encoding, world ambient/minlight on slot zero, and current material brightness to the direct hypothesis. These are declared assumptions, not recovered or calibrated bake settings. Residuals are predicted minus stored bytes, not decoded irradiance or evidence of missing entity lights.",

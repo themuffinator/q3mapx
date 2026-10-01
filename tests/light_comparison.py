@@ -12,7 +12,7 @@ import subprocess
 
 from fixtures import create_fixture, create_lighting_fixture
 from integration import run
-from light_probes import plain_scene
+from light_probes import color_space_options, plain_scene
 from lighting_evidence import parts, pack
 
 
@@ -39,7 +39,7 @@ def main():
     p.add_argument('--compiler',type=Path,required=True); p.add_argument('--work-dir',type=Path,required=True)
     a=p.parse_args(); exe=a.compiler.resolve(); root=a.work_dir.resolve(); root.mkdir(parents=True,exist_ok=True)
     records=[]; failures=[]; maximum_transfer_error=0
-    common=['-q3','-nosRGB','-gamma',1,'-compensate',1,'-lightanglehl',0,'-nofastpoint']
+    common=['-q3','-gamma',1,'-compensate',1,'-lightanglehl',0,'-nofastpoint']
     payload={'schema_version':1,'baked_lightmaps':{'stride':1,'normal_offset':1}}
 
     def compare(folder,game,bsp,label,request=payload,options=(),threads=4,oracle=True):
@@ -47,9 +47,10 @@ def main():
         source=bsp.read_bytes(); request_path=folder/(label+'-request.json'); request_path.write_text(json.dumps(request))
         dest=folder/(label+'.json')
         base=['-game',game,'-fs_basepath',folder,'-fs_homepath',root/'home','-fs_basegame','baseq3','-threads',threads]
-        run(exe,[*base,'-light','-probes',request_path,'-probe-report',dest,*common,*options,bsp],folder,label,timeout=120)
+        run(exe,[*base,'-light','-probes',request_path,'-probe-report',dest,*common,*color_space_options(options),bsp],folder,label,timeout=120)
         assert bsp.read_bytes()==source
         data=json.loads(dest.read_text()); size=data['baked_comparison']['page_size']; native=parts(source)
+        assert data['settings']['lightmaps_srgb']==('-sRGBlight' in options)
         assert data['source_sha256']==hashlib.sha256(source).hexdigest()
         assert not data['light_inference_performed'] and not data['baked_comparison']['encoding_calibrated']
         assert data['baked_comparison']['selected_samples']==len(data['samples'])
@@ -95,7 +96,7 @@ def main():
         bsp=source.with_suffix('.bsp'); unlit=bsp.read_bytes()
         for mode,options in modes.items():
             bsp.write_bytes(unlit)
-            run(exe,[*base,'-light',*common,*options,source],folder,'bake-'+mode,timeout=120)
+            run(exe,[*base,'-light',*common,*color_space_options(options),source],folder,'bake-'+mode,timeout=120)
             result=compare(folder,game,bsp,mode,options=options)
             assert result['comparison_summary']['all_compared']['samples']>100
             assert result['comparison_summary']['all_compared']['maximum_error_bytes']==0,(game,mode,result['comparison_summary'])
@@ -124,7 +125,7 @@ def main():
         assert selected['baked_comparison']['evidence_observations']==metadata['evidence_observations']
         # The comparison must use the BSP and current assets, not hidden MAP/SRF.
         source.write_text('not a map\n'); source.with_suffix('.srf').write_text('not surface extras\n')
-        shader=source.parent.parent/('scripts' if game=='quake3' else 'shaders')/'q3map2_fixture.shader'
+        shader=source.parent.parent/('shaders' if game=='ja' else 'scripts')/'q3map2_fixture.shader'
         shader.write_text('// preserved generated shader\n')
         protected={path:path.read_bytes() for path in (source,source.with_suffix('.srf'),shader)}
         assert compare(folder,game,bsp,'poisoned-sidecars')['samples']==baseline['samples']
@@ -144,7 +145,7 @@ def main():
         def fail(label,request,needle,options=()):
             path=folder/(label+'-invalid.json'); path.write_text(json.dumps(request)); output=folder/'preserved.json'; output.write_text('preserved\n')
             before=bsp.read_bytes()
-            command=[exe,*base,'-light','-probes',path,'-probe-report',output,*common,*options,bsp]
+            command=[exe,*base,'-light','-probes',path,'-probe-report',output,*common,*color_space_options(options),bsp]
             result=subprocess.run(list(map(str,command)),cwd=folder,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=120)
             log=result.stdout.decode(errors='replace'); (folder/(label+'-failure.log')).write_text(log)
             assert result.returncode==1 and needle in log,(label,result.returncode,log[-2000:])
@@ -200,7 +201,7 @@ def main():
             '{\n"classname" "info_null"\n"origin" "0 0 0"\n"targetname" "spot_aim"\n}\n')
         base=['-game',game,'-fs_basepath',folder,'-fs_homepath',root/'home','-fs_basegame','baseq3','-threads',4]
         run(exe,[*base,'-meta','-keeplights',source],folder,'bsp'); run(exe,[*base,'-vis',source],folder,'vis')
-        run(exe,[*base,'-light',*common,source],folder,'bake',timeout=120)
+        run(exe,[*base,'-light',*common,*color_space_options(),source],folder,'bake',timeout=120)
         bsp=source.with_suffix('.bsp'); result=compare(folder,game,bsp,'styled-spot')
         assert {row['style'] for row in result['comparison_summary']['by_style']}=={0,7}
         assert result['comparison_summary']['all_compared']['maximum_error_bytes']==0
@@ -220,7 +221,7 @@ def main():
             source.write_text(text.replace('q3mapx/emitter','q3mapx/stone') if mode=='sun' else text.replace('q3mapx/sky','q3mapx/stone'))
         base=['-game','quake3','-fs_basepath',folder,'-fs_homepath',root/'home','-threads',4]
         run(exe,[*base,'-meta','-keeplights',source],folder,'bsp'); run(exe,[*base,'-vis',source],folder,'vis')
-        run(exe,[*base,'-light',*common,source],folder,'bake',timeout=180)
+        run(exe,[*base,'-light',*common,*color_space_options(),source],folder,'bake',timeout=180)
         bsp=source.with_suffix('.bsp')
         result=compare(folder,'quake3',bsp,'comparison',{'schema_version':1,'baked_lightmaps':{'stride':2,'normal_offset':1}})
         assert result['comparison_summary']['all_compared']['samples']>0
@@ -239,7 +240,7 @@ def main():
             assert max(abs(p+o-v) for p,o,v in zip(point['position'],origins[surface['model']],sample['position']))<1e-4
         if mode=='mixed':
             # Bounce is deliberately not explained by this direct hypothesis.
-            run(exe,[*base,'-light',*common,'-bounce',1,source],folder,'bake-bounce',timeout=180)
+            run(exe,[*base,'-light',*common,*color_space_options(),'-bounce',1,source],folder,'bake-bounce',timeout=180)
             bounced=compare(folder,'quake3',bsp,'bounced',{'schema_version':1,'baked_lightmaps':{'stride':2,'normal_offset':1}})
             assert bounced['comparison_summary']['all_compared']['mae_bytes']>result['comparison_summary']['all_compared']['mae_bytes']
 

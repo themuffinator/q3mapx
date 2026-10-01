@@ -3321,252 +3321,244 @@ inline bool ChopBounds( MinMax& minmax, const Vector3& origin, const Vector3& no
 #define LIGHT_EPSILON   0.125f
 #define LIGHT_NUDGE     2.0f
 
-void SetupEnvelopes( bool forGrid, bool fastFlag ){
+bool SetupLightEnvelope( light_t& value, bool forGrid, bool fastFlag ){
 	float radius, intensity;
-
-
-	/* early out for weird cases where there are no lights */
-	if ( lights.empty() ) {
-		return;
+	light_t* light = &value;
+	/* handle negative lights */
+	if ( light->photons < 0 || light->add < 0 ) {
+		light->photons *= -1;
+		light->add *= -1;
+		light->flags |= LightFlags::Negative;
 	}
 
-	/* note it */
-	Sys_FPrintf( SYS_VRB, "--- SetupEnvelopes%s ---\n", fastFlag ? " (fast)" : "" );
+	/* sunlight? */
+	if ( light->type == ELightType::Sun ) {
+		/* special cased */
+		light->cluster = 0;
+		light->envelope = MAX_WORLD_COORD * 8.0f;
+		light->minmax.mins.set( MIN_WORLD_COORD * 8.0f );
+		light->minmax.maxs.set( MAX_WORLD_COORD * 8.0f );
+	}
 
-	/* count lights */
-	int numCulledLights = 0;
-	for( auto light = lights.begin(); light != lights.end(); )
+	/* everything else */
+	else
 	{
-		/* handle negative lights */
-		if ( light->photons < 0 || light->add < 0 ) {
-			light->photons *= -1;
-			light->add *= -1;
-			light->flags |= LightFlags::Negative;
-		}
+		/* get pvs cluster for light */
+		light->cluster = ClusterForPointExt( light->origin, LIGHT_EPSILON );
 
-		/* sunlight? */
-		if ( light->type == ELightType::Sun ) {
-			/* special cased */
-			light->cluster = 0;
-			light->envelope = MAX_WORLD_COORD * 8.0f;
-			light->minmax.mins.set( MIN_WORLD_COORD * 8.0f );
-			light->minmax.maxs.set( MAX_WORLD_COORD * 8.0f );
-		}
+		/* invalid cluster? */
+		if ( light->cluster <= CLUSTER_OPAQUE ) {
+			/* nudge the sample point around a bit */
+			for ( int x = 0; x < 4; ++x )
+			{
+				/* two's complement 0, 1, -1, 2, -2, etc */
+				const int x1 = ( ( x >> 1 ) ^ ( x & 1 ? -1 : 0 ) ) + ( x & 1 );
 
-		/* everything else */
-		else
-		{
-			/* get pvs cluster for light */
-			light->cluster = ClusterForPointExt( light->origin, LIGHT_EPSILON );
-
-			/* invalid cluster? */
-			if ( light->cluster <= CLUSTER_OPAQUE ) {
-				/* nudge the sample point around a bit */
-				for ( int x = 0; x < 4; ++x )
+				for ( int y = 0; y < 4; ++y )
 				{
-					/* two's complement 0, 1, -1, 2, -2, etc */
-					const int x1 = ( ( x >> 1 ) ^ ( x & 1 ? -1 : 0 ) ) + ( x & 1 );
+					const int y1 = ( ( y >> 1 ) ^ ( y & 1 ? -1 : 0 ) ) + ( y & 1 );
 
-					for ( int y = 0; y < 4; ++y )
+					for ( int z = 0; z < 4; ++z )
 					{
-						const int y1 = ( ( y >> 1 ) ^ ( y & 1 ? -1 : 0 ) ) + ( y & 1 );
+						const int z1 = ( ( z >> 1 ) ^ ( z & 1 ? -1 : 0 ) ) + ( z & 1 );
 
-						for ( int z = 0; z < 4; ++z )
-						{
-							const int z1 = ( ( z >> 1 ) ^ ( z & 1 ? -1 : 0 ) ) + ( z & 1 );
+						/* nudge origin */
+						const Vector3 origin = light->origin + Vector3( x1, y1, z1 ) * LIGHT_NUDGE;
 
-							/* nudge origin */
-							const Vector3 origin = light->origin + Vector3( x1, y1, z1 ) * LIGHT_NUDGE;
-
-							/* try at nudged origin */
-							light->cluster = ClusterForPointExt( origin, LIGHT_EPSILON );
-							if ( light->cluster <= CLUSTER_OPAQUE ) {
-								continue;
-							}
-
-							/* set origin */
-							light->origin = origin;
+						/* try at nudged origin */
+						light->cluster = ClusterForPointExt( origin, LIGHT_EPSILON );
+						if ( light->cluster <= CLUSTER_OPAQUE ) {
+							continue;
 						}
+
+						/* set origin */
+						light->origin = origin;
 					}
 				}
 			}
+		}
 
-			/* only calculate for lights in pvs and outside of opaque brushes */
-			if ( light->cluster > CLUSTER_OPAQUE ) {
-				/* set light fast flag */
-				if ( fastFlag ) {
-					light->flags |= LightFlags::FastTemp;
-				}
-				else{
-					light->flags &= ~LightFlags::FastTemp;
-				}
-				if ( fastpoint && ( light->type != ELightType::Area ) ) {
-					light->flags |= LightFlags::FastTemp;
-				}
-				if ( light->si && light->si->noFast ) {
-					light->flags &= ~( LightFlags::FastActual );
-				}
+		/* only calculate for lights in pvs and outside of opaque brushes */
+		if ( light->cluster > CLUSTER_OPAQUE ) {
+			/* set light fast flag */
+			if ( fastFlag ) {
+				light->flags |= LightFlags::FastTemp;
+			}
+			else{
+				light->flags &= ~LightFlags::FastTemp;
+			}
+			if ( fastpoint && ( light->type != ELightType::Area ) ) {
+				light->flags |= LightFlags::FastTemp;
+			}
+			if ( light->si && light->si->noFast ) {
+				light->flags &= ~( LightFlags::FastActual );
+			}
 
-				/* clear light envelope */
-				light->envelope = 0;
+			/* clear light envelope */
+			light->envelope = 0;
 
-				/* handle area lights */
-				if ( exactPointToPolygon && light->type == ELightType::Area && !light->w.empty() ) {
-					light->envelope = MAX_WORLD_COORD * 8.0f;
+			/* handle area lights */
+			if ( exactPointToPolygon && light->type == ELightType::Area && !light->w.empty() ) {
+				light->envelope = MAX_WORLD_COORD * 8.0f;
 
-					/* check for fast mode */
-					if ( light->flags & LightFlags::FastActual ) {
-						/* ugly hack to calculate extent for area lights, but only done once */
-						const Vector3 dir = -light->normal;
-						for ( radius = 100.0f; radius < MAX_WORLD_COORD * 8.0f; radius += 10.0f )
-						{
-							const Vector3 origin = light->origin + light->normal * radius;
-							const float factor = std::abs( PointToPolygonFormFactor( origin, dir, light->w ) );
-							if ( ( factor * light->add ) <= light->falloffTolerance ) {
-								light->envelope = radius;
-								break;
-							}
+				/* check for fast mode */
+				if ( light->flags & LightFlags::FastActual ) {
+					/* ugly hack to calculate extent for area lights, but only done once */
+					const Vector3 dir = -light->normal;
+					for ( radius = 100.0f; radius < MAX_WORLD_COORD * 8.0f; radius += 10.0f )
+					{
+						const Vector3 origin = light->origin + light->normal * radius;
+						const float factor = std::abs( PointToPolygonFormFactor( origin, dir, light->w ) );
+						if ( ( factor * light->add ) <= light->falloffTolerance ) {
+							light->envelope = radius;
+							break;
 						}
 					}
+				}
 
-					intensity = light->photons; /* hopefully not used */
+				intensity = light->photons; /* hopefully not used */
+			}
+			else
+			{
+				radius = 0;
+				intensity = light->photons;
+			}
+
+			/* other calcs */
+			if ( light->envelope <= 0 ) {
+				/* solve distance for non-distance lights */
+				if ( !( light->flags & LightFlags::AttenDistance ) ) {
+					light->envelope = MAX_WORLD_COORD * 8.0f;
+				}
+
+				else if ( light->flags & LightFlags::FastActual ) {
+					/* solve distance for linear lights */
+					if ( ( light->flags & LightFlags::AttenLinear ) ) {
+						light->envelope = ( ( intensity * linearScale ) - light->falloffTolerance ) / light->fade;
+					}
+
+					/*
+					   add = angle * light->photons * linearScale - (dist * light->fade);
+					   T = (light->photons * linearScale) - (dist * light->fade);
+					   T + (dist * light->fade) = (light->photons * linearScale);
+					   dist * light->fade = (light->photons * linearScale) - T;
+					   dist = ((light->photons * linearScale) - T) / light->fade;
+					 */
+
+					/* solve for inverse square falloff */
+					else{
+						light->envelope = sqrt( intensity / light->falloffTolerance ) + radius;
+					}
+
+					/*
+					   add = light->photons / (dist * dist);
+					   T = light->photons / (dist * dist);
+					   T * (dist * dist) = light->photons;
+					   dist = sqrt( light->photons / T );
+					 */
 				}
 				else
 				{
-					radius = 0;
-					intensity = light->photons;
-				}
+					/* solve distance for linear lights */
+					if ( ( light->flags & LightFlags::AttenLinear ) ) {
+						light->envelope = ( intensity * linearScale ) / light->fade;
+					}
 
-				/* other calcs */
-				if ( light->envelope <= 0 ) {
-					/* solve distance for non-distance lights */
-					if ( !( light->flags & LightFlags::AttenDistance ) ) {
+					/* can't cull these */
+					else{
 						light->envelope = MAX_WORLD_COORD * 8.0f;
 					}
-
-					else if ( light->flags & LightFlags::FastActual ) {
-						/* solve distance for linear lights */
-						if ( ( light->flags & LightFlags::AttenLinear ) ) {
-							light->envelope = ( ( intensity * linearScale ) - light->falloffTolerance ) / light->fade;
-						}
-
-						/*
-						   add = angle * light->photons * linearScale - (dist * light->fade);
-						   T = (light->photons * linearScale) - (dist * light->fade);
-						   T + (dist * light->fade) = (light->photons * linearScale);
-						   dist * light->fade = (light->photons * linearScale) - T;
-						   dist = ((light->photons * linearScale) - T) / light->fade;
-						 */
-
-						/* solve for inverse square falloff */
-						else{
-							light->envelope = sqrt( intensity / light->falloffTolerance ) + radius;
-						}
-
-						/*
-						   add = light->photons / (dist * dist);
-						   T = light->photons / (dist * dist);
-						   T * (dist * dist) = light->photons;
-						   dist = sqrt( light->photons / T );
-						 */
-					}
-					else
-					{
-						/* solve distance for linear lights */
-						if ( ( light->flags & LightFlags::AttenLinear ) ) {
-							light->envelope = ( intensity * linearScale ) / light->fade;
-						}
-
-						/* can't cull these */
-						else{
-							light->envelope = MAX_WORLD_COORD * 8.0f;
-						}
-					}
-				}
-
-				/* chop radius against pvs */
-				{
-					/* clear bounds */
-					MinMax minmax;
-
-					/* check all leaves */
-					for ( const bspLeaf_t& leaf : bspLeafs )
-					{
-						/* in pvs? */
-						if ( leaf.cluster <= CLUSTER_OPAQUE ) {
-							continue;
-						}
-						if ( !ClusterVisible( light->cluster, leaf.cluster ) ) { /* ydnar: thanks Arnout for exposing my stupid error (this never failed before) */
-							continue;
-						}
-
-						/* add this leafs bbox to the bounds */
-						minmax.extend( leaf.minmax );
-					}
-
-					/* test to see if bounds encompass light */
-					if ( !minmax.test( light->origin ) ) {
-						//% Sys_Warning( "Light PVS bounds (%.0f, %.0f, %.0f) -> (%.0f, %.0f, %.0f)\ndo not encompass light %d (%f, %f, %f)\n",
-						//%     minmax.mins[ 0 ], minmax.mins[ 1 ], minmax.mins[ 2 ],
-						//%     minmax.maxs[ 0 ], minmax.maxs[ 1 ], minmax.maxs[ 2 ],
-						//%     numLights, light->origin[ 0 ], light->origin[ 1 ], light->origin[ 2 ] );
-						minmax.extend( light->origin );
-					}
-
-					/* chop the bounds by a plane for area lights and spotlights */
-					if ( light->type == ELightType::Area || light->type == ELightType::Spot ) {
-						ChopBounds( minmax, light->origin, light->normal );
-					}
-
-					/* copy bounds */
-					light->minmax = minmax;
-
-					/* reflect bounds around light origin */
-					//%	VectorMA( light->origin, -1.0f, origin, origin );
-					minmax.extend( light->origin * 2 - minmax.maxs );
-					//%	VectorMA( light->origin, -1.0f, mins, origin );
-					minmax.extend( light->origin * 2 - minmax.mins );
-
-					/* calculate spherical bounds */
-					radius = vector3_length( minmax.maxs - light->origin );
-
-					/* if this radius is smaller than the envelope, then set the envelope to it */
-					//% if ( radius < light->envelope ) Sys_FPrintf( SYS_VRB, "PVS Cull (%d): culled\n", numLights );
-					//%	else Sys_FPrintf( SYS_VRB, "PVS Cull (%d): failed (%8.0f > %8.0f)\n", numLights, radius, light->envelope );
-					value_minimize( light->envelope, radius );
-				}
-
-				/* add grid/surface only check */
-				if ( forGrid ) {
-					if ( !( light->flags & LightFlags::Grid ) ) {
-						light->envelope = 0;
-					}
-				}
-				else
-				{
-					if ( !( light->flags & LightFlags::Surfaces ) ) {
-						light->envelope = 0;
-					}
 				}
 			}
 
-			/* culled? */
-			if ( light->cluster <= CLUSTER_OPAQUE || light->envelope <= 0 ) {
-				/* debug code */
-				//%	Sys_Printf( "Culling light: Cluster: %d Envelope: %f\n", light->cluster, light->envelope );
+			/* chop radius against pvs */
+			{
+				/* clear bounds */
+				MinMax minmax;
 
-				/* delete the light */
-				numCulledLights++;
-				light = lights.erase( light );
-				continue;
+				/* check all leaves */
+				for ( const bspLeaf_t& leaf : bspLeafs )
+				{
+					/* in pvs? */
+					if ( leaf.cluster <= CLUSTER_OPAQUE ) {
+						continue;
+					}
+					if ( !ClusterVisible( light->cluster, leaf.cluster ) ) { /* ydnar: thanks Arnout for exposing my stupid error (this never failed before) */
+						continue;
+					}
+
+					/* add this leafs bbox to the bounds */
+					minmax.extend( leaf.minmax );
+				}
+
+				/* test to see if bounds encompass light */
+				if ( !minmax.test( light->origin ) ) {
+					//% Sys_Warning( "Light PVS bounds (%.0f, %.0f, %.0f) -> (%.0f, %.0f, %.0f)\ndo not encompass light %d (%f, %f, %f)\n",
+					//%     minmax.mins[ 0 ], minmax.mins[ 1 ], minmax.mins[ 2 ],
+					//%     minmax.maxs[ 0 ], minmax.maxs[ 1 ], minmax.maxs[ 2 ],
+					//%     numLights, light->origin[ 0 ], light->origin[ 1 ], light->origin[ 2 ] );
+					minmax.extend( light->origin );
+				}
+
+				/* chop the bounds by a plane for area lights and spotlights */
+				if ( light->type == ELightType::Area || light->type == ELightType::Spot ) {
+					ChopBounds( minmax, light->origin, light->normal );
+				}
+
+				/* copy bounds */
+				light->minmax = minmax;
+
+				/* reflect bounds around light origin */
+				//%	VectorMA( light->origin, -1.0f, origin, origin );
+				minmax.extend( light->origin * 2 - minmax.maxs );
+				//%	VectorMA( light->origin, -1.0f, mins, origin );
+				minmax.extend( light->origin * 2 - minmax.mins );
+
+				/* calculate spherical bounds */
+				radius = vector3_length( minmax.maxs - light->origin );
+
+				/* if this radius is smaller than the envelope, then set the envelope to it */
+				//% if ( radius < light->envelope ) Sys_FPrintf( SYS_VRB, "PVS Cull (%d): culled\n", numLights );
+				//%	else Sys_FPrintf( SYS_VRB, "PVS Cull (%d): failed (%8.0f > %8.0f)\n", numLights, radius, light->envelope );
+				value_minimize( light->envelope, radius );
+			}
+
+			/* add grid/surface only check */
+			if ( forGrid ) {
+				if ( !( light->flags & LightFlags::Grid ) ) {
+					light->envelope = 0;
+				}
+			}
+			else
+			{
+				if ( !( light->flags & LightFlags::Surfaces ) ) {
+					light->envelope = 0;
+				}
 			}
 		}
 
-		/* square envelope */
-		light->envelope2 = ( light->envelope * light->envelope );
+		/* culled? */
+		if ( light->cluster <= CLUSTER_OPAQUE || light->envelope <= 0 ) {
+			/* debug code */
+			//%	Sys_Printf( "Culling light: Cluster: %d Envelope: %f\n", light->cluster, light->envelope );
 
-		/* set next light */
-		++light;
+			return false;
+		}
+	}
+
+	/* square envelope */
+	light->envelope2 = ( light->envelope * light->envelope );
+
+	return true;
+}
+
+void SetupEnvelopes( bool forGrid, bool fastFlag ){
+	if ( lights.empty() ) return;
+	Sys_FPrintf( SYS_VRB, "--- SetupEnvelopes%s ---\n", fastFlag ? " (fast)" : "" );
+	int numCulledLights = 0;
+	for ( auto light = lights.begin(); light != lights.end(); ) {
+		if ( SetupLightEnvelope( *light, forGrid, fastFlag ) ) ++light;
+		else { ++numCulledLights; light = lights.erase( light ); }
 	}
 
 	/* sort lights by style */

@@ -308,6 +308,12 @@ limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md
 - [ ] Infer stripped entity lights from baked lightmaps, vertex/grid and available
   directional lighting. Explain sky/sun, surface emitters, ambient and indirect
   contributions before fitting residual point/spot lights; account for bake settings.
+  Initial [conditional point fitting](POINT-FITTING.md) now searches BSP space and
+  refines nonnegative point colors/intensities/positions using native transport,
+  fixed retained/material/sky sources and withheld texel blocks. Blind synthetic
+  localization, overlapping sources and full recovered-map lighting rebuilds
+  provide initial qualification. Unknown encoding/bake calibration, indirect
+  contributions, broader real-map accuracy, entity export and GUI review remain.
 - [ ] Infer spotlight position, aim, cone and falloff; find compatible surviving
   targets and connect them appropriately, or propose clearly labelled replacement
   target entities without disturbing existing gameplay links.

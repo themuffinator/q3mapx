@@ -1,0 +1,4581 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-01T09:58:00.430675+00:00",
+  "base_revision": "eed142aa2ed70de4e283df7c15ebc86ab38812e4",
+  "scope": "Read-only bounded blind point-position/color/intensity proposals under fixed current native transport and encoding, with fixed retained/material/sky sources and withheld atlas-block qualification; no automatic entity export, bake calibration, spotlights or original-author metadata claim",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "09adf56fdcabe914a99c8c2b7307af7c7f65efdcfdd34ffe07c2c0af7562336c",
+    "tools/quake3/q3map2/point_fitting.cpp": "755acf4175a77b9696134eba336a503d2b3d13b4191d7d6352ec21170b0d1124",
+    "tools/quake3/q3map2/point_fitting.h": "d95b88369bd79a1a1e392224e0980b36f1eef9d514994681268ca31e24d8e07b",
+    "tools/quake3/q3map2/light_probes.cpp": "897dff2485fc66a6938e0fab8219ae695f39f9a774c0c0866f641a2bf6e018b7",
+    "tools/quake3/q3map2/light_probes.h": "52dbec515e47f286a2458df8482ec9f4a089c1641d01713b1496a54fbc41787f",
+    "tools/quake3/q3map2/light_ydnar.cpp": "8d5f1f6163f50fe5925ae780349ec6b1a57e4bd56e4087635526ee545f668f7a",
+    "tools/quake3/q3map2/light.cpp": "a3d07de368682f14ee3c11951fde8029d0c6ebb9d6dc6d2e584750f2193780df",
+    "tools/quake3/q3map2/light_trace.cpp": "0688c2ad860875718dbd115df355163dc2b4da4933d76ff38145002734defe0e",
+    "tools/quake3/q3map2/q3map2.h": "09c831567e71fff080014beac076fae4147b62b1fa98004e117ac1e4a9471c97",
+    "tools/quake3/q3map2/help.cpp": "0c9341fffb6ace2489994a7b856e999d54a74d5588e852b5f4cb28f331599acd",
+    "tools/quake3/q3map2/bsp_lighting_evidence.cpp": "817e0912a37abd42d7cb8da1985f750d7e0a9c2098b654852f7a8a4bb5b34c39",
+    "tools/quake3/q3map2/games.cpp": "9ad06d65f23e12a218fc109f67fd35a59d56b63d3fdf3a11edc8b432f68da521",
+    "tests/point_fitting.py": "a554301ecc31b46fae04f0f3ccd884864e65e1e86e6f00f57891beb14b7df130",
+    "tests/light_probes.py": "03e5c9b6135464cb2eb1dad0e6b2ad3eb2cc9925ba732ce70bc2f330f2f09df0",
+    "tests/light_comparison.py": "dd4ce528d10e57bfb6a3da3a44fd44cf65a5cadaed9516104663900db71a6efd",
+    "tests/lighting.py": "c549759cfd1daa5ec2cc17e90b682623a9e17a90199c8af706de4ade994515c4",
+    "tests/fixtures.py": "5cc300117041bc22a719451f9915bca17cc5af10094521408538b850284436c7",
+    "tests/integration.py": "3bb8e703e9e898a4c079f6a52321941aeb54876a7eac7804b8e1069c1541dfb3",
+    "tests/lighting_evidence.py": "e01a13f036e2328fd42e6c6aacab390200a43583487f1ce4ea8bdcc635db08e5"
+  },
+  "fixture_provenance": "First-party native compiled rooms with off-grid lights, overlapping colors, opaque geometry, native styles/encoding, generated textures and material emitters. Original lights are stripped and MAP/SRF poisoned before inference. Hidden source positions are used only as evaluation labels, never candidate input. Successful proposals are added to independently decompiled MAPs and fully recompiled/baked.",
+  "platforms": {
+    "windows": {
+      "compiler": {
+        "path": "build/release/bin/q3mapx.exe",
+        "sha256": "b125674bfdb4782992c78c5131fed2eae9a832f645abec220a8b493046146ad5"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/point-fitting/build-windows-checked.log",
+        "sha256": "a1555dcd9519782ea85b2592de5732c67a32b54ed502245fdf8d0ac6f3d1886d"
+      },
+      "broad_suite_before_help_and_material_control_corrections": {
+        "path": ".agents/tmp/continuation/point-fitting/ctest-windows.log",
+        "sha256": "41cc4c2d715b645cf2cd860b1d699fa1b966422618f898244357faf4f68bb50b",
+        "groups": 76,
+        "passed": [
+          "workbench",
+          "patch_input",
+          "vis_passage_clipping",
+          "lighting_curves",
+          "brush_input",
+          "recovery_order",
+          "uv_recovery",
+          "recovery_groups",
+          "vis_reproducible",
+          "script_input",
+          "brush_cells",
+          "lighting_gpu",
+          "vis_merge",
+          "lighting_evidence",
+          "cell_adjacency",
+          "recovery_classification",
+          "gpu_columns",
+          "uv_output",
+          "light_comparison",
+          "light_probes",
+          "meta_order",
+          "portal_evidence",
+          "bsp_inspect",
+          "planar_reduction_native",
+          "planar_reduction_oracle",
+          "game_profiles",
+          "vis_passage_storage",
+          "geometry_optimize",
+          "workbench_devices",
+          "lighting_materials",
+          "bsp_evidence",
+          "portal_validation",
+          "index_validation_cli",
+          "workbench_window",
+          "binary_outputs",
+          "native_fakk",
+          "native_early",
+          "mesh_export",
+          "bsp_analyze",
+          "area_factors",
+          "bezier_uv",
+          "raven_compat",
+          "uv_fit_oracle",
+          "workbench_inspector",
+          "cli_options",
+          "native_mohaa",
+          "export_outputs",
+          "bsp_validation",
+          "recovery_outputs",
+          "lightgrid_cli",
+          "lightgrid",
+          "minimap",
+          "vis_clip",
+          "recovery_group_order",
+          "game_catalog",
+          "portal_graph",
+          "ftx",
+          "index_validation",
+          "cell_graph",
+          "planar_reduction",
+          "vis_mask",
+          "terrain",
+          "uv_fit",
+          "compiler_pipeline",
+          "columns",
+          "lighting_math",
+          "quake3_materials",
+          "decompile_recovery",
+          "atomic_file",
+          "workbench_preview",
+          "cli_help",
+          "job_pool",
+          "decompile_math",
+          "area_factors_disabled",
+          "cli_games"
+        ],
+        "skipped": [],
+        "failed": [
+          "point_fitting"
+        ],
+        "failure_explanation": "A repeated fixture run retained a valid implicit fallback texture, invalidating the original missing-image assumption. The control now explicitly requests a missing q3map_lightimage. The corrected full point matrix and focused missing-image/fallback control pass on the final Windows binary."
+      },
+      "final_focused_suite": {
+        "path": ".agents/tmp/continuation/point-fitting/ctest-windows-checked.log",
+        "sha256": "e3b860a457ec8dedd6bb91fa4aa56a72554320f3f6c4ef2f27afa70bcc0ee456",
+        "groups": 2,
+        "passed": [
+          "cli_help",
+          "point_fitting"
+        ],
+        "skipped": [],
+        "failed": []
+      },
+      "explicit_light_help": {
+        "path": ".agents/tmp/continuation/point-fitting/help-windows.log",
+        "sha256": "217503ca2a3adf07ea8eaabae6685b76670da7c7d69b248639bd7fe3d7339559"
+      },
+      "point_results": {
+        "path": "build/release/tests/point-fitting/results.json",
+        "sha256": "8569927f682a405bb493cdb664dcdc8ef07f913e8ef2263ed34c99ba7da55424",
+        "reports": 27,
+        "preserved_failures": [
+          "quake3-linear-work-one-below",
+          "quake3-linear-grid_spacing",
+          "quake3-linear-max_candidates",
+          "quake3-linear-max_work",
+          "quake3-linear-max_lights",
+          "quake3-linear-mins",
+          "quake3-linear-allow_implicit_materials",
+          "quake3-linear-explicit"
+        ],
+        "cases": [
+          {
+            "case": "quake3-linear-retained",
+            "status": "baseline_explains_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "work": 293,
+            "seconds": 0.05496199999470264
+          },
+          {
+            "case": "quake3-linear-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.61717987060547,
+                  136.5662841796875,
+                  210.37896728515625
+                ],
+                "intensity": 210.37896728515625,
+                "color": [
+                  0.34992653131484985,
+                  0.649144172668457,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 36.59799713876967,
+                "rmse_bytes": 54.20065512276366,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 0.13447782546494993,
+                "rmse_bytes": 0.3667121834149364,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 24.344444444444445,
+                "rmse_bytes": 31.037611591959415,
+                "maximum_error_bytes": 145.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.11666666666666667,
+                "rmse_bytes": 0.3415650255319866,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3022170,
+            "seconds": 0.5188085999689065,
+            "position_error": 0.3535533905932738,
+            "rebake_rmse": 0.36170497534905977,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "quake3-linear-blind-one",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.61717987060547,
+                  136.5662841796875,
+                  210.37896728515625
+                ],
+                "intensity": 210.37896728515625,
+                "color": [
+                  0.34992653131484985,
+                  0.649144172668457,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 36.59799713876967,
+                "rmse_bytes": 54.20065512276366,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 0.13447782546494993,
+                "rmse_bytes": 0.3667121834149364,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 24.344444444444445,
+                "rmse_bytes": 31.037611591959415,
+                "maximum_error_bytes": 145.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.11666666666666667,
+                "rmse_bytes": 0.3415650255319866,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3022170,
+            "seconds": 0.6084059000131674
+          },
+          {
+            "case": "quake3-linear-exact-work",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.61717987060547,
+                  136.5662841796875,
+                  210.37896728515625
+                ],
+                "intensity": 210.37896728515625,
+                "color": [
+                  0.34992653131484985,
+                  0.649144172668457,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 36.59799713876967,
+                "rmse_bytes": 54.20065512276366,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 0.13447782546494993,
+                "rmse_bytes": 0.3667121834149364,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 24.344444444444445,
+                "rmse_bytes": 31.037611591959415,
+                "maximum_error_bytes": 145.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.11666666666666667,
+                "rmse_bytes": 0.3415650255319866,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3022170,
+            "seconds": 0.547830099996645
+          },
+          {
+            "case": "quake3-linear-withheld-altered",
+            "status": "validation_rejected",
+            "accepted": false,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.61717987060547,
+                  136.5662841796875,
+                  210.37896728515625
+                ],
+                "intensity": 210.37896728515625,
+                "color": [
+                  0.34992653131484985,
+                  0.649144172668457,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 36.59799713876967,
+                "rmse_bytes": 54.20065512276366,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 0.13447782546494993,
+                "rmse_bytes": 0.3667121834149364,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 44.34444444444444,
+                "rmse_bytes": 48.34367705409996,
+                "maximum_error_bytes": 165.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 19.916666666666668,
+                "rmse_bytes": 19.91942100898852,
+                "maximum_error_bytes": 21.0
+              }
+            },
+            "work": 3022170,
+            "seconds": 0.5328923999913968
+          },
+          {
+            "case": "quake3-linear-solid-search",
+            "status": "no_usable_candidates",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 36.59799713876967,
+                "rmse_bytes": 54.20065512276366,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 36.59799713876967,
+                "rmse_bytes": 54.20065512276366,
+                "maximum_error_bytes": 251.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 24.344444444444445,
+                "rmse_bytes": 31.037611591959415,
+                "maximum_error_bytes": 145.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 24.344444444444445,
+                "rmse_bytes": 31.037611591959415,
+                "maximum_error_bytes": 145.0
+              }
+            },
+            "work": 315,
+            "seconds": 0.058673800027463585
+          },
+          {
+            "case": "quake3-linear-absent",
+            "status": "insufficient_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "work": 0,
+            "seconds": 0.034347500011790544
+          },
+          {
+            "case": "quake3-linear-saturated",
+            "status": "insufficient_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "work": 0,
+            "seconds": 0.04146870004478842
+          },
+          {
+            "case": "quake3-linear-missing-material",
+            "status": "unresolved_materials",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "work": 0,
+            "seconds": 0.05605769995599985
+          },
+          {
+            "case": "quake3-linear-implicit-unresolved",
+            "status": "unresolved_materials",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "work": 0,
+            "seconds": 0.054378499975427985
+          },
+          {
+            "case": "quake3-linear-implicit-assumed",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.61717987060547,
+                  136.5662841796875,
+                  210.37896728515625
+                ],
+                "intensity": 210.37896728515625,
+                "color": [
+                  0.34992653131484985,
+                  0.649144172668457,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 36.59799713876967,
+                "rmse_bytes": 54.20065512276366,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 0.13447782546494993,
+                "rmse_bytes": 0.3667121834149364,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 24.344444444444445,
+                "rmse_bytes": 31.037611591959415,
+                "maximum_error_bytes": 145.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.11666666666666667,
+                "rmse_bytes": 0.3415650255319866,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3022170,
+            "seconds": 0.522068299993407
+          },
+          {
+            "case": "quake3-linear-wrong-gamma",
+            "status": "validation_rejected",
+            "accepted": false,
+            "trial": [
+              {
+                "origin": [
+                  -87.0,
+                  24.75,
+                  206.75
+                ],
+                "linear_intensity_rgb": [
+                  2.652451515197754,
+                  19.261985778808594,
+                  56.777828216552734
+                ],
+                "intensity": 56.777828216552734,
+                "color": [
+                  0.04671632498502731,
+                  0.33925190567970276,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 24.59227467811159,
+                "rmse_bytes": 40.519516130015504,
+                "maximum_error_bytes": 221.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 20.27038626609442,
+                "rmse_bytes": 23.5620205540487,
+                "maximum_error_bytes": 123.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 15.28888888888889,
+                "rmse_bytes": 20.06655592438988,
+                "maximum_error_bytes": 115.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 19.616666666666667,
+                "rmse_bytes": 20.62805532925163,
+                "maximum_error_bytes": 31.0
+              }
+            },
+            "work": 3051761,
+            "seconds": 0.982517900003586
+          },
+          {
+            "case": "ja-gamma-retained",
+            "status": "baseline_explains_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 234,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 234,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "work": 294,
+            "seconds": 0.04887349996715784
+          },
+          {
+            "case": "ja-gamma-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.45987701416016,
+                  136.56674194335938,
+                  209.91575622558594
+                ],
+                "intensity": 209.91575622558594,
+                "color": [
+                  0.34994933009147644,
+                  0.6505787968635559,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 234,
+                "mae_bytes": 34.55840455840456,
+                "rmse_bytes": 40.49958671661384,
+                "maximum_error_bytes": 150.0
+              },
+              "trial": {
+                "samples": 234,
+                "mae_bytes": 0.06837606837606838,
+                "rmse_bytes": 0.2614881801842454,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 28.122222222222224,
+                "rmse_bytes": 30.671557580997487,
+                "maximum_error_bytes": 83.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.05,
+                "rmse_bytes": 0.22360679774997896,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3064848,
+            "seconds": 1.012492099951487,
+            "position_error": 0.3535533905932738,
+            "rebake_rmse": 0.25421614885788835,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "qfusion-srgb-retained",
+            "status": "baseline_explains_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 231,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 231,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "work": 291,
+            "seconds": 0.0678260000422597
+          },
+          {
+            "case": "qfusion-srgb-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.39567565917969,
+                  136.27813720703125,
+                  209.77096557617188
+                ],
+                "intensity": 209.77096557617188,
+                "color": [
+                  0.3498848080635071,
+                  0.6496520638465881,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 231,
+                "mae_bytes": 71.58441558441558,
+                "rmse_bytes": 81.60463232755858,
+                "maximum_error_bytes": 225.0
+              },
+              "trial": {
+                "samples": 231,
+                "mae_bytes": 0.07792207792207792,
+                "rmse_bytes": 0.27914526311954124,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 60.416666666666664,
+                "rmse_bytes": 65.62803432138502,
+                "maximum_error_bytes": 173.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.15,
+                "rmse_bytes": 0.3872983346207417,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 2820096,
+            "seconds": 0.9704135999782011,
+            "position_error": 0.3535533905932738,
+            "rebake_rmse": 0.30460384954008574,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "ja-styled-retained",
+            "status": "baseline_explains_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 253,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 253,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 52,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 52,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "work": 305,
+            "seconds": 0.07003420003456995
+          },
+          {
+            "case": "ja-styled-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.6734619140625,
+                  136.60069274902344,
+                  210.29380798339844
+                ],
+                "intensity": 210.29380798339844,
+                "color": [
+                  0.35033586621284485,
+                  0.6495707035064697,
+                  1.0
+                ],
+                "style": 7,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 253,
+                "mae_bytes": 34.303030303030305,
+                "rmse_bytes": 50.00753566402174,
+                "maximum_error_bytes": 252.0
+              },
+              "trial": {
+                "samples": 253,
+                "mae_bytes": 0.12911725955204217,
+                "rmse_bytes": 0.3665888047644883,
+                "maximum_error_bytes": 2.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 52,
+                "mae_bytes": 23.26923076923077,
+                "rmse_bytes": 29.355032766426078,
+                "maximum_error_bytes": 102.0
+              },
+              "trial": {
+                "samples": 52,
+                "mae_bytes": 0.1346153846153846,
+                "rmse_bytes": 0.3668996928526714,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3281346,
+            "seconds": 0.5603730999864638,
+            "position_error": 0.3535533905932738,
+            "rebake_rmse": 0.3666418272758807,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "quake3-transfer-retained",
+            "status": "baseline_explains_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 220,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 220,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "work": 280,
+            "seconds": 0.051364699960686266
+          },
+          {
+            "case": "quake3-transfer-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.4049072265625,
+                  136.23435974121094,
+                  209.4823760986328
+                ],
+                "intensity": 209.4823760986328,
+                "color": [
+                  0.35041090846061707,
+                  0.6503380537033081,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 220,
+                "mae_bytes": 48.527272727272724,
+                "rmse_bytes": 76.49315675472565,
+                "maximum_error_bytes": 254.0
+              },
+              "trial": {
+                "samples": 220,
+                "mae_bytes": 0.11818181818181818,
+                "rmse_bytes": 0.3437758254761643,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 35.37777777777778,
+                "rmse_bytes": 56.68960320121416,
+                "maximum_error_bytes": 250.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.10555555555555556,
+                "rmse_bytes": 0.32489314482696546,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 2685918,
+            "seconds": 0.6685530000249855,
+            "position_error": 0.3535533905932738,
+            "rebake_rmse": 0.3398178783939869,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "multiple-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.0,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  75.33141326904297,
+                  137.30630493164062,
+                  211.08795166015625
+                ],
+                "intensity": 211.08795166015625,
+                "color": [
+                  0.35687217116355896,
+                  0.6504696607589722,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              },
+              {
+                "origin": [
+                  81.75,
+                  -63.0,
+                  65.0
+                ],
+                "linear_intensity_rgb": [
+                  154.2107391357422,
+                  30.378337860107422,
+                  6.947054386138916
+                ],
+                "intensity": 154.2107391357422,
+                "color": [
+                  1.0,
+                  0.19699236750602722,
+                  0.04504909738898277
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 226,
+                "mae_bytes": 50.21386430678466,
+                "rmse_bytes": 64.89147963942192,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 226,
+                "mae_bytes": 0.41002949852507375,
+                "rmse_bytes": 0.7246197253129978,
+                "maximum_error_bytes": 3.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 58,
+                "mae_bytes": 43.06896551724138,
+                "rmse_bytes": 56.772281564360156,
+                "maximum_error_bytes": 213.0
+              },
+              "trial": {
+                "samples": 58,
+                "mae_bytes": 0.40229885057471265,
+                "rmse_bytes": 0.6948083337796512,
+                "maximum_error_bytes": 3.0
+              }
+            },
+            "work": 12584046,
+            "seconds": 2.3030544000212103,
+            "position_errors": [
+              1.0307764064044151,
+              0.75
+            ],
+            "rebake_rmse": 0.7186319815334057,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "multiple-one-retained",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  81.0,
+                  -63.0,
+                  65.0
+                ],
+                "linear_intensity_rgb": [
+                  154.99864196777344,
+                  30.905067443847656,
+                  7.7032270431518555
+                ],
+                "intensity": 154.99864196777344,
+                "color": [
+                  1.0,
+                  0.1993892788887024,
+                  0.04969867318868637
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 226,
+                "mae_bytes": 12.890855457227138,
+                "rmse_bytes": 28.252809399032394,
+                "maximum_error_bytes": 207.0
+              },
+              "trial": {
+                "samples": 226,
+                "mae_bytes": 0.014749262536873156,
+                "rmse_bytes": 0.12144654188931506,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 58,
+                "mae_bytes": 18.29310344827586,
+                "rmse_bytes": 42.59789266818389,
+                "maximum_error_bytes": 207.0
+              },
+              "trial": {
+                "samples": 58,
+                "mae_bytes": 0.005747126436781609,
+                "rmse_bytes": 0.07580980435789034,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 2759100,
+            "seconds": 0.49069859995506704,
+            "rebake_rmse": 0.1136256930542812,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "entity-srgb-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  21.208667755126953,
+                  79.90936279296875,
+                  210.37921142578125
+                ],
+                "intensity": 210.37921142578125,
+                "color": [
+                  0.35055384039878845,
+                  0.6498287916183472,
+                  0.9999999403953552
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 26.972818311874107,
+                "rmse_bytes": 46.86183386865712,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 0.09012875536480687,
+                "rmse_bytes": 0.3002145155797882,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 17.883333333333333,
+                "rmse_bytes": 26.852167303383332,
+                "maximum_error_bytes": 145.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.10555555555555556,
+                "rmse_bytes": 0.32489314482696546,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3022170,
+            "seconds": 0.5111408000229858,
+            "position_errors": [
+              0.3535533905932738
+            ],
+            "rebake_rmse": 0.3054305601543876,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "occlusion-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.6171875,
+                  136.5658416748047,
+                  210.38648986816406
+                ],
+                "intensity": 210.38648986816406,
+                "color": [
+                  0.3499140441417694,
+                  0.6491189002990723,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 241,
+                "mae_bytes": 33.809128630705395,
+                "rmse_bytes": 53.10942799194969,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 241,
+                "mae_bytes": 0.11618257261410789,
+                "rmse_bytes": 0.3408556477661884,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 64,
+                "mae_bytes": 22.09375,
+                "rmse_bytes": 31.325242749790995,
+                "maximum_error_bytes": 145.0
+              },
+              "trial": {
+                "samples": 64,
+                "mae_bytes": 0.109375,
+                "rmse_bytes": 0.33071891388307384,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3096515,
+            "seconds": 0.6294692999799736,
+            "position_errors": [
+              0.3535533905932738
+            ],
+            "rebake_rmse": 0.3387537429470791,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "sun-no-point",
+            "status": "baseline_explains_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 423,
+                "mae_bytes": 0.01182033096926714,
+                "rmse_bytes": 0.10872134550890704,
+                "maximum_error_bytes": 1.0
+              },
+              "trial": {
+                "samples": 423,
+                "mae_bytes": 0.01182033096926714,
+                "rmse_bytes": 0.10872134550890704,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 115,
+                "mae_bytes": 0.017391304347826087,
+                "rmse_bytes": 0.1318760946791574,
+                "maximum_error_bytes": 1.0
+              },
+              "trial": {
+                "samples": 115,
+                "mae_bytes": 0.017391304347826087,
+                "rmse_bytes": 0.1318760946791574,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 538,
+            "seconds": 0.053722300042863935
+          },
+          {
+            "case": "emitter-no-point",
+            "status": "baseline_explains_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 728,
+                "mae_bytes": 0.0018315018315018315,
+                "rmse_bytes": 0.04279604925109129,
+                "maximum_error_bytes": 1.0
+              },
+              "trial": {
+                "samples": 728,
+                "mae_bytes": 0.0018315018315018315,
+                "rmse_bytes": 0.04279604925109129,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 196,
+                "mae_bytes": 0.003401360544217687,
+                "rmse_bytes": 0.05832118435198043,
+                "maximum_error_bytes": 1.0
+              },
+              "trial": {
+                "samples": 196,
+                "mae_bytes": 0.003401360544217687,
+                "rmse_bytes": 0.05832118435198043,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 924,
+            "seconds": 0.11084669997217134
+          },
+          {
+            "case": "mixed-bounce-no-point",
+            "status": "validation_rejected",
+            "accepted": false,
+            "trial": [
+              {
+                "origin": [
+                  -91.08332824707031,
+                  -91.0,
+                  182.0
+                ],
+                "linear_intensity_rgb": [
+                  43.36788558959961,
+                  31.878564834594727,
+                  32.48149490356445
+                ],
+                "intensity": 43.36788558959961,
+                "color": [
+                  1.0,
+                  0.7350730895996094,
+                  0.7489757537841797
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 606,
+                "mae_bytes": 3.7953795379537953,
+                "rmse_bytes": 4.571519427825709,
+                "maximum_error_bytes": 15.0
+              },
+              "trial": {
+                "samples": 606,
+                "mae_bytes": 2.1655665566556657,
+                "rmse_bytes": 2.898446152511704,
+                "maximum_error_bytes": 12.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 157,
+                "mae_bytes": 3.9660297239915074,
+                "rmse_bytes": 4.7408421049555,
+                "maximum_error_bytes": 13.0
+              },
+              "trial": {
+                "samples": 157,
+                "mae_bytes": 2.2887473460721868,
+                "rmse_bytes": 3.125811996416719,
+                "maximum_error_bytes": 13.0
+              }
+            },
+            "work": 14019561,
+            "seconds": 3.1853210999979638
+          }
+        ],
+        "maximum_position_error_units": 1.0307764064044151,
+        "full_decompile_bsp_vis_light_rebuilds": 9,
+        "maximum_rebuild_rmse_bytes": 0.7186319815334057,
+        "maximum_rebuild_transport_difference_bytes": 0
+      },
+      "final_material_control": {
+        "path": "build/release/tests/point-materials/results.json",
+        "sha256": "8afda06f23a0fe85f44a33189453f127779f509577b0a01b592825341bb41cc6",
+        "reports": 3,
+        "completion_log": {
+          "path": ".agents/tmp/continuation/point-fitting/material-windows.log",
+          "sha256": "0a17d5a411167e69682df820e14651c818831031337622d59c6bb7aab8646f4d"
+        }
+      },
+      "corrected_comparison_matrix": {
+        "path": "build/release/tests/light-comparison/results.json",
+        "sha256": "a2749b841b132a89e4ea01f59a39fe4643c716e5b942670aebcb9e8df5ae187a",
+        "reports": 67,
+        "preserved_failures": 36,
+        "actual_srgb_asserted_on_all_three_formats": true,
+        "native_rgb_exact_for_srgb_controls": true,
+        "max_transfer_component_error": 3.301533251942601e-05
+      },
+      "corrected_probe_matrix": {
+        "path": "build/release/tests/light-probes/results.json",
+        "sha256": "dd7cd83dbb2d907fcf47159844af10c62809d5260174a04c01a469226f392a8f",
+        "reports": 26,
+        "preserved_failures": 45,
+        "actual_shader_text_and_images_asserted_on_native_room_controls": true
+      },
+      "matrix_logs_scanned_for_sanitizer_diagnostics": 344,
+      "sanitizer_diagnostics": []
+    },
+    "linux": {
+      "compiler": {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "32a1dbcb0b05bea11785ad2a80545d5a6196e63b063d2abccbe9259d3c106cfe"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/point-fitting/build-linux-checked.log",
+        "sha256": "e9335fc7e56893029a7b400a086cecae722e4c630d97cd3a12f592f4dbab9e8a"
+      },
+      "broad_suite_before_help_and_material_control_corrections": {
+        "path": ".agents/tmp/continuation/point-fitting/ctest-linux.log",
+        "sha256": "d85bb3c2eaf9f29cd9031c3ddb4ca3e09b1cc5f35c1cc6c07582741d6b8a39fb",
+        "groups": 76,
+        "passed": [
+          "workbench",
+          "vis_passage_clipping",
+          "patch_input",
+          "script_input",
+          "brush_input",
+          "recovery_groups",
+          "brush_cells",
+          "uv_recovery",
+          "recovery_order",
+          "lighting_curves",
+          "meta_order",
+          "lighting_evidence",
+          "game_profiles",
+          "vis_merge",
+          "light_comparison",
+          "light_probes",
+          "cell_adjacency",
+          "portal_evidence",
+          "recovery_classification",
+          "native_fakk",
+          "lighting_materials",
+          "uv_output",
+          "bsp_evidence",
+          "geometry_optimize",
+          "bsp_inspect",
+          "vis_reproducible",
+          "bsp_validation",
+          "binary_outputs",
+          "portal_validation",
+          "native_early",
+          "index_validation_cli",
+          "planar_reduction_native",
+          "mesh_export",
+          "vis_passage_storage",
+          "gpu_columns",
+          "cli_options",
+          "raven_compat",
+          "bsp_analyze",
+          "recovery_outputs",
+          "minimap",
+          "export_outputs",
+          "native_mohaa",
+          "lighting_gpu",
+          "workbench_window",
+          "planar_reduction_oracle",
+          "workbench_inspector",
+          "compiler_pipeline",
+          "lightgrid_cli",
+          "workbench_devices",
+          "game_catalog",
+          "bezier_uv",
+          "decompile_recovery",
+          "uv_fit_oracle",
+          "lightgrid",
+          "vis_clip",
+          "atomic_file",
+          "recovery_group_order",
+          "columns",
+          "workbench_preview",
+          "job_pool",
+          "index_validation",
+          "cli_help",
+          "planar_reduction",
+          "terrain",
+          "quake3_materials",
+          "area_factors_disabled",
+          "cli_games",
+          "vis_mask",
+          "portal_graph",
+          "ftx",
+          "lighting_math",
+          "cell_graph",
+          "uv_fit",
+          "decompile_math",
+          "point_fitting"
+        ],
+        "skipped": [
+          "area_factors"
+        ],
+        "failed": []
+      },
+      "final_focused_suite": {
+        "path": ".agents/tmp/continuation/point-fitting/ctest-linux-checked.log",
+        "sha256": "789f6e6ca582f76662e9b2e4ed92d92d058e696361b79a4fac29c1ee4beec935",
+        "groups": 1,
+        "passed": [
+          "cli_help"
+        ],
+        "skipped": [],
+        "failed": []
+      },
+      "explicit_light_help": {
+        "path": ".agents/tmp/continuation/point-fitting/help-linux.log",
+        "sha256": "9a05371514d82bbff85273a9aea558a9d2cf1a2803aa5d82703a7e2d5e9c0f42"
+      },
+      "point_results": {
+        "path": "build/linux-release/tests/point-fitting/results.json",
+        "sha256": "e64770746cb00568581478fd6465bc0a3d75d665471c7ad68dd87eb1ddae90ba",
+        "reports": 27,
+        "preserved_failures": [
+          "quake3-linear-work-one-below",
+          "quake3-linear-grid_spacing",
+          "quake3-linear-max_candidates",
+          "quake3-linear-max_work",
+          "quake3-linear-max_lights",
+          "quake3-linear-mins",
+          "quake3-linear-allow_implicit_materials",
+          "quake3-linear-explicit"
+        ],
+        "cases": [
+          {
+            "case": "quake3-linear-retained",
+            "status": "baseline_explains_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "work": 293,
+            "seconds": 0.36659171499999843
+          },
+          {
+            "case": "quake3-linear-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.61717987060547,
+                  136.5662841796875,
+                  210.37896728515625
+                ],
+                "intensity": 210.37896728515625,
+                "color": [
+                  0.34992653131484985,
+                  0.649144172668457,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 36.59799713876967,
+                "rmse_bytes": 54.20065512276366,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 0.13447782546494993,
+                "rmse_bytes": 0.3667121834149364,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 24.344444444444445,
+                "rmse_bytes": 31.037611591959415,
+                "maximum_error_bytes": 145.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.11666666666666667,
+                "rmse_bytes": 0.3415650255319866,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3022170,
+            "seconds": 2.696177303000013,
+            "position_error": 0.3535533905932738,
+            "rebake_rmse": 0.36170497534905977,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "quake3-linear-blind-one",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.61717987060547,
+                  136.5662841796875,
+                  210.37896728515625
+                ],
+                "intensity": 210.37896728515625,
+                "color": [
+                  0.34992653131484985,
+                  0.649144172668457,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 36.59799713876967,
+                "rmse_bytes": 54.20065512276366,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 0.13447782546494993,
+                "rmse_bytes": 0.3667121834149364,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 24.344444444444445,
+                "rmse_bytes": 31.037611591959415,
+                "maximum_error_bytes": 145.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.11666666666666667,
+                "rmse_bytes": 0.3415650255319866,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3022170,
+            "seconds": 3.798595999000014
+          },
+          {
+            "case": "quake3-linear-exact-work",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.61717987060547,
+                  136.5662841796875,
+                  210.37896728515625
+                ],
+                "intensity": 210.37896728515625,
+                "color": [
+                  0.34992653131484985,
+                  0.649144172668457,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 36.59799713876967,
+                "rmse_bytes": 54.20065512276366,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 0.13447782546494993,
+                "rmse_bytes": 0.3667121834149364,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 24.344444444444445,
+                "rmse_bytes": 31.037611591959415,
+                "maximum_error_bytes": 145.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.11666666666666667,
+                "rmse_bytes": 0.3415650255319866,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3022170,
+            "seconds": 3.570948407000003
+          },
+          {
+            "case": "quake3-linear-withheld-altered",
+            "status": "validation_rejected",
+            "accepted": false,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.61717987060547,
+                  136.5662841796875,
+                  210.37896728515625
+                ],
+                "intensity": 210.37896728515625,
+                "color": [
+                  0.34992653131484985,
+                  0.649144172668457,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 36.59799713876967,
+                "rmse_bytes": 54.20065512276366,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 0.13447782546494993,
+                "rmse_bytes": 0.3667121834149364,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 44.34444444444444,
+                "rmse_bytes": 48.34367705409996,
+                "maximum_error_bytes": 165.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 19.916666666666668,
+                "rmse_bytes": 19.91942100898852,
+                "maximum_error_bytes": 21.0
+              }
+            },
+            "work": 3022170,
+            "seconds": 0.6651021400000161
+          },
+          {
+            "case": "quake3-linear-solid-search",
+            "status": "no_usable_candidates",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 36.59799713876967,
+                "rmse_bytes": 54.20065512276366,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 36.59799713876967,
+                "rmse_bytes": 54.20065512276366,
+                "maximum_error_bytes": 251.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 24.344444444444445,
+                "rmse_bytes": 31.037611591959415,
+                "maximum_error_bytes": 145.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 24.344444444444445,
+                "rmse_bytes": 31.037611591959415,
+                "maximum_error_bytes": 145.0
+              }
+            },
+            "work": 315,
+            "seconds": 0.829256762
+          },
+          {
+            "case": "quake3-linear-absent",
+            "status": "insufficient_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "work": 0,
+            "seconds": 0.7896153849999905
+          },
+          {
+            "case": "quake3-linear-saturated",
+            "status": "insufficient_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "work": 0,
+            "seconds": 0.7631580190000022
+          },
+          {
+            "case": "quake3-linear-missing-material",
+            "status": "unresolved_materials",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "work": 0,
+            "seconds": 1.8229423889999907
+          },
+          {
+            "case": "quake3-linear-implicit-unresolved",
+            "status": "unresolved_materials",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "work": 0,
+            "seconds": 1.147712079999991
+          },
+          {
+            "case": "quake3-linear-implicit-assumed",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.61717987060547,
+                  136.5662841796875,
+                  210.37896728515625
+                ],
+                "intensity": 210.37896728515625,
+                "color": [
+                  0.34992653131484985,
+                  0.649144172668457,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 36.59799713876967,
+                "rmse_bytes": 54.20065512276366,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 0.13447782546494993,
+                "rmse_bytes": 0.3667121834149364,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 24.344444444444445,
+                "rmse_bytes": 31.037611591959415,
+                "maximum_error_bytes": 145.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.11666666666666667,
+                "rmse_bytes": 0.3415650255319866,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3022170,
+            "seconds": 1.362730823999982
+          },
+          {
+            "case": "quake3-linear-wrong-gamma",
+            "status": "validation_rejected",
+            "accepted": false,
+            "trial": [
+              {
+                "origin": [
+                  -87.0,
+                  24.75,
+                  206.75
+                ],
+                "linear_intensity_rgb": [
+                  2.652451515197754,
+                  19.261985778808594,
+                  56.777828216552734
+                ],
+                "intensity": 56.777828216552734,
+                "color": [
+                  0.04671632498502731,
+                  0.33925190567970276,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 24.59227467811159,
+                "rmse_bytes": 40.519516130015504,
+                "maximum_error_bytes": 221.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 20.27038626609442,
+                "rmse_bytes": 23.5620205540487,
+                "maximum_error_bytes": 123.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 15.28888888888889,
+                "rmse_bytes": 20.06655592438988,
+                "maximum_error_bytes": 115.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 19.616666666666667,
+                "rmse_bytes": 20.62805532925163,
+                "maximum_error_bytes": 31.0
+              }
+            },
+            "work": 3051761,
+            "seconds": 1.1720377990000088
+          },
+          {
+            "case": "ja-gamma-retained",
+            "status": "baseline_explains_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 234,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 234,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "work": 294,
+            "seconds": 0.1501197940000054
+          },
+          {
+            "case": "ja-gamma-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.45987701416016,
+                  136.56674194335938,
+                  209.91575622558594
+                ],
+                "intensity": 209.91575622558594,
+                "color": [
+                  0.34994933009147644,
+                  0.6505787968635559,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 234,
+                "mae_bytes": 34.55840455840456,
+                "rmse_bytes": 40.49958671661384,
+                "maximum_error_bytes": 150.0
+              },
+              "trial": {
+                "samples": 234,
+                "mae_bytes": 0.06837606837606838,
+                "rmse_bytes": 0.2614881801842454,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 28.122222222222224,
+                "rmse_bytes": 30.671557580997487,
+                "maximum_error_bytes": 83.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.05,
+                "rmse_bytes": 0.22360679774997896,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3064848,
+            "seconds": 0.7124600740000062,
+            "position_error": 0.3535533905932738,
+            "rebake_rmse": 0.25421614885788835,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "qfusion-srgb-retained",
+            "status": "baseline_explains_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 231,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 231,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "work": 291,
+            "seconds": 0.18570891899997832
+          },
+          {
+            "case": "qfusion-srgb-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.39567565917969,
+                  136.27813720703125,
+                  209.77096557617188
+                ],
+                "intensity": 209.77096557617188,
+                "color": [
+                  0.3498848080635071,
+                  0.6496520638465881,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 231,
+                "mae_bytes": 71.58441558441558,
+                "rmse_bytes": 81.60463232755858,
+                "maximum_error_bytes": 225.0
+              },
+              "trial": {
+                "samples": 231,
+                "mae_bytes": 0.07792207792207792,
+                "rmse_bytes": 0.27914526311954124,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 60.416666666666664,
+                "rmse_bytes": 65.62803432138502,
+                "maximum_error_bytes": 173.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.15,
+                "rmse_bytes": 0.3872983346207417,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 2820096,
+            "seconds": 0.7390988189999916,
+            "position_error": 0.3535533905932738,
+            "rebake_rmse": 0.30460384954008574,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "ja-styled-retained",
+            "status": "baseline_explains_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 253,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 253,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 52,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 52,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "work": 305,
+            "seconds": 0.14260174999998299
+          },
+          {
+            "case": "ja-styled-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.6734619140625,
+                  136.60069274902344,
+                  210.29380798339844
+                ],
+                "intensity": 210.29380798339844,
+                "color": [
+                  0.35033586621284485,
+                  0.6495707035064697,
+                  1.0
+                ],
+                "style": 7,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 253,
+                "mae_bytes": 34.303030303030305,
+                "rmse_bytes": 50.00753566402174,
+                "maximum_error_bytes": 252.0
+              },
+              "trial": {
+                "samples": 253,
+                "mae_bytes": 0.12911725955204217,
+                "rmse_bytes": 0.3665888047644883,
+                "maximum_error_bytes": 2.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 52,
+                "mae_bytes": 23.26923076923077,
+                "rmse_bytes": 29.355032766426078,
+                "maximum_error_bytes": 102.0
+              },
+              "trial": {
+                "samples": 52,
+                "mae_bytes": 0.1346153846153846,
+                "rmse_bytes": 0.3668996928526714,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3281346,
+            "seconds": 0.5750040689999878,
+            "position_error": 0.3535533905932738,
+            "rebake_rmse": 0.3666418272758807,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "quake3-transfer-retained",
+            "status": "baseline_explains_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 220,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 220,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "work": 280,
+            "seconds": 0.12146904799999447
+          },
+          {
+            "case": "quake3-transfer-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.4049072265625,
+                  136.23435974121094,
+                  209.4823760986328
+                ],
+                "intensity": 209.4823760986328,
+                "color": [
+                  0.35041090846061707,
+                  0.6503380537033081,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 220,
+                "mae_bytes": 48.527272727272724,
+                "rmse_bytes": 76.49315675472565,
+                "maximum_error_bytes": 254.0
+              },
+              "trial": {
+                "samples": 220,
+                "mae_bytes": 0.11818181818181818,
+                "rmse_bytes": 0.3437758254761643,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 35.37777777777778,
+                "rmse_bytes": 56.68960320121416,
+                "maximum_error_bytes": 250.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.10555555555555556,
+                "rmse_bytes": 0.32489314482696546,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 2685918,
+            "seconds": 0.5211170809999999,
+            "position_error": 0.3535533905932738,
+            "rebake_rmse": 0.3398178783939869,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "multiple-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.0,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  75.33141326904297,
+                  137.30630493164062,
+                  211.08795166015625
+                ],
+                "intensity": 211.08795166015625,
+                "color": [
+                  0.35687217116355896,
+                  0.6504696607589722,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              },
+              {
+                "origin": [
+                  81.75,
+                  -63.0,
+                  65.0
+                ],
+                "linear_intensity_rgb": [
+                  154.2107391357422,
+                  30.378337860107422,
+                  6.947054386138916
+                ],
+                "intensity": 154.2107391357422,
+                "color": [
+                  1.0,
+                  0.19699236750602722,
+                  0.04504909738898277
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 226,
+                "mae_bytes": 50.21386430678466,
+                "rmse_bytes": 64.89147963942192,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 226,
+                "mae_bytes": 0.41002949852507375,
+                "rmse_bytes": 0.7246197253129978,
+                "maximum_error_bytes": 3.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 58,
+                "mae_bytes": 43.06896551724138,
+                "rmse_bytes": 56.772281564360156,
+                "maximum_error_bytes": 213.0
+              },
+              "trial": {
+                "samples": 58,
+                "mae_bytes": 0.40229885057471265,
+                "rmse_bytes": 0.6948083337796512,
+                "maximum_error_bytes": 3.0
+              }
+            },
+            "work": 12584046,
+            "seconds": 2.091115276000039,
+            "position_errors": [
+              1.0307764064044151,
+              0.75
+            ],
+            "rebake_rmse": 0.7186319815334057,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "multiple-one-retained",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  81.0,
+                  -63.0,
+                  65.0
+                ],
+                "linear_intensity_rgb": [
+                  154.99864196777344,
+                  30.905067443847656,
+                  7.7032270431518555
+                ],
+                "intensity": 154.99864196777344,
+                "color": [
+                  1.0,
+                  0.1993892788887024,
+                  0.04969867318868637
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 226,
+                "mae_bytes": 12.890855457227138,
+                "rmse_bytes": 28.252809399032394,
+                "maximum_error_bytes": 207.0
+              },
+              "trial": {
+                "samples": 226,
+                "mae_bytes": 0.014749262536873156,
+                "rmse_bytes": 0.12144654188931506,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 58,
+                "mae_bytes": 18.29310344827586,
+                "rmse_bytes": 42.59789266818389,
+                "maximum_error_bytes": 207.0
+              },
+              "trial": {
+                "samples": 58,
+                "mae_bytes": 0.005747126436781609,
+                "rmse_bytes": 0.07580980435789034,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 2759100,
+            "seconds": 0.5819360880000204,
+            "rebake_rmse": 0.1136256930542812,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "entity-srgb-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  21.208667755126953,
+                  79.90936279296875,
+                  210.37921142578125
+                ],
+                "intensity": 210.37921142578125,
+                "color": [
+                  0.35055384039878845,
+                  0.6498287916183472,
+                  0.9999999403953552
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 26.972818311874107,
+                "rmse_bytes": 46.86183386865712,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 0.09012875536480687,
+                "rmse_bytes": 0.3002145155797882,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 17.883333333333333,
+                "rmse_bytes": 26.852167303383332,
+                "maximum_error_bytes": 145.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.10555555555555556,
+                "rmse_bytes": 0.32489314482696546,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3022170,
+            "seconds": 0.5262272879999728,
+            "position_errors": [
+              0.3535533905932738
+            ],
+            "rebake_rmse": 0.3054305601543876,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "occlusion-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.6171875,
+                  136.5658416748047,
+                  210.38648986816406
+                ],
+                "intensity": 210.38648986816406,
+                "color": [
+                  0.3499140441417694,
+                  0.6491189002990723,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 241,
+                "mae_bytes": 33.809128630705395,
+                "rmse_bytes": 53.10942799194969,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 241,
+                "mae_bytes": 0.11618257261410789,
+                "rmse_bytes": 0.3408556477661884,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 64,
+                "mae_bytes": 22.09375,
+                "rmse_bytes": 31.325242749790995,
+                "maximum_error_bytes": 145.0
+              },
+              "trial": {
+                "samples": 64,
+                "mae_bytes": 0.109375,
+                "rmse_bytes": 0.33071891388307384,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3096515,
+            "seconds": 0.6454403070000012,
+            "position_errors": [
+              0.3535533905932738
+            ],
+            "rebake_rmse": 0.3387537429470791,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "sun-no-point",
+            "status": "baseline_explains_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 423,
+                "mae_bytes": 0.01182033096926714,
+                "rmse_bytes": 0.10872134550890704,
+                "maximum_error_bytes": 1.0
+              },
+              "trial": {
+                "samples": 423,
+                "mae_bytes": 0.01182033096926714,
+                "rmse_bytes": 0.10872134550890704,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 115,
+                "mae_bytes": 0.017391304347826087,
+                "rmse_bytes": 0.1318760946791574,
+                "maximum_error_bytes": 1.0
+              },
+              "trial": {
+                "samples": 115,
+                "mae_bytes": 0.017391304347826087,
+                "rmse_bytes": 0.1318760946791574,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 538,
+            "seconds": 0.22055131100000835
+          },
+          {
+            "case": "emitter-no-point",
+            "status": "baseline_explains_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 728,
+                "mae_bytes": 0.0018315018315018315,
+                "rmse_bytes": 0.04279604925109129,
+                "maximum_error_bytes": 1.0
+              },
+              "trial": {
+                "samples": 728,
+                "mae_bytes": 0.0018315018315018315,
+                "rmse_bytes": 0.04279604925109129,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 196,
+                "mae_bytes": 0.003401360544217687,
+                "rmse_bytes": 0.05832118435198043,
+                "maximum_error_bytes": 1.0
+              },
+              "trial": {
+                "samples": 196,
+                "mae_bytes": 0.003401360544217687,
+                "rmse_bytes": 0.05832118435198043,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 924,
+            "seconds": 0.2589721609999742
+          },
+          {
+            "case": "mixed-bounce-no-point",
+            "status": "validation_rejected",
+            "accepted": false,
+            "trial": [
+              {
+                "origin": [
+                  -91.08332824707031,
+                  -91.0,
+                  182.0
+                ],
+                "linear_intensity_rgb": [
+                  43.36788558959961,
+                  31.878564834594727,
+                  32.48149490356445
+                ],
+                "intensity": 43.36788558959961,
+                "color": [
+                  1.0,
+                  0.7350730895996094,
+                  0.7489757537841797
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 606,
+                "mae_bytes": 3.7953795379537953,
+                "rmse_bytes": 4.571519427825709,
+                "maximum_error_bytes": 15.0
+              },
+              "trial": {
+                "samples": 606,
+                "mae_bytes": 2.1655665566556657,
+                "rmse_bytes": 2.898446152511704,
+                "maximum_error_bytes": 12.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 157,
+                "mae_bytes": 3.9660297239915074,
+                "rmse_bytes": 4.7408421049555,
+                "maximum_error_bytes": 13.0
+              },
+              "trial": {
+                "samples": 157,
+                "mae_bytes": 2.2887473460721868,
+                "rmse_bytes": 3.125811996416719,
+                "maximum_error_bytes": 13.0
+              }
+            },
+            "work": 14019561,
+            "seconds": 3.126238580000006
+          }
+        ],
+        "maximum_position_error_units": 1.0307764064044151,
+        "full_decompile_bsp_vis_light_rebuilds": 9,
+        "maximum_rebuild_rmse_bytes": 0.7186319815334057,
+        "maximum_rebuild_transport_difference_bytes": 0
+      },
+      "final_material_control": {
+        "path": "build/linux-release/tests/point-materials/results.json",
+        "sha256": "b0e143f887c03f403b471c8b8510f567c713190a839c886332f8047d15cda4d9",
+        "reports": 3,
+        "completion_log": {
+          "path": ".agents/tmp/continuation/point-fitting/material-linux.log",
+          "sha256": "b87021571c6ab3471556d5c913192134863288438f0efd584fe2385ceddf50ce"
+        }
+      },
+      "corrected_comparison_matrix": {
+        "path": "build/linux-release/tests/light-comparison/results.json",
+        "sha256": "f01da01e76b1e8d40583b23ae716acaf792a759cc516dd1a8c959ce854d79c3b",
+        "reports": 67,
+        "preserved_failures": 36,
+        "actual_srgb_asserted_on_all_three_formats": true,
+        "native_rgb_exact_for_srgb_controls": true,
+        "max_transfer_component_error": 3.301533251942601e-05
+      },
+      "corrected_probe_matrix": {
+        "path": "build/linux-release/tests/light-probes/results.json",
+        "sha256": "11028fad4ea6d62a6e38c7303a4a0e70fdf36fd0f056495f51889e85d1a8693c",
+        "reports": 26,
+        "preserved_failures": 45,
+        "actual_shader_text_and_images_asserted_on_native_room_controls": true
+      },
+      "matrix_logs_scanned_for_sanitizer_diagnostics": 344,
+      "sanitizer_diagnostics": []
+    },
+    "sanitized": {
+      "compiler": {
+        "path": "build/linux-sanitized/bin/q3mapx",
+        "sha256": "b088fd7648a11c63c325480519e49fc9441a63d5d3fa97085a8e460feae705bc"
+      },
+      "build_log": {
+        "path": ".agents/tmp/continuation/point-fitting/build-sanitized-checked.log",
+        "sha256": "e9335fc7e56893029a7b400a086cecae722e4c630d97cd3a12f592f4dbab9e8a"
+      },
+      "broad_suite_before_help_and_material_control_corrections": {
+        "path": ".agents/tmp/continuation/point-fitting/ctest-sanitized.log",
+        "sha256": "098ebc187a63aca5c9b2b58df05812f7f2fdb72609111cd7e84789998e908349",
+        "groups": 12,
+        "passed": [
+          "lighting_evidence",
+          "lighting_curves",
+          "light_comparison",
+          "bsp_validation",
+          "light_probes",
+          "lightgrid",
+          "lightgrid_cli",
+          "job_pool",
+          "compiler_pipeline",
+          "lighting_math",
+          "lighting_materials",
+          "point_fitting"
+        ],
+        "skipped": [],
+        "failed": []
+      },
+      "final_focused_suite": {
+        "path": ".agents/tmp/continuation/point-fitting/ctest-sanitized-checked.log",
+        "sha256": "a827c7be44acd99fb9b06ad5d162ca901b337dbc118e48e7229e6903ef5f14ff",
+        "groups": 1,
+        "passed": [
+          "cli_help"
+        ],
+        "skipped": [],
+        "failed": []
+      },
+      "explicit_light_help": {
+        "path": ".agents/tmp/continuation/point-fitting/help-sanitized.log",
+        "sha256": "9a05371514d82bbff85273a9aea558a9d2cf1a2803aa5d82703a7e2d5e9c0f42"
+      },
+      "point_results": {
+        "path": "build/linux-sanitized/tests/point-fitting/results.json",
+        "sha256": "24b0dba8e7e28f50e52bfaa74f3d05de6d8939587d007164677f3897e84716d3",
+        "reports": 27,
+        "preserved_failures": [
+          "quake3-linear-work-one-below",
+          "quake3-linear-grid_spacing",
+          "quake3-linear-max_candidates",
+          "quake3-linear-max_work",
+          "quake3-linear-max_lights",
+          "quake3-linear-mins",
+          "quake3-linear-allow_implicit_materials",
+          "quake3-linear-explicit"
+        ],
+        "cases": [
+          {
+            "case": "quake3-linear-retained",
+            "status": "baseline_explains_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "work": 293,
+            "seconds": 0.34706847700002186
+          },
+          {
+            "case": "quake3-linear-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.61717987060547,
+                  136.5662841796875,
+                  210.37896728515625
+                ],
+                "intensity": 210.37896728515625,
+                "color": [
+                  0.34992653131484985,
+                  0.649144172668457,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 36.59799713876967,
+                "rmse_bytes": 54.20065512276366,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 0.13447782546494993,
+                "rmse_bytes": 0.3667121834149364,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 24.344444444444445,
+                "rmse_bytes": 31.037611591959415,
+                "maximum_error_bytes": 145.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.11666666666666667,
+                "rmse_bytes": 0.3415650255319866,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3022170,
+            "seconds": 20.29369100400001,
+            "position_error": 0.3535533905932738,
+            "rebake_rmse": 0.36170497534905977,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "quake3-linear-blind-one",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.61717987060547,
+                  136.5662841796875,
+                  210.37896728515625
+                ],
+                "intensity": 210.37896728515625,
+                "color": [
+                  0.34992653131484985,
+                  0.649144172668457,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 36.59799713876967,
+                "rmse_bytes": 54.20065512276366,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 0.13447782546494993,
+                "rmse_bytes": 0.3667121834149364,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 24.344444444444445,
+                "rmse_bytes": 31.037611591959415,
+                "maximum_error_bytes": 145.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.11666666666666667,
+                "rmse_bytes": 0.3415650255319866,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3022170,
+            "seconds": 41.059569084
+          },
+          {
+            "case": "quake3-linear-exact-work",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.61717987060547,
+                  136.5662841796875,
+                  210.37896728515625
+                ],
+                "intensity": 210.37896728515625,
+                "color": [
+                  0.34992653131484985,
+                  0.649144172668457,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 36.59799713876967,
+                "rmse_bytes": 54.20065512276366,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 0.13447782546494993,
+                "rmse_bytes": 0.3667121834149364,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 24.344444444444445,
+                "rmse_bytes": 31.037611591959415,
+                "maximum_error_bytes": 145.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.11666666666666667,
+                "rmse_bytes": 0.3415650255319866,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3022170,
+            "seconds": 22.678319713999997
+          },
+          {
+            "case": "quake3-linear-withheld-altered",
+            "status": "validation_rejected",
+            "accepted": false,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.61717987060547,
+                  136.5662841796875,
+                  210.37896728515625
+                ],
+                "intensity": 210.37896728515625,
+                "color": [
+                  0.34992653131484985,
+                  0.649144172668457,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 36.59799713876967,
+                "rmse_bytes": 54.20065512276366,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 0.13447782546494993,
+                "rmse_bytes": 0.3667121834149364,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 44.34444444444444,
+                "rmse_bytes": 48.34367705409996,
+                "maximum_error_bytes": 165.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 19.916666666666668,
+                "rmse_bytes": 19.91942100898852,
+                "maximum_error_bytes": 21.0
+              }
+            },
+            "work": 3022170,
+            "seconds": 18.305811645999995
+          },
+          {
+            "case": "quake3-linear-solid-search",
+            "status": "no_usable_candidates",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 36.59799713876967,
+                "rmse_bytes": 54.20065512276366,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 36.59799713876967,
+                "rmse_bytes": 54.20065512276366,
+                "maximum_error_bytes": 251.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 24.344444444444445,
+                "rmse_bytes": 31.037611591959415,
+                "maximum_error_bytes": 145.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 24.344444444444445,
+                "rmse_bytes": 31.037611591959415,
+                "maximum_error_bytes": 145.0
+              }
+            },
+            "work": 315,
+            "seconds": 1.7515133059999926
+          },
+          {
+            "case": "quake3-linear-absent",
+            "status": "insufficient_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "work": 0,
+            "seconds": 1.276317405000043
+          },
+          {
+            "case": "quake3-linear-saturated",
+            "status": "insufficient_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "work": 0,
+            "seconds": 1.8858286409999891
+          },
+          {
+            "case": "quake3-linear-missing-material",
+            "status": "unresolved_materials",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "work": 0,
+            "seconds": 1.6846819479999908
+          },
+          {
+            "case": "quake3-linear-implicit-unresolved",
+            "status": "unresolved_materials",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              },
+              "trial": {
+                "samples": 0,
+                "mae_bytes": null,
+                "rmse_bytes": null,
+                "maximum_error_bytes": null
+              }
+            },
+            "work": 0,
+            "seconds": 1.1659796239999878
+          },
+          {
+            "case": "quake3-linear-implicit-assumed",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.61717987060547,
+                  136.5662841796875,
+                  210.37896728515625
+                ],
+                "intensity": 210.37896728515625,
+                "color": [
+                  0.34992653131484985,
+                  0.649144172668457,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 36.59799713876967,
+                "rmse_bytes": 54.20065512276366,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 0.13447782546494993,
+                "rmse_bytes": 0.3667121834149364,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 24.344444444444445,
+                "rmse_bytes": 31.037611591959415,
+                "maximum_error_bytes": 145.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.11666666666666667,
+                "rmse_bytes": 0.3415650255319866,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3022170,
+            "seconds": 18.111778983000022
+          },
+          {
+            "case": "quake3-linear-wrong-gamma",
+            "status": "validation_rejected",
+            "accepted": false,
+            "trial": [
+              {
+                "origin": [
+                  -87.0,
+                  24.75,
+                  206.75
+                ],
+                "linear_intensity_rgb": [
+                  2.652451515197754,
+                  19.261985778808594,
+                  56.777828216552734
+                ],
+                "intensity": 56.777828216552734,
+                "color": [
+                  0.04671632498502731,
+                  0.33925190567970276,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 24.59227467811159,
+                "rmse_bytes": 40.519516130015504,
+                "maximum_error_bytes": 221.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 20.27038626609442,
+                "rmse_bytes": 23.5620205540487,
+                "maximum_error_bytes": 123.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 15.28888888888889,
+                "rmse_bytes": 20.06655592438988,
+                "maximum_error_bytes": 115.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 19.616666666666667,
+                "rmse_bytes": 20.62805532925163,
+                "maximum_error_bytes": 31.0
+              }
+            },
+            "work": 3051761,
+            "seconds": 19.478323122999996
+          },
+          {
+            "case": "ja-gamma-retained",
+            "status": "baseline_explains_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 234,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 234,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "work": 294,
+            "seconds": 1.3276447840000287
+          },
+          {
+            "case": "ja-gamma-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.45987701416016,
+                  136.56674194335938,
+                  209.91575622558594
+                ],
+                "intensity": 209.91575622558594,
+                "color": [
+                  0.34994933009147644,
+                  0.6505787968635559,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 234,
+                "mae_bytes": 34.55840455840456,
+                "rmse_bytes": 40.49958671661384,
+                "maximum_error_bytes": 150.0
+              },
+              "trial": {
+                "samples": 234,
+                "mae_bytes": 0.06837606837606838,
+                "rmse_bytes": 0.2614881801842454,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 28.122222222222224,
+                "rmse_bytes": 30.671557580997487,
+                "maximum_error_bytes": 83.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.05,
+                "rmse_bytes": 0.22360679774997896,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3064848,
+            "seconds": 21.29402754199998,
+            "position_error": 0.3535533905932738,
+            "rebake_rmse": 0.25421614885788835,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "qfusion-srgb-retained",
+            "status": "baseline_explains_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 231,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 231,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "work": 291,
+            "seconds": 1.3280073660000085
+          },
+          {
+            "case": "qfusion-srgb-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.39567565917969,
+                  136.27813720703125,
+                  209.77096557617188
+                ],
+                "intensity": 209.77096557617188,
+                "color": [
+                  0.3498848080635071,
+                  0.6496520638465881,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 231,
+                "mae_bytes": 71.58441558441558,
+                "rmse_bytes": 81.60463232755858,
+                "maximum_error_bytes": 225.0
+              },
+              "trial": {
+                "samples": 231,
+                "mae_bytes": 0.07792207792207792,
+                "rmse_bytes": 0.27914526311954124,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 60.416666666666664,
+                "rmse_bytes": 65.62803432138502,
+                "maximum_error_bytes": 173.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.15,
+                "rmse_bytes": 0.3872983346207417,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 2820096,
+            "seconds": 17.414284467000016,
+            "position_error": 0.3535533905932738,
+            "rebake_rmse": 0.30460384954008574,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "ja-styled-retained",
+            "status": "baseline_explains_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 253,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 253,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 52,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 52,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "work": 305,
+            "seconds": 1.1763914449999788
+          },
+          {
+            "case": "ja-styled-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.6734619140625,
+                  136.60069274902344,
+                  210.29380798339844
+                ],
+                "intensity": 210.29380798339844,
+                "color": [
+                  0.35033586621284485,
+                  0.6495707035064697,
+                  1.0
+                ],
+                "style": 7,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 253,
+                "mae_bytes": 34.303030303030305,
+                "rmse_bytes": 50.00753566402174,
+                "maximum_error_bytes": 252.0
+              },
+              "trial": {
+                "samples": 253,
+                "mae_bytes": 0.12911725955204217,
+                "rmse_bytes": 0.3665888047644883,
+                "maximum_error_bytes": 2.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 52,
+                "mae_bytes": 23.26923076923077,
+                "rmse_bytes": 29.355032766426078,
+                "maximum_error_bytes": 102.0
+              },
+              "trial": {
+                "samples": 52,
+                "mae_bytes": 0.1346153846153846,
+                "rmse_bytes": 0.3668996928526714,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3281346,
+            "seconds": 20.025139901000045,
+            "position_error": 0.3535533905932738,
+            "rebake_rmse": 0.3666418272758807,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "quake3-transfer-retained",
+            "status": "baseline_explains_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 220,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 220,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.0,
+                "rmse_bytes": 0.0,
+                "maximum_error_bytes": 0.0
+              }
+            },
+            "work": 280,
+            "seconds": 1.0031167789999813
+          },
+          {
+            "case": "quake3-transfer-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.4049072265625,
+                  136.23435974121094,
+                  209.4823760986328
+                ],
+                "intensity": 209.4823760986328,
+                "color": [
+                  0.35041090846061707,
+                  0.6503380537033081,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 220,
+                "mae_bytes": 48.527272727272724,
+                "rmse_bytes": 76.49315675472565,
+                "maximum_error_bytes": 254.0
+              },
+              "trial": {
+                "samples": 220,
+                "mae_bytes": 0.11818181818181818,
+                "rmse_bytes": 0.3437758254761643,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 35.37777777777778,
+                "rmse_bytes": 56.68960320121416,
+                "maximum_error_bytes": 250.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.10555555555555556,
+                "rmse_bytes": 0.32489314482696546,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 2685918,
+            "seconds": 16.994466116000012,
+            "position_error": 0.3535533905932738,
+            "rebake_rmse": 0.3398178783939869,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "multiple-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.0,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  75.33141326904297,
+                  137.30630493164062,
+                  211.08795166015625
+                ],
+                "intensity": 211.08795166015625,
+                "color": [
+                  0.35687217116355896,
+                  0.6504696607589722,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              },
+              {
+                "origin": [
+                  81.75,
+                  -63.0,
+                  65.0
+                ],
+                "linear_intensity_rgb": [
+                  154.2107391357422,
+                  30.378337860107422,
+                  6.947054386138916
+                ],
+                "intensity": 154.2107391357422,
+                "color": [
+                  1.0,
+                  0.19699236750602722,
+                  0.04504909738898277
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 226,
+                "mae_bytes": 50.21386430678466,
+                "rmse_bytes": 64.89147963942192,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 226,
+                "mae_bytes": 0.41002949852507375,
+                "rmse_bytes": 0.7246197253129978,
+                "maximum_error_bytes": 3.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 58,
+                "mae_bytes": 43.06896551724138,
+                "rmse_bytes": 56.772281564360156,
+                "maximum_error_bytes": 213.0
+              },
+              "trial": {
+                "samples": 58,
+                "mae_bytes": 0.40229885057471265,
+                "rmse_bytes": 0.6948083337796512,
+                "maximum_error_bytes": 3.0
+              }
+            },
+            "work": 12584046,
+            "seconds": 89.66404609599999,
+            "position_errors": [
+              1.0307764064044151,
+              0.75
+            ],
+            "rebake_rmse": 0.7186319815334057,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "multiple-one-retained",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  81.0,
+                  -63.0,
+                  65.0
+                ],
+                "linear_intensity_rgb": [
+                  154.99864196777344,
+                  30.905067443847656,
+                  7.7032270431518555
+                ],
+                "intensity": 154.99864196777344,
+                "color": [
+                  1.0,
+                  0.1993892788887024,
+                  0.04969867318868637
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 226,
+                "mae_bytes": 12.890855457227138,
+                "rmse_bytes": 28.252809399032394,
+                "maximum_error_bytes": 207.0
+              },
+              "trial": {
+                "samples": 226,
+                "mae_bytes": 0.014749262536873156,
+                "rmse_bytes": 0.12144654188931506,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 58,
+                "mae_bytes": 18.29310344827586,
+                "rmse_bytes": 42.59789266818389,
+                "maximum_error_bytes": 207.0
+              },
+              "trial": {
+                "samples": 58,
+                "mae_bytes": 0.005747126436781609,
+                "rmse_bytes": 0.07580980435789034,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 2759100,
+            "seconds": 17.633914389999973,
+            "rebake_rmse": 0.1136256930542812,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "entity-srgb-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  21.208667755126953,
+                  79.90936279296875,
+                  210.37921142578125
+                ],
+                "intensity": 210.37921142578125,
+                "color": [
+                  0.35055384039878845,
+                  0.6498287916183472,
+                  0.9999999403953552
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 233,
+                "mae_bytes": 26.972818311874107,
+                "rmse_bytes": 46.86183386865712,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 233,
+                "mae_bytes": 0.09012875536480687,
+                "rmse_bytes": 0.3002145155797882,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 60,
+                "mae_bytes": 17.883333333333333,
+                "rmse_bytes": 26.852167303383332,
+                "maximum_error_bytes": 145.0
+              },
+              "trial": {
+                "samples": 60,
+                "mae_bytes": 0.10555555555555556,
+                "rmse_bytes": 0.32489314482696546,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3022170,
+            "seconds": 19.08016450699995,
+            "position_errors": [
+              0.3535533905932738
+            ],
+            "rebake_rmse": 0.3054305601543876,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "occlusion-blind",
+            "status": "conditional_point_proposal",
+            "accepted": true,
+            "trial": [
+              {
+                "origin": [
+                  -72.75,
+                  21.0,
+                  176.75
+                ],
+                "linear_intensity_rgb": [
+                  73.6171875,
+                  136.5658416748047,
+                  210.38648986816406
+                ],
+                "intensity": 210.38648986816406,
+                "color": [
+                  0.3499140441417694,
+                  0.6491189002990723,
+                  1.0
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 241,
+                "mae_bytes": 33.809128630705395,
+                "rmse_bytes": 53.10942799194969,
+                "maximum_error_bytes": 251.0
+              },
+              "trial": {
+                "samples": 241,
+                "mae_bytes": 0.11618257261410789,
+                "rmse_bytes": 0.3408556477661884,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 64,
+                "mae_bytes": 22.09375,
+                "rmse_bytes": 31.325242749790995,
+                "maximum_error_bytes": 145.0
+              },
+              "trial": {
+                "samples": 64,
+                "mae_bytes": 0.109375,
+                "rmse_bytes": 0.33071891388307384,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 3096515,
+            "seconds": 19.50901305499997,
+            "position_errors": [
+              0.3535533905932738
+            ],
+            "rebake_rmse": 0.3387537429470791,
+            "rebake_maximum_transport_difference": 0
+          },
+          {
+            "case": "sun-no-point",
+            "status": "baseline_explains_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 423,
+                "mae_bytes": 0.01182033096926714,
+                "rmse_bytes": 0.10872134550890704,
+                "maximum_error_bytes": 1.0
+              },
+              "trial": {
+                "samples": 423,
+                "mae_bytes": 0.01182033096926714,
+                "rmse_bytes": 0.10872134550890704,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 115,
+                "mae_bytes": 0.017391304347826087,
+                "rmse_bytes": 0.1318760946791574,
+                "maximum_error_bytes": 1.0
+              },
+              "trial": {
+                "samples": 115,
+                "mae_bytes": 0.017391304347826087,
+                "rmse_bytes": 0.1318760946791574,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 538,
+            "seconds": 1.3896814529999801
+          },
+          {
+            "case": "emitter-no-point",
+            "status": "baseline_explains_observations",
+            "accepted": false,
+            "trial": [],
+            "training": {
+              "baseline": {
+                "samples": 728,
+                "mae_bytes": 0.0018315018315018315,
+                "rmse_bytes": 0.04279604925109129,
+                "maximum_error_bytes": 1.0
+              },
+              "trial": {
+                "samples": 728,
+                "mae_bytes": 0.0018315018315018315,
+                "rmse_bytes": 0.04279604925109129,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 196,
+                "mae_bytes": 0.003401360544217687,
+                "rmse_bytes": 0.05832118435198043,
+                "maximum_error_bytes": 1.0
+              },
+              "trial": {
+                "samples": 196,
+                "mae_bytes": 0.003401360544217687,
+                "rmse_bytes": 0.05832118435198043,
+                "maximum_error_bytes": 1.0
+              }
+            },
+            "work": 924,
+            "seconds": 1.348253236000005
+          },
+          {
+            "case": "mixed-bounce-no-point",
+            "status": "validation_rejected",
+            "accepted": false,
+            "trial": [
+              {
+                "origin": [
+                  -91.08332824707031,
+                  -91.0,
+                  182.0
+                ],
+                "linear_intensity_rgb": [
+                  43.36788558959961,
+                  31.878564834594727,
+                  32.48149490356445
+                ],
+                "intensity": 43.36788558959961,
+                "color": [
+                  1.0,
+                  0.7350730895996094,
+                  0.7489757537841797
+                ],
+                "style": 0,
+                "spawnflags": 0,
+                "extra_distance": 0.0
+              }
+            ],
+            "training": {
+              "baseline": {
+                "samples": 606,
+                "mae_bytes": 3.7953795379537953,
+                "rmse_bytes": 4.571519427825709,
+                "maximum_error_bytes": 15.0
+              },
+              "trial": {
+                "samples": 606,
+                "mae_bytes": 2.1655665566556657,
+                "rmse_bytes": 2.898446152511704,
+                "maximum_error_bytes": 12.0
+              }
+            },
+            "withheld": {
+              "baseline": {
+                "samples": 157,
+                "mae_bytes": 3.9660297239915074,
+                "rmse_bytes": 4.7408421049555,
+                "maximum_error_bytes": 13.0
+              },
+              "trial": {
+                "samples": 157,
+                "mae_bytes": 2.2887473460721868,
+                "rmse_bytes": 3.125811996416719,
+                "maximum_error_bytes": 13.0
+              }
+            },
+            "work": 14019561,
+            "seconds": 102.776888783
+          }
+        ],
+        "maximum_position_error_units": 1.0307764064044151,
+        "full_decompile_bsp_vis_light_rebuilds": 9,
+        "maximum_rebuild_rmse_bytes": 0.7186319815334057,
+        "maximum_rebuild_transport_difference_bytes": 0
+      },
+      "final_material_control": {
+        "path": "build/linux-sanitized/tests/point-materials/results.json",
+        "sha256": "96fd457eb5502f8c93202a3c97c161c43d0d2cfe9c3950b1381aabb28871f640",
+        "reports": 3,
+        "completion_log": {
+          "path": ".agents/tmp/continuation/point-fitting/material-sanitized.log",
+          "sha256": "b87021571c6ab3471556d5c913192134863288438f0efd584fe2385ceddf50ce"
+        }
+      },
+      "corrected_comparison_matrix": {
+        "path": "build/linux-sanitized/tests/light-comparison/results.json",
+        "sha256": "f01da01e76b1e8d40583b23ae716acaf792a759cc516dd1a8c959ce854d79c3b",
+        "reports": 67,
+        "preserved_failures": 36,
+        "actual_srgb_asserted_on_all_three_formats": true,
+        "native_rgb_exact_for_srgb_controls": true,
+        "max_transfer_component_error": 3.301533251942601e-05
+      },
+      "corrected_probe_matrix": {
+        "path": "build/linux-sanitized/tests/light-probes/results.json",
+        "sha256": "11028fad4ea6d62a6e38c7303a4a0e70fdf36fd0f056495f51889e85d1a8693c",
+        "reports": 26,
+        "preserved_failures": 45,
+        "actual_shader_text_and_images_asserted_on_native_room_controls": true
+      },
+      "matrix_logs_scanned_for_sanitizer_diagnostics": 344,
+      "sanitizer_diagnostics": []
+    }
+  },
+  "cross_platform_point_reports": {
+    "compared": 27,
+    "exactly_equal": 24,
+    "different": [
+      "ja-gamma/blind.json",
+      "quake3-linear/missing-material.json",
+      "quake3-linear/wrong-gamma.json"
+    ],
+    "exact_fields_for_all_cases": [
+      "status",
+      "accepted",
+      "best_trial",
+      "training",
+      "withheld",
+      "validation_observations",
+      "work_used"
+    ],
+    "difference_explanation": "Two gamma cases differ only in initial-alternative continuous objective floats; the missing-material case uses the earlier image-path fixture on Linux/sanitizer and the final explicit missing-lightimage fixture on Windows.",
+    "qualification": "Input identities and material filenames are excluded. Each platform independently passes positional, native-byte, rebuild and withheld controls; exact floating point/search-path equality is not a portable promise. The main Linux/sanitizer matrices precede the explicit missing-lightimage fixture correction, which has its own final control."
+  },
+  "normal_bake_reference_parity": {
+    "reference": {
+      "path": ".agents/tmp/continuation/point-fitting/reference/q3mapx.exe",
+      "sha256": "26001faef845ee7aa5f38db03f9f261221261a393d675840c0a25220c2295c53"
+    },
+    "reference_revision": "eed142aa2ed70de4e283df7c15ebc86ab38812e4",
+    "reference_validation": "docs/validation/light-comparison.json",
+    "report": {
+      "path": ".agents/tmp/continuation/point-fitting/reference-parity/lighting-report.json",
+      "sha256": "8efda14ad3c341269432d5dbd822d3811e94f2e91f82303eb9dd0f88d3abdc33"
+    },
+    "completion_log": {
+      "path": ".agents/tmp/continuation/point-fitting/reference-parity.log",
+      "sha256": "df3bb581c4390be846ce316d15cb57e22efbaa3d9d9aaf5d1a66f188a04bc75e"
+    },
+    "bakes": 28,
+    "modes": [
+      "adaptive",
+      "bounce",
+      "deluxe",
+      "dirt",
+      "flood",
+      "random",
+      "supersampled"
+    ],
+    "exact_lumps": [
+      "vertices",
+      "surfaces",
+      "lightmaps",
+      "lightgrid"
+    ],
+    "runs": "Prior compiler/1 worker, current/1 worker, current/4 workers, current/4 workers without sample culling",
+    "additional_checks": "Material alpha/filter mutations, disabled shadows, dense grid and current 1/4/20/70-worker parity"
+  },
+  "corrections_to_prior_evidence": [
+    "In docs/validation/light-comparison.json the sRGB-labelled closed-room cases supplied both -nosRGB and -sRGBlight; the native fixed-order option parser applied -nosRGB last. Those runs were linear and do not qualify sRGB. The corrected 67-report matrix uses unambiguous per-channel options and asserts the effective lightmaps_srgb field.",
+    "The shared plain-room fixture selected shaders/ for Qfusion, whose actual profile uses scripts/. Its earlier room probes/comparisons used fallback material images. The fixture now loads the intended generated material; native probe tests assert shader text and nondefault images.",
+    "The initial missing-material control replaced editor/stage image paths. A retained valid implicit texture on a repeat run could legitimately satisfy compiler fallback, so that did not establish a missing requested light image. The final control explicitly supplies an unavailable q3map_lightimage, verifies its rejection even with a valid fallback, and checks both implicit-material policies."
+  ],
+  "limits": [
+    "The full suites precede the help-text correction. The Windows full run passed 75 groups and exposed the repeat-run material fixture issue; its corrected complete point matrix and CLI help pass on the final binary. Linux passes 75/76 with area_factors skipped. The final explicit missing-lightimage/fallback control and light-stage help are checked on every final binary.",
+    "Linux ASan/UBSan covers twelve selected groups; lifetime-leak detection remains disabled. The main Linux/sanitizer matrices use the initial missing-material control, supplemented by the final explicit missing-lightimage control.",
+    "Point fitting keeps current entity/material/sky sources fixed and uses an explicit encoding hypothesis. Original bake settings, complete asset identities, indirect light, normal/nudge reconstruction and adaptive subsampling remain unknown or unmodelled.",
+    "Withheld blocks are within one atlas/BSP, not independent scenes or calibrated probability estimates. A low residual cannot establish a unique arrangement or distinguish missing direct lights from every omitted effect.",
+    "Only the nonnegative inverse-square point family is searched. Custom linear/dark/jittered lights, spotlight/target inference, encoding calibration, entity export and GUI review remain open.",
+    "Coarse grids, bounded local search, greedy source counts, intensity ceilings and finite budgets can miss better solutions. Exact GPU acceleration and performance claims are outside this round.",
+    "Fitting excludes observed 255 channels and unknown baseline/encoding cases; values below 255 still do not prove invertibility. Shared geometry/atlas observations are correlated.",
+    "Dedicated trace-node exhaustion, every resource ceiling, larger real-map corpora and general author-light accuracy remain unqualified.",
+    "No editor/game renderer, screen capture or user-input control was used. Portable archives were not refreshed and no new external code was incorporated.",
+    "Older policy-blocked cleanup targets were not retried. Previously documented parser-sign/include-line findings, compiler warnings, VIS discrepancies, sidecar publication and intermittent Windows process delays remain outside this round.",
+    "M11 Radiant patch RGB/alpha painting and per-surface density/preview, intelligent compiler optimization and the broader recovery goal remain open."
+  ]
+}

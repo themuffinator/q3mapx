@@ -17,7 +17,10 @@ Optional [baked-lighting observations](LIGHTING-EVIDENCE.md) now extract bounded
 IBSP/RBSP atlas, vertex/control and grid evidence with styles and uncertainty.
 Curved patch inverses and constant-UV primitive regions now include bounded
 geometry associations, separate stored/geometric normals and explicit ambiguity.
-Source-light fitting and broader grouping/review tools below remain planned.
+Initial [conditional point-light fitting](POINT-FITTING.md) now searches BSP space,
+fits nonnegative colors/intensities with native tracing and checks withheld
+observations. Unknown bake calibration, spotlights/targets, export and broader
+grouping/review tools below remain open.
 Recover the closest supported recreation of the author's MAP: editable geometry,
 organization, materials,
 visibility behavior and source lighting. Keep exact extraction available alongside
@@ -170,9 +173,13 @@ remain explicit, and no usable observations produce null metrics. Controlled
 real bakes qualify several encoding choices, while curved/material and bounced
 fixtures expose residual model error. It reads no original MAP
 or SRF and writes no source geometry or entities. Supplied proposals are hypotheses;
-the mode does not generate candidates or infer spotlight targets. Transfer-function
-calibration, deluxe/external channels, bounce and other bake effects remain open
-before source explanations and inverse fitting can be qualified.
+the base mode does not generate candidates or infer spotlight targets. Optional
+`fit_point_lights` now adds bounded grid/position/color/intensity search with fixed
+retained/material/sky sources, alternative trials, material prerequisites and
+withheld atlas-block validation. Blind native fixtures and full recovered-map
+rebuilds qualify this initial point family. Transfer-function calibration,
+deluxe/external channels, bounce, broader inference accuracy and spotlight/target
+recovery remain open.
 
 1. Extract world-space lighting samples from lightmaps, vertex lighting and the
    lightgrid; use directional/deluxe channels and separate styles when available.

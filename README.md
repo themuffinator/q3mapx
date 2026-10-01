@@ -35,6 +35,10 @@ proposed lights with the compiler's direct CPU model, separating retained lights
 surface emitters and sun/sky without writing source or bake outputs. Its optional
 automatic texel comparison scores the encoded hypothesis against internal
 lightmaps with explicit sampling assumptions and unknown/excluded observations.
+Optional [point-light fitting](docs/POINT-FITTING.md) searches BSP space for
+conditional missing-light proposals, with native tracing, bounded parallel work,
+material checks and withheld-texel validation. Unknown bake calibration and
+spotlight/target recovery remain open.
 Optional [detail and group inference](docs/DECOMPILATION.md#group-inference-policy)
 can now export cell-supported detail flags and surface-supported `func_group`
 assemblies, with bounded work, rebuild-order protection and explicit uncertainty.

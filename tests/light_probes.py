@@ -15,6 +15,14 @@ from integration import run
 from lighting_evidence import parts, pack
 
 
+def color_space_options(options=()):
+    """Specify each space without contradictory global overrides in native parsing."""
+    switches=('-sRGBlight','-sRGBtex','-sRGBcolor')
+    enabled={str(option).lower() for option in options}
+    return [switch if switch.lower() in enabled else '-no'+switch[1:] for switch in switches]+[
+        option for option in options if str(option).lower() not in {s.lower() for s in switches}]
+
+
 def floor_surface(native,game):
     lumps=parts(native); ss=104 if game=='quake3' else 148; vs=44 if game=='quake3' else 80
     for offset in range(0,len(lumps[13]),ss):
@@ -25,7 +33,7 @@ def floor_surface(native,game):
 
 
 def plain_scene(root,game):
-    source=create_fixture(root,patch=False,shader_directory='scripts' if game=='quake3' else 'shaders')
+    source=create_fixture(root,patch=False,shader_directory='shaders' if game=='ja' else 'scripts')
     walls=[((-144,-144,-16),(144,144,0)),((-144,-144,256),(144,144,272)),
            ((-144,-144,0),(-128,144,256)),((128,-144,0),(144,144,256)),
            ((-128,-144,0),(128,-128,256)),((-128,128,0),(128,144,256))]
@@ -89,7 +97,7 @@ def main():
         # Poison legacy sidecars: a recovery diagnostic must use the BSP, never
         # hidden original light entities or stale surface extras from these files.
         source.write_text('not a map\n'); source.with_suffix('.srf').write_text('not surface extras\n')
-        custom=source.parent.parent/('scripts' if game=='quake3' else 'shaders')/'q3map2_fixture.shader'; custom.write_text('// retained generated shader\n')
+        custom=source.parent.parent/('shaders' if game=='ja' else 'scripts')/'q3map2_fixture.shader'; custom.write_text('// retained generated shader\n')
         protected={f:f.read_bytes() for f in (bsp,source,source.with_suffix('.srf'),custom,request)}
         expected=None
         for threads in (1,4):
@@ -100,6 +108,7 @@ def main():
             assert data['source_sha256']==hashlib.sha256(native).hexdigest() and data['request_sha256']==hashlib.sha256(request.read_bytes()).hexdigest()
             assert data['world_ambient']==[3,3,3] and data['world_minlight']==[2,2,2]
             assert data['active_sources']==5 and data['nonzero_responses']>0
+            assert all(m['shader_text_available'] and not m['default_image'] for m in data['materials'])
             assert data['nonzero_responses']==sum(len(s['responses']) for s in data['samples'])
             if expected is not None: assert data==expected
             expected=data

@@ -1850,6 +1850,7 @@ void                        SetupBrushes();
 bool                        ClusterVisible( int a, int b );
 int                         ClusterForPointExt( const Vector3& point, float epsilon );
 void                        SetupEnvelopes( bool forGrid, bool fastFlag );
+bool                        SetupLightEnvelope( light_t& light, bool forGrid, bool fastFlag );
 
 
 /* lightmaps_ydnar.c */

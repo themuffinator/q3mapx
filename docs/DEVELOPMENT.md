@@ -664,6 +664,44 @@ and [validation evidence](validation/light-comparison.json). The shared encoding
 extraction also requires normal-bake reference parity through `tests/lighting.py`;
 synthetic arithmetic checks alone do not establish unchanged compiler output.
 
+## Point-light fitting
+
+`point_fitting` exercises blind `fit_point_lights` requests through the native CLI.
+Generated source lights are stripped and the MAP/SRF are poisoned before search.
+Off-grid positions, overlapping colors, locked surviving lights, opaque occlusion,
+native light styles, gamma/sRGB/coupled encoding and entity sRGB are covered.
+Successful trials are added to independently decompiled MAPs and run through
+BSP/VIS/LIGHT; comparison uses world position/normal/style associations instead
+of assuming atlas coordinates survived the rebuild.
+
+```sh
+ctest --test-dir build/release -R '^point_fitting$' -V
+python tests/point_fitting.py --compiler build/release/bin/q3mapx --work-dir build/release/tests/point-fitting
+```
+
+Use `.exe` on Windows and corresponding Linux/sanitizer build directories. The
+group timeout is 900 seconds. One/four-worker report equality, exact/one-below
+work budgets, blocked search regions, missing/saturated observations and material
+prerequisites are checked. Changing only withheld atlas blocks must preserve
+the search result and training score while rejecting validation. Sun-only and
+emitter-only fixtures must require no added point lights; wrong gamma and the
+bounced control must fail the score gate. Trials/limits remain conditional on
+current assets and declared encoding, not general recovery accuracy guarantees.
+
+For a short material regression check, pass `--material-only` and use a separate
+`--work-dir build/release/tests/point-materials`. This deliberately keeps a valid
+fallback texture while requesting an unavailable `q3map_lightimage`; both values
+of `allow_implicit_materials` must reject the fit. Use the full matrix to qualify
+the search and recovered-map rebuilds.
+
+The shared single-light envelope extraction requires ordinary bake parity with
+the preceding compiler through `tests/lighting.py`. The related probe/comparison
+matrices also run with corrected Qfusion material paths and asserted effective
+sRGB flags; earlier sRGB-labelled comparison cases were overridden to linear.
+Native inputs, reports and logs remain in each build's `tests/point-fitting/`;
+[validation evidence](validation/point-fitting.json) records these checks and
+their limits. No editor, game renderer or user-input control is used.
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

@@ -536,9 +536,12 @@ broader material-preview/runtime qualification requirements remain open.
   style conflicts, material replay, grid limits and triangle-only losses are
   diagnosed. A versioned, geometry-bound BSP archive now preserves original
   pre-modifier controls/settings and restores native and triangle-only sources
-  with `-patch-recovery source`. Archive-free triangle fitting, workbench controls
-  and broader runtime equivalence remain open. See [source recovery](PATCH-SOURCE.md)
-  and [compiled channels](PATCH-COLOR-RECOVERY.md).
+  with `-patch-recovery source`. Archive-free `fit|auto` now reconstructs eligible
+  nonsolid rectangular triangle grids with verified quadratic XYZ/ST and requested
+  rounded-byte color fields. Source and inferred evidence remain distinct.
+  Arbitrary/decimated meshes, workbench controls and broader runtime equivalence
+  remain open. See [source recovery](PATCH-SOURCE.md),
+  [triangle fitting](TRIANGLE-PATCH-RECOVERY.md) and [compiled channels](PATCH-COLOR-RECOVERY.md).
   The build binding is not a source-control archive. Native
   save/reopen, duplication, undo/redo, transpose/inversion and bounded insertion
   now retain paint. Insertion rounds new controls to bytes. Painted row reduction

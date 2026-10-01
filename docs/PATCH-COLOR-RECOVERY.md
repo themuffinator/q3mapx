@@ -5,6 +5,10 @@ For BSPs built with retained authoring data, use
 settings, including triangle-only sources. The compiled-channel policy below
 remains useful when no source archive exists.
 
+For eligible triangle-only meshes, combine this color choice with
+[`-patch-recovery fit|auto`](TRIANGLE-PATCH-RECOVERY.md). Fitted fields are checked
+against compiled triangle samples and reported separately from native controls.
+
 MAP export can explicitly retain compiled alpha or RGBA from surviving native
 Bezier patch controls. This is extraction of stored channels, **not identification
 of the author's original paint**. Ordinary BSP vertex RGB may be baked lighting;

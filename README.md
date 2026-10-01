@@ -78,6 +78,9 @@ See [decompilation options and limits](docs/DECOMPILATION.md). The traditional
   catalog of 25 profiles: 19 native writers and six recovery-only readers.
 - Decompilation with improved texture matching and UV reconstruction, preserved
   brush entities/origins/patches, Valve 220 output and a JSON recovery report.
+- [Retained original patch paint](docs/PATCH-SOURCE.md) and bounded
+  [triangle-to-patch reconstruction](docs/TRIANGLE-PATCH-RECOVERY.md), with separate
+  source/inference provenance, compiled alpha/RGBA policies and rebuild checks.
 - [Multi-triangle UV fitting](docs/UV-RECOVERY.md) with seam/uncertainty diagnostics,
   precise full texture offsets and patch controls, bounded work and an explicit
   compatibility policy for previous texture recovery.

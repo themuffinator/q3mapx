@@ -885,6 +885,19 @@ assets, compiler and in-project work directory. It compares engine screenshots
 of identical native lump payloads with/without the archive, with SDL offscreen,
 windowed mode and disabled input/network. See [archive format and limits](PATCH-SOURCE.md).
 
+## Triangle-only patch inference
+
+Triangle-only inference has an independent mathematical oracle and a native BSP
+round-trip harness:
+
+```sh
+ctest --test-dir build/release -R '^(patch_fit|patch_reconstruction|patch_source|patch_color_recovery|decompile_recovery|recovery_outputs|patch_paint)$' --output-on-failure -j 2
+```
+
+Use `tests/renderer/patch_source_render.py --fit` with the same in-project engine
+test setup to compare original and reconstructed triangle-only scenes. It changes
+only independent copied test assets. See [contract and evidence](TRIANGLE-PATCH-RECOVERY.md).
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

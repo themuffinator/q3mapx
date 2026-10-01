@@ -54,6 +54,7 @@ q3mapx -decompile -light-proposals fit-report.json -brush-order rebuild -o relit
 q3mapx -decompile -uv-policy triangle -o comparison.map maps/example.bsp
 q3mapx -decompile -patch-colors alpha -o patch-alpha.map maps/example.bsp
 q3mapx -decompile -patch-colors rgba -patch-color-subdivisions 8 -o patch-colors.map maps/example.bsp
+q3mapx -decompile -patch-recovery auto -patch-colors alpha -o recovered-patches.map maps/example.bsp
 q3mapx -convert -format map_220 maps/example.bsp
 ```
 
@@ -85,6 +86,16 @@ freezes stored RGB as material color, including any baked light. Incompatible
 styles/materials retain legacy patches with reasons in the automatically written
 report. This does not infer original paint or recover triangle-only control grids.
 See [compiled patch color recovery](PATCH-COLOR-RECOVERY.md) for settings and limits.
+
+`-patch-recovery source` restores retained pre-modifier controls/settings from new
+BSPs' verified [source archives](PATCH-SOURCE.md), including triangle-only patches.
+`fit` reconstructs eligible nonsolid quadratic triangle grids without source
+metadata; `auto` restores archived sources and then fits remaining eligible grids.
+Selected color channels must match every observed triangle sample, but this does
+not prove the author's original field. Inference uses a bounded work budget,
+preserves source-versus-fit provenance and reports rejected candidates. See
+[triangle patch recovery](TRIANGLE-PATCH-RECOVERY.md) for material, topology and
+rebuild limits. Default `none` preserves the existing exporter.
 
 The MAP and report are separate filesystem names: process/power loss between
 their replacements can leave different generations. Concurrent writers, metadata

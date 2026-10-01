@@ -1210,7 +1210,14 @@ int ConvertBSPMain( Args& args, bool decompile ){
 			const char* policy = args.takeNext();
 			if ( striEqual( policy, "none" ) ) decompileOptions.patchRecovery = DecompileOptions::PatchRecovery::None;
 			else if ( striEqual( policy, "source" ) ) decompileOptions.patchRecovery = DecompileOptions::PatchRecovery::Source;
-			else Error( "Patch recovery must be none or source" );
+			else if ( striEqual( policy, "fit" ) ) decompileOptions.patchRecovery = DecompileOptions::PatchRecovery::Fit;
+			else if ( striEqual( policy, "auto" ) ) decompileOptions.patchRecovery = DecompileOptions::PatchRecovery::Auto;
+			else Error( "Patch recovery must be none, source, fit or auto" );
+		}
+		while ( args.takeArg( "-patch-fit-work" ) ) {
+			if ( decompileOptions.patchRecovery != DecompileOptions::PatchRecovery::Fit && decompileOptions.patchRecovery != DecompileOptions::PatchRecovery::Auto )
+				Error( "-patch-fit-work requires -patch-recovery fit or auto" );
+			decompileOptions.patchFitWorkLimit = args.takeInt( 1, 1'000'000'000 );
 		}
 	}
 	if ( !args.empty() ) Error( "Unknown conversion option '%s'", args.takeFront() );

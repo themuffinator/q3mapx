@@ -204,9 +204,11 @@ patches. Brush strokes and discarded compile context remain unavailable.
 Default MAP decompilation warns when it sees authored paint.
 Explicit [`-patch-colors alpha|rgba`](PATCH-COLOR-RECOVERY.md) can extract compiled
 channels from eligible surviving native controls, with chosen output mode and
-sampling. This does not identify original paint or recover triangle-only patches;
-RGBA can freeze baked light as material color. Retain the original MAP. Exact
-source recovery requires additional retained authoring metadata and remains open.
+sampling. RGBA can freeze baked light as material color. Combine it with
+[`-patch-recovery fit|auto`](TRIANGLE-PATCH-RECOVERY.md) to fit eligible triangle-only
+grids when no source archive exists. Fits describe compiled samples and cannot
+prove original paint. Exact source recovery requires the retained archive above;
+keep the original MAP for complete authoring context.
 
 ## Verification
 

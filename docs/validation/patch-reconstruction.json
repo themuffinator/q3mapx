@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-01T23:18:27.798733+00:00",
+  "base_revision": "9a21be1eaa975b96ca939e10ee0710a77d6b1805",
+  "scope": "Archive-free, conservatively verified quadratic triangle-to-patch fitting and automatic mixed source recovery",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "108c6fe841e56b8beabd7b2d8eee19b9298e5cd2445731098c9bbf04a07ac702",
+    "libs/q3mapx/patch_fit.h": "6d96146bdc5c5239b079d09dba13b7379702a9f3e9cc0a59baf91b9ebfa0974c",
+    "libs/q3mapx/patch_fit.cpp": "9259ffbcabbdbea91acaf8a57b5ccce92a5e383f4797b62b6a5398256927fa9a",
+    "tests/patch_fit.cpp": "2af54d96250610a4b8f170049ab1d2c2642f97505d10fbd7f970914cff346188",
+    "tests/patch_reconstruction.py": "5b37e83d67f267e1deb3cae03ffa1095a3781dc587f31c1113a23d4a81cb0e95",
+    "tests/renderer/patch_source_render.py": "7fa2ec34aef38a78add0e2a3424be683126731c2a7a492a47d2480c1e7d63594",
+    "tools/quake3/q3map2/patch_reconstruction.h": "f5cbba8a146e321332c976448a92768b1a1bd1cc5072d91e133c2c822a59298c",
+    "tools/quake3/q3map2/patch_reconstruction.cpp": "e49a564a7c07fa71ae45838d355a402593f33228687860c7305f3e54fe2d6192",
+    "tools/quake3/q3map2/convert_map.cpp": "1de3b0e142134953e2b9e804ea2ef7b9ff5b495740f9db31515cc0531766e1d3",
+    "tools/quake3/q3map2/convert_bsp.cpp": "9583dd7df39c3b32f1cd6308d8e4749463b6743a1ad700598ec09f018cc7787c",
+    "tools/quake3/q3map2/decompile.h": "b47e48d8eea06794586980646ae32697e0b60365ccbf52098073828b57c7dfa7",
+    "tools/quake3/q3map2/help.cpp": "3f138237130a438e8162bbce6b33f302b586a9be0a5ae05a7f3ce5d39ad9faf0"
+  },
+  "configurations": {
+    "windows": {
+      "compiler_sha256": "ded77c5b6da36757660c007d5988b2de2748265faa46c680f5b23ff335c167d1",
+      "oracle_sha256": "6e467820d0774446b836808a89c03904f0ab625c3a87725c6a460ade1863eb5a",
+      "archive_free_rebuild_cases": 28,
+      "painted_relight_cases": 24,
+      "legacy_patchDef2_cases": 4,
+      "mixed_source_and_fit_cases": 2,
+      "guarded_or_output_preservation_cases": 27,
+      "oracle_cases": 48,
+      "independent_sampled_vertices": 26328,
+      "oracle_rejections": 11,
+      "final_regression_groups": [
+        "patch_color_recovery",
+        "patch_source",
+        "patch_paint",
+        "patch_fit",
+        "recovery_outputs",
+        "decompile_recovery",
+        "patch_reconstruction"
+      ],
+      "final_log_sha256": "5eb106b9b6417c3807f4a5c3557afcb30edcfa8ee6c4669d160bb9294f6b981a",
+      "result_sha256": "569fdfcb831f0c7c3c227bbde024f5c2b6a9f32102ef9cb9edbc03102b4ecd54"
+    },
+    "linux": {
+      "compiler_sha256": "1db10f93949bb909de00da32d58db6915a6b27cef1a2e7c0b84659f39e0362bc",
+      "oracle_sha256": "6ad977c8f49bc4115b403aa1d9f4e261a196ea21f6dd029a026c62ec0c8b929b",
+      "archive_free_rebuild_cases": 28,
+      "painted_relight_cases": 24,
+      "legacy_patchDef2_cases": 4,
+      "mixed_source_and_fit_cases": 2,
+      "guarded_or_output_preservation_cases": 27,
+      "oracle_cases": 48,
+      "independent_sampled_vertices": 26328,
+      "oracle_rejections": 11,
+      "final_regression_groups": [
+        "patch_reconstruction",
+        "patch_source",
+        "patch_paint",
+        "recovery_outputs",
+        "decompile_recovery",
+        "patch_fit",
+        "patch_color_recovery"
+      ],
+      "final_log_sha256": "731725aabb8fde0fc5ca16a4fe76ea87a99d5fbda3d1bfdea2d181b9146b8e71",
+      "result_sha256": "3e81cb6d6ceef640e4c8fc7da9cff87816dba0273d0ed65d43e188ac5d01e32a"
+    },
+    "sanitized": {
+      "compiler_sha256": "11231e623627c058343d92659b0042f0bcd3ff057e2907cf4942f4dd91c55c7e",
+      "oracle_sha256": "96ce8178b1bc7dca91407f2191865c983c34e3af933cb6533f47dbd93803d0f2",
+      "archive_free_rebuild_cases": 28,
+      "painted_relight_cases": 24,
+      "legacy_patchDef2_cases": 4,
+      "mixed_source_and_fit_cases": 2,
+      "guarded_or_output_preservation_cases": 27,
+      "oracle_cases": 48,
+      "independent_sampled_vertices": 26328,
+      "oracle_rejections": 11,
+      "final_regression_groups": [
+        "patch_fit",
+        "patch_reconstruction"
+      ],
+      "final_log_sha256": "539a5b1e95404dd3153e9aa657c94e4d4b6e5e5e20f206680d3fb798c5add02a",
+      "result_sha256": "2bd83f104a9503d023e8e951d38937ccdf49ce65ab00018a4da1f06197cb182a",
+      "preceding_seven_group_suite_sha256": "d71b83b14aecd68ebe490c0d471882fb0d7b135e411677940c099fb4dd907f61",
+      "final_recheck_scope": "Rebuilt after report wording and indentation-only fixes; reran patch_fit and patch_reconstruction"
+    }
+  },
+  "renderer": {
+    "cases": [
+      {
+        "shape": "flat",
+        "pixels_equal": true,
+        "pixel_sha256": "b6d4bbc74b9df013d0e44586f2da410bb82030412a33b3e127596dcac97cc165"
+      },
+      {
+        "shape": "curved",
+        "pixels_equal": true,
+        "pixel_sha256": "0608cf40cdbd275dd7b6ad6885d36d68cfab4da342fe21990b0efeb22304aefd"
+      }
+    ],
+    "mode": "triangle_reconstruction",
+    "compiler_sha256": "1db10f93949bb909de00da32d58db6915a6b27cef1a2e7c0b84659f39e0362bc",
+    "engine_sha256": "e016d78acf0780b5760a329e8402234648debfac082761be6d358056f1fad75f",
+    "capture": "Engine screenshot command, SDL offscreen, input/network disabled"
+  },
+  "renderer_result_sha256": "c8a599ffc282a6a0e99049ea9313d55a5726a7329a372781a250c351b4af8a55",
+  "sanitizer": "ASan/UBSan Debug assertions; existing lifetime allocation exclusion ASAN_OPTIONS=detect_leaks=0",
+  "retained_evidence": [
+    ".agents/tmp/patch-fit/",
+    "build/release/tests/patch-reconstruction/",
+    "build/linux-release/tests/patch-reconstruction/",
+    "build/linux-sanitized/tests/patch-reconstruction/"
+  ],
+  "limitations": [
+    "Fits reproduce supported compiled samples, not authenticated or unique author control grids",
+    "Current nonsolid materials, affine UV grids, complete topology and compatible alternating diagonals required",
+    "Original inherited settings, groups, normals, arbitrary lighting and LOD seam equivalence unproven",
+    "Native GUI recovery controls and broader engine/game qualification remain open",
+    "Earlier material-preview strict gate remains 66/68; this neutral compiler-rebuild comparison is separate"
+  ]
+}

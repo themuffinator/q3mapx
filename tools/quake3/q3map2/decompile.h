@@ -9,7 +9,7 @@ struct DecompileOptions {
 	enum class GroupPolicy { None, Surfaces };
 	enum class UVPolicy { Consensus, Triangle };
 	enum class PatchColors { None, Alpha, RGBA };
-	enum class PatchRecovery { None, Source };
+	enum class PatchRecovery { None, Source, Fit, Auto };
 	const char* output = nullptr;
 	const char* report = nullptr;
 	const char* lightProposals = nullptr;
@@ -24,5 +24,6 @@ struct DecompileOptions {
 	PatchColors patchColors = PatchColors::None;
 	int patchColorSubdivisions = 16;
 	PatchRecovery patchRecovery = PatchRecovery::None;
+	unsigned patchFitWorkLimit = 50'000'000;
 };
 inline DecompileOptions decompileOptions;

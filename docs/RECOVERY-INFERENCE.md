@@ -26,8 +26,11 @@ light fits can be [applied during MAP export](LIGHT-RECOVERY.md) with explicit
 source/score checks, fixed dependencies and target-link protection.
 Explicit [compiled patch channel recovery](PATCH-COLOR-RECOVERY.md) can now retain
 native control alpha/RGBA with chosen source settings and per-surface exclusions.
-It distinguishes compiled channels from original paint and baked lighting;
-triangle-only control fitting and original authoring metadata remain open.
+It distinguishes compiled channels from original paint and baked lighting.
+[Retained source archives](PATCH-SOURCE.md) now restore pre-modifier painted
+controls/settings, including triangle-only sources. [Triangle fitting](TRIANGLE-PATCH-RECOVERY.md)
+also reconstructs eligible archive-free quadratic grids with explicit sampled-data
+provenance. Arbitrary/decimated meshes and lost original compile context remain open.
 Recover the closest supported recreation of the author's MAP: editable geometry,
 organization, materials,
 visibility behavior and source lighting. Keep exact extraction available alongside

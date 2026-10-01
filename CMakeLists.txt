@@ -38,7 +38,7 @@ target_include_directories(q3mapx_jobs PUBLIC libs)
 target_link_libraries(q3mapx_jobs PUBLIC Threads::Threads)
 add_library(q3mapx_io STATIC libs/q3mapx/atomic_file.cpp libs/q3mapx/portal_graph.cpp
     libs/q3mapx/cell_graph.cpp libs/q3mapx/exact_predicates.cpp libs/q3mapx/planar_reduction.cpp
-    libs/q3mapx/quake3_materials.cpp libs/q3mapx/uv_fit.cpp libs/q3mapx/bezier_uv.cpp)
+    libs/q3mapx/quake3_materials.cpp libs/q3mapx/uv_fit.cpp libs/q3mapx/bezier_uv.cpp libs/q3mapx/patch_fit.cpp)
 target_include_directories(q3mapx_io PUBLIC libs)
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/libs/q3mapx/columns.cl Q3MAPX_COLUMN_KERNEL)
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS libs/q3mapx/columns.cl)
@@ -399,6 +399,13 @@ if(BUILD_TESTING)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/patch_source.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/patch-source)
     set_tests_properties(patch_source PROPERTIES TIMEOUT 900)
+    add_executable(patch_fit_test tests/patch_fit.cpp)
+    target_link_libraries(patch_fit_test PRIVATE q3mapx_io)
+    add_test(NAME patch_fit COMMAND patch_fit_test)
+    add_test(NAME patch_reconstruction COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/patch_reconstruction.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/patch-reconstruction)
+    set_tests_properties(patch_reconstruction PROPERTIES TIMEOUT 900)
     add_executable(patch_grid_test tests/patch_grid.cpp)
     add_executable(paint_material_test tests/paint_material.cpp)
     target_include_directories(paint_material_test PRIVATE libs)

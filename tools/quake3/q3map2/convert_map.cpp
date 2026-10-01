@@ -38,6 +38,7 @@
 #include "qspatial.h"
 #include "decompile.h"
 #include "patch_source.h"
+#include "patch_reconstruction.h"
 #include "light_recovery.h"
 #include "bsp_evidence.h"
 #include "recovery_groups.h"
@@ -47,6 +48,7 @@
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/stringbuffer.h"
 #include <map>
+#include <set>
 
 struct DecompileStats {
 	size_t brushes = 0, skippedBrushes = 0, faces = 0, matchedFaces = 0;
@@ -58,9 +60,17 @@ struct DecompileStats {
 static DecompileStats recovery;
 static std::vector<bool> sourcePatchSurfaces;
 static size_t restoredSourcePatches = 0;
+static size_t fittedTrianglePatches = 0;
+static q3mapx::TrianglePatchRecovery trianglePatchRecovery;
+static bool usePatchSources = false;
 
-static void WriteSourcePatch( FILE* f, const q3mapx::PatchSource& patch, const Vector3& origin ) {
-	fprintf( f, "\t// Retained patch source: entity %d, primitive %d; pre-tessellation paint and settings.\n",
+static bool FitTrianglePatches(){
+	return decompileOptions.patchRecovery == DecompileOptions::PatchRecovery::Fit || decompileOptions.patchRecovery == DecompileOptions::PatchRecovery::Auto;
+}
+
+static void WriteSourcePatch( FILE* f, const q3mapx::PatchSource& patch, const Vector3& origin, bool inferred = false ) {
+	if ( inferred ) fprintf( f, "\t// Inferred quadratic patch from triangle samples; not original source metadata.\n" );
+	else fprintf( f, "\t// Retained patch source: entity %d, primitive %d; pre-tessellation paint and settings.\n",
 	    patch.entity, patch.primitive );
 	fprintf( f, "\t{\n\t\tq3mapxPatchDef2\n\t\t{\n\t\t\t%s\n\t\t\t( %d %d 0 0 0 )\n",
 	    patch.shader.c_str() + 9, patch.width, patch.height );
@@ -79,7 +89,8 @@ static void WriteSourcePatch( FILE* f, const q3mapx::PatchSource& patch, const V
 		fprintf( f, " )\n" );
 	}
 	fprintf( f, "\t\t\t)\n\t\t}\n\t}\n\n" );
-	++restoredSourcePatches; ++recovery.patches;
+	if ( inferred ) ++fittedTrianglePatches; else ++restoredSourcePatches;
+	++recovery.patches;
 }
 
 struct PatchColorRecord {
@@ -100,7 +111,7 @@ static bool RecoverPatchColors(){
 static void PreparePatchColorRecovery(){
 	patchColorRecords.clear(); patchColorCounts.clear(); omittedPatchColorRecords = 0;
 	patchColorMaterialStatus.clear(); patchColorVolumePresent = false;
-	if ( !RecoverPatchColors() ) return;
+	if ( !RecoverPatchColors() && !FitTrianglePatches() ) return;
 	patchColorMaterialStatus.resize( bspShaders.size(), nullptr );
 	// A surviving modifier brush would apply its operation a second time. Be
 	// conservative without claiming that absence proves no original modifiers.
@@ -155,6 +166,43 @@ static const char* PatchColorStatus( const bspDrawSurface_t& ds, const Vector3& 
 		}
 	}
 	return "recovered";
+}
+
+static void PrepareTrianglePatchRecovery(){
+	trianglePatchRecovery = {};
+	if ( !FitTrianglePatches() ) return;
+	const int firstChannel = decompileOptions.patchColors == DecompileOptions::PatchColors::RGBA ? 0
+	    : decompileOptions.patchColors == DecompileOptions::PatchColors::Alpha ? 3 : 4;
+	std::vector<const char*> excluded( bspDrawSurfaces.size(), nullptr );
+	for ( const auto& model : bspModels ) {
+		std::set<int> brushMaterials, nativePatchMaterials;
+		for ( int b = model.firstBSPBrush; b < model.firstBSPBrush + model.numBSPBrushes; ++b ) {
+			const auto& brush = bspBrushes[b]; brushMaterials.insert(brush.shaderNum);
+			for ( int s = brush.firstSide; s < brush.firstSide + brush.numSides; ++s ) brushMaterials.insert(bspBrushSides[s].shaderNum);
+		}
+		for ( int s = model.firstBSPSurface; s < model.firstBSPSurface + model.numBSPSurfaces; ++s )
+			if ( bspDrawSurfaces[s].surfaceType == MST_PATCH ) nativePatchMaterials.insert(bspDrawSurfaces[s].shaderNum);
+		for ( int s = model.firstBSPSurface; s < model.firstBSPSurface + model.numBSPSurfaces; ++s ) {
+			const auto& ds = bspDrawSurfaces[s];
+			if ( ds.surfaceType != MST_PLANAR && ds.surfaceType != MST_TRIANGLE_SOUP ) continue;
+			const char*& reason = excluded[s];
+			if ( brushMaterials.contains(ds.shaderNum) ) { reason = "brush_material_present"; continue; }
+			if ( nativePatchMaterials.contains(ds.shaderNum) ) { reason = "native_patch_material_present"; continue; }
+			if ( patchColorVolumePresent ) { reason = "color_modifier_volume_present"; continue; }
+			const char* status = PatchColorMaterialStatus(ds.shaderNum);
+			if ( !strEqual(status,"recovered") ) { reason = status; continue; }
+			const auto& shader = ShaderInfoForShader(bspShaders[ds.shaderNum].shader);
+			if ( (shader.compileFlags & C_SOLID) || (shader.contentFlags & GetRequiredSurfaceParm<"playerclip">().contentFlags) ) {
+				reason = "collision_material"; continue;
+			}
+			for ( int v = 0; !reason && v < ds.numVerts; ++v ) for ( int style = 1; style < MAX_LIGHTMAPS; ++style ) {
+				if ( ds.vertexStyles[style] == LS_NONE ) continue;
+				for ( int c = firstChannel; c < 4; ++c )
+					if ( bspDrawVerts[ds.firstVert+v].color[style][c] != bspDrawVerts[ds.firstVert+v].color[0][c] ) reason = "conflicting_active_styles";
+			}
+		}
+	}
+	trianglePatchRecovery = q3mapx::ReconstructTrianglePatches(sourcePatchSurfaces,excluded,firstChannel,decompileOptions.patchFitWorkLimit);
 }
 
 static bool PreciseTextureOutput(){
@@ -1434,8 +1482,10 @@ static void ConvertModel( FILE *f, const bspModel_t& model, const Vector3& origi
 	}
 
 	/* go through each drawsurf in the model */
-	if ( decompileOptions.patchRecovery == DecompileOptions::PatchRecovery::Source ) for ( const auto& patch : q3mapx::PatchSources() )
+	if ( usePatchSources ) for ( const auto& patch : q3mapx::PatchSources() )
 		if ( patch.model == &model - bspModels.data() ) WriteSourcePatch( f, patch, origin );
+	for ( const auto& patch : trianglePatchRecovery.patches )
+		if ( patch.model == &model - bspModels.data() ) WriteSourcePatch( f, patch, origin, true );
 	for ( int i = 0; i < model.numBSPSurfaces; ++i )
 	{
 		const int num = i + model.firstBSPSurface;
@@ -1534,14 +1584,17 @@ static void WriteGroupInferenceReport( rapidjson::PrettyWriter<rapidjson::String
 static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 	if ( decompileOptions.lightRecovery ) decompileOptions.lightRecovery->prepare();
 	recovery = {};
-	sourcePatchSurfaces.clear(); restoredSourcePatches = 0;
-	if ( decompileOptions.patchRecovery == DecompileOptions::PatchRecovery::Source ) {
+	sourcePatchSurfaces.clear(); restoredSourcePatches = fittedTrianglePatches = 0;
+	usePatchSources = decompileOptions.patchRecovery == DecompileOptions::PatchRecovery::Source
+	    || (decompileOptions.patchRecovery == DecompileOptions::PatchRecovery::Auto && !q3mapx::PatchSources().empty());
+	if ( usePatchSources ) {
 		q3mapx::ValidatePatchSources();
 		sourcePatchSurfaces.assign( bspDrawSurfaces.size(), false );
 		for ( const auto& patch : q3mapx::PatchSources() )
 			for ( int surface : patch.surfaces ) sourcePatchSurfaces[surface] = true;
 	}
 	PreparePatchColorRecovery();
+	PrepareTrianglePatchRecovery();
 	uvRecoveryRecords.clear(); uvRecoveryCounts.clear(); omittedUVRecoveryRecords = 0;
 	detailDecisions.clear(); detailEvidence.reset();
 	groupRecovery.reset();
@@ -1774,12 +1827,39 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		count( "patches", recovery.patches );
 		if ( decompileOptions.patchRecovery != DecompileOptions::PatchRecovery::None ) {
 			writer.Key( "patch_recovery" ); writer.StartObject();
-			writer.Key( "policy" ); writer.String( "source" );
-			writer.Key( "basis" ); writer.String( "retained_pre_tessellation_source_archive" );
+			writer.Key( "policy" ); writer.String( decompileOptions.patchRecovery == DecompileOptions::PatchRecovery::Source ? "source"
+			    : decompileOptions.patchRecovery == DecompileOptions::PatchRecovery::Fit ? "fit" : "auto" );
+			writer.Key( "basis" ); writer.String( usePatchSources ? "retained_pre_tessellation_source_archive" : "compiled_triangle_samples" );
 			count( "restored_source_patches", restoredSourcePatches );
-			writer.Key( "geometry_binding_verified" ); writer.Bool( true );
+			writer.Key( "geometry_binding_verified" ); writer.Bool( usePatchSources );
 			writer.Key( "author_identity_authenticated" ); writer.Bool( false );
 			writer.Key( "original_compile_context_restored" ); writer.Bool( false );
+			if ( FitTrianglePatches() ) {
+				writer.Key( "triangle_fitting" ); writer.StartObject();
+				writer.Key( "basis" ); writer.String( "complete_affine_uv_grid_and_verified_quadratic_samples" );
+				writer.Key( "original_source_proven" ); writer.Bool( false );
+				writer.Key( "rebuild_equivalence_proven" ); writer.Bool( false );
+				writer.Key( "color_policy" ); writer.String( decompileOptions.patchColors == DecompileOptions::PatchColors::RGBA ? "rgba"
+				    : decompileOptions.patchColors == DecompileOptions::PatchColors::Alpha ? "alpha" : "none" );
+				writer.Key( "density_basis" ); writer.String( "inherit_not_inferred" );
+				writer.Key( "subdivisions_basis" ); writer.String( "observed_sample_grid_not_author_setting" );
+				count( "fitted_patches", fittedTrianglePatches ); count( "work_used", trianglePatchRecovery.work );
+				count( "work_limit", decompileOptions.patchFitWorkLimit ); count( "omitted_records", trianglePatchRecovery.omittedDecisions );
+				writer.Key( "counts" ); writer.StartObject();
+				for ( const auto& [status, value] : trianglePatchRecovery.counts ) count(status.c_str(),value);
+				writer.EndObject(); writer.Key( "decisions" ); writer.StartArray();
+				for ( const auto& decision : trianglePatchRecovery.decisions ) {
+					writer.StartObject(); count("model",decision.model);
+					writer.Key("surfaces"); writer.StartArray(); for ( int surface : decision.surfaces ) writer.Int(surface); writer.EndArray();
+					count("omitted_surfaces",decision.omittedSurfaces); count("samples",decision.samples); count("triangles",decision.triangles);
+					writer.Key("status"); writer.String(decision.status);
+					count("width",decision.width); count("height",decision.height); count("subdivisions",decision.subdivisions);
+					writer.Key("max_position_error"); writer.Double(decision.positionError);
+					writer.Key("max_uv_error"); writer.Double(decision.uvError);
+					writer.EndObject();
+				}
+				writer.EndArray(); writer.EndObject();
+			}
 			writer.EndObject();
 		}
 		if ( RecoverPatchColors() ) {
@@ -1868,12 +1948,15 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		writer.StartArray();
 		writer.String( "Original editor groups are unavailable; removed entities and some source model instances may not be stored in the BSP." );
 		if ( !restoredSourcePatches && !strEmpty( entities[0].valueForKey( q3mapx::authoring::paintBindingKey ) ) )
-			writer.String( RecoverPatchColors()
+			writer.String( FitTrianglePatches() ? "This BSP contains authored patch paint but no source archive was restored. Fitted triangle controls describe compiled samples; original paint, RGB mode, subdivisions and density are not proven. Keep original MAP sources."
+			    : RecoverPatchColors()
 			    ? "This BSP contains authored patch paint. Only eligible surviving native control channels are recovered; original pre-modifier paint, RGB mode, tessellation and density are unproven. Triangle-only painted surfaces are not recovered. The BSP/SRF binding is a build identity, not original authoring metadata. Keep the original source."
 			    : "This BSP contains authored patch paint. MAP recovery does not yet restore its RGBA controls, RGB mode or tessellation settings; keep the original q3mapxPatchDef2 source. The BSP/SRF binding is a build identity, not original authoring metadata." );
 		if ( RecoverPatchColors() ) {
 			writer.String( "Patch color recovery copies stored slot-zero channels, not inferred original paint. RGBA export freezes any baked RGB as material color; alpha export resets source RGB to white for rebaking. Conflicting active vertex styles retain legacy patches; inactive style slots are ignored." );
-			writer.String( "Recovered colors use q3mapxPatchDef2 and chosen finite tessellation, which changes native patch LOD/render topology. Original density, tessellation, pre-modifier fields and pixel equivalence are not established. Native collision controls may not describe the rendered triangle colors. Triangle-only patches have no recoverable native control grid here." );
+			writer.String( FitTrianglePatches()
+			    ? "Native patch channel extraction uses chosen finite tessellation; triangle fitting uses observed samples and reports separate decisions. Original density, pre-modifier fields, author tessellation and general pixel equivalence are not established. Native collision controls may not describe rendered triangle colors."
+			    : "Recovered colors use q3mapxPatchDef2 and chosen finite tessellation, which changes native patch LOD/render topology. Original density, tessellation, pre-modifier fields and pixel equivalence are not established. Native collision controls may not describe the rendered triangle colors. Triangle-only patches have no recoverable native control grid here." );
 			writer.String( "Current material modifiers and surviving color-modifier brushes can prevent patch color export. Missing or changed assets, removed modifier volumes, source entities and original compiler settings cannot be reconstructed by this check. Review the report and compare a rebuild with the original BSP." );
 		}
 		writer.String( decompileOptions.lightRecovery
@@ -1883,7 +1966,8 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		if(!bspNativeFenceMasks.empty()) writer.String("Native terrain is retained in this report and OBJ/ASE export, not as MAP brushes or Bezier patches. Static-model placements are retained here; their external model meshes are not imported.");
 		if(bspEarlyVersion) writer.String("Early BSP model origins/head nodes are retained here. Fog visible sides depend on native shader semantics and are not reconstructed. The native shader dialect is only partially supported.");
 		if(bspEarlyVersion==43 || bspEarlyVersion==44) writer.String("This format has no brush-side material names. Visible face names and UVs are inferred from rendered triangles; unmatched faces use common/caulk and fallback UVs. Raw brush contents and side flags remain in source order in this report.");
-		writer.String( restoredSourcePatches ? "Triangle soup without restored patch sources is not exported separately; collision brushes may approximate it." : "Triangle soup geometry is not exported separately; collision brushes may approximate it." );
+		writer.String( restoredSourcePatches || fittedTrianglePatches ? "Triangle soup without restored or fitted patches is not exported separately; collision brushes may approximate it." : "Triangle soup geometry is not exported separately; collision brushes may approximate it." );
+		if ( FitTrianglePatches() ) writer.String( "Triangle patches are inferred from complete nonsolid rectangular meshes with affine UV sampling, compatible checkerboard diagonals and verified quadratic XYZ/ST fields. Requested byte colors match all observed samples but need not be the author's unique controls; RGB may include baked light. Density, original grouping and author subdivisions are not recovered. Current materials, compile settings, tessellation, normals, lighting, engine behavior and LOD seams still require rebuild validation. Skipped triangle geometry retains the legacy omission; no arbitrary triangle-to-patch fallback is fabricated." );
 		if ( restoredSourcePatches ) writer.String( "Paint controls, source shader, RGB mode, density override and subdivisions come from a checksummed geometry-bound compiler archive. Positions are retained in model space after source entity placement. Original groups, inherited compile settings, material assets and removed modifier volumes are not archived; equivalent rebuilding still depends on that context. The checksum is not an author-authentication signature." );
 		writer.String( "Fallback texture axes are used on faces without a usable rendered triangle, including hidden faces." );
 		writer.String( "Consensus output preserves whole texture offsets and uses round-trip decimal precision for stored parameters. Native compiler texture biases and source reconstruction loss cannot be undone; rebuilding with different shader or compiler semantics can still change UVs. Triangle compatibility mode retains legacy offset wrapping and decimal rounding. Constant axes and unsupported output representations retain fallback mappings." );
@@ -1893,18 +1977,20 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		if ( rebuildOrder ) writer.String( "Rebuild brush order depends on the current shader assets and q3mapx loader semantics. Discarded source flags, plane/side ordering and other compiler differences can still change partitions or visibility." );
 		writer.EndArray();
 		writer.EndObject();
-		if ( ( detailEvidence || groupRecovery || decompileOptions.lightRecovery || RecoverPatchColors() ) && buffer.GetSize() > 64 * 1024 * 1024 ) throw std::runtime_error( "Recovery inference report exceeds 64 MiB" );
+		if ( ( detailEvidence || groupRecovery || decompileOptions.lightRecovery || RecoverPatchColors() || decompileOptions.patchRecovery != DecompileOptions::PatchRecovery::None ) && buffer.GetSize() > 64 * 1024 * 1024 ) throw std::runtime_error( "Recovery inference report exceeds 64 MiB" );
 		if ( std::fwrite( buffer.GetString(), 1, buffer.GetSize(), reportFile ) != buffer.GetSize() )
 			throw std::runtime_error( "Cannot write recovery report " + std::string( report.c_str() ) );
 	}
 	if ( decompileOptions.lightRecovery ) decompileOptions.lightRecovery->verifyInputs();
 	outputs.commit();
 	if ( !restoredSourcePatches && !strEmpty( entities[0].valueForKey( q3mapx::authoring::paintBindingKey ) ) )
-		Sys_Warning( RecoverPatchColors()
+		Sys_Warning( FitTrianglePatches() ? "Fitted patches are compiled-data inferences; original authored paint requires a retained source archive\n" : RecoverPatchColors()
 		    ? "Original authored patch paint is unproven; compiled control recovery cannot restore missing source metadata or triangle-only patches\n"
 		    : "Authored patch paint is not restored by MAP recovery; keep the original q3mapxPatchDef2 source\n" );
 	if ( RecoverPatchColors() ) Sys_Printf( "Patch colors: %zu recovered, %zu retained as legacy patches; compiled channels are not proof of original paint\n",
-	    patchColorCounts["recovered"], recovery.patches - restoredSourcePatches - patchColorCounts["recovered"] );
+	    patchColorCounts["recovered"], recovery.patches - restoredSourcePatches - fittedTrianglePatches - patchColorCounts["recovered"] );
+	if ( FitTrianglePatches() ) Sys_Printf( "Triangle patch fitting: %zu patches exported, %llu/%u work units; see recovery report for skips and limits\n",
+	    fittedTrianglePatches, static_cast<unsigned long long>(trianglePatchRecovery.work), decompileOptions.patchFitWorkLimit );
 	Sys_Printf( "Recovered %zu brushes, %zu patches; %zu/%zu faces matched texture coordinates, %zu used fallback\n",
 	    recovery.brushes, recovery.patches, recovery.matchedFaces, recovery.faces, recovery.fallbackFaces );
 	if ( recovery.skippedBrushes || recovery.degenerateUVs || recovery.approximateQuakeFaces ) {

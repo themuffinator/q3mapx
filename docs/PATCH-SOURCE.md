@@ -31,8 +31,10 @@ Brush strokes, editor selection, original groups, inherited compile parameters,
 material assets and discarded modifier volumes are not retained. Rebuilding the
 same appearance still depends on that context. The archive is compiler-retained
 source evidence, not proof of author identity. It cannot restore original paint
-from older BSPs that lack the archive; compiled-channel extraction is documented
-in [patch color recovery](PATCH-COLOR-RECOVERY.md).
+from older BSPs that lack the archive. [Triangle fitting](TRIANGLE-PATCH-RECOVERY.md)
+can infer compatible quadratic fields from compiled triangle samples; it does
+not prove original source. Native compiled-channel extraction is documented in
+[patch color recovery](PATCH-COLOR-RECOVERY.md).
 
 ## Integrity and compatibility
 

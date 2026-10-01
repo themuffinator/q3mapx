@@ -3546,3 +3546,52 @@ No new unrelated issue was found. The prior material-preview pixel result is
 still 66/68; this round's archive parity test does not requalify those views.
 Existing raw-sidecar publication/parser audits and policy-blocked cleanup targets
 remain untouched.
+
+## 2026-10-02 — Archive-free triangle patch reconstruction
+
+Added `-patch-recovery fit|auto`. Fit reconstructs eligible nonsolid quadratic
+patches from compiled triangle samples; auto restores verified source archives
+first, then fits remaining geometry. Explicit alpha/RGBA selection distinguishes
+rebakable lighting from potentially baked material color. Output comments and
+reports identify inferred controls, observed sampling and inherited density.
+The default exporter remains unchanged. See [contract and limits](TRIANGLE-PATCH-RECOVERY.md).
+
+The adapter reconnects compatible split BSP surfaces, preserves selected-channel
+seams, and excludes brush/native-patch material overlap, collision materials,
+modifier replay and conflicting active styles. The fitter requires a complete
+rectangular grid in an affine UV frame, consistent winding and compatible cell
+diagonals. Every XYZ/ST sample is verified with capped float allowances; every
+requested color byte must match exactly. Bounded backtracking resolves shared
+span controls under byte-rounding ambiguity. Work, memory and report limits
+produce explicit decisions; rejected triangles retain the legacy omission.
+
+Windows/Linux Release and Linux Debug ASan/UBSan pass 28 BSP rebuild cases and
+27 guards per build, covering Q3/JA, translated models, flat/curved multi-span
+meshes, three projections, alpha/RGBA/no-color policy, archives removed, poisoned
+adjacent files and intentional meta surface splits. Twenty-four painted cases
+also retain all requested samples after relighting. Four legacy patchDef2 cases
+include two mixed archived/inferred exports. Comparisons retain oriented triangle
+connectivity, positions, absolute UVs and selected channels; no native collision
+patches are added. The independent long-double de Casteljau oracle passes 48
+shuffled affine-UV cases, 26,328 sampled vertices and 11 rejection cases per build.
+
+Seven regression groups pass on each configuration. After report wording and
+indentation-only cleanup, Windows/Linux repeat those seven on final binaries;
+the sanitizer build repeats the two affected fitting groups. The established
+lifetime-allocation leak exclusion remains. The final Linux binary also produces
+pixel-identical original/rebuilt flat and curved neutral-material Quake3e scenes,
+using the engine screenshot command with windowed SDL offscreen and disabled
+input/network. No OS capture or input control occurred. See [recorded evidence](validation/patch-reconstruction.json).
+
+Inference does not prove unique original controls, original groups/density,
+inherited settings, normals, arbitrary lighting or LOD equivalence. Solid meshes,
+warped or missing UVs, decimated/nonquadratic grids and native GUI recovery controls
+remain outside this contract. Logs, engine captures and the evidence recorder are
+retained under `.agents/tmp/patch-fit/`; native fixture outputs are in each build's
+`tests/patch-reconstruction/`. The disposable standalone prototype executable was
+removed after verifying its exact in-project path and absence of links.
+
+No new unrelated issue was found. The earlier material-preview strict pixel gate
+remains 66/68; this round's neutral compiler-rebuild comparison does not change
+that qualification. Existing raw-sidecar publication/parser audits and previously
+blocked cleanup targets remain unchanged.

@@ -21,6 +21,12 @@ and retained storage with the same graph and clipping results. An isolation prob
 still finds baseline-inclusion differences with leaf merging alone; omitting the
 polygon merge is insufficient to validate automatic topology changes.
 
+Final [row assembly](VIS.md#distinct-output-rows) now resolves merge membership
+once, builds one row per representative and copies it to original cluster IDs.
+The persistent job pool handles disjoint row groups. This removes redundant work
+after merging and preserves the same solver bits; it does not select additional
+merges or relax the regional correctness/runtime-cost gates.
+
 The [BSP evidence command](BSP-EVIDENCE.md) reports regional subdivision and
 reference costs, local brush-plane associations and stored PVS statistics.
 With an explicit matching PRT, [portal diagnostics](PORTAL-ANALYSIS.md) now add

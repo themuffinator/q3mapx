@@ -1,0 +1,201 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-02T02:08:04.603537+00:00",
+  "base_revision": "f261d89ede97980683f2963de953d6279ddae875",
+  "scope": "Resolve VIS merge forests once; assemble distinct output rows in parallel without changing visibility or merge decisions",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "a589628a819eeec5f14e38c9d2d197ffa3419dcc277d5a92625711b6f9829194",
+    "libs/q3mapx/vis_rows.h": "88a498da29371f8a16d141cfff579a5c35a661de9ae2a9cd35faccec9148b197",
+    "tools/quake3/q3map2/vis.cpp": "2c97930da49b5ef9a8e3c57bb801ce7823e4407261fd9973bfeae1899d14e993",
+    "tests/vis_rows.cpp": "e6597d6859d492a7302f8adf29d2dfc9d30e27c73b054974f11136c7936efb8b",
+    "tests/vis_row_assembly.py": "20584f018892abeb927c8df2625e06a311bed12818137444c7ef1c0753c0258d",
+    "tests/vis_fixtures.py": "ba534c43460806a1867d51fa479dce4286772d0b3b1da8e9f4e8f6cbefc5e49e",
+    "tests/vis_merge.py": "25e550a3a3860476c15c9fa82842a6a2ce0ff64037185f91b16499d98acd1782",
+    "benchmarks/vis_rows.py": "62abe798d4e47e788bb87a4b4a48409b2d5c5fa1e347fefd3be39996707b054d"
+  },
+  "platforms": {
+    "windows": {
+      "compiler": {
+        "path": "build/release/bin/q3mapx.exe",
+        "sha256": "5698af10785bbee783d532c8f7444e4912437fa4363c3ec701149f7e56f351c6"
+      },
+      "reference_compiler": {
+        "path": ".agents/tmp/vis-rows/q3mapx-reference.exe",
+        "sha256": "1e47b6d3dba9f2466a8565ff649a1f7dd237d87fa39a16a3a7c44f1b3a8700cf"
+      },
+      "core_independent_rows": 3200,
+      "maximum_depth_forests": 2,
+      "native_controls": 24,
+      "native_results": {
+        "path": "build/release/tests/vis-row-assembly/validation.json",
+        "sha256": "031877e58afa6d9428bca597cce7488075f77498b816bb106da0eae92d87f95b"
+      },
+      "final_ctest": {
+        "path": ".agents/tmp/vis-rows/final-windows.log",
+        "sha256": "89836a14b564c37d8959fbf668d89aaca0e9e929875e72b27ceba3cf8f6b163f"
+      },
+      "final_reference_results": {
+        "path": "build/release/tests/vis-merge-row-final/report.json",
+        "sha256": "c2ec3ec20d207cd77fa10cfd15b5fd8c936e8f92d2f0b3a80bfbc4fef2d10748"
+      },
+      "reference_graph_checks": 31,
+      "expected_self_edge_rejections": 2,
+      "reference_map_checks": 120,
+      "reference_byte_parity": true,
+      "final_reference_workers": [
+        1,
+        4,
+        20
+      ],
+      "final_native_control_workers": [
+        1,
+        4,
+        20
+      ],
+      "publication_checks": {
+        "publication_failure_preserves_bsp_and_prt": true,
+        "successful_retry_consumes_prt": true,
+        "publication_failure_cleans_staging": true
+      },
+      "prior_direct_output_version_broad_ctest": {
+        "path": ".agents/tmp/vis-rows/regression-windows.log",
+        "sha256": "4bddbbb8f523eccca0e54fe95e7b740c0503ea3ea1a8206777016d86c3c47943"
+      }
+    },
+    "linux": {
+      "compiler": {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "e6a5d62ef8be12ce33a2515030cf7501902eb224672061830a05b07815a15122"
+      },
+      "reference_compiler": {
+        "path": ".agents/tmp/vis-rows/q3mapx-reference-linux",
+        "sha256": "7a715fcf67a6274b59c39fd2163d79cabdabc62ce7c64e4b4ad3c39f8db7f85a"
+      },
+      "core_independent_rows": 3200,
+      "maximum_depth_forests": 2,
+      "native_controls": 24,
+      "native_results": {
+        "path": "build/linux-release/tests/vis-row-assembly/validation.json",
+        "sha256": "b210fcced497592f6a53a956d70fd4888a58bfa461c8358305d4558e8594c807"
+      },
+      "final_ctest": {
+        "path": ".agents/tmp/vis-rows/final-linux.log",
+        "sha256": "0eba5497f92e8e6d381bba6e82ceea54de0a5238a650619bbf46f715e74daa1b"
+      },
+      "final_reference_results": {
+        "path": "build/linux-release/tests/vis-merge-row-final/report.json",
+        "sha256": "439c78e5d7d776ac2284f7e75b9b5484e6528fab1246396f4629501a045466dc"
+      },
+      "reference_graph_checks": 31,
+      "expected_self_edge_rejections": 2,
+      "reference_map_checks": 120,
+      "reference_byte_parity": true,
+      "final_reference_workers": [
+        1,
+        4,
+        20
+      ],
+      "final_native_control_workers": [
+        1,
+        4,
+        20
+      ],
+      "publication_checks": {
+        "publication_failure_preserves_bsp_and_prt": true,
+        "successful_retry_consumes_prt": true,
+        "publication_failure_cleans_staging": true
+      },
+      "prior_direct_output_version_broad_ctest": {
+        "path": ".agents/tmp/vis-rows/regression-linux.log",
+        "sha256": "3a45a94dec80c01e3687d2dc00ce47d443023634e21165c8d657daef881ea587"
+      }
+    },
+    "sanitized": {
+      "compiler": {
+        "path": "build/linux-sanitized/bin/q3mapx",
+        "sha256": "88a5f3ce00885855c2d7da364f08f3c167b3cc64da857ac47d639e9d0e526b63"
+      },
+      "reference_compiler": {
+        "path": ".agents/tmp/vis-rows/q3mapx-reference-sanitized",
+        "sha256": "0ddbc5c09a0aa021b40bc82dc4cf2d54b401abdfe2cde929df9ef661d55c6625"
+      },
+      "core_independent_rows": 3200,
+      "maximum_depth_forests": 2,
+      "native_controls": 24,
+      "native_results": {
+        "path": "build/linux-sanitized/tests/vis-row-assembly/validation.json",
+        "sha256": "5da289aadec0cf5ff51060eed8f96743f7b7f6f3a151386885ab32a7bd0f5b0f"
+      },
+      "final_ctest": {
+        "path": ".agents/tmp/vis-rows/final-sanitized.log",
+        "sha256": "1b1e874a2416fb64b93ffeae197a6e4304d20301129f14ee4e44e0dbff797a70"
+      },
+      "final_reference_results": {
+        "path": "build/linux-sanitized/tests/vis-merge-row-final/report.json",
+        "sha256": "71edc2579996d798027bd13c0b2ba8f0aa8d3c22a5055f1dc7b60ccef8ec76c7"
+      },
+      "reference_graph_checks": 31,
+      "expected_self_edge_rejections": 2,
+      "reference_map_checks": 40,
+      "reference_byte_parity": true,
+      "final_reference_workers": [
+        1
+      ],
+      "final_native_control_workers": [
+        1,
+        4,
+        20
+      ],
+      "publication_checks": {
+        "publication_failure_preserves_bsp_and_prt": true,
+        "successful_retry_consumes_prt": true,
+        "publication_failure_cleans_staging": true
+      },
+      "prior_direct_output_version_broad_ctest": {
+        "path": ".agents/tmp/vis-rows/regression-sanitized.log",
+        "sha256": "605290c685c32921b8709c29de08fd0130fdc6148786a2e83f4e3b5e54a133dc"
+      }
+    }
+  },
+  "benchmark": {
+    "path": "docs/benchmarks/vis-rows-win-x64.json",
+    "sha256": "f26bbaeda1b68e5b5cd54e77f01eba7ef05e780282bf7b2d12b8da26a73cb806"
+  },
+  "benchmark_hardware": "13th Gen Intel Core i7-13700H; 20 logical processors; Windows x64",
+  "unrelated_existing_issue": {
+    "description": "A 1024-block generated corridor compiles successfully but exceeds the BSP reader depth limit of 1024; current and preceding compiler reject VIS before assembly.",
+    "evidence": [
+      {
+        "path": ".agents/tmp/vis-rows/corridor-probe/baseq3/maps/fixture.map",
+        "sha256": "e1f1a8c731b6d391c9ceaf70a3b764b0d0dc9ff50b5946cc60425455b86f3b0c"
+      },
+      {
+        "path": ".agents/tmp/vis-rows/corridor-probe/baseq3/maps/fixture.bsp",
+        "sha256": "1af3a19b071f1c9eda0d5b77b13173b9bc762c9b594e302072ff2dd9a5c4488d"
+      },
+      {
+        "path": ".agents/tmp/vis-rows/corridor-probe/baseq3/maps/fixture.prt",
+        "sha256": "b4fbee63dfaba72df00e3f3eb40e6373c857ba9ed24127171d2ae081ce243a69"
+      },
+      {
+        "path": ".agents/tmp/vis-rows/corridor-probe/bsp.log",
+        "sha256": "a62d99355877cf2298c554a74ef4d3c8dcb00cb147814a0f3fd05b222c026f27"
+      },
+      {
+        "path": ".agents/tmp/vis-rows/corridor-probe/current.log",
+        "sha256": "9b6a4f8cbad0e04d2d78c4bc5f65cc780020a66fc30d277f978a1eeeb45cd51e"
+      },
+      {
+        "path": ".agents/tmp/vis-rows/corridor-probe/reference-rejection.log",
+        "sha256": "c8891d29ab5c3c7a97587af181388d41efcdebcac7a529a90709bf4f03d1fc0a"
+      }
+    ]
+  },
+  "limits": [
+    "Performance measured only on Windows; all samples retained. Chain is a synthetic PRT with an unrelated native carrier, while corridor/grid have matching MAP/BSP/PRT.",
+    "Final private-scratch version passed both row tests and reference comparisons on all three configurations. Earlier direct-output version additionally passed seven broad CTest groups and the full three-worker reference matrix on all configurations.",
+    "Linux sanitizer uses the established leak-detection exclusion; address/undefined-behavior checks remain enabled.",
+    "No automatic topology changes, merge-safety qualification, renderer/LIGHT performance or peak-memory measurement.",
+    "The broad project goal, existing material-preview 66/68 gate and raw-sidecar audits remain open."
+  ]
+}

@@ -33,6 +33,7 @@
 #include "vis.h"
 #include "visflow.h"
 #include "q3mapx/portal_graph.h"
+#include "q3mapx/vis_rows.h"
 
 vportal_t          *sorted_portals[ MAX_MAP_PORTALS * 2 ];
 
@@ -99,51 +100,30 @@ static void SortPortals(){
 
 /*
    ==============
-   LeafVectorFromPortalVector
+   VIS row assembly
    ==============
  */
-static int LeafVectorFromPortalVector( byte *portalbits, byte *leafbits ){
-	for ( int i = 0; i < visPortalBits; ++i )
-	{
-		if ( bit_is_enabled( portalbits, i ) ) {
-			const vportal_t& p = *activePortals[i];
-			bit_enable( leafbits, p.leaf );
-		}
-	}
-
-	for ( int i = 0; i < portalclusters; ++i )
-	{
-		int leafnum = i;
-		while ( leafs[leafnum].merged >= 0 )
-			leafnum = leafs[leafnum].merged;
-		//if the merged leaf is visible then the original leaf is visible
-		if ( bit_is_enabled( leafbits, leafnum ) ) {
-			bit_enable( leafbits, i );
-		}
-	}
-	return CountBits( leafbits, portalclusters ); //c_leafs
-}
+struct VisRowAssembly {
+	q3mapx::VisRowGroups groups;
+	std::vector<int> portalGroups, counts;
+};
+static VisRowAssembly* rowAssembly;
 
 
 /*
    ===============
    ClusterMerge
 
-   Merges the portal visibility for a leaf
+   Assemble one representative and copy its row to every original member
    ===============
  */
 static int clustersizehistogram[MAX_MAP_LEAFS] = {0};
 
-static void ClusterMerge( int leafnum ){
+static void ClusterMerge( int groupIndex ){
 	alignas(VisWord) byte portalvector[MAX_PORTALS / 8];
-	byte uncompressed[MAX_MAP_LEAFS / 8];
-	int numvis, mergedleafnum;
-
-	// OR together all the portalvis bits
-
-	mergedleafnum = leafnum;
-	while ( leafs[mergedleafnum].merged >= 0 )
-		mergedleafnum = leafs[mergedleafnum].merged;
+	alignas(64) VisWord uncompressed[MAX_MAP_VISCLUSTERS / 64];
+	auto& assembly = *rowAssembly;
+	const int mergedleafnum = assembly.groups.groups()[groupIndex].representative;
 
 	memset( portalvector, 0, portalbytes );
 
@@ -161,24 +141,33 @@ static void ClusterMerge( int leafnum ){
 		bit_enable( portalvector, p->visIndex );
 	}
 
-	memset( uncompressed, 0, leafbytes );
-
-	bit_enable( uncompressed, mergedleafnum );
-	// convert portal bits to leaf bits
-	numvis = LeafVectorFromPortalVector( portalvector, uncompressed );
-
-//	if ( uncompressed[leafnum >> 3] & ( 1 << ( leafnum & 7 ) ) )
-//		Sys_Warning( "Leaf portals saw into leaf\n" );
-
-//	uncompressed[leafnum >> 3] |= ( 1 << ( leafnum & 7 ) );
-
-	// LeafVectorFromPortalVector already counts the self bit and merged members.
-
-	//Sys_FPrintf( SYS_VRB, "cluster %4i : %4i visible\n", leafnum, numvis );
-	++clustersizehistogram[numvis];
-
-	memcpy( bspVisBytes.data() + VIS_HEADER_SIZE + leafnum * leafbytes, uncompressed, leafbytes );
+	assembly.counts[groupIndex] = assembly.groups.expand(groupIndex,
+		std::span(reinterpret_cast<const VisWord*>(portalvector), portalwords), assembly.portalGroups,
+		std::span(uncompressed, leafbytes / sizeof(VisWord)));
+	// Build bits in private scratch to avoid repeatedly sharing cache lines with
+	// neighboring rows. Each group owns disjoint original rows, copied only once
+	// its result is complete; no worker reads another group's output row.
+	for (int member : assembly.groups.members(groupIndex))
+		memcpy(bspVisBytes.data() + VIS_HEADER_SIZE + size_t(member) * leafbytes, uncompressed, leafbytes);
 }
+
+static void AssembleVisRows() try {
+	static_assert(q3mapx::VisRowGroups::maxClusters == MAX_MAP_VISCLUSTERS);
+	std::vector<int> parents(portalclusters);
+	for (int i=0; i<portalclusters; ++i) parents[i]=leafs[i].merged;
+	VisRowAssembly assembly{q3mapx::VisRowGroups(parents), {}, {}};
+	assembly.portalGroups.reserve(activePortals.size());
+	for (const auto* portal : activePortals) assembly.portalGroups.push_back(assembly.groups.groupOf(portal->leaf));
+	assembly.counts.resize(assembly.groups.groups().size());
+	Sys_Printf("VIS row assembly: %zu distinct / %d clusters\n", assembly.counts.size(), portalclusters);
+	rowAssembly=&assembly;
+	RunThreadsOnIndividual(int(assembly.counts.size()), false, ClusterMerge, "AssembleVisRows");
+	rowAssembly=nullptr;
+	std::fill(std::begin(clustersizehistogram),std::end(clustersizehistogram),0);
+	for (size_t i=0; i<assembly.counts.size(); ++i)
+		clustersizehistogram[assembly.counts[i]]+=assembly.groups.groups()[i].count;
+}
+catch (const std::exception& error) { Error("VIS row assembly: %s",error.what()); }
 
 /*
    ==================
@@ -335,8 +324,7 @@ static void CalcVis(){
 	// assemble the leaf vis lists by oring and compressing the portal lists
 	//
 	Sys_Printf( "creating leaf vis...\n" );
-	for ( i = 0; i < portalclusters; ++i )
-		ClusterMerge( i );
+	AssembleVisRows();
 
 	totalvis = 0;
 	totalvis2 = 0;

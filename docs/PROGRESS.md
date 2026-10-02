@@ -3723,3 +3723,43 @@ links. Previously blocked cleanup targets were untouched.
 
 No new unrelated code issue was found. The existing material-preview strict pixel
 qualification remains 66/68, and raw-sidecar publication/parser audits remain open.
+
+## 2026-10-02 — Resolve merge forests once and parallelize distinct VIS rows
+
+VIS assembly now resolves the final merge forest in linear time, expands each
+distinct representative row once and copies it to the original member clusters.
+Persistent workers own disjoint rows and build bits in private scratch; weighted
+histograms are reduced after joining. Cluster IDs, masks, solver/merge decisions,
+padding and native output remain unchanged. Profiling reports the distinct job
+count separately from total original clusters.
+
+Windows/Linux Release and Linux ASan/UBSan pass 3,200 independent row expansions,
+two maximum-depth forests and malformed-input guards, plus 24 native controls per
+configuration across all solvers and 1/4/20 workers. Final reference comparisons
+pass 31 graph checks, two expected self-edge rejections and 120/120/40 real-map
+checks respectively. The sanitizer final comparison uses one worker; its native
+row controls still cover all three worker counts. The prior direct-output version
+also passed seven broad regression groups and the full reference worker matrix
+on all three platforms before the private-scratch refinement.
+
+Five alternating Windows timing observations after warmup retain exact reference
+VIS bytes throughout. The deliberately subdivided sealed corridor improves
+0.1705→0.0591 seconds at one worker and 0.1840→0.0502 at four; ordinary pillar-map
+changes are small and mixed. A synthetic 2,048-cluster chain exposes the removed
+cubic work but is not spatially matched to its BSP carrier. See
+[performance](PERFORMANCE.md#distinct-vis-row-assembly) and
+[recorded validation](validation/vis-rows.json). No automatic merge policy is enabled.
+
+An unrelated existing bug was reproduced in both binaries: a 1,024-block corridor
+can compile successfully into a BSP deeper than the reader's 1,024-node safety
+limit. VIS rejects it before assembly. The guard remains intact; the source,
+generated BSP/PRT and rejection logs remain in
+`.agents/tmp/vis-rows/corridor-probe/`, and generation repair is recorded in M7.
+Other useful logs/reference binaries remain under `.agents/tmp/vis-rows/` and
+native validation/benchmark output under the existing build directories.
+The earlier material-preview strict pixel qualification remains 66/68, and
+raw-sidecar publication/parser audits remain open.
+
+Automatic approval review rejected cleanup of the disposable `probe.py` helper
+with "blocked by policy". The command did not run and the file remains in
+`.agents/tmp/vis-rows/`; previously blocked cleanup targets were untouched.

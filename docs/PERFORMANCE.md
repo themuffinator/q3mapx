@@ -464,3 +464,44 @@ repeatable, the compatibility MAP matches the pre-consensus reference, and
 non-UV structure agrees, with patch positions compared as parsed binary32 values.
 This does not claim a speedup, arbitrary-map fidelity, or newly measured private-map
 performance for the revised writer.
+
+## Distinct VIS row assembly
+
+VIS now resolves the leaf-merge forest once, expands each representative's
+visibility once, then copies the completed row to its original cluster members.
+Independent rows use the persistent worker pool and private scratch. This removes
+repeated merge-chain walks and duplicate mask expansion without changing solver
+or merge choices. Full command timings include preparation, solving and output;
+the `AssembleVisRows` profiler pass covers just the dispatched row jobs.
+
+Windows x64 measurements on an Intel Core i7-13700H compare `f261d89` with the new
+implementation. Each configuration has one warmup and five measured observations,
+alternating binaries. Every run retains identical VIS bytes, non-entity/non-VIS
+lumps and PRT input. Seconds are median (minimum–maximum):
+
+| Fixture / selection | Workers | Previous | Distinct rows |
+| --- | ---: | ---: | ---: |
+| Synthetic 2,048-cluster chain / merge | 1 | 58.2332 (53.0067–75.3007) | 0.0723 (0.0472–0.0914) |
+| Synthetic 2,048-cluster chain / merge | 4 | 49.3565 (45.2033–59.3652) | 0.0584 (0.0516–0.0977) |
+| Sealed 512-block corridor / merge | 1 | 0.1705 (0.1646–0.1991) | 0.0591 (0.0458–0.0729) |
+| Sealed 512-block corridor / merge | 4 | 0.1840 (0.1692–0.1916) | 0.0502 (0.0430–0.0606) |
+| Structural 81-pillar grid / default | 1 | 2.3320 (2.3021–2.3891) | 2.3330 (2.3034–2.3763) |
+| Structural 81-pillar grid / default | 4 | 0.6991 (0.6490–0.8004) | 0.6537 (0.6439–0.6859) |
+| Structural 81-pillar grid / merge | 1 | 1.9666 (1.9472–2.0008) | 1.9891 (1.9451–2.0875) |
+| Structural 81-pillar grid / merge | 4 | 0.5772 (0.5625–0.6498) | 0.5771 (0.5647–0.5997) |
+
+The synthetic chain uses an unrelated native BSP carrier to isolate merge depth;
+it is not a spatially matched map. Its preceding assembly repeatedly traverses
+deep chains for every cluster, producing cubic work. The actual sealed corridor
+uses 512 ordinary eight-unit block cuts and collapses to three distinct rows;
+whole VIS improves 2.89×/3.67× on that deliberately redundant fixture. The ordinary
+grid changes are small and mixed, including a 1.1% higher merged single-worker
+median. There is no general compile-speed claim. BSP generation, LIGHT, rendering
+and peak memory were not timed; Linux received correctness checks, not timing.
+
+Reproduce with `benchmarks/vis_rows.py --compiler /path/to/current/q3mapx
+--reference /path/to/f261d89/q3mapx --work-dir build/row-benchmark`.
+[Raw measurements](benchmarks/vis-rows-win-x64.json) retain every sample, profile
+hash and input/compiler identity. [Validation](validation/vis-rows.json) records
+independent row oracles, native worker/solver parity and reference comparisons.
+Automatic regional merging remains a separate qualification task.

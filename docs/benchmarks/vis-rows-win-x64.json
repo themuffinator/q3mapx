@@ -1,0 +1,771 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-02T01:55:13.031172+00:00",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "warmup_runs": 1,
+  "measured_runs": 5,
+  "compilers": {
+    "reference": {
+      "path": "E:\\Repositories\\q3mapx\\.agents\\tmp\\vis-rows\\q3mapx-reference.exe",
+      "sha256": "1e47b6d3dba9f2466a8565ff649a1f7dd237d87fa39a16a3a7c44f1b3a8700cf"
+    },
+    "current": {
+      "path": "E:\\Repositories\\q3mapx\\build\\release\\bin\\q3mapx.exe",
+      "sha256": "5698af10785bbee783d532c8f7444e4912437fa4363c3ec701149f7e56f351c6"
+    }
+  },
+  "cases": [
+    {
+      "fixture": "chain-2048",
+      "spatially_matched": false,
+      "merge": true,
+      "clusters": 2048,
+      "workers": 1,
+      "visibility_sha256": "8199de1446b6f2a842c11b80a2bdf147163762b1306dffa367720c28c185244b",
+      "input_bsp_sha256": "552b6045ee6de36920003e9bcde1befc4ba7bc7bc7209573916f47e9320ad478",
+      "input_prt_sha256": "e519a6e3408537c5678f25fcb1dc3a8f5df2939c3e5caf0cebc55cc4c7b3c80f",
+      "results": {
+        "reference": {
+          "seconds": [
+            53.01085870002862,
+            58.23319080006331,
+            53.0066692000255,
+            74.56723849999253,
+            75.30072449997533
+          ],
+          "row_seconds": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "profiles": [
+            {
+              "path": "chain-2048\\True-1-1-reference.json",
+              "sha256": "068d7c5b3f35568b9a677fa7f0cde1d96c9773670143b5bbd96294809f8b35b7"
+            },
+            {
+              "path": "chain-2048\\True-1-2-reference.json",
+              "sha256": "f93712d622e00b8c1b0820b13e8969297530bd41177a5cd0bb3d620fb25ce8ba"
+            },
+            {
+              "path": "chain-2048\\True-1-3-reference.json",
+              "sha256": "03376e68fe1ea676378f1491f8d1e752e14632b0f0732818730e1b1d4325ac7c"
+            },
+            {
+              "path": "chain-2048\\True-1-4-reference.json",
+              "sha256": "20e90a548c0f8703009a098953ec5656027f0186cf5f6d3d938d5f89ca69a52a"
+            },
+            {
+              "path": "chain-2048\\True-1-5-reference.json",
+              "sha256": "c9abb8a45d1cbc198cd48c8a1ad1e0089bf74fe5c2a7742ab1edfcb9ed861fcb"
+            }
+          ],
+          "median_seconds": 58.23319080006331
+        },
+        "current": {
+          "seconds": [
+            0.0722619000589475,
+            0.04856679996009916,
+            0.04719610000029206,
+            0.09143249993212521,
+            0.08009579998906702
+          ],
+          "row_seconds": [
+            2.16e-05,
+            3.04e-05,
+            3.94e-05,
+            2.8e-05,
+            2.14e-05
+          ],
+          "profiles": [
+            {
+              "path": "chain-2048\\True-1-1-current.json",
+              "sha256": "a0019991d4db5dbec688fa50f38f516815e2afc9aa5e877fc3a0c61f201c7cfd"
+            },
+            {
+              "path": "chain-2048\\True-1-2-current.json",
+              "sha256": "a2fea95d602a704888b88e7edf2abf8a78e63090c821890fe49d1256b6b197b2"
+            },
+            {
+              "path": "chain-2048\\True-1-3-current.json",
+              "sha256": "802679e6712e727f6d3e25099cecaa99322fa18c6d281cd12a71085946526242"
+            },
+            {
+              "path": "chain-2048\\True-1-4-current.json",
+              "sha256": "ee7a3f6b49d97d6352ffcf99e63eb0932b0a208d8977f14d235224dcb3062274"
+            },
+            {
+              "path": "chain-2048\\True-1-5-current.json",
+              "sha256": "949a4ebef31a322704ce022238426c49f40ca7c117b77259fc6bc96d7418b160"
+            }
+          ],
+          "distinct_rows": 1,
+          "median_seconds": 0.0722619000589475
+        }
+      },
+      "speedup": 805.8629893838897,
+      "reference_and_worker_byte_parity": true
+    },
+    {
+      "fixture": "chain-2048",
+      "spatially_matched": false,
+      "merge": true,
+      "clusters": 2048,
+      "workers": 4,
+      "visibility_sha256": "8199de1446b6f2a842c11b80a2bdf147163762b1306dffa367720c28c185244b",
+      "input_bsp_sha256": "552b6045ee6de36920003e9bcde1befc4ba7bc7bc7209573916f47e9320ad478",
+      "input_prt_sha256": "e519a6e3408537c5678f25fcb1dc3a8f5df2939c3e5caf0cebc55cc4c7b3c80f",
+      "results": {
+        "reference": {
+          "seconds": [
+            59.365231999894604,
+            58.50778509990778,
+            49.35099489998538,
+            49.356469099991955,
+            45.2032686000457
+          ],
+          "row_seconds": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "profiles": [
+            {
+              "path": "chain-2048\\True-4-1-reference.json",
+              "sha256": "d15c7acee178ad430e5dc155bc1b4b852c6e0a7551a33d1bff9822b5affb262b"
+            },
+            {
+              "path": "chain-2048\\True-4-2-reference.json",
+              "sha256": "da57f2a9c55bab15a9304541609b47c367116e178699a7226dbc5f777c93ca3b"
+            },
+            {
+              "path": "chain-2048\\True-4-3-reference.json",
+              "sha256": "3f81609213c7533e09bcecee56e7921a4ba31c9aaa1ec89678c8118cb10ae903"
+            },
+            {
+              "path": "chain-2048\\True-4-4-reference.json",
+              "sha256": "7d556c078048cfd281863308b7be2b0df9dcdc2541026cc1802ebc544c409f4a"
+            },
+            {
+              "path": "chain-2048\\True-4-5-reference.json",
+              "sha256": "db07966e1a79fcc54f4bd757b214d64c18a76f101bfc2c2913b83f3aeea2afa0"
+            }
+          ],
+          "median_seconds": 49.356469099991955
+        },
+        "current": {
+          "seconds": [
+            0.05299700004979968,
+            0.09769309998955578,
+            0.07942580000963062,
+            0.05164610000792891,
+            0.05837860004976392
+          ],
+          "row_seconds": [
+            2.4e-05,
+            3.18e-05,
+            3.59e-05,
+            3.37e-05,
+            3.72e-05
+          ],
+          "profiles": [
+            {
+              "path": "chain-2048\\True-4-1-current.json",
+              "sha256": "950007a54d62271bed8f3f74a722af6fc34588743aba490696606b088a1bf57f"
+            },
+            {
+              "path": "chain-2048\\True-4-2-current.json",
+              "sha256": "99faac4be95e111a124ef945efd0591e413df2ff52eb2b9c183eeb6d39e75d21"
+            },
+            {
+              "path": "chain-2048\\True-4-3-current.json",
+              "sha256": "7176663cd2c8f2467b344247ae7b8e4b93cfeff74a0beb6a233c9da32113e991"
+            },
+            {
+              "path": "chain-2048\\True-4-4-current.json",
+              "sha256": "3c432e7108ec9d3ff89f2c818103ed07bc6618d82f663f80c49366f0ff16e1f6"
+            },
+            {
+              "path": "chain-2048\\True-4-5-current.json",
+              "sha256": "ce6d76417e4f00f2041d2bdc13aa68d701620ceac5ab15c79bce0ffc119024f9"
+            }
+          ],
+          "distinct_rows": 1,
+          "median_seconds": 0.05837860004976392
+        }
+      },
+      "speedup": 845.4548251914025,
+      "reference_and_worker_byte_parity": true
+    },
+    {
+      "fixture": "corridor-512",
+      "spatially_matched": true,
+      "merge": true,
+      "clusters": 512,
+      "workers": 1,
+      "visibility_sha256": "220a0542787be3fbc17c8740a54225149a84bddffb2e1ed1af5474c6544f99e4",
+      "input_bsp_sha256": "bf69c9b1e1b740789c260f6836ec202abe840c4ad6987d9fca98446adb17f6c9",
+      "input_prt_sha256": "d6516bd4dbd2ad72ba2d6c52cb511e802d5c75cf85df04bb438e5b8149953431",
+      "results": {
+        "reference": {
+          "seconds": [
+            0.17050769994966686,
+            0.1772914999164641,
+            0.1645833000075072,
+            0.1682709000306204,
+            0.1990848999703303
+          ],
+          "row_seconds": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "profiles": [
+            {
+              "path": "corridor-512\\True-1-1-reference.json",
+              "sha256": "08aef677d8adea449dde210c5fcd245346542ae5a4be379f2f4606c43e274e66"
+            },
+            {
+              "path": "corridor-512\\True-1-2-reference.json",
+              "sha256": "88e43c10a97052280f489ddd1f82e7ed196cb14b2e0affa73a072a9bedec32bc"
+            },
+            {
+              "path": "corridor-512\\True-1-3-reference.json",
+              "sha256": "78b9d10554c955095004e3310094ecb8781c5d8a005af2763ae0fea30b403fb4"
+            },
+            {
+              "path": "corridor-512\\True-1-4-reference.json",
+              "sha256": "b2167f95f36d41323b180c05b216091264ce0bbf25e2430655a9292376ae16d6"
+            },
+            {
+              "path": "corridor-512\\True-1-5-reference.json",
+              "sha256": "aadd97ecbcd63a15d9d14c2c20a08ef3b93e8501218b0eb8e2e261edb11d046c"
+            }
+          ],
+          "median_seconds": 0.17050769994966686
+        },
+        "current": {
+          "seconds": [
+            0.04576970008201897,
+            0.07287080003879964,
+            0.059091500006616116,
+            0.05267290002666414,
+            0.05972519994247705
+          ],
+          "row_seconds": [
+            4.1e-06,
+            7.8e-06,
+            5.1e-06,
+            5.5e-06,
+            5.3e-06
+          ],
+          "profiles": [
+            {
+              "path": "corridor-512\\True-1-1-current.json",
+              "sha256": "f7982a970b3bf60c332be04f7ae7543aab147da0b336afc0e78d5d6d038ea6b0"
+            },
+            {
+              "path": "corridor-512\\True-1-2-current.json",
+              "sha256": "469ffb744c360bfb20ba6831e0455426d6ed2e9d00c09d1974756cbd98368627"
+            },
+            {
+              "path": "corridor-512\\True-1-3-current.json",
+              "sha256": "62b7b86e0c189c3a18f5cbb99827a3a13e9f606cdf636032aacea402392dc8ef"
+            },
+            {
+              "path": "corridor-512\\True-1-4-current.json",
+              "sha256": "9635f2a4abf40c7b16526ca05785b137a09974141bf7524e0bc4c9e710bdb6b9"
+            },
+            {
+              "path": "corridor-512\\True-1-5-current.json",
+              "sha256": "8d1d4ba4ad1ed12aaa4494d5775292f3ed87bb06d8d7c033bb18441fc45a7035"
+            }
+          ],
+          "distinct_rows": 3,
+          "median_seconds": 0.059091500006616116
+        }
+      },
+      "speedup": 2.8854860670413873,
+      "reference_and_worker_byte_parity": true
+    },
+    {
+      "fixture": "corridor-512",
+      "spatially_matched": true,
+      "merge": true,
+      "clusters": 512,
+      "workers": 4,
+      "visibility_sha256": "220a0542787be3fbc17c8740a54225149a84bddffb2e1ed1af5474c6544f99e4",
+      "input_bsp_sha256": "bf69c9b1e1b740789c260f6836ec202abe840c4ad6987d9fca98446adb17f6c9",
+      "input_prt_sha256": "d6516bd4dbd2ad72ba2d6c52cb511e802d5c75cf85df04bb438e5b8149953431",
+      "results": {
+        "reference": {
+          "seconds": [
+            0.16924999991897494,
+            0.18403280002530664,
+            0.18938850006088614,
+            0.19158530002459884,
+            0.1734865999314934
+          ],
+          "row_seconds": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "profiles": [
+            {
+              "path": "corridor-512\\True-4-1-reference.json",
+              "sha256": "56d3cfe9853c20d46ef337a0abbcf59c3c04da8dd0ee247898b223a51519e376"
+            },
+            {
+              "path": "corridor-512\\True-4-2-reference.json",
+              "sha256": "29a98d05733d7a12feaab4eaf140251bf717f736475a73265defd4b91f57d1c7"
+            },
+            {
+              "path": "corridor-512\\True-4-3-reference.json",
+              "sha256": "97ef0bb765fdb963e3b0c463d7a6bf1dc3ef55f72776e1eec3ee92b1ce2ba44f"
+            },
+            {
+              "path": "corridor-512\\True-4-4-reference.json",
+              "sha256": "1f91d667fa85e8d7b2d233e42c136a10900201abeb0f102d708c5376b1e44976"
+            },
+            {
+              "path": "corridor-512\\True-4-5-reference.json",
+              "sha256": "59637c9211cad2506126665726d82e97206c0072c410cb304c4f709131615722"
+            }
+          ],
+          "median_seconds": 0.18403280002530664
+        },
+        "current": {
+          "seconds": [
+            0.051669100066646934,
+            0.05019089998677373,
+            0.06060359999537468,
+            0.04304779996164143,
+            0.04876090004108846
+          ],
+          "row_seconds": [
+            1.61e-05,
+            2.51e-05,
+            2.06e-05,
+            1.25e-05,
+            1.43e-05
+          ],
+          "profiles": [
+            {
+              "path": "corridor-512\\True-4-1-current.json",
+              "sha256": "45e0931140fe890d56805f835d974fcd75814849964b095301159d8fa35c8723"
+            },
+            {
+              "path": "corridor-512\\True-4-2-current.json",
+              "sha256": "a268d3c191d71987d3fdff233c3bb5352c54e85f7330066ba20edf11b69e6544"
+            },
+            {
+              "path": "corridor-512\\True-4-3-current.json",
+              "sha256": "9b69177f599f49ab95449af4f4a0e3214e71350a722447fdc1df6e91b26523a4"
+            },
+            {
+              "path": "corridor-512\\True-4-4-current.json",
+              "sha256": "8c3400f5647dd0b4a38924f53faa1f5c3b6bd1ae974f8d2ec38521742544cf67"
+            },
+            {
+              "path": "corridor-512\\True-4-5-current.json",
+              "sha256": "7d4851c1fa9f82fceb2c90266d7c859e69494650c007d936818341a9025d5645"
+            }
+          ],
+          "distinct_rows": 3,
+          "median_seconds": 0.05019089998677373
+        }
+      },
+      "speedup": 3.6666567061718927,
+      "reference_and_worker_byte_parity": true
+    },
+    {
+      "fixture": "grid-9",
+      "spatially_matched": true,
+      "merge": false,
+      "clusters": 220,
+      "workers": 1,
+      "visibility_sha256": "c389e6bd6180bbe86342ba3c4e1955a9f648e2a17037d10bdec7038248ca6590",
+      "input_bsp_sha256": "8f6ae29ee89a11f076a95a6bdb3e4988a41e7d784981e9dfa16c2c7397879b5f",
+      "input_prt_sha256": "bb6a5f9bfcce7225d66837fcc12aa98f63556e50a47c1093b6bfb6eff28e8b54",
+      "results": {
+        "reference": {
+          "seconds": [
+            2.3039544000057504,
+            2.332042699912563,
+            2.350190099910833,
+            2.389052200014703,
+            2.3021379000274464
+          ],
+          "row_seconds": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "profiles": [
+            {
+              "path": "grid-9\\False-1-1-reference.json",
+              "sha256": "7f01d581458e1c94c5106bd688cdefdd81c5dfd22f377a582a0a503a86c5abce"
+            },
+            {
+              "path": "grid-9\\False-1-2-reference.json",
+              "sha256": "23f8248b64af45404672c2f940ece0ed839ed5d65bde45034e2a1da60cbde99c"
+            },
+            {
+              "path": "grid-9\\False-1-3-reference.json",
+              "sha256": "f94e1a8f1cb40f649525c294e1d4fd99dc4610c522eb0c2c8b753594e6aea42b"
+            },
+            {
+              "path": "grid-9\\False-1-4-reference.json",
+              "sha256": "571dce341f6a4308f07c3087fc8cd25f3008e6565926d504e0a51ea78b68dc5b"
+            },
+            {
+              "path": "grid-9\\False-1-5-reference.json",
+              "sha256": "de6a7cff7e54f104b1fb7c7bb7a481ad34e9ceb3bb74e38daad667e8ee85d340"
+            }
+          ],
+          "median_seconds": 2.332042699912563
+        },
+        "current": {
+          "seconds": [
+            2.3329762999201193,
+            2.3149494000244886,
+            2.337866200017743,
+            2.376339399954304,
+            2.303435100009665
+          ],
+          "row_seconds": [
+            0.0005508,
+            0.0005437,
+            0.0005405,
+            0.0005397,
+            0.0005397
+          ],
+          "profiles": [
+            {
+              "path": "grid-9\\False-1-1-current.json",
+              "sha256": "567722c5e1f12073c8f49aba720b31ba6b12f574c208a2849fc83aecba3a3465"
+            },
+            {
+              "path": "grid-9\\False-1-2-current.json",
+              "sha256": "3743a5a3422d48d0edf81b140d5c7bf1871d9277179c3535af1f056813ee9071"
+            },
+            {
+              "path": "grid-9\\False-1-3-current.json",
+              "sha256": "ae3d3a34ba6844214f615b292a3b2ff2214cacd7a782720637a96b1e23aa218d"
+            },
+            {
+              "path": "grid-9\\False-1-4-current.json",
+              "sha256": "3abe8fd595e1d5d3ee8af44115d291c89f644b1ae4ab1dcde956e263a5c37fc3"
+            },
+            {
+              "path": "grid-9\\False-1-5-current.json",
+              "sha256": "fdd88e1662bf28803a2524377dbfe261fb6cde12b8574b3fb13a2cc1d76ba591"
+            }
+          ],
+          "distinct_rows": 220,
+          "median_seconds": 2.3329762999201193
+        }
+      },
+      "speedup": 0.999599824478462,
+      "reference_and_worker_byte_parity": true
+    },
+    {
+      "fixture": "grid-9",
+      "spatially_matched": true,
+      "merge": false,
+      "clusters": 220,
+      "workers": 4,
+      "visibility_sha256": "c389e6bd6180bbe86342ba3c4e1955a9f648e2a17037d10bdec7038248ca6590",
+      "input_bsp_sha256": "8f6ae29ee89a11f076a95a6bdb3e4988a41e7d784981e9dfa16c2c7397879b5f",
+      "input_prt_sha256": "bb6a5f9bfcce7225d66837fcc12aa98f63556e50a47c1093b6bfb6eff28e8b54",
+      "results": {
+        "reference": {
+          "seconds": [
+            0.7815203999634832,
+            0.6990760000189766,
+            0.8003650000318885,
+            0.6731314000207931,
+            0.6490356998983771
+          ],
+          "row_seconds": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "profiles": [
+            {
+              "path": "grid-9\\False-4-1-reference.json",
+              "sha256": "f7594a2e5cc9919552572a985efd26d5958c8a08b386b1e8841414131b693caf"
+            },
+            {
+              "path": "grid-9\\False-4-2-reference.json",
+              "sha256": "feb8b5443f952c12f5481698c1596f23347bf3d13618a5d166caf46ffd991bb5"
+            },
+            {
+              "path": "grid-9\\False-4-3-reference.json",
+              "sha256": "d25b36daef92211ac196a02e88aa4b16151c8b94eea4c0a216b13cd544492f58"
+            },
+            {
+              "path": "grid-9\\False-4-4-reference.json",
+              "sha256": "e166b9b3075f648f5fe5a20fec1db0a630b2f7b1ae88bbd4236de26b207be81f"
+            },
+            {
+              "path": "grid-9\\False-4-5-reference.json",
+              "sha256": "698c76c9d6b7f91ab8fa0bbe2e3ccd3d49df7e40d5992943e56ae34c7e65cc7c"
+            }
+          ],
+          "median_seconds": 0.6990760000189766
+        },
+        "current": {
+          "seconds": [
+            0.6609052000567317,
+            0.6537491999333724,
+            0.6858724999474362,
+            0.6468908999813721,
+            0.6438548000296578
+          ],
+          "row_seconds": [
+            0.0002391,
+            0.0002136,
+            0.000269,
+            0.000255,
+            0.0002649
+          ],
+          "profiles": [
+            {
+              "path": "grid-9\\False-4-1-current.json",
+              "sha256": "9934f69e4f09abc6060e886958d8c1da005cb7a4cf25a4c44b0a4211497ba545"
+            },
+            {
+              "path": "grid-9\\False-4-2-current.json",
+              "sha256": "601e51a7f3ee1cfb55aa192bdaf4ed7c3dd8c0a3e1a87a3759ec2fe853406100"
+            },
+            {
+              "path": "grid-9\\False-4-3-current.json",
+              "sha256": "2117915b4236a0a2aab8d11ca17684ffabbc063684a3c0f68a951abd49c4cbf0"
+            },
+            {
+              "path": "grid-9\\False-4-4-current.json",
+              "sha256": "cf4fabca8fbb9d2cdab1079671ec8fcc7d3d68a325782ce9d70585407f32966a"
+            },
+            {
+              "path": "grid-9\\False-4-5-current.json",
+              "sha256": "8af59716a96e4435503dcf057bb72aa9481236753dd5a2ae55b3ce1ccc31abd0"
+            }
+          ],
+          "distinct_rows": 220,
+          "median_seconds": 0.6537491999333724
+        }
+      },
+      "speedup": 1.0693336222671075,
+      "reference_and_worker_byte_parity": true
+    },
+    {
+      "fixture": "grid-9",
+      "spatially_matched": true,
+      "merge": true,
+      "clusters": 220,
+      "workers": 1,
+      "visibility_sha256": "1443615cf69a9d3d45f7c1f8df3a38e8abf171df0f2d461a722f99785c48dfbd",
+      "input_bsp_sha256": "8f6ae29ee89a11f076a95a6bdb3e4988a41e7d784981e9dfa16c2c7397879b5f",
+      "input_prt_sha256": "bb6a5f9bfcce7225d66837fcc12aa98f63556e50a47c1093b6bfb6eff28e8b54",
+      "results": {
+        "reference": {
+          "seconds": [
+            2.0008390999864787,
+            1.9665530000347644,
+            1.9472041999688372,
+            1.960366699961014,
+            1.9676047000102699
+          ],
+          "row_seconds": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "profiles": [
+            {
+              "path": "grid-9\\True-1-1-reference.json",
+              "sha256": "c11cf18c4788b8845c3d83bffce3176a864a5723f22af5265ab2eaa011ca2895"
+            },
+            {
+              "path": "grid-9\\True-1-2-reference.json",
+              "sha256": "66f6a21cdd386eefd3f5c363a2ccf35efaefd91097883ec64adb7e45c85d96cf"
+            },
+            {
+              "path": "grid-9\\True-1-3-reference.json",
+              "sha256": "bc554f332b1f3af8dd0722ab9d445689ebed509e5786608ebcfd25cb29ccbe9e"
+            },
+            {
+              "path": "grid-9\\True-1-4-reference.json",
+              "sha256": "7ea2525b3c02cc7b872f691f272f79a335ceb6c1febdaf94205d3e6ea29df0d8"
+            },
+            {
+              "path": "grid-9\\True-1-5-reference.json",
+              "sha256": "48c7dee6deaf70dc426891ac067fae1675be22f37f58a7e112d0040145ae9d9a"
+            }
+          ],
+          "median_seconds": 1.9665530000347644
+        },
+        "current": {
+          "seconds": [
+            1.9954922000179067,
+            1.9891020000213757,
+            1.9450586000457406,
+            2.0874514000024647,
+            1.977610900066793
+          ],
+          "row_seconds": [
+            0.0004821,
+            0.0004605,
+            0.0004688,
+            0.0004662,
+            0.0004749
+          ],
+          "profiles": [
+            {
+              "path": "grid-9\\True-1-1-current.json",
+              "sha256": "3ec168954b710dd1a41a94a7363231e1c5e0160a6452a8d8ac467f0409254fd1"
+            },
+            {
+              "path": "grid-9\\True-1-2-current.json",
+              "sha256": "af52dcb9d56f4d0e25b8b878b679bfa8f567f987fb0ded43699d81352fd50852"
+            },
+            {
+              "path": "grid-9\\True-1-3-current.json",
+              "sha256": "ac15fdeb0127778828ab7e649211b282f95a1ebc68b219f0d6792802ed790969"
+            },
+            {
+              "path": "grid-9\\True-1-4-current.json",
+              "sha256": "0dc36ea9fcc674ac88b9b1de40c93dd68cdf9487dca93dc22bfc5b84aca08c6b"
+            },
+            {
+              "path": "grid-9\\True-1-5-current.json",
+              "sha256": "321e6423c30dddbcc99ad0ec1fa3738f2204e4100cbed6ce05254b2330329b63"
+            }
+          ],
+          "distinct_rows": 200,
+          "median_seconds": 1.9891020000213757
+        }
+      },
+      "speedup": 0.9886637286643073,
+      "reference_and_worker_byte_parity": true
+    },
+    {
+      "fixture": "grid-9",
+      "spatially_matched": true,
+      "merge": true,
+      "clusters": 220,
+      "workers": 4,
+      "visibility_sha256": "1443615cf69a9d3d45f7c1f8df3a38e8abf171df0f2d461a722f99785c48dfbd",
+      "input_bsp_sha256": "8f6ae29ee89a11f076a95a6bdb3e4988a41e7d784981e9dfa16c2c7397879b5f",
+      "input_prt_sha256": "bb6a5f9bfcce7225d66837fcc12aa98f63556e50a47c1093b6bfb6eff28e8b54",
+      "results": {
+        "reference": {
+          "seconds": [
+            0.5772244000108913,
+            0.5625259999651462,
+            0.5805501999566332,
+            0.5710690999403596,
+            0.6497512999922037
+          ],
+          "row_seconds": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "profiles": [
+            {
+              "path": "grid-9\\True-4-1-reference.json",
+              "sha256": "fabf83c3e2231fb6c17c60c346c7d18d54c0703cc88c4cdf953fa6b7056c502d"
+            },
+            {
+              "path": "grid-9\\True-4-2-reference.json",
+              "sha256": "543851d4a9a8d3670bac0556f738949c4b9e7e961c35367817ed60a2ee0eeadf"
+            },
+            {
+              "path": "grid-9\\True-4-3-reference.json",
+              "sha256": "a952ecca84b80c32a8db58dc2332abd85e422df71018c90853c71875b1b1e265"
+            },
+            {
+              "path": "grid-9\\True-4-4-reference.json",
+              "sha256": "a31a42836dba473cea4b8fd8eb94454d2fc6d45b8779c9780a284f433b0a1e0c"
+            },
+            {
+              "path": "grid-9\\True-4-5-reference.json",
+              "sha256": "63d9a84771a4672f6ea55c1ea00e1b9815d52c3fbca539e126983df03be6dea4"
+            }
+          ],
+          "median_seconds": 0.5772244000108913
+        },
+        "current": {
+          "seconds": [
+            0.5770612000487745,
+            0.5650592000456527,
+            0.5997238999698311,
+            0.5971515000564978,
+            0.564672700013034
+          ],
+          "row_seconds": [
+            0.0002245,
+            0.000229,
+            0.0002366,
+            0.0002328,
+            0.0002197
+          ],
+          "profiles": [
+            {
+              "path": "grid-9\\True-4-1-current.json",
+              "sha256": "0824a4b4c797ce597b679f3bbdac674f995116244d69a7c6b226444d9cc5a8ea"
+            },
+            {
+              "path": "grid-9\\True-4-2-current.json",
+              "sha256": "9b823878189480bfe2177d23ad6dbc71440c3e140427e867ac7d2153973a6682"
+            },
+            {
+              "path": "grid-9\\True-4-3-current.json",
+              "sha256": "80b90f108c903548d666a1dc042696361bbd57ea74d5c61c0dc2c6b9fd0574ab"
+            },
+            {
+              "path": "grid-9\\True-4-4-current.json",
+              "sha256": "84caaa2f7e4b497f3a64acfb8e9a5f9c7adbeaba923d4035fd2be654abdfd1d3"
+            },
+            {
+              "path": "grid-9\\True-4-5-current.json",
+              "sha256": "6b637d8a489c0ded6a2e1d2766aaafdec178c7b71926db61da0fa11c39c5984e"
+            }
+          ],
+          "distinct_rows": 200,
+          "median_seconds": 0.5770612000487745
+        }
+      },
+      "speedup": 1.0002828122252942,
+      "reference_and_worker_byte_parity": true
+    }
+  ],
+  "notes": [
+    "Alternating binaries; one warmup then all measured samples retained. Whole VIS command includes startup, loading, merging, solving and output.",
+    "No BSP generation, LIGHT, renderer or peak memory timing. New row-job timing excludes forest preparation and histogram reduction, which remain in whole-command time.",
+    "Chain uses a synthetic PRT/native carrier to isolate merge depth; it is not spatially matched geometry.",
+    "Corridor is sealed native source with 512 ordinary 8-unit block cuts, deliberately stressing redundant subdivisions.",
+    "Grid is the existing structural 81-pillar workload; ordinary and combined merge selections are compared separately.",
+    "Results do not enable or qualify automatic topology changes."
+  ]
+}

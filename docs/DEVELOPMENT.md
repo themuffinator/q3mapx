@@ -370,6 +370,18 @@ Independent PVS expectations, full/passage-only and one/four-worker parity,
 native-lump/PRT preservation and storage counts cover eight controls. These are
 synthetic graph fixtures on a native carrier, not spatially matched maps.
 
+`vis_rows` compares 3,200 expansions with independent merge-parent walks and set
+unions. It covers arbitrary representative ordering, sparse/dense/empty portal
+masks, duplicate destinations, word-boundary padding, guarded output spans, two
+16,384-deep forests and malformed parents/masks/groups. `vis_row_assembly` checks
+24 native controls: a 2,048-cluster merged chain and seven disconnected groups
+including an isolated cluster, under all four solvers and 1/4/20 workers. Exact
+connected-component rows, geometry/PRT preservation, histogram totals and job
+counts must match. These are synthetic graphs on native carrier BSPs; the
+separate `create_subdivided_corridor` fixture supplies matched sealed geometry.
+Pass `--reference` to the native Python harness to compare its two one-worker
+full-solver cases with a preceding binary. See [row assembly](VIS.md#distinct-output-rows).
+
 `vis_merge` exercises hint/sky directions, parallel openings, far-plane culling,
 convex/concave/folded joins, winding and leaf capacity boundaries, complete
 contraction and self-edge rejection. Real publication failures must preserve the

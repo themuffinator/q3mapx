@@ -86,6 +86,32 @@ block and reports its full requested size. These figures exclude allocator
 overhead, the bounded per-job scratch, temporary reservation and other compiler
 state; they are not measured peak process memory.
 
+## Distinct output rows
+
+After portal flow joins, VIS resolves the final leaf-merge forest once and builds
+a stable list of each representative's original cluster members. It assembles
+one visibility row per representative, then copies that row to its members.
+Original cluster IDs, row width, self bits, padding and the BSP VIS format remain
+unchanged. No merge decision, geometry, clipping or flow-publication order changes.
+
+The previous assembly repeated the same portal unions for every member and
+walked every original cluster's merge chain for each output row. A long chain
+could make this part cubic in cluster count. Forest resolution is now linear.
+Row conversion visits set portal bits, expands each destination group at most
+once and counts its members directly. The required final row copies remain:
+this does not reduce the native visibility lump's size.
+
+Distinct representatives run through the existing persistent job pool. Each job
+owns a disjoint set of output rows and one count entry; the histogram is reduced
+after all jobs join. Bits are built in private aligned scratch before each final
+row copy, avoiding repeated writes to neighboring rows' shared cache lines.
+Portal masks and membership data are read-only during this
+phase. The `VIS row assembly` log records distinct/original counts, and the
+`AssembleVisRows` profile pass measures row jobs and dispatch. Forest preparation
+and the final histogram reduction are outside that pass but inside whole-command
+measurements. See [performance](PERFORMANCE.md#distinct-vis-row-assembly) and
+[validation](validation/vis-rows.json).
+
 ## Large portal clipping
 
 Passage construction clips the **complete** input winding, including all 512

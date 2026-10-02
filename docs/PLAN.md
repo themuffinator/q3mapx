@@ -221,6 +221,11 @@ not a redefinition of the overall goal around the existing release:
 - [ ] Repair repeated surface classification reapplying a shader's absolute
   sample size after consuming entity lightmap scale. The initial M11 authored
   override bypasses that inherited issue; legacy semantics remain unchanged.
+- [ ] Prevent BSP compilation from publishing a tree that exceeds its own reader's
+  depth limit. A sealed 1,024-block corridor with `_blocksize "8 1024 1024"`
+  compiles successfully, then both preceding/current VIS reject the resulting
+  node depth above 1,024. Preserve the reader guard; balance or reject generation
+  before publication and verify ordinary-map compatibility.
 - [x] Remove LIGHT-only MAP brush parsing's dependency on the first shader's
   initialized texture dimensions. Discarded source brushes no longer resolve or
   borrow shader data, and texture-period rebiasing only runs when constructing
@@ -384,6 +389,12 @@ Separate compiler workstream; see [compiler optimization design](COMPILER-OPTIMI
   graph/solver results: intersect flood bounds before geometric tests, skip empty
   candidate sets, pack word spans into one block per source portal and free them
   after flow. Compare exact VIS bytes with the preceding dense implementation.
+- [x] Assemble each merged representative's output visibility row once, resolve
+  merge membership in linear time and schedule disjoint rows through the job pool.
+  Preserve all original cluster rows/bits and compare preceding binaries across
+  solvers/workers. Measure complete VIS commands on long merge chains, matched
+  subdivided corridors and ordinary structural maps. This changes assembly cost,
+  not topology or automatic regional selection.
 - [x] Audit passage clipping above 24 winding points. Replace truncation with
   complete-winding clipping and bounded intermediate growth, retain input on
   capacity exhaustion, and accept exactly 512 cached separators. Validate

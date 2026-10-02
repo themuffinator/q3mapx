@@ -18,6 +18,22 @@ def create_vis_fixture(root, *, grid=5, detail=False):
     return source
 
 
+def create_subdivided_corridor(root, *, blocks=512):
+    """Sealed, unobstructed corridor with many ordinary axial BSP block cuts."""
+    source = create_fixture(root, patch=False)
+    left, right = 16, 16+blocks*8
+    geometry = ''.join(box(lo, hi) for lo, hi in [
+        ((left-16, 0, 0), (right+16, 128, 16)),
+        ((left-16, 0, 112), (right+16, 128, 128)),
+        ((left-16, 0, 16), (right+16, 16, 112)),
+        ((left-16, 112, 16), (right+16, 128, 112)),
+        ((left-16, 16, 16), (left, 112, 112)),
+        ((right, 16, 16), (right+16, 112, 112))])
+    source.write_text('{\n"classname" "worldspawn"\n"_blocksize" "8 1024 1024"\n'+geometry+
+                      '}\n{\n"classname" "info_player_deathmatch"\n"origin" "20 64 64"\n}\n')
+    return source
+
+
 def create_round_vis_fixture(root):
     """A sealed 64-sided corridor, split by two structural hint brushes."""
     source=create_fixture(root,patch=False)

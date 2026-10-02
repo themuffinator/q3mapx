@@ -1,0 +1,468 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-02T02:47:46.771982+00:00",
+  "base_revision": "15dbeac1d944bc6603788122ceba74074d193f3c",
+  "scope": "Balanced automatic BSP block cuts and a shared longest-node-path safety limit for generation, loading and publication",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "cfeefb53f4501fcdf5383199f6c308e14d4a277a188394a1ffd7a36fcd5b40aa",
+    "libs/q3mapx/bsp_tree.h": "b8beaa83417e900bbac6128eca7034206d79bbc4aba78695b54d7fda5dd3edf5",
+    "tests/bsp_tree.cpp": "da1204d930473c52d8b105c9acf5447961fcf01366d1d0f5ec30d4069bf56064",
+    "tests/bsp_depth.py": "aa7d021d44a0e6ebf9b602710ea0d59dd1b5c619f773871ae8272568555c72df",
+    "tools/quake3/q3map2/facebsp.cpp": "b26b5e6500b9442f218bfdabef3ead261c695d6a50d855050fb6e84e35f1cefa",
+    "tools/quake3/q3map2/bsp_validation.cpp": "0a8edf5f87e8932a2821f4cc91add8c9fa178358ad47f8747f344877c18f03b3",
+    "tools/quake3/q3map2/bspfile_abstract.cpp": "b24c8a261a517e0563b4726947739723e336f2138b95f9abaf308d4e78909856",
+    "tools/quake3/q3map2/bspfile_abstract.h": "3588d364a268917d5a4d81853e22d1b458a1d8105bf7138d3f5f0cd4d1c0d34a"
+  },
+  "platforms": {
+    "windows": {
+      "compiler": {
+        "path": "build/release/bin/q3mapx.exe",
+        "sha256": "1898724900bd28bea187d7868613fa7394bc9f9f0e01b6302760c7fc8dfd4196"
+      },
+      "core_binary": {
+        "path": "build/release/bin/bsp_tree_test.exe",
+        "sha256": "bb7a717352d4c2890fdf0460eb329aa2853ce2cac3d028f12c68300490a42770"
+      },
+      "build_log": {
+        "path": ".agents/tmp/bsp-depth/build-windows-final.log",
+        "sha256": "073d5f0f523fdb9e1913d9598cc100da935ff431891d7e18e9827164519f5780"
+      },
+      "ctest": {
+        "log": {
+          "path": ".agents/tmp/bsp-depth/regression-windows.log",
+          "sha256": "ffc4904a36a781c4a3d6aeaa384a15d9a11a91fb7cdd6e562829e01507fa084d"
+        },
+        "groups": [
+          "patch_source",
+          "bsp_validation",
+          "vis_reproducible",
+          "recovery_outputs",
+          "game_profiles",
+          "compiler_pipeline",
+          "bsp_tree",
+          "vis_merge_qualification"
+        ]
+      },
+      "core_oracle": {
+        "log": {
+          "path": ".agents/tmp/bsp-depth/core-windows-final.log",
+          "sha256": "4b459930e96ded6e0e3bdbec3aa5a74fa9e6f2fd60bdd9aed2414b599f0475fe"
+        },
+        "independently_enumerated_block_partitions": 1400,
+        "graph_depth_controls": 809,
+        "additional_boundary_cycle_and_reference_guards": true
+      },
+      "native": {
+        "report": {
+          "path": "build/release/tests/bsp-depth/validation.json",
+          "sha256": "e82ae61ad4e440ecd00e646dde60d9cb83e2aafc9b2f1dfa8495acd6cbb43003"
+        },
+        "log": {
+          "path": ".agents/tmp/bsp-depth/native-windows-final.log",
+          "sha256": "499735ffbd06075c29a91dee3b6cdb0b532af777957a6eb75763ac95ff9e92fa"
+        },
+        "generated_cell_and_vis_cases": 14,
+        "ordinary_controls": 4,
+        "reader_depth_guards": 8,
+        "occluded_partition": {
+          "probe_points": 488,
+          "mapped_visibility_pairs": 238144,
+          "free_cell_volume_verified": true,
+          "reference_mesh_and_visibility_parity": true
+        },
+        "reference_compiler": {
+          "path": ".agents/tmp/bsp-depth/q3mapx-reference.exe",
+          "sha256": "7c0ccee2f953e1bc4dbdd792e8a86ef4a32bbe340d575bab6806145eb83373b6"
+        }
+      },
+      "corrected_generation_guard": {
+        "report": {
+          "path": "build/release/tests/bsp-depth/generation-guard.json",
+          "sha256": "7738e703d5509bdc12e029c9634ab3c6918d92b3376bd5a7e512930b9e602eb9"
+        },
+        "log": {
+          "path": "build/release/tests/bsp-depth/generation-guard/compile.log",
+          "sha256": "9c5adaab53b2454c9b68b0f47a029c384664ce4bf7b870260a713da95c6efd13"
+        },
+        "structural_faces": 1061,
+        "hint_planes": 1025,
+        "controlled_failure": true,
+        "bsp_and_srf_preserved": true
+      },
+      "current_shared_tail_rejection_log": {
+        "path": "build/release/tests/bsp-depth/reader/shared-tail-False.log",
+        "sha256": "10e5bbf0f32c5f46fb2724b8d9e4b9842668f7161b4d12f3b9a49296c1882731"
+      }
+    },
+    "linux": {
+      "compiler": {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "f31b4d4e2511f32d3e5cdeac5a7f03810386b76f451fc39c194a9cfda3d06553"
+      },
+      "core_binary": {
+        "path": "build/linux-release/bin/bsp_tree_test",
+        "sha256": "ea8313de69bbebe8c38c03e75cc6bd76c30d6902238871010df94310f0762693"
+      },
+      "build_log": {
+        "path": ".agents/tmp/bsp-depth/build-linux-final.log",
+        "sha256": "49e799d69dbeb3c2e0c766379836e7b07a1594d2a9814c332bd37141f6edc85c"
+      },
+      "ctest": {
+        "log": {
+          "path": ".agents/tmp/bsp-depth/regression-linux.log",
+          "sha256": "81b8044496bd2771e6b7eea92be9d1f08f4184a2fd8f4867c0c9e7853f083d3c"
+        },
+        "groups": [
+          "vis_merge_qualification",
+          "bsp_validation",
+          "patch_source",
+          "recovery_outputs",
+          "vis_reproducible",
+          "game_profiles",
+          "bsp_tree",
+          "compiler_pipeline"
+        ]
+      },
+      "core_oracle": {
+        "log": {
+          "path": ".agents/tmp/bsp-depth/core-linux-final.log",
+          "sha256": "21430f22cf6406fe0afe78ac74015be98d2f22f56e6ec1ebee186a7c22054c49"
+        },
+        "independently_enumerated_block_partitions": 1400,
+        "graph_depth_controls": 809,
+        "additional_boundary_cycle_and_reference_guards": true
+      },
+      "native": {
+        "report": {
+          "path": "build/linux-release/tests/bsp-depth/validation.json",
+          "sha256": "4735d347cd9bdd9d6f098f58f6c8cd3bd1193542a047e342aa9f2dbc66f92b3e"
+        },
+        "log": {
+          "path": ".agents/tmp/bsp-depth/native-linux-final.log",
+          "sha256": "6d9e2fd4462a70c251ce65073a8306b88863a7e1fc398d0a282c7668c02f71d9"
+        },
+        "generated_cell_and_vis_cases": 14,
+        "ordinary_controls": 4,
+        "reader_depth_guards": 8,
+        "occluded_partition": {
+          "probe_points": 488,
+          "mapped_visibility_pairs": 238144,
+          "free_cell_volume_verified": true,
+          "reference_mesh_and_visibility_parity": true
+        },
+        "reference_compiler": {
+          "path": ".agents/tmp/bsp-depth/q3mapx-reference-linux",
+          "sha256": "d87ed52e8604572667b43c944ff457ca6d86057d3c39bca93b285346c6cd151e"
+        }
+      },
+      "corrected_generation_guard": {
+        "report": {
+          "path": "build/linux-release/tests/bsp-depth/generation-guard.json",
+          "sha256": "afc6521ed3e0554efe55e240fd35ea7217ffb2f461751461ac63c3c36a400d09"
+        },
+        "log": {
+          "path": "build/linux-release/tests/bsp-depth/generation-guard/compile.log",
+          "sha256": "78fc2e28a1092b8a1ca12285bc496c571d473d41d530c1fd8e86e6d43bc132c4"
+        },
+        "structural_faces": 1061,
+        "hint_planes": 1025,
+        "controlled_failure": true,
+        "bsp_and_srf_preserved": true
+      },
+      "current_shared_tail_rejection_log": {
+        "path": "build/linux-release/tests/bsp-depth/reader/shared-tail-False.log",
+        "sha256": "cebeec094fd697f593d8b0a1c60afe985d757ac3b89fbdafe2e72d79d2a1376b"
+      }
+    },
+    "sanitized": {
+      "compiler": {
+        "path": "build/linux-sanitized/bin/q3mapx",
+        "sha256": "8212da8d96c213c069071eecce379b8d98c71e78c9bb0743893b7adb55f66f08"
+      },
+      "core_binary": {
+        "path": "build/linux-sanitized/bin/bsp_tree_test",
+        "sha256": "a276d825dd91d23ca7dc7a10cd61be07a422b20adaf44ee61d2d3aeccc38719d"
+      },
+      "build_log": {
+        "path": ".agents/tmp/bsp-depth/build-sanitized-final.log",
+        "sha256": "49e799d69dbeb3c2e0c766379836e7b07a1594d2a9814c332bd37141f6edc85c"
+      },
+      "ctest": {
+        "log": {
+          "path": ".agents/tmp/bsp-depth/regression-sanitized.log",
+          "sha256": "dba0774bc7ddc5343c07faeb12e2fe0d86074bafcd6c5a5fb7d7029681eff55a"
+        },
+        "groups": [
+          "game_profiles",
+          "bsp_validation",
+          "recovery_outputs",
+          "vis_reproducible",
+          "compiler_pipeline",
+          "bsp_tree",
+          "patch_source",
+          "vis_merge_qualification"
+        ]
+      },
+      "core_oracle": {
+        "log": {
+          "path": ".agents/tmp/bsp-depth/core-sanitized-final.log",
+          "sha256": "21430f22cf6406fe0afe78ac74015be98d2f22f56e6ec1ebee186a7c22054c49"
+        },
+        "independently_enumerated_block_partitions": 1400,
+        "graph_depth_controls": 809,
+        "additional_boundary_cycle_and_reference_guards": true
+      },
+      "native": {
+        "report": {
+          "path": "build/linux-sanitized/tests/bsp-depth/validation.json",
+          "sha256": "a93b5e967b2ccd649e1a8839cfd8b8a1ab1713c6fbfbcc8ad918108f1c42623e"
+        },
+        "log": {
+          "path": ".agents/tmp/bsp-depth/native-sanitized-final.log",
+          "sha256": "6d9e2fd4462a70c251ce65073a8306b88863a7e1fc398d0a282c7668c02f71d9"
+        },
+        "generated_cell_and_vis_cases": 14,
+        "ordinary_controls": 4,
+        "reader_depth_guards": 8,
+        "occluded_partition": {
+          "probe_points": 488,
+          "mapped_visibility_pairs": 238144,
+          "free_cell_volume_verified": true,
+          "reference_mesh_and_visibility_parity": false
+        },
+        "reference_compiler": null
+      },
+      "corrected_generation_guard": {
+        "report": {
+          "path": "build/linux-sanitized/tests/bsp-depth/generation-guard.json",
+          "sha256": "f63a2273c8e232c3b58fa46bb805505a24c39a8938fb3707d140a1a85daeb04a"
+        },
+        "log": {
+          "path": "build/linux-sanitized/tests/bsp-depth/generation-guard/compile.log",
+          "sha256": "d3fc928f6fcd936e1d50ae179b68c521f789b009f25606bb921cf6e43c3ca732"
+        },
+        "structural_faces": 1061,
+        "hint_planes": 1025,
+        "controlled_failure": true,
+        "bsp_and_srf_preserved": true
+      },
+      "current_shared_tail_rejection_log": {
+        "path": "build/linux-sanitized/tests/bsp-depth/reader/shared-tail-False.log",
+        "sha256": "0e15d0f340f1950e1ac4a0ed53fae626c89fb363d920ee6cea6a5b73b26b2c4d"
+      }
+    }
+  },
+  "native_case_matrix": [
+    {
+      "game": "quake3",
+      "blocks": 128,
+      "axis": 0,
+      "offset": 0,
+      "workers": 1,
+      "depth": 12,
+      "expected_cells": true,
+      "all_visible": true,
+      "input_sha256_lf": "eb0364106df7a17e6cc28169e1201efbb0637a8086d3d6043aa46629d999803c"
+    },
+    {
+      "game": "quake3",
+      "blocks": 128,
+      "axis": 0,
+      "offset": 0,
+      "workers": 4,
+      "depth": 12,
+      "expected_cells": true,
+      "all_visible": true,
+      "input_sha256_lf": "eb0364106df7a17e6cc28169e1201efbb0637a8086d3d6043aa46629d999803c"
+    },
+    {
+      "game": "quake3",
+      "blocks": 1024,
+      "axis": 0,
+      "offset": 0,
+      "workers": 1,
+      "depth": 15,
+      "expected_cells": true,
+      "all_visible": true,
+      "input_sha256_lf": "42fd7362a5b11eb1f9e09e69f5c17cdfd03c0449b2ab9e8597d352463732e7d3"
+    },
+    {
+      "game": "quake3",
+      "blocks": 1024,
+      "axis": 0,
+      "offset": 0,
+      "workers": 4,
+      "depth": 15,
+      "expected_cells": true,
+      "all_visible": true,
+      "input_sha256_lf": "42fd7362a5b11eb1f9e09e69f5c17cdfd03c0449b2ab9e8597d352463732e7d3"
+    },
+    {
+      "game": "quake3",
+      "blocks": 1024,
+      "axis": 1,
+      "offset": -4096,
+      "workers": 1,
+      "depth": 15,
+      "expected_cells": true,
+      "all_visible": true,
+      "input_sha256_lf": "e82a9c47753b04d4303d26a31a426e5fa7c568e7501c23106a733c2828e5a17b"
+    },
+    {
+      "game": "quake3",
+      "blocks": 1024,
+      "axis": 2,
+      "offset": -4096,
+      "workers": 1,
+      "depth": 15,
+      "expected_cells": true,
+      "all_visible": true,
+      "input_sha256_lf": "8b540b9cc477cdb471b9eaee6d94b0c9c080a43b760644a0d9d15c8c338be366"
+    },
+    {
+      "game": "quake3",
+      "blocks": 4096,
+      "axis": 0,
+      "offset": -16384,
+      "workers": 1,
+      "depth": 17,
+      "expected_cells": true,
+      "all_visible": true,
+      "input_sha256_lf": "e1fbf449b12db7cf3f100b6049c077f83c43ffc234d4d9e24b13d539139f50e4"
+    },
+    {
+      "game": "ja",
+      "blocks": 128,
+      "axis": 0,
+      "offset": 0,
+      "workers": 1,
+      "depth": 12,
+      "expected_cells": true,
+      "all_visible": true,
+      "input_sha256_lf": "eb0364106df7a17e6cc28169e1201efbb0637a8086d3d6043aa46629d999803c"
+    },
+    {
+      "game": "ja",
+      "blocks": 128,
+      "axis": 0,
+      "offset": 0,
+      "workers": 4,
+      "depth": 12,
+      "expected_cells": true,
+      "all_visible": true,
+      "input_sha256_lf": "eb0364106df7a17e6cc28169e1201efbb0637a8086d3d6043aa46629d999803c"
+    },
+    {
+      "game": "ja",
+      "blocks": 1024,
+      "axis": 0,
+      "offset": 0,
+      "workers": 1,
+      "depth": 15,
+      "expected_cells": true,
+      "all_visible": true,
+      "input_sha256_lf": "42fd7362a5b11eb1f9e09e69f5c17cdfd03c0449b2ab9e8597d352463732e7d3"
+    },
+    {
+      "game": "ja",
+      "blocks": 1024,
+      "axis": 0,
+      "offset": 0,
+      "workers": 4,
+      "depth": 15,
+      "expected_cells": true,
+      "all_visible": true,
+      "input_sha256_lf": "42fd7362a5b11eb1f9e09e69f5c17cdfd03c0449b2ab9e8597d352463732e7d3"
+    },
+    {
+      "game": "ja",
+      "blocks": 1024,
+      "axis": 1,
+      "offset": -4096,
+      "workers": 1,
+      "depth": 15,
+      "expected_cells": true,
+      "all_visible": true,
+      "input_sha256_lf": "e82a9c47753b04d4303d26a31a426e5fa7c568e7501c23106a733c2828e5a17b"
+    },
+    {
+      "game": "ja",
+      "blocks": 1024,
+      "axis": 2,
+      "offset": -4096,
+      "workers": 1,
+      "depth": 15,
+      "expected_cells": true,
+      "all_visible": true,
+      "input_sha256_lf": "8b540b9cc477cdb471b9eaee6d94b0c9c080a43b760644a0d9d15c8c338be366"
+    },
+    {
+      "game": "ja",
+      "blocks": 4096,
+      "axis": 0,
+      "offset": -16384,
+      "workers": 1,
+      "depth": 17,
+      "expected_cells": true,
+      "all_visible": true,
+      "input_sha256_lf": "e1fbf449b12db7cf3f100b6049c077f83c43ffc234d4d9e24b13d539139f50e4"
+    }
+  ],
+  "depth_comparison": [
+    {
+      "blocks": 128,
+      "reference_depth": 132,
+      "current_depth": 12
+    },
+    {
+      "blocks": 1024,
+      "reference_depth": 1028,
+      "current_depth": 15
+    },
+    {
+      "blocks": 4096,
+      "reference_depth": null,
+      "current_depth": 17
+    }
+  ],
+  "preceding_reader_shared_tail_bypass": {
+    "accepted_depth": 1025,
+    "compiler": {
+      "path": ".agents/tmp/bsp-depth/q3mapx-reference.exe",
+      "sha256": "7c0ccee2f953e1bc4dbdd792e8a86ef4a32bbe340d575bab6806145eb83373b6"
+    },
+    "input": {
+      "path": "build/release/tests/bsp-depth/reader/shared-tail.bsp",
+      "sha256": "cfa0b478959c8d051081c3fff830c6ce78350d59683e05e7ec3416b002201f61"
+    },
+    "log": {
+      "path": ".agents/tmp/bsp-depth/reference-shared.log",
+      "sha256": "573ea1261ad434d664e66c675da5211b81e1dc9040415d7497e69927fe4b27e7"
+    },
+    "generated_map": {
+      "path": ".agents/tmp/bsp-depth/reference-shared.map",
+      "sha256": "eb3ea0c3a5b7bdd4f1586944044647d8239f5c30a9c1c3624ee18389b8fc1ad4"
+    },
+    "generated_report": {
+      "path": ".agents/tmp/bsp-depth/reference-shared.json",
+      "sha256": "c62296064f97d347f667f72d7f5ca15a839277c566f70e110ff5a3d6fb51dd6e"
+    }
+  },
+  "validation_sequence": [
+    "All listed native cases and eight CTest groups ran on the final production binaries and depth helper, including the bounded traversal-stack refinement.",
+    "After the full native runs, only the generation fixture was corrected: one-line shader directives had failed to register hint/skip flags. The earlier full-run generation_guard object is superseded by the separate corrected_generation_guard result.",
+    "The final multiline hint/skip fixture and 1061-face assertion passed with --generation-only on all three unchanged production binaries. Each run rejects 1025 explicit hint planes and preserves previous BSP/SRF bytes.",
+    "Final core executables were also run directly on all three platforms to bind the 1400/809 oracle counts to fresh logs."
+  ],
+  "limits": [
+    "Automatic block boundary sets and axis priority remain; cut order and node/plane/leaf IDs may change. This is not general byte compatibility or automatic regional VIS merging.",
+    "Generated axial fixtures establish exact cell geometry, rendered triangle XYZ/ST/normals and mapped PVS equivalence where reference comparisons are enabled. They do not prove arbitrary-map or engine-rendering equivalence.",
+    "Windows and Linux use preceding-compiler reference comparisons. Sanitizer native cases use independent expected geometry, clear sightlines and guard outcomes without a reference compiler.",
+    "Reader graph fixtures are synthetic node graphs; their at-limit acceptance is not a claim of geometrically meaningful BSP geometry.",
+    "The graph helper checks every component and longest path; the generation fixture exercises rejection before publication. No separate native writer-only corruption injection was used.",
+    "The 1024-node limit bounds BSP path depth and traversal frames, not all compiler resources or every recursive algorithm. State and height arrays remain proportional to node count.",
+    "Previous BSP/SRF bytes survive the generation-depth failure. Existing startup PRT/LIN/REG cleanup remains outside this guarantee.",
+    "ASan/UBSan run with the established leak-detection exclusion. The existing vis_reproducible sanitizer fixture uses grid 5 instead of the release grid 9.",
+    "No game, user-input control, OS screenshot, peak-memory measurement or compile-speed benchmark was used for this round."
+  ]
+}

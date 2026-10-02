@@ -3806,3 +3806,49 @@ controls. Arbitrary/decimated meshes, original grouping and broad runtime/LOD
 equivalence remain separate work. No new unrelated issue was found in this patch
 round. The preceding generated-BSP depth mismatch, material-preview 66/68 gate and
 raw-sidecar audits remain open; previously blocked cleanup targets were untouched.
+
+## 2026-10-02 — Balance BSP block trees and enforce complete depth checks
+
+Repaired the generated-BSP depth mismatch discovered during VIS row work.
+Automatic cuts now divide the ordered block boundaries around their middle,
+retaining every boundary and the existing axis priority. The 1,024-block corridor
+drops from depth 1,028 to 15 with exactly the same interior cells; 4,096-block
+rooms have depth 17. This changes subdivision order, not the portal count or
+the automatic VIS policy.
+
+Generation, loading and BSP publication share the unchanged 1,024-node path
+limit. Loading now accounts for the longest path through previously visited
+children; the preceding reader accepted a synthetic shared-tail graph of depth
+1,025, and the repaired reader rejects it with or without `-force`. The iterative
+validator checks all components, cycles and positive child bounds while capping
+its traversal stack. Face-tree generation fails before adding an excessive node,
+and publication validates the graph before opening the BSP output.
+
+Windows/Linux Release and Linux ASan/UBSan pass eight relevant regression groups
+each, plus 1,400 independently enumerated boundary partitions and 809 graph-depth
+controls per configuration. Native validation covers 14 Q3/JA corridor cases,
+four ordinary controls and eight reader guards. Negative coordinates, each long
+axis, one/four workers, merged VIS, minimap and selected LIGHT runs pass. Release
+reference comparisons preserve canonical rendered triangles and the expected
+cells; ordinary fixtures retain native lump/PRT bytes. An occluded pillar fixture
+preserves exact free-space volume and known clear sightlines, with release
+reference parity at 238,144 pairs of 488 world points.
+
+The final generation guard verifies 1,025 explicit hint planes and 1,061 initial
+structural faces, rejects excessive depth and preserves previous BSP/SRF bytes.
+Its shader fixture was corrected after the full native runs and repeated
+separately on all three unchanged production binaries. Existing startup cleanup
+of PRT/LIN/REG files remains outside that guarantee. These generated fixtures do
+not establish arbitrary-map or engine-rendering equivalence; no timing or peak
+memory gain is claimed. The established sanitizer leak exclusion remains.
+
+See [the BSP tree contract](BSP-TREES.md) and
+[recorded validation](validation/bsp-depth.json). Useful logs, reference binaries
+and the evidence recorder remain in `.agents/tmp/bsp-depth/`; native fixtures
+remain under each build's `tests/bsp-depth/` directory. No game, user-input
+control or OS screenshot was used. The disposable generation prototype was
+removed after verifying its exact workspace path and absence of links;
+previously blocked cleanup targets were untouched.
+
+No new unrelated issue was found. The material-preview strict pixel qualification
+remains 66/68, and raw-sidecar publication/parser audits remain open.

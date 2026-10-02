@@ -2,6 +2,7 @@
 // q3mapx: validate untrusted BSP data before legacy compiler traversal.
 #include "bspfile_abstract.h"
 #include "q3mapx/index_validation.h"
+#include "q3mapx/bsp_tree.h"
 
 #include <cmath>
 #include <cstring>
@@ -64,32 +65,10 @@ void finite( const Vector& value, size_t components, const char* kind, size_t it
 	}
 }
 
-void nodeGraph(){
-	// Iterative traversal also checks unreachable nodes. Never recurse into untrusted data.
-	std::vector<byte> state( bspNodes.size(), 0 );
-	std::vector<std::pair<size_t, unsigned>> stack;
-	for ( size_t root = 0; root < bspNodes.size(); ++root ) {
-		if ( state[root] == 2 ) continue;
-		stack.emplace_back( root, 0 );
-		state[root] = 1;
-		while ( !stack.empty() ) {
-			auto& [node, next] = stack.back();
-			if ( next == 2 ) {
-				state[node] = 2;
-				stack.pop_back();
-				continue;
-			}
-			const int child = bspNodes[node].children[next++];
-			if ( child < 0 ) continue;
-			if ( state[child] == 1 ) Error( "Invalid BSP: cycle in node graph at node %d", child );
-			if ( state[child] == 2 ) continue;
-			if ( stack.size() >= 1024 ) Error( "Invalid BSP: node depth exceeds safety limit of 1024" );
-			state[child] = 1;
-			stack.emplace_back( size_t( child ), 0 );
-		}
-	}
-}
 } // namespace
+
+void ValidateBSPNodeGraph() try { q3mapx::bspNodeGraphDepth(bspNodes); }
+catch ( const std::exception& error ) { Error("Invalid BSP: %s",error.what()); }
 
 void ValidateBSPStrings(){
 	for ( size_t i = 0; i < bspShaders.size(); ++i ) string( bspShaders[i].shader, MAX_QPATH, "shader", i );
@@ -208,7 +187,7 @@ void ValidateBSPData( bool partial ){
 			}
 		}
 	}
-	nodeGraph();
+	ValidateBSPNodeGraph();
 	for ( size_t i = 0; i < bspFogs.size(); ++i ) {
 		const auto& fog = bspFogs[i];
 		if ( fog.brushNum == -1 ) continue; // global fog (Raven)

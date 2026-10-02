@@ -1,5 +1,15 @@
 # Development and validation
 
+## BSP subdivision and depth
+
+`bsp_tree` independently enumerates block boundaries and verifies graph path
+lengths, including shuffled/shared nodes. `bsp_depth` exercises native Q3/JA
+generation through 4,096-block rooms, axis/worker changes, VIS/minimap/LIGHT,
+malformed graph rejection and deep-hint failure preserving BSP/SRF files.
+Its optional `--reference` argument additionally checks preceding-compiler cells,
+rendered meshes, mapped visibility and ordinary native bytes. See
+[the contract and reproduction commands](BSP-TREES.md).
+
 ## Build policy
 
 Requires CMake 3.25+, Ninja, a C++20 compiler, pkg-config, GLib, libxml2, Assimp,

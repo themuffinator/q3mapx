@@ -30,10 +30,12 @@
 
 /* dependencies */
 #include "q3map2.h"
+#include "q3mapx/bsp_tree.h"
 
 
 
 static int c_faceLeafs;
+static unsigned c_faceDepth;
 
 
 
@@ -59,9 +61,9 @@ static void SelectSplitPlaneNum( const node_t *node, const facelist_t& list, int
 		if ( blockSize[ i ] <= 0 ) {
 			continue;
 		}
-		const float dist = blockSize[ i ] * ( floor( node->minmax.mins[ i ] / blockSize[ i ] ) + 1 );
-		if ( node->minmax.maxs[ i ] > dist ) {
-			*splitPlaneNum = FindFloatPlane( Plane3f( g_vector3_axes[i], dist ) );
+		const auto dist = q3mapx::balancedBlockSplit( node->minmax.mins[i], node->minmax.maxs[i], blockSize[i] );
+		if ( dist ) {
+			*splitPlaneNum = FindFloatPlane( Plane3f( g_vector3_axes[i], *dist ) );
 			return;
 		}
 	}
@@ -172,7 +174,7 @@ static void SelectSplitPlaneNum( const node_t *node, const facelist_t& list, int
    recursively builds the bsp, splitting on face planes
  */
 
-static void BuildFaceTree_r( node_t *node, facelist_t& list ){
+static void BuildFaceTree_r( node_t *node, facelist_t& list, unsigned depth ){
 	facelist_t childLists[2];
 	int splitPlaneNum, compileFlags;
 #if 0
@@ -190,6 +192,9 @@ static void BuildFaceTree_r( node_t *node, facelist_t& list ){
 		c_faceLeafs++;
 		return;
 	}
+
+	q3mapx::requireBspNodeDepth( depth+1 );
+	c_faceDepth = std::max(c_faceDepth,depth+1);
 
 	/* partition the list */
 	node->planenum = splitPlaneNum;
@@ -273,7 +278,7 @@ static void BuildFaceTree_r( node_t *node, facelist_t& list ){
 #endif
 
 	for ( int i = 0; i < 2; ++i ) {
-		BuildFaceTree_r( node->children[i], childLists[i] );
+		BuildFaceTree_r( node->children[i], childLists[i], depth+1 );
 		node->has_structural_children |= node->children[i]->has_structural_children;
 	}
 
@@ -295,7 +300,7 @@ static void BuildFaceTree_r( node_t *node, facelist_t& list ){
    List will be freed before returning
    ================
  */
-tree_t FaceBSP( facelist_t& list ) {
+tree_t FaceBSP( facelist_t& list ) try {
 	Sys_FPrintf( SYS_VRB, "--- FaceBSP ---\n" );
 
 	tree_t tree{};
@@ -316,13 +321,16 @@ tree_t FaceBSP( facelist_t& list ) {
 	tree.headnode = AllocNode();
 	tree.headnode->minmax = tree.minmax;
 	c_faceLeafs = 0;
+	c_faceDepth = 0;
 
-	BuildFaceTree_r( tree.headnode, list );
+	BuildFaceTree_r( tree.headnode, list, 0 );
 
 	Sys_FPrintf( SYS_VRB, "%9d leafs\n", c_faceLeafs );
+	Sys_FPrintf( SYS_VRB, "%9u maximum BSP node depth\n", c_faceDepth );
 
 	return tree;
 }
+catch ( const std::exception& error ) { Error("Cannot build BSP tree: %s",error.what()); }
 
 
 

@@ -34,6 +34,7 @@
 bspHeader_t ReadBSPHeader( const MemBuffer& file, int lumpCount, size_t directoryOffset = 8 );
 void ValidateBSPStrings();
 void ValidateBSPData( bool partial = false );
+void ValidateBSPNodeGraph();
 extern size_t bspNormalizedUnusedLightmapPairs;
 extern size_t bspNormalizedUnusedFlareFogs;
 

@@ -221,11 +221,13 @@ not a redefinition of the overall goal around the existing release:
 - [ ] Repair repeated surface classification reapplying a shader's absolute
   sample size after consuming entity lightmap scale. The initial M11 authored
   override bypasses that inherited issue; legacy semantics remain unchanged.
-- [ ] Prevent BSP compilation from publishing a tree that exceeds its own reader's
-  depth limit. A sealed 1,024-block corridor with `_blocksize "8 1024 1024"`
-  compiles successfully, then both preceding/current VIS reject the resulting
-  node depth above 1,024. Preserve the reader guard; balance or reject generation
-  before publication and verify ordinary-map compatibility.
+- [x] Prevent BSP compilation from publishing a tree that exceeds its own reader's
+  depth limit. Balanced automatic block cuts reduce the 1,024-block corridor
+  from depth 1,028 to 15 while preserving its cells. Generation and publication
+  enforce the unchanged 1,024-node limit; the reader now measures full paths
+  through shared children as well. Native controls cover ordinary-map parity,
+  generated cell/visibility equivalence and rejected deep face trees before BSP
+  publication. See [BSP tree contract and validation](BSP-TREES.md).
 - [x] Remove LIGHT-only MAP brush parsing's dependency on the first shader's
   initialized texture dimensions. Discarded source brushes no longer resolve or
   borrow shader data, and texture-period rebiasing only runs when constructing

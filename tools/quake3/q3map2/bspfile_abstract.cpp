@@ -246,6 +246,7 @@ void LoadBSPFilePartially( const char *filename ){
 void WriteBSPFile( const char *filename ){
 	Sys_Printf( "Writing %s\n", filename );
 	if ( !g_game || !g_game->write ) Error( "WriteBSPFile: unsupported BSP file format" );
+	ValidateBSPNodeGraph(); // Before opening output or changing byte order.
 	try {
 		const auto patchSource = q3mapx::PatchSourceTrailer();
 		// Legacy shader remapping may report fatal errors; finish it before any

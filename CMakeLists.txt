@@ -147,6 +147,14 @@ if(BUILD_TESTING)
         --compiler $<TARGET_FILE:q3mapx>
         --work-dir ${CMAKE_BINARY_DIR}/tests/bsp-validation)
     set_tests_properties(bsp_validation PROPERTIES TIMEOUT 180)
+    add_executable(bsp_tree_test tests/bsp_tree.cpp)
+    target_include_directories(bsp_tree_test PRIVATE libs)
+    add_test(NAME bsp_tree COMMAND bsp_tree_test)
+    set_tests_properties(bsp_tree PROPERTIES TIMEOUT 60)
+    add_test(NAME bsp_depth COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/bsp_depth.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/bsp-depth)
+    set_tests_properties(bsp_depth PROPERTIES TIMEOUT 900)
     add_executable(index_validation_test tests/index_validation.cpp)
     target_include_directories(index_validation_test PRIVATE libs)
     add_test(NAME index_validation COMMAND index_validation_test)

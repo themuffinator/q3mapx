@@ -898,6 +898,32 @@ Use `tests/renderer/patch_source_render.py --fit` with the same in-project engin
 test setup to compare original and reconstructed triangle-only scenes. It changes
 only independent copied test assets. See [contract and evidence](TRIANGLE-PATCH-RECOVERY.md).
 
+## Workbench patch recovery
+
+`workbench_patches` runs ten Quake III/Jedi Academy scenes through the real Qt
+window and compiler queue: retained sources, archive-free fitting, ordinary
+native colors and both automatic paths. Adjacent MAP/SRF files are poisoned.
+After review, the Python harness independently rebuilds and relights each MAP,
+comparing oriented triangle positions, UVs and requested compiled color bytes.
+
+```sh
+ctest --test-dir build/release -R '^(workbench_patches|workbench_lights|game_catalog|workbench|workbench_window|workbench_preview|game_profiles)$' --output-on-failure -j 2
+python tests/workbench_patches.py --test build/release/bin/workbench_patches_test --compiler build/release/bin/q3mapx --work-dir build/release/tests/workbench-patches
+```
+
+Use `.exe` on Windows. The harness sets `QT_QPA_PLATFORM=offscreen`; it paints
+owned widget trees into images without OS capture or input injection. Cases
+check project/snapshot persistence, default compatibility, older compiler and
+read-only profile guards, malformed/oversized/truncated JSON, cancellation,
+supersession, a 20,000-row review and compact/full layouts in both themes.
+Native source and shader assets remain independent copies in the test folder.
+
+For sanitizers, enable the established local `Q3MAPX_BUILD_GUI=ON` override and
+build the targets needed for the selected groups. Keep Debug assertions and the
+existing `ASAN_OPTIONS=detect_leaks=0` configuration. The ordinary sanitizer
+preset remains Qt-free. [Recorded evidence](validation/workbench-patch-recovery.json)
+identifies tested binaries, groups, cases, logs and widget previews.
+
 ## Task commits
 
 Complete a coherent task, run its relevant checks, update `docs/PROGRESS.md`, and

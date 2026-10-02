@@ -31,6 +31,8 @@ It distinguishes compiled channels from original paint and baked lighting.
 controls/settings, including triangle-only sources. [Triangle fitting](TRIANGLE-PATCH-RECOVERY.md)
 also reconstructs eligible archive-free quadratic grids with explicit sampled-data
 provenance. Arbitrary/decimated meshes and lost original compile context remain open.
+The [workbench patch page](WORKBENCH.md#patch-recovery) exposes these policies,
+sampling/work limits and a bounded report review with separate evidence categories.
 Recover the closest supported recreation of the author's MAP: editable geometry,
 organization, materials,
 visibility behavior and source lighting. Keep exact extraction available alongside

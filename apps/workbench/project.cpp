@@ -27,6 +27,8 @@ QJsonObject Project::toJson() const {
         {"mesh_patch_steps",meshPatchSteps},{"brush_order",brushOrder},
         {"detail_policy",detailPolicy},{"group_policy",groupPolicy},
         {"detail_work_limit",detailWorkLimit},{"group_work_limit",groupWorkLimit},
+        {"patch_recovery",patchRecovery},{"patch_colors",patchColors},
+        {"patch_color_subdivisions",patchColorSubdivisions},{"patch_fit_work_limit",patchFitWorkLimit},
         {"light_fit",lightFit.toJson()},{"apply_light_report",applyLightReport},
         {"light_report",lightReport},{"light_report_sha256",lightReportHash},
         {"bsp_options",QJsonArray::fromStringList(bspOptions)},{"vis_options",QJsonArray::fromStringList(visOptions)},
@@ -45,6 +47,7 @@ Project Project::fromJson(const QJsonObject& o){
     string("backend",p.backend); string("map_format",p.mapFormat);
     string("brush_order",p.brushOrder);
     string("detail_policy",p.detailPolicy); string("group_policy",p.groupPolicy);
+    string("patch_recovery",p.patchRecovery); string("patch_colors",p.patchColors);
     string("light_report",p.lightReport); string("light_report_sha256",p.lightReportHash);
     if(o.contains("light_fit")) {
         if(!o["light_fit"].isObject()) fail("Invalid light fitting settings");
@@ -65,6 +68,8 @@ Project Project::fromJson(const QJsonObject& o){
     integer("mesh_patch_steps",p.meshPatchSteps,1,32);
     integer("detail_work_limit",p.detailWorkLimit,1,100'000'000);
     integer("group_work_limit",p.groupWorkLimit,1,100'000'000);
+    integer("patch_color_subdivisions",p.patchColorSubdivisions,1,32);
+    integer("patch_fit_work_limit",p.patchFitWorkLimit,1,1'000'000'000);
     const auto list=[&](const char* key,QStringList& values){
         if (!o.contains(key)) return;
         if (!o[key].isArray()) fail(QString("Invalid option list: ")+key);
@@ -81,6 +86,9 @@ Project Project::fromJson(const QJsonObject& o){
     if (!QStringList{"legacy","cells"}.contains(p.detailPolicy)) fail("Unknown recovery detail policy");
     if (!QStringList{"none","surfaces"}.contains(p.groupPolicy)) fail("Unknown recovery group policy");
     if (p.groupPolicy=="surfaces" && p.brushOrder!="rebuild") fail("Surface grouping requires rebuild brush order");
+    if (!QStringList{"none","source","fit","auto"}.contains(p.patchRecovery)) fail("Unknown patch recovery policy");
+    if (!QStringList{"none","alpha","rgba"}.contains(p.patchColors)) fail("Unknown patch color policy");
+    if (p.patchColorSubdivisions & (p.patchColorSubdivisions-1)) fail("Patch color subdivisions must be a power of two");
     return p;
 }
 Project Project::load(const QString& path){
@@ -119,6 +127,11 @@ QStringList Project::validate(const QString& workflow) const {
     if (!QStringList{"legacy","cells"}.contains(detailPolicy)) errors << "Unknown recovery detail policy.";
     if (!QStringList{"none","surfaces"}.contains(groupPolicy)) errors << "Unknown recovery group policy.";
     if (groupPolicy=="surfaces" && brushOrder!="rebuild") errors << "Surface grouping requires rebuild brush order.";
+    if (!QStringList{"none","source","fit","auto"}.contains(patchRecovery)) errors << "Unknown patch recovery policy.";
+    if (!QStringList{"none","alpha","rgba"}.contains(patchColors)) errors << "Unknown patch color policy.";
+    if (patchColorSubdivisions<1 || patchColorSubdivisions>32 || (patchColorSubdivisions & (patchColorSubdivisions-1)))
+        errors << "Patch color subdivisions must be 1, 2, 4, 8, 16 or 32.";
+    if (patchFitWorkLimit<1 || patchFitWorkLimit>1'000'000'000) errors << "Patch fitting work limit must be between 1 and 1000000000.";
     if (detailWorkLimit<1 || detailWorkLimit>100'000'000 || groupWorkLimit<1 || groupWorkLimit>100'000'000)
         errors << "Recovery analysis work limits must be between 1 and 100000000.";
     if (workers<0 || workers>1024 || minimapSize<1 || minimapSize>8192 || minimapSamples<1 || minimapSamples>256)
@@ -161,6 +174,9 @@ QVector<Job> buildPlan(const Project& p,const QString& workflow,const QString& d
         if (p.detailPolicy=="cells") options << "-detail-policy" << "cells" << "-detail-max-work" << QString::number(p.detailWorkLimit);
         if (p.groupPolicy=="surfaces") options << "-group-policy" << "surfaces" << "-group-max-work" << QString::number(p.groupWorkLimit);
         if (p.applyLightReport) options << "-light-proposals" << output.filePath("selected-light-report.json");
+        if (p.patchRecovery!="none") options << "-patch-recovery" << p.patchRecovery;
+        if (p.patchColors!="none") options << "-patch-colors" << p.patchColors << "-patch-color-subdivisions" << QString::number(p.patchColorSubdivisions);
+        if (p.patchRecovery=="fit" || p.patchRecovery=="auto") options << "-patch-fit-work" << QString::number(p.patchFitWorkLimit);
         add("DECOMPILE",options,staged,output.filePath("recovered.map"));
     }
     if(workflow=="light-fit") {

@@ -61,6 +61,9 @@ int main(int argc, char** argv) {
         require(profile.supportsRebuildOrder()==profile.nativeWrite,"Rebuild order capability does not match the current compiler");
         require(profile.recoveryDetailPolicies.contains("legacy") && profile.recoveryGroupPolicies.contains("none"),"Current catalog omitted baseline inference policies");
         require(profile.supportsCellDetail()==profile.nativeWrite && profile.supportsSurfaceGroups()==profile.nativeWrite,"Inference capabilities do not match the current compiler");
+        require(profile.recoveryPatchPolicies.contains("none") && profile.recoveryPatchColors.contains("none"),"Baseline patch capability missing");
+        for(const auto* policy:{"source","fit","auto"}) require(profile.recoveryPatchPolicies.contains(policy)==profile.nativeWrite,"Patch recovery capability does not match native writing");
+        for(const auto* policy:{"alpha","rgba"}) require(profile.recoveryPatchColors.contains(policy)==profile.nativeWrite,"Patch color capability does not match native writing");
     }
     for(const auto* id:{"alice","fakk2","q3-ihv","q3test44","q3test45"}) {
         const auto* profile=catalog.find(id);
@@ -90,6 +93,10 @@ int main(int argc, char** argv) {
                 && catalog.find("fixture")->recoveryDetailPolicies==QStringList{"legacy"}
                 && catalog.find("fixture")->recoveryGroupPolicies==QStringList{"none"},"Older catalog enabled inference");
         require(!catalog.find("fixture")->recoveryLightProposals && !catalog.find("fixture")->workflows.contains("light-fit"),"Older catalog enabled light recovery");
+        require(catalog.find("fixture")->recoveryPatchPolicies==QStringList{"none"} && catalog.find("fixture")->recoveryPatchColors==QStringList{"none"},"Older catalog enabled patch recovery");
+        require(!workbench::patchRecoverySupportError(catalog.find("fixture"),"auto","none").isEmpty()
+            && !workbench::patchRecoverySupportError(catalog.find("fixture"),"none","alpha").isEmpty()
+            && workbench::patchRecoverySupportError(catalog.find("fixture"),"none","none").isEmpty(),"Old compiler patch guard failed");
     }
     qputenv("Q3MAPX_TEST_CATALOG_MODE","slow"); catalog.refresh(QCoreApplication::applicationFilePath());
     qputenv("Q3MAPX_TEST_CATALOG_MODE","valid"); catalog.refresh(QCoreApplication::applicationFilePath()); finish(catalog);
@@ -119,7 +126,7 @@ int main(int argc, char** argv) {
         catch (const std::exception&) { rejected = true; }
         require(rejected, "Malformed catalog metadata accepted");
     }
-    for(const auto* key:{"recovery_brush_orders","recovery_detail_policies","recovery_group_policies"}) {
+    for(const auto* key:{"recovery_brush_orders","recovery_detail_policies","recovery_group_policies","recovery_patch_policies","recovery_patch_colors"}) {
         QJsonArray large; for(int i=0;i<33;++i) large.append(QString("policy%1").arg(i));
         for(const auto& value:QJsonArray{"policy",QJsonArray{"one","one"},QJsonArray{"one",17},
                 QJsonArray{"bad identifier"},large,QJsonArray{"one\n"},QJsonValue(QJsonValue::Null)}) {

@@ -12,6 +12,7 @@ struct GameProfile {
     QStringList aliases, workflows;
     QStringList recoveryBrushOrders{"bsp"}; // Catalogs before this option retain ordinary export.
     QStringList recoveryDetailPolicies{"legacy"}, recoveryGroupPolicies{"none"};
+    QStringList recoveryPatchPolicies{"none"}, recoveryPatchColors{"none"};
     int bspVersion = 0;
     bool nativeWrite = false;
     bool recoveryLightProposals = false;
@@ -21,6 +22,7 @@ struct GameProfile {
 };
 QVector<GameProfile> parseGameCatalog(const QByteArray& bytes);
 QString recoverySupportError(const GameProfile* profile, const QString& order, const QString& detail, const QString& groups);
+QString patchRecoverySupportError(const GameProfile* profile, const QString& policy, const QString& colors);
 
 class GameCatalog : public QObject {
     Q_OBJECT

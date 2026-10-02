@@ -77,6 +77,10 @@ restored count and verified geometry binding. It explicitly does not claim autho
 authentication or restoration of original compile context. Output uses the
 existing staged MAP/report publication and rollback mechanism.
 
+The [workbench patch page](WORKBENCH.md#patch-recovery) exposes source/automatic
+recovery and shows retained-source counts separately from fitted geometry and
+compiled native colors. It reads the report's binding claim, not the archive itself.
+
 ## Verification
 
 ```sh

@@ -60,6 +60,8 @@ with its discovery failure shown beside the selection.
   is independent of the project source; no game assets are needed.
 - Light recovery: fit missing point lights or spotlights, review scores and target
   proposals, then select a qualified report for MAP export.
+- Patch recovery: restore retained painted sources, fit eligible triangle grids,
+  recover native alpha/RGBA and review the compiler's evidence and skip reasons.
 - View: light/dark themes. Standard Qt focus navigation and label mnemonics apply.
 
 **Ctrl+N/O/S** create/open/save projects, **Ctrl+Shift+S** saves a copy,
@@ -211,6 +213,51 @@ selection applies the report's complete qualified set and fixed dependencies;
 per-light editing/exclusion, spatial overlays and joint point/spot fitting remain
 planned. General real-map accuracy and unknown bake calibration remain open.
 
+## Patch recovery
+
+Development builds after 0.3.0 add **07 Patch recovery**. Choose a BSP, matching
+assets and its game profile in Project. The Settings tab offers:
+
+- **Ordinary patches**: the unchanged default geometry export.
+- **Retained sources only**: restore pre-modifier controls, paint and settings
+  from a matching [source archive](PATCH-SOURCE.md). A missing or stale archive
+  fails recovery before MAP publication.
+- **Fit triangle meshes**: infer eligible nonsolid quadratic grids from compiled
+  triangles. See [the fitting contract](TRIANGLE-PATCH-RECOVERY.md).
+- **Sources, then triangle fitting**: restore archived patches first and fit
+  remaining eligible meshes. A stale archive remains an error.
+
+Compiled channels are independently **None**, **Alpha** or **RGBA**. Alpha leaves
+RGB lighting to rebaking; RGBA freezes stored RGB as material color, which can
+include baked lighting. Archived patches retain their authored paint/settings.
+Native color sampling accepts powers of two from 1 to 32, default 16; fitted
+triangles use their observed grid. The fitting work limit defaults to 50,000,000
+and accepts 1–1,000,000,000 operations. Exhausted candidates are reported and
+skipped; this is not an elapsed-time limit.
+
+**Recover MAP** runs decompilation through the normal queue in a separate run
+folder. Completion loads its recovery report into **Results**. Existing reports
+can also be opened with Browse. Results separate retained sources, triangle fits
+and native color extraction; filter accepted or skipped decisions and select a
+row for supporting surface IDs, grid dimensions, errors and report SHA-256.
+Counts include omitted report records. Source restoration is currently one
+aggregate row; it does not provide per-control or spatial inspection.
+
+Reports load asynchronously with cancellation and stale-result protection. The
+reader checks schema, UTF-8, duplicate properties, bounded depth/size, evidence
+claims and count consistency. Limits are 64 MiB, two million JSON values and
+10,000 records per triangle/native category. These are checks of reported data;
+the viewer does not authenticate provenance, recheck a BSP binding or establish
+rebuild equivalence. Independent compiler comparisons are separate tests.
+
+Selected modes/channels require advertised compiler/profile support and native
+BSP writing. Unsupported saved choices remain visible with guidance, and all
+run/queue/menu paths reject them before staging inputs. Older compilers retain
+ordinary recovery. Schema 1 adds optional `patch_recovery`, `patch_colors`,
+`patch_color_subdivisions` and `patch_fit_work_limit`; projects without these
+fields retain previous command arguments. Only decompile jobs receive active
+patch arguments. Project saves and run snapshots retain all four settings.
+
 ## Validation and limits
 
 Development builds also provide **Analyze geometry · Quake3e GL** and **Optimize
@@ -255,6 +302,12 @@ precision, legacy compiler gates, report/source changes, malformed/oversized
 reports, unavailable scores, asynchronous cancellation and compact/full layouts
 in both themes. See [the recorded results](validation/workbench-light-recovery.json)
 and [reproduction instructions](DEVELOPMENT.md#workbench-light-recovery).
+Patch-recovery tests run ten Q3/JA source, fit, automatic and native-color cases
+through the actual window/queue, then independently rebuild and relight their
+MAPs. They check source preservation, old-compiler/menu guards, saved settings,
+malformed and truncated reports, a 20,000-row review, asynchronous cancellation
+and both themes/window sizes. See [the evidence](validation/workbench-patch-recovery.json)
+and [reproduction instructions](DEVELOPMENT.md#workbench-patch-recovery).
 The GUI can render its own widget tree directly to PNG:
 
 ```sh

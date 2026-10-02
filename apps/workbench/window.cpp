@@ -3,6 +3,7 @@
 #include "inspection_page.h"
 #include "hardware_page.h"
 #include "light_recovery_page.h"
+#include "patch_recovery_page.h"
 #include <QtWidgets>
 #include <QDesktopServices>
 #include <QJsonDocument>
@@ -37,12 +38,13 @@ Window::Window(const QString& stateDirectory):stateDirectory_(stateDirectory),qu
     header->addWidget(cancel_); header->addWidget(run_); outer->addLayout(header);
     auto* body=new QHBoxLayout; body->setSpacing(22);
     navigation_=new QListWidget; navigation_->setObjectName("navigation"); navigation_->setFixedWidth(172);
-    navigation_->addItems({"01   Project","02   Build queue","03   History","04   Hardware","05   BSP inspection","06   Light recovery"});
+    navigation_->addItems({"01   Project","02   Build queue","03   History","04   Hardware","05   BSP inspection","06   Light recovery","07   Patch recovery"});
     navigation_->setSpacing(5); navigation_->setCurrentRow(0); navigation_->setAccessibleName("Workbench pages");
     pages_=new QStackedWidget; pages_->addWidget(configuration()); pages_->addWidget(queuePage()); pages_->addWidget(historyPage());
     hardware_=new HardwarePage; pages_->addWidget(hardware_);
     inspection_=new InspectionPage; pages_->addWidget(inspection_);
     lightRecovery_=new LightRecoveryPage; pages_->addWidget(lightRecovery_);
+    patchRecovery_=new PatchRecoveryPage; pages_->addWidget(patchRecovery_);
     body->addWidget(navigation_); body->addWidget(pages_,1); outer->addLayout(body,1);
     auto* footer=new QHBoxLayout; status_=new QLabel("Ready · configure a project to begin");
     progress_=new QProgressBar; progress_->setFixedWidth(240); progress_->setRange(0,1); progress_->setValue(0); progress_->setTextVisible(false);
@@ -64,6 +66,8 @@ Window::Window(const QString& stateDirectory):stateDirectory_(stateDirectory),qu
     connect(navigation_,&QListWidget::currentRowChanged,pages_,&QStackedWidget::setCurrentIndex);
     connect(run_,&QPushButton::clicked,this,[this]{ enqueue(true); }); connect(cancel_,&QPushButton::clicked,&queue_,&JobQueue::cancel);
     connect(lightRecovery_,&LightRecoveryPage::settingsChanged,this,&Window::updatePreview);
+    connect(patchRecovery_,&PatchRecoveryPage::settingsChanged,this,&Window::updatePreview);
+    connect(patchRecovery_,&PatchRecoveryPage::recoverRequested,this,[this]{ workflow_->setCurrentIndex(workflow_->findData("decompile")); enqueue(true); });
     connect(lightRecovery_,&LightRecoveryPage::eligibilityChanged,this,&Window::refreshGameHint);
     connect(lightRecovery_,&LightRecoveryPage::fitRequested,this,[this]{ workflow_->setCurrentIndex(workflow_->findData("light-fit")); enqueue(true); });
     connect(lightRecovery_,&LightRecoveryPage::useReportRequested,this,[this]{
@@ -77,6 +81,7 @@ Window::Window(const QString& stateDirectory):stateDirectory_(stateDirectory),qu
         recordHistory(); selectJob();
         const auto& job=queue_.jobs()[index];
         if(job.label=="LIGHT-FIT" && job.state=="Succeeded") lightRecovery_->reviewReport(job.outputPath);
+        if(job.label=="DECOMPILE" && job.state=="Succeeded") patchRecovery_->reviewReport(job.outputPath+".recovery.json");
     });
     connect(&queue_,&JobQueue::idle,this,[this]{
         int succeeded=0,failed=0,remaining=0;
@@ -309,7 +314,7 @@ Project Window::project() const {
     p.meshPatchSteps=patchSteps_->value();
     p.reproducibleVis=reproducibleVis_->isChecked();
     p.bspOptions=optionLines(bspOptions_); p.visOptions=optionLines(visOptions_); p.lightOptions=optionLines(lightOptions_);
-    lightRecovery_->applyTo(p); return p;
+    lightRecovery_->applyTo(p); patchRecovery_->applyTo(p); return p;
 }
 void Window::setProject(const Project& p){
     populating_=true;
@@ -324,6 +329,7 @@ void Window::setProject(const Project& p){
     reproducibleVis_->setChecked(p.reproducibleVis);
     bspOptions_->setPlainText(p.bspOptions.join('\n')); visOptions_->setPlainText(p.visOptions.join('\n')); lightOptions_->setPlainText(p.lightOptions.join('\n'));
     lightRecovery_->setProject(p);
+    patchRecovery_->setProject(p);
     workflow_->setCurrentIndex(QFileInfo(p.source).suffix().compare("bsp",Qt::CaseInsensitive)==0 ? 5 : 0);
     populating_=false; updatePreview(); dirty_=false; setWindowModified(false); refreshGames();
 }
@@ -362,6 +368,8 @@ void Window::enqueue(bool start){
             if(!error.isEmpty()) throw std::runtime_error(error.toStdString());
             const auto lightError=lightRecovery_->applicationError();
             if(!lightError.isEmpty()) throw std::runtime_error(lightError.toStdString());
+            const auto patchError=patchRecovery_->applicationError();
+            if(!patchError.isEmpty()) throw std::runtime_error(patchError.toStdString());
         }
         if(!catalog_.profiles().isEmpty()) {
             if(!profile) throw std::runtime_error("Select a game profile supported by this compiler.");
@@ -447,11 +455,12 @@ void Window::refreshGameHint(){
         enable(workflow_,value,profile && profile->workflows.contains(value));
     lightRecovery_->setContext(QDir::fromNativeSeparators(source_->text()),profile?profile->id:game_->currentText(),
         profile && profile->nativeWrite && profile->workflows.contains("light-fit"),profile && profile->recoveryLightProposals);
+    patchRecovery_->setContext(QDir::fromNativeSeparators(source_->text()),profile);
     enable(brushOrder_,"rebuild",canRebuild); enable(brushOrder_,"bsp",!grouped);
     enable(detailPolicy_,"cells",canDetail); enable(groupPolicy_,"surfaces",canGroup);
     detailWork_->setEnabled(cells && canDetail); groupWork_->setEnabled(grouped && canGroup);
     const auto recoveryError=recoverySupportError(profile,brushOrder_->currentData().toString(),detailPolicy_->currentData().toString(),groupPolicy_->currentData().toString());
-    const bool recoveryAllowed=workflow_->currentData()!="decompile" || (recoveryError.isEmpty() && lightRecovery_->applicationError().isEmpty());
+    const bool recoveryAllowed=workflow_->currentData()!="decompile" || (recoveryError.isEmpty() && lightRecovery_->applicationError().isEmpty() && patchRecovery_->applicationError().isEmpty());
     if(!recoveryError.isEmpty()) recoveryHint_->setText(recoveryError);
     else if(grouped) recoveryHint_->setText("Groups require Rebuild order. Shared surfaces suggest assemblies; detail flags are evaluated separately.");
     else if(cells) recoveryHint_->setText("Brush interiors and materials guide detail proposals. Uncertain cases retain legacy flags; rebuilt visibility is not guaranteed.");

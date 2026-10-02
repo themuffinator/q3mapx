@@ -81,6 +81,8 @@ See [decompilation options and limits](docs/DECOMPILATION.md). The traditional
 - [Retained original patch paint](docs/PATCH-SOURCE.md) and bounded
   [triangle-to-patch reconstruction](docs/TRIANGLE-PATCH-RECOVERY.md), with separate
   source/inference provenance, compiled alpha/RGBA policies and rebuild checks.
+  The [workbench patch page](docs/WORKBENCH.md#patch-recovery) provides saved
+  settings, capability checks and a bounded recovery report review.
 - [Multi-triangle UV fitting](docs/UV-RECOVERY.md) with seam/uncertainty diagnostics,
   precise full texture offsets and patch controls, bounded work and an explicit
   compatibility policy for previous texture recovery.

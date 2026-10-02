@@ -13,6 +13,8 @@ struct Project {
     QString brushOrder = "bsp";
     QString detailPolicy = "legacy", groupPolicy = "none";
     int detailWorkLimit = 50'000'000, groupWorkLimit = 50'000'000;
+    QString patchRecovery = "none", patchColors = "none";
+    int patchColorSubdivisions = 16, patchFitWorkLimit = 50'000'000;
     int workers = 0, gpuDevice = -1, minimapSize = 1024, minimapSamples = 4, meshPatchSteps = 8;
     bool reproducibleVis = true;
     LightFitSettings lightFit;

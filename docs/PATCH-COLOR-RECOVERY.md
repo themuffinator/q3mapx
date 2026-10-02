@@ -101,6 +101,10 @@ inference-report limit also applies. MAP and report use the existing checked,
 staged publication with rollback; this does not add a two-file power-loss or
 concurrent-writer guarantee. Invalid options fail before publication.
 
+The [workbench patch page](WORKBENCH.md#patch-recovery) now exposes alpha/RGBA
+and native sampling controls, saves them in project/run snapshots and reviews
+native decisions separately from retained sources and inferred triangle grids.
+
 ## Verification
 
 ```sh

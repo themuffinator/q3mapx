@@ -110,5 +110,6 @@ See [platforms and evidence](validation/patch-reconstruction.json).
 These checks do not prove identical author grouping, normals, inherited settings,
 lightmap atlases, arbitrary shader lighting, dynamic effects or runtime LOD seams.
 Finer geometry refinement or different compiler/material settings can change a
-rebuild. Native GUI recovery controls and broader engine/game qualification
-remain separate work. Original MAP files remain the authoritative source.
+rebuild. The [workbench patch page](WORKBENCH.md#patch-recovery) now provides
+policy/budget controls and report review. Spatial overlays and broader engine/game
+qualification remain separate work. Original MAP files remain the authoritative source.

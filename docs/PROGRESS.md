@@ -3595,3 +3595,46 @@ No new unrelated issue was found. The earlier material-preview strict pixel gate
 remains 66/68; this round's neutral compiler-rebuild comparison does not change
 that qualification. Existing raw-sidecar publication/parser audits and previously
 blocked cleanup targets remain unchanged.
+
+## 2026-10-02 — Native patch recovery settings and report review
+
+Added **07 Patch recovery** to the native workbench. Saved project/run settings
+now select retained sources, triangle fitting or automatic recovery, independently
+choose compiled alpha/RGBA, and configure native sampling and fitting work.
+Defaults preserve prior command arguments. Only MAP decompilation receives active
+patch options; current compiler catalogs advertise modes/channels, while older
+compilers retain ordinary recovery. Unsupported saved choices remain visible and
+all run/menu/queue paths reject them before creating a run directory.
+
+Successful MAP export loads a bounded asynchronous report review. It separates
+archived controls/settings from triangle-fit evidence and compiled native colors,
+filters accepted/skipped decisions and shows supporting surfaces, control grids,
+errors and the report hash. Counts retain omitted-record totals. The reader
+validates types, evidence claims, UTF-8, duplicate keys, size/depth and counts;
+cancelled or superseded reads cannot replace the newest review. Source archives
+currently appear as an aggregate row. These checks do not authenticate source
+authorship, recheck BSP bindings or prove general rebuild equivalence.
+
+Validation: seven groups passed on Windows release, Linux release and Linux
+ASan/UBSan with the local GUI-on override: `workbench_patches`, `workbench_lights`,
+`game_catalog`, `workbench`, `workbench_window`, `workbench_preview` and
+`game_profiles`. The new ten-case Q3/JA matrix runs real queued recovery from
+poisoned-source fixtures and independently rebuilds/relights the output. Oriented
+triangle positions, UVs and requested color bytes match. All 30 platform/case
+runs preserve original and staged BSP bytes. Tests also cover malformed reports,
+oversized files, legacy compiler/menu guards, settings/snapshots, asynchronous
+supersession/cancellation and a 20,000-row report with seven omitted decisions.
+Owned-widget renders cover both themes, Settings/Results and 1380×920/1024×720
+windows, with 80 images per platform. No OS capture or user-input control occurred.
+
+Updated the plan, recovery guides and reproduction instructions. See
+[recorded validation](validation/workbench-patch-recovery.json) for source/binary
+hashes, case results and evidence locations. Useful build/test logs and the
+evidence recorder remain under `.agents/tmp/workbench-patches/`; generated native
+fixtures and widget images are in each build's `tests/workbench-patches/`.
+Disposable large and oversized reader fixtures are removed by the harness.
+
+No new unrelated issue was found. The existing material-preview strict pixel
+qualification remains 66/68, and raw-sidecar publication/parser audits remain open.
+Spatial/per-control review, arbitrary mesh reconstruction and broader engine/game
+qualification are still separate work.

@@ -84,6 +84,8 @@ QVector<GameProfile> parseGameCatalog(const QByteArray& bytes) {
         policies("recovery_brush_orders",profile.recoveryBrushOrders);
         policies("recovery_detail_policies",profile.recoveryDetailPolicies);
         policies("recovery_group_policies",profile.recoveryGroupPolicies);
+        policies("recovery_patch_policies",profile.recoveryPatchPolicies);
+        policies("recovery_patch_colors",profile.recoveryPatchColors);
         if(source.contains("recovery_light_proposals")) {
             if(!source["recovery_light_proposals"].isBool()) invalid();
             profile.recoveryLightProposals=source["recovery_light_proposals"].toBool() && profile.nativeWrite;
@@ -108,6 +110,14 @@ QString recoverySupportError(const GameProfile* profile, const QString& order, c
         if (!profile->supportsRebuildOrder())
             return "The selected compiler does not advertise rebuild-order recovery. Update the compiler or select BSP order.";
     }
+    return {};
+}
+
+QString patchRecoverySupportError(const GameProfile* profile,const QString& policy,const QString& colors) {
+    if(policy!="none" && (!profile || !profile->nativeWrite || !profile->recoveryPatchPolicies.contains(policy)))
+        return "The selected compiler/profile does not advertise this patch recovery mode. Choose Ordinary patches or a supported compiler/profile.";
+    if(colors!="none" && (!profile || !profile->nativeWrite || !profile->recoveryPatchColors.contains(colors)))
+        return "The selected compiler/profile does not advertise patch color recovery. Choose No compiled colors or a supported compiler/profile.";
     return {};
 }
 

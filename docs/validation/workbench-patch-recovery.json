@@ -1,0 +1,755 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-02T00:25:26.748841+00:00",
+  "base_revision": "655757ff77796eeec36e4c170799180b12a2f8db",
+  "scope": "Native patch recovery settings and read-only report review. Compiler extraction/fitting algorithms are unchanged; the game catalog adds capability metadata.",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "75e1c052471957e623f8f656c0ff407e617a3bfe5552e47c3015be9e45dbb565",
+    "CMakePresets.json": "11464c160caf523f92eee8411f1a183a887b6927fa74de29d22210caf8a8dc3b",
+    "tools/quake3/q3map2/games.cpp": "0ffdf77c0f8a9e36a846ceccc50a65b5b946bc3e23860619e4cb4ff4b3d6c649",
+    "apps/workbench/bsp_inspector.cpp": "c6c8a6b45e6381ab89bf0d89aec6077f2e139a79b3180369334651276abbf272",
+    "apps/workbench/device_inventory.cpp": "250f53da1818509141d19f96c16edde70d18f5ffa8a7fe72f6253c1c4acf1fbb",
+    "apps/workbench/game_catalog.cpp": "d40cec488a12fc0abf0fbbed3fe9800d5887bbcb191ae21a8416ea70dd99d5a4",
+    "apps/workbench/hardware_page.cpp": "3dabd0cc8d3cc48723df0fc9eb0bbde3d04cfa0b0952696c4b7173590f706e20",
+    "apps/workbench/inspection_page.cpp": "622e1dea87c1aeca2eb3693b6540cbdffb3dfd565451b3765d8e541cf50e21c6",
+    "apps/workbench/job_queue.cpp": "c468f02ff5c02dfbdffcbd8f0611a3c50c81ba8eb05da873a88bb52ade130a75",
+    "apps/workbench/light_fit.cpp": "dc84a69f4a967592d87dc04d23590d283fcbc59145153bcba81de9b4313b7f51",
+    "apps/workbench/light_recovery_page.cpp": "46c693c178b22f6135630b772d8a4dd206068c19d619a0ad6e4b9bcd56c4f060",
+    "apps/workbench/main.cpp": "b04cbabe7c0a1e6f835c01a40d3ec0734c8f2d04542e55c41696aaad57067a82",
+    "apps/workbench/patch_recovery_page.cpp": "670e2d6e48cde3e57261a9e4d4a334522a3d24ffe30739b784830b516fe767c5",
+    "apps/workbench/patch_review.cpp": "c9ed8b9d670619c715f13f01f3670d8867d904187bf6738ea9c8adf28aa35c7d",
+    "apps/workbench/project.cpp": "f3465a9d5fb6c11d8ce59072f58939cd85b50b63cab7f671d4973b431d071091",
+    "apps/workbench/window.cpp": "bc35e96d2fb2d3528777ebb94c8e0ea5a3b73533a1b61d5e4ced095123bc939f",
+    "apps/workbench/bsp_inspector.h": "fd9011d157f2bdf14328053895b5135a789a335b3300aaaa09479c8a61f8dae4",
+    "apps/workbench/device_inventory.h": "eb44c7ad504700426592e252a41c86a1c7a25aa481575204f8e97bea89cb268c",
+    "apps/workbench/game_catalog.h": "0473aa8f8ce08a492e24407f6d5c963e8ea2c1c33cc4243ff3ada328aa71e103",
+    "apps/workbench/hardware_page.h": "49a36e47060a792e3b465392015f057b170b4fb3d70ae4c4327f4aef50dd0791",
+    "apps/workbench/inspection_page.h": "fc6e9892ababe43ada7fc5a355e316ee35b6edea754d304d09271cf81066b8a0",
+    "apps/workbench/job_queue.h": "0ff91cfff1a205d1e8a5e471edfac63d5166cedd7bd08965c80ba2acf858c742",
+    "apps/workbench/light_fit.h": "c115d99f3c3d27b835327d749bda74f153574febfa275e2f6c067860286398a9",
+    "apps/workbench/light_recovery_page.h": "3c06eaa9fc4a01b427d05bef8eb33cd87a193ff20c5cf1d7028ea56fe4aa579e",
+    "apps/workbench/patch_recovery_page.h": "aa8304dccf237c40cb9ae0d05a787477d916e066506287df60e4b9fa70bea505",
+    "apps/workbench/patch_review.h": "f7fac8483997684abea11ce0e162f0e8454cbfc26477862a70ba801e417ebc69",
+    "apps/workbench/project.h": "43a7ae9ec967e4242ac13bf96d01569dd2672a813e3970edd82874e2dd769ae3",
+    "apps/workbench/window.h": "7bfb475a84def6875b49175e323e4e9e6eb7f0bd15bc2659852fcf21218295b2",
+    "tests/workbench_patches.cpp": "824d7c897970cb27dd3b2114e8049ca9c6d3540486aaffb434db4a84f8df0a3f",
+    "tests/workbench_patches.py": "9769c8f4d8f62b9e3e9dde28f43ae9f0b895b49ce4655920dd6d20dcf8835cfb",
+    "tests/game_catalog.cpp": "2ce4dc811cd92d61e216cdbbe660a919f59c2483fbaa374af655444044777719",
+    "tests/fixtures.py": "5cc300117041bc22a719451f9915bca17cc5af10094521408538b850284436c7",
+    "tests/integration.py": "3bb8e703e9e898a4c079f6a52321941aeb54876a7eac7804b8e1069c1541dfb3",
+    "tests/patch_paint.py": "c8cd00217195b31978a9b5b283f0fcc81d3acac2c0fa5786922442184dc7e361",
+    "tests/patch_source.py": "749ddebf3bb6e9ab228f025b163cbc7f113ac06faa3a4018dadd294e4396f9ec",
+    "tests/patch_reconstruction.py": "5b37e83d67f267e1deb3cae03ffa1095a3781dc587f31c1113a23d4a81cb0e95"
+  },
+  "platforms": [
+    {
+      "platform": "windows",
+      "binaries": {
+        "q3mapx": {
+          "path": "build/release/bin/q3mapx.exe",
+          "sha256": "1e47b6d3dba9f2466a8565ff649a1f7dd237d87fa39a16a3a7c44f1b3a8700cf"
+        },
+        "q3mapx-workbench": {
+          "path": "build/release/bin/q3mapx-workbench.exe",
+          "sha256": "68e669b4e8d62d17b901745c5802f55b4b2008a19562dd1d4159dd7f17d1138b"
+        },
+        "workbench_patches_test": {
+          "path": "build/release/bin/workbench_patches_test.exe",
+          "sha256": "b0ca224aad7a5669b89dc55d1b505b32c4b40723855e81a8eedf98cce695f520"
+        }
+      },
+      "build_log": {
+        "path": ".agents/tmp/workbench-patches/build-windows-final.log",
+        "sha256": "3f9891a649f7461b45153910bb6e672a3c8e536f8fd311f18c6c3e3f18ab3c03"
+      },
+      "ctest": {
+        "path": ".agents/tmp/workbench-patches/tests-windows-final.log",
+        "sha256": "959c84cdeadfcd719b7096971afc399c729dd99288517390c3e633d7966c124d",
+        "passed": [
+          "workbench",
+          "workbench_lights",
+          "workbench_patches",
+          "game_profiles",
+          "game_catalog",
+          "workbench_preview",
+          "workbench_window"
+        ]
+      },
+      "native_queue_recovery_and_rebuild": {
+        "path": "build/release/tests/workbench-patches/validation.json",
+        "sha256": "625af16993040f1f8e3f3da1a048bfe795e2be13c733ab7ef1ed54ac63b15b6b",
+        "cases": [
+          {
+            "game": "quake3",
+            "mode": "source",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 16,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "4c7dabf065c585bc117b91945732b86070e603f59be06ae56f06f87ac55df683"
+          },
+          {
+            "game": "quake3",
+            "mode": "fit",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "large_report_rows": 20000,
+              "malformed_report_rejections": 23,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "omitted_report_records": 7,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "e135b7d6ad1523826c151359f7679c6f8f54a741a0872ea82a3d4966474be9bb"
+          },
+          {
+            "game": "quake3",
+            "mode": "native",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 15,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "9985b79f454c3645180da6049e1f9a0aeccfb99e433a4d25ef3f996ca4b0511f"
+          },
+          {
+            "game": "quake3",
+            "mode": "auto-source",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 22,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "a780782cd74387d1339ffb98f28ada2b6be122271e9803828b60ba12ff5029a4"
+          },
+          {
+            "game": "quake3",
+            "mode": "auto-fit",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 22,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "60445555f842b1c88e216fe2708742a86579b02ec26e399ec50e36bce8f68e40"
+          },
+          {
+            "game": "ja",
+            "mode": "source",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 16,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "57dbf27bb23be434d014d2b56da06d266cfb96f5da095a261f713af7ad5aa7b8"
+          },
+          {
+            "game": "ja",
+            "mode": "fit",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 22,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "76e515d11e7d430074c2dd27db2475e4726b2aa64da9df2bb3eec05b4ed61036"
+          },
+          {
+            "game": "ja",
+            "mode": "native",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 15,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "e48e91afaf3dfa427b7531bfcb6679f4d27b4b207fccc4eba6b765023067c04e"
+          },
+          {
+            "game": "ja",
+            "mode": "auto-source",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 22,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "b1181e7f6a518c3818a9a8bdb97542b6d62a26a47b7249b15dfbd9a193694763"
+          },
+          {
+            "game": "ja",
+            "mode": "auto-fit",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 22,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "53db1bbfaf02e98cb01f2484f6f74bbe2e1595e0aee2c332663bbdf035fadca5"
+          }
+        ]
+      },
+      "widget_previews": {
+        "count": 80,
+        "manifest_sha256": "0038a2c962611df75eacffc7fd1d6652a402e2faa0f2fbbf3fa1390d5e51e037",
+        "folder": "build/release/tests/workbench-patches",
+        "examples": [
+          {
+            "path": "build/release/tests/workbench-patches/quake3-fit/ui/patch-0-1024-0.png",
+            "sha256": "bb19c7f1a639871f6359b0fa233669e67f5441b8e0346a3bd1a1d63798e2062d"
+          },
+          {
+            "path": "build/release/tests/workbench-patches/quake3-fit/ui/patch-0-1024-1.png",
+            "sha256": "a36b88cf0e7a85f4a63210b9b9fc1bd8908f3de96f77e5046eb436be640f5fda"
+          },
+          {
+            "path": "build/release/tests/workbench-patches/quake3-fit/ui/patch-0-1380-0.png",
+            "sha256": "2ef1fdf1129d4dad72ce8fa8c5ee319ee83ecac009866580463c5504a947e249"
+          },
+          {
+            "path": "build/release/tests/workbench-patches/quake3-fit/ui/patch-0-1380-1.png",
+            "sha256": "0361ea22204bf3addec3271dac719e4c55668e9d1329d2999d69c01957e8d7ba"
+          },
+          {
+            "path": "build/release/tests/workbench-patches/quake3-fit/ui/patch-1-1024-0.png",
+            "sha256": "addcb73d0c868ba44c95727a8506093357fff3f068dfb313c04665484d26c7c2"
+          },
+          {
+            "path": "build/release/tests/workbench-patches/quake3-fit/ui/patch-1-1024-1.png",
+            "sha256": "9f2432adb5a9566c7533fb030a3bf17b708af4135ce996cc3abebfd27a60f002"
+          },
+          {
+            "path": "build/release/tests/workbench-patches/quake3-fit/ui/patch-1-1380-0.png",
+            "sha256": "a36687b5df09ebf2e316a761571c2a561770ee043c92c57537c01b0505c86e30"
+          },
+          {
+            "path": "build/release/tests/workbench-patches/quake3-fit/ui/patch-1-1380-1.png",
+            "sha256": "50ac935a6dc45a6d12800c71b61c207251b525f6e92db9f70b3972d8ba6d00bd"
+          }
+        ]
+      }
+    },
+    {
+      "platform": "linux",
+      "binaries": {
+        "q3mapx": {
+          "path": "build/linux-release/bin/q3mapx",
+          "sha256": "7a715fcf67a6274b59c39fd2163d79cabdabc62ce7c64e4b4ad3c39f8db7f85a"
+        },
+        "q3mapx-workbench": {
+          "path": "build/linux-release/bin/q3mapx-workbench",
+          "sha256": "ca644db0c9a201c68077cd9889f9b3cc2fe3c13adf9dd7cb7b72c19fb936f2b9"
+        },
+        "workbench_patches_test": {
+          "path": "build/linux-release/bin/workbench_patches_test",
+          "sha256": "99fb8479e59e9fb2fc8e4fe4d92c642239af95bb3469bb78e5e7be680c2688ed"
+        }
+      },
+      "build_log": {
+        "path": ".agents/tmp/workbench-patches/build-linux-final.log",
+        "sha256": "958c3d3717396f4fc106080b2ff323bbda322d6003420669789b205d96b0e66b"
+      },
+      "ctest": {
+        "path": ".agents/tmp/workbench-patches/tests-linux-final.log",
+        "sha256": "b5b099515e4232b2905290371a1ad091bf1c96514f4aa426314497113109caca",
+        "passed": [
+          "workbench",
+          "workbench_lights",
+          "workbench_patches",
+          "workbench_window",
+          "game_catalog",
+          "workbench_preview",
+          "game_profiles"
+        ]
+      },
+      "native_queue_recovery_and_rebuild": {
+        "path": "build/linux-release/tests/workbench-patches/validation.json",
+        "sha256": "3f0ed4de4c99c24f6e9b50153f94d457d2ced3d1d710c2bc7078542acf3e6190",
+        "cases": [
+          {
+            "game": "quake3",
+            "mode": "source",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 16,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "67f452b7bcd609730dc893dd367adf0bf45318556b8f1a5577cb366901df8781"
+          },
+          {
+            "game": "quake3",
+            "mode": "fit",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "large_report_rows": 20000,
+              "malformed_report_rejections": 23,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "omitted_report_records": 7,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "29f807a258703b1ec27ae0a1a294a95f3f2e836d2bf31e8ce3afff04ad5126c8"
+          },
+          {
+            "game": "quake3",
+            "mode": "native",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 15,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "3e80f104b05551f5cac07077b192cc39bd727d1ca85854043f6a437c43b51915"
+          },
+          {
+            "game": "quake3",
+            "mode": "auto-source",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 22,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "a92669bfa107c5b50386aae957480eff8b6afd9d42ae72b8e2a68e74f9bf5d12"
+          },
+          {
+            "game": "quake3",
+            "mode": "auto-fit",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 22,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "8289d01abc1e02f1328dacda3d366875328e2936b12ff2f8fcfb67bb8c5d4d80"
+          },
+          {
+            "game": "ja",
+            "mode": "source",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 16,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "e8662ab851966b35089760d544248d28799b1fe83fe1d445e135131dd7bda0c9"
+          },
+          {
+            "game": "ja",
+            "mode": "fit",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 22,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "d7fc674fcc1a707f4b809fb2889021772214c2f21c0fc2a5f2ccb4e07b638005"
+          },
+          {
+            "game": "ja",
+            "mode": "native",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 15,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "6191b10126a987d877b72c5091e906b21a294118921d2ea78996ff26bd4dede0"
+          },
+          {
+            "game": "ja",
+            "mode": "auto-source",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 22,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "d429e37d07f1e917f4ef04143c61a386be3862ceffffe6c0042423203a168731"
+          },
+          {
+            "game": "ja",
+            "mode": "auto-fit",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 22,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "deb290b465cbc87fdbfc25684703218c598b7cae0295e548f526096990cd24ee"
+          }
+        ]
+      },
+      "widget_previews": {
+        "count": 80,
+        "manifest_sha256": "1c9ca8610fd72f28d5fa6f9483a72f565fa80be62fcdaae920ce4102de0bf980",
+        "folder": "build/linux-release/tests/workbench-patches",
+        "examples": [
+          {
+            "path": "build/linux-release/tests/workbench-patches/quake3-fit/ui/patch-0-1024-0.png",
+            "sha256": "4e3b6733fde3b28efcfaa6c28c5f849ca16ec3d5f03b92cd215a1388f38f7e87"
+          },
+          {
+            "path": "build/linux-release/tests/workbench-patches/quake3-fit/ui/patch-0-1024-1.png",
+            "sha256": "6a8d68628d3dae909afb4bb0b664ba215e0a394968a8b4279d2eed0e365d618e"
+          },
+          {
+            "path": "build/linux-release/tests/workbench-patches/quake3-fit/ui/patch-0-1380-0.png",
+            "sha256": "9000a340947c2915b99ec2807b9fcf239d33abee8c64846b516e4862477f142f"
+          },
+          {
+            "path": "build/linux-release/tests/workbench-patches/quake3-fit/ui/patch-0-1380-1.png",
+            "sha256": "667f145bb9c660461de5cf1b60f8a78cdb6539d939dc2a1bb994d3eebe19b54e"
+          },
+          {
+            "path": "build/linux-release/tests/workbench-patches/quake3-fit/ui/patch-1-1024-0.png",
+            "sha256": "768fe1932d61cfac16b0dd31a6405449ede3261c81e949cb2e6da92526e19cb4"
+          },
+          {
+            "path": "build/linux-release/tests/workbench-patches/quake3-fit/ui/patch-1-1024-1.png",
+            "sha256": "5730ef8d85c26c5a0a5e64a1337aa48b574a3828a0f4315d216a9ae26f087754"
+          },
+          {
+            "path": "build/linux-release/tests/workbench-patches/quake3-fit/ui/patch-1-1380-0.png",
+            "sha256": "741689407cf9f196b89cbc9df8a71d79c0926d8c34175e6cf984a8ad74b98980"
+          },
+          {
+            "path": "build/linux-release/tests/workbench-patches/quake3-fit/ui/patch-1-1380-1.png",
+            "sha256": "ff4a8f74b7932183bcaa9c44b0b3745a6950e7fa808167e58d2e185f172c59a2"
+          }
+        ]
+      }
+    },
+    {
+      "platform": "sanitized",
+      "binaries": {
+        "q3mapx": {
+          "path": "build/linux-sanitized/bin/q3mapx",
+          "sha256": "0ddbc5c09a0aa021b40bc82dc4cf2d54b401abdfe2cde929df9ef661d55c6625"
+        },
+        "q3mapx-workbench": {
+          "path": "build/linux-sanitized/bin/q3mapx-workbench",
+          "sha256": "57e568888c0e0dac23f49ab1a293e7c04b21ee3a67f9c9af858a21ee8c989aef"
+        },
+        "workbench_patches_test": {
+          "path": "build/linux-sanitized/bin/workbench_patches_test",
+          "sha256": "408dee2f25b2be9525dc6eda76dbf5b4c4100b5811be84db8a65445ed7b60559"
+        }
+      },
+      "build_log": {
+        "path": ".agents/tmp/workbench-patches/build-sanitized-final.log",
+        "sha256": "df248da53309290c18cb451653643132e0f8e51dc54e82415336cad99daf8d4a"
+      },
+      "ctest": {
+        "path": ".agents/tmp/workbench-patches/tests-sanitized-final.log",
+        "sha256": "0364d6a11079bba64ce1914286d4c65b36a1bef4b3f061d7abfd53a6d2fd0d4a",
+        "passed": [
+          "workbench",
+          "workbench_patches",
+          "game_profiles",
+          "workbench_window",
+          "game_catalog",
+          "workbench_preview",
+          "workbench_lights"
+        ]
+      },
+      "native_queue_recovery_and_rebuild": {
+        "path": "build/linux-sanitized/tests/workbench-patches/validation.json",
+        "sha256": "2613e0e9f9d74101695a6f19c21ec55fe514fbe00cbd9381d641d0b8d0a92098",
+        "cases": [
+          {
+            "game": "quake3",
+            "mode": "source",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 16,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "3298228117e3bbcec6fa16b9c67cf839c39c43e060b15c3071809ca567a682b0"
+          },
+          {
+            "game": "quake3",
+            "mode": "fit",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "large_report_rows": 20000,
+              "malformed_report_rejections": 23,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "omitted_report_records": 7,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "1833361912a1874a7603d7f48bfdd9637429bc3f98a9df08e6e0c3e38bd32c1d"
+          },
+          {
+            "game": "quake3",
+            "mode": "native",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 15,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "bbb95fe435e71ac99dd6903650ce9036d191258e4ac4b60f1401e48b33600760"
+          },
+          {
+            "game": "quake3",
+            "mode": "auto-source",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 22,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "90c83a91c5438a8af92890659deeeed45c4492b0fb4e161d68a359682c390a86"
+          },
+          {
+            "game": "quake3",
+            "mode": "auto-fit",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 22,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "caca1e802ca708ba9265f5c1dcf823012616158d0c58272f4d9b96b75728fd5e"
+          },
+          {
+            "game": "ja",
+            "mode": "source",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 16,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "5e6aaa68a19c5954d137661fc0ea70f0504ab11087fb0ece969d44dd82f355a1"
+          },
+          {
+            "game": "ja",
+            "mode": "fit",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 22,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "03c8e42c5ff2d64345cf4c867d85b15ee8901d7403f803cec4a14ab446691d68"
+          },
+          {
+            "game": "ja",
+            "mode": "native",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 15,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "0e97074f4423d920d023dfd359b5ea911a1e3abadfd9d1c168d2fbefc5fe53ba"
+          },
+          {
+            "game": "ja",
+            "mode": "auto-source",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 22,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "b0cfa83b98d2e632c4912b3111e5ff5c9e195ec1f45cda01339a29e23fe4e36d"
+          },
+          {
+            "game": "ja",
+            "mode": "auto-fit",
+            "checks": {
+              "asynchronous_supersession_and_cancellation": true,
+              "malformed_report_rejections": 22,
+              "native_window_queue_report_snapshot_and_source_preservation": true,
+              "older_compiler_menu_and_native_profile_guards": true,
+              "project_roundtrip_defaults_validation_workflow_scope": true,
+              "themes_sizes_filters_and_owned_widget_rendering": true
+            },
+            "triangles": 256,
+            "rebuild_and_relight_equal": true,
+            "ui_evidence_sha256": "68697f0ef16a4f556dff90572304f2bd15dea0aea551354ab010c59766977f7d"
+          }
+        ]
+      },
+      "widget_previews": {
+        "count": 80,
+        "manifest_sha256": "73233eeda28bdfd898e1f8c8cb9344b832f52e1f67fc961e1db2d9b5b364fd30",
+        "folder": "build/linux-sanitized/tests/workbench-patches",
+        "examples": [
+          {
+            "path": "build/linux-sanitized/tests/workbench-patches/quake3-fit/ui/patch-0-1024-0.png",
+            "sha256": "e125c67adb56674c400e8430deb0d52aa6eb7464748af093494468b586a6661a"
+          },
+          {
+            "path": "build/linux-sanitized/tests/workbench-patches/quake3-fit/ui/patch-0-1024-1.png",
+            "sha256": "f36bab9d39523829cd00a84ef83c02d4c3394802af9c927a8eff47dbf162fe2d"
+          },
+          {
+            "path": "build/linux-sanitized/tests/workbench-patches/quake3-fit/ui/patch-0-1380-0.png",
+            "sha256": "21343c4ced8ba04b8ed127509097e91875d18592d753c869f6f108d1c911f8d6"
+          },
+          {
+            "path": "build/linux-sanitized/tests/workbench-patches/quake3-fit/ui/patch-0-1380-1.png",
+            "sha256": "5c365357ac3dca620c884f07aa901fbd7812c308de80f6704722d5e302e1331d"
+          },
+          {
+            "path": "build/linux-sanitized/tests/workbench-patches/quake3-fit/ui/patch-1-1024-0.png",
+            "sha256": "afd4392f3747bceaa8473ca02d90c0479b641035c5ac33d0dac71a1bea1780da"
+          },
+          {
+            "path": "build/linux-sanitized/tests/workbench-patches/quake3-fit/ui/patch-1-1024-1.png",
+            "sha256": "e271545572ba898017f7407ea9713173c38712541ce07a0b915a04d149640ae4"
+          },
+          {
+            "path": "build/linux-sanitized/tests/workbench-patches/quake3-fit/ui/patch-1-1380-0.png",
+            "sha256": "c0a4c91ba87f91458555e50e0cf5b5461b5fd4766defe2374177795e6f96f635"
+          },
+          {
+            "path": "build/linux-sanitized/tests/workbench-patches/quake3-fit/ui/patch-1-1380-1.png",
+            "sha256": "ae03020e0a54035b5b137321089737f233237cdd8e6acfa6bc179df74218199a"
+          }
+        ]
+      }
+    }
+  ],
+  "validation_contract": [
+    "Five modes per game: source, fit, native colors, auto with archive, auto without archive; Quake III and Jedi Academy.",
+    "World and translated inline curved painted patches; adjacent MAP/SRF poisoned before queued recovery.",
+    "Independent BSP rebuild and LIGHT comparison of oriented triangle XYZ/ST and requested color bytes; source BSP and staged copy unchanged.",
+    "Project and snapshot settings, default command compatibility, older compiler/read-only profile gates and rejection before staging.",
+    "Malformed, invalid UTF-8, duplicate-property, deep, oversized and inconsistent report rejection; cancellation and supersession.",
+    "20,000 visible decision rows plus seven omitted records, aggregate totals and filters; bounded large/oversized fixtures removed after checks.",
+    "Owned Qt widget painting at 1380x920 and 1024x720 in both themes, without OS capture or input control."
+  ],
+  "limits": [
+    "ASan/UBSan: local GUI-on Debug override, assertions, ASAN_OPTIONS=detect_leaks=0; the seven listed groups only.",
+    "No new engine pixel comparison in this GUI round. Earlier compiler/source and reconstruction evidence remains separate.",
+    "The report viewer validates stated fields and counts, not provenance authenticity, BSP binding or rebuild equivalence.",
+    "Archived sources are an aggregate row; spatial/per-control review, arbitrary mesh recovery and broader engine/game qualification remain open.",
+    "Existing independent material-preview strict pixel qualification remains 66/68; this round does not change it."
+  ]
+}

@@ -360,6 +360,9 @@ limits and acceptance fixtures are in [recovery inference](RECOVERY-INFERENCE.md
   details, recorded settings and exact report staging. Native queue export and
   independent rebakes cover point/spot and supplied-light sRGB scenes. Spatial
   overlays, interactive edits and a general iterative comparison workflow remain.
+  [Patch recovery review](WORKBENCH.md#patch-recovery) now separates archived
+  sources, triangle fits and native colors with bounded background report
+  loading, decision filters, control-grid evidence and independent rebuild tests.
 
 Acceptance: known-source tests separate extraction fidelity, inference accuracy
 and rebuild similarity. Stripped-light fixtures include sun-only/emissive-only
@@ -539,7 +542,9 @@ broader material-preview/runtime qualification requirements remain open.
   with `-patch-recovery source`. Archive-free `fit|auto` now reconstructs eligible
   nonsolid rectangular triangle grids with verified quadratic XYZ/ST and requested
   rounded-byte color fields. Source and inferred evidence remain distinct.
-  Arbitrary/decimated meshes, workbench controls and broader runtime equivalence
+  Typed workbench controls now save these modes, channels and budgets, check
+  advertised compiler capabilities and review reported evidence/skip reasons.
+  Arbitrary/decimated meshes, spatial review and broader runtime equivalence
   remain open. See [source recovery](PATCH-SOURCE.md),
   [triangle fitting](TRIANGLE-PATCH-RECOVERY.md) and [compiled channels](PATCH-COLOR-RECOVERY.md).
   The build binding is not a source-control archive. Native

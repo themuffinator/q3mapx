@@ -90,6 +90,16 @@ int main(int argc,char** argv) {
             && reviewed.native==(p.patchRecovery=="none"?2:0),"Report evidence categories are incorrect");
         require(summary->textFormat()==Qt::PlainText && summary->accessibleDescription().contains(reviewed.input)
             && summary->text().contains(QFileInfo(reviewed.input).fileName()),"Report source or plain text summary missing");
+        if(archived) {
+            int retained=0;
+            for(const auto& decision:reviewed.decisions) if(decision.basis=="Source archive") {
+                ++retained;
+                require(decision.details.contains("source_primitive") && decision.details.contains("shader")
+                    && decision.details.contains("rgb_mode") && decision.details.contains("lightmap_sample_size")
+                    && decision.details.contains("surfaces"),"Per-patch source settings missing from review");
+            }
+            require(retained==2,"Source archive still shown only as an aggregate");
+        }
         const auto snapshot=Project::load(job.directory+"/project.q3mapx.json");
         require(snapshot.patchRecovery==saved.patchRecovery && snapshot.patchColors==saved.patchColors && snapshot.patchFitWorkLimit==saved.patchFitWorkLimit
             && snapshot.patchColorSubdivisions==saved.patchColorSubdivisions,"Run snapshot lost patch choices");
@@ -130,6 +140,21 @@ int main(int argc,char** argv) {
             auto changed=document; changed[mutation.first]=mutation.second; reject(QJsonDocument(changed).toJson());
         }
         if(document.contains("patch_recovery")) {
+            const auto sources=document["patch_recovery"].toObject();
+            if(archived) {
+                for(const auto& mutation:QList<QPair<QString,QJsonValue>>{{"controls",0},{"width",2},{"subdivisions",3},
+                    {"rgb_mode","baked"},{"lightmap_sample_size",16385},{"source_entity",-1},{"shader","wrong/name"},{"surfaces",QJsonArray{2,1}}}) {
+                    auto changed=document; auto recovery=sources; auto records=recovery["source_records"].toArray();
+                    auto record=records[0].toObject(); record[mutation.first]=mutation.second; records[0]=record;
+                    recovery["source_records"]=records; changed["patch_recovery"]=recovery; reject(QJsonDocument(changed).toJson());
+                }
+                auto changed=document; auto recovery=sources; recovery["omitted_source_records"]=1;
+                changed["patch_recovery"]=recovery; reject(QJsonDocument(changed).toJson());
+                recovery=sources; recovery.remove("source_records"); recovery.remove("omitted_source_records");
+                changed["patch_recovery"]=recovery; const auto legacyReport=root+"/legacy-source.json"; write(legacyReport,QJsonDocument(changed).toJson());
+                const auto legacyReview=readPatchReview(legacyReport);
+                require(legacyReview.archived==2 && legacyReview.decisions.front().basis=="Source archive","Legacy aggregate source report rejected");
+            }
             auto changed=document; auto recovery=changed["patch_recovery"].toObject(); recovery["author_identity_authenticated"]=true;
             changed["patch_recovery"]=recovery; reject(QJsonDocument(changed).toJson());
             if(p.patchRecovery=="source") { recovery["author_identity_authenticated"]=false; recovery["geometry_binding_verified"]=false; changed["patch_recovery"]=recovery; reject(QJsonDocument(changed).toJson()); }

@@ -60,6 +60,7 @@ struct DecompileStats {
 static DecompileStats recovery;
 static std::vector<bool> sourcePatchSurfaces;
 static size_t restoredSourcePatches = 0;
+static std::vector<const q3mapx::PatchSource*> restoredPatchRecords;
 static size_t fittedTrianglePatches = 0;
 static q3mapx::TrianglePatchRecovery trianglePatchRecovery;
 static bool usePatchSources = false;
@@ -89,7 +90,11 @@ static void WriteSourcePatch( FILE* f, const q3mapx::PatchSource& patch, const V
 		fprintf( f, " )\n" );
 	}
 	fprintf( f, "\t\t\t)\n\t\t}\n\t}\n\n" );
-	if ( inferred ) ++fittedTrianglePatches; else ++restoredSourcePatches;
+	if ( inferred ) ++fittedTrianglePatches;
+	else {
+		++restoredSourcePatches;
+		if ( restoredPatchRecords.size()<10'000 ) restoredPatchRecords.push_back(&patch);
+	}
 	++recovery.patches;
 }
 
@@ -1584,7 +1589,7 @@ static void WriteGroupInferenceReport( rapidjson::PrettyWriter<rapidjson::String
 static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 	if ( decompileOptions.lightRecovery ) decompileOptions.lightRecovery->prepare();
 	recovery = {};
-	sourcePatchSurfaces.clear(); restoredSourcePatches = fittedTrianglePatches = 0;
+	sourcePatchSurfaces.clear(); restoredPatchRecords.clear(); restoredSourcePatches = fittedTrianglePatches = 0;
 	usePatchSources = decompileOptions.patchRecovery == DecompileOptions::PatchRecovery::Source
 	    || (decompileOptions.patchRecovery == DecompileOptions::PatchRecovery::Auto && !q3mapx::PatchSources().empty());
 	if ( usePatchSources ) {
@@ -1834,9 +1839,24 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 			writer.Key( "geometry_binding_verified" ); writer.Bool( usePatchSources );
 			writer.Key( "author_identity_authenticated" ); writer.Bool( false );
 			writer.Key( "original_compile_context_restored" ); writer.Bool( false );
+			count( "omitted_source_records", restoredSourcePatches-restoredPatchRecords.size() );
+			writer.Key( "source_records" ); writer.StartArray();
+			for ( const auto* patch : restoredPatchRecords ) {
+				writer.StartObject();
+				count("model",patch->model); count("source_entity",patch->entity); count("source_primitive",patch->primitive);
+				writer.Key("shader"); writer.String(patch->shader.c_str());
+				count("width",patch->width); count("height",patch->height); count("controls",patch->controls.size());
+				writer.Key("rgb_mode"); writer.String(patch->mode==q3mapx::authoring::materialPaint?"material":"lighting");
+				count("subdivisions",patch->subdivisions); count("lightmap_sample_size",patch->sampleSize);
+				writer.Key("surfaces"); writer.StartArray();
+				for ( size_t i=0; i<std::min<size_t>(64,patch->surfaces.size()); ++i ) writer.Int(patch->surfaces[i]);
+				writer.EndArray(); count("omitted_surfaces",patch->surfaces.size()-std::min<size_t>(64,patch->surfaces.size()));
+				writer.EndObject();
+			}
+			writer.EndArray();
 			if ( FitTrianglePatches() ) {
 				writer.Key( "triangle_fitting" ); writer.StartObject();
-				writer.Key( "basis" ); writer.String( "complete_affine_uv_grid_and_verified_quadratic_samples" );
+				writer.Key( "basis" ); writer.String( "complete_checkerboard_topology_and_verified_quadratic_samples" );
 				writer.Key( "original_source_proven" ); writer.Bool( false );
 				writer.Key( "rebuild_equivalence_proven" ); writer.Bool( false );
 				writer.Key( "color_policy" ); writer.String( decompileOptions.patchColors == DecompileOptions::PatchColors::RGBA ? "rgba"
@@ -1967,7 +1987,7 @@ static int ConvertBSPToMap_Ext( char *bspName, EBrushType brushType ) try {
 		if(bspEarlyVersion) writer.String("Early BSP model origins/head nodes are retained here. Fog visible sides depend on native shader semantics and are not reconstructed. The native shader dialect is only partially supported.");
 		if(bspEarlyVersion==43 || bspEarlyVersion==44) writer.String("This format has no brush-side material names. Visible face names and UVs are inferred from rendered triangles; unmatched faces use common/caulk and fallback UVs. Raw brush contents and side flags remain in source order in this report.");
 		writer.String( restoredSourcePatches || fittedTrianglePatches ? "Triangle soup without restored or fitted patches is not exported separately; collision brushes may approximate it." : "Triangle soup geometry is not exported separately; collision brushes may approximate it." );
-		if ( FitTrianglePatches() ) writer.String( "Triangle patches are inferred from complete nonsolid rectangular meshes with affine UV sampling, compatible checkerboard diagonals and verified quadratic XYZ/ST fields. Requested byte colors match all observed samples but need not be the author's unique controls; RGB may include baked light. Density, original grouping and author subdivisions are not recovered. Current materials, compile settings, tessellation, normals, lighting, engine behavior and LOD seams still require rebuild validation. Skipped triangle geometry retains the legacy omission; no arbitrary triangle-to-patch fallback is fabricated." );
+		if ( FitTrianglePatches() ) writer.String( "Triangle patches are inferred from complete nonsolid rectangular meshes with verified checkerboard connectivity and quadratic XYZ/ST fields. Warped or constant UV fields are supported when every sample verifies. Requested byte colors match all observed samples but need not be the author's unique controls; RGB may include baked light. Density, original grouping and author subdivisions are not recovered. Current materials, compile settings, tessellation, normals, lighting, engine behavior and LOD seams still require rebuild validation. Skipped triangle geometry retains the legacy omission; no arbitrary triangle-to-patch fallback is fabricated." );
 		if ( restoredSourcePatches ) writer.String( "Paint controls, source shader, RGB mode, density override and subdivisions come from a checksummed geometry-bound compiler archive. Positions are retained in model space after source entity placement. Original groups, inherited compile settings, material assets and removed modifier volumes are not archived; equivalent rebuilding still depends on that context. The checksum is not an author-authentication signature." );
 		writer.String( "Fallback texture axes are used on faces without a usable rendered triangle, including hidden faces." );
 		writer.String( "Consensus output preserves whole texture offsets and uses round-trip decimal precision for stored parameters. Native compiler texture biases and source reconstruction loss cannot be undone; rebuilding with different shader or compiler semantics can still change UVs. Triangle compatibility mode retains legacy offset wrapping and decimal rounding. Constant axes and unsupported output representations retain fallback mappings." );

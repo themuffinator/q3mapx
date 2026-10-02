@@ -77,9 +77,16 @@ restored count and verified geometry binding. It explicitly does not claim autho
 authentication or restoration of original compile context. Output uses the
 existing staged MAP/report publication and rollback mechanism.
 
+`source_records` now describes each restored primitive: model, source entity and
+primitive IDs, shader, control dimensions/count, RGB mode, subdivisions, density
+override and supporting BSP surfaces. Up to 10,000 records and 64 surface IDs per
+record are retained; omitted counts are explicit. Full recovered controls remain
+in the MAP. These source IDs identify the capture context, not reconstructed groups.
+
 The [workbench patch page](WORKBENCH.md#patch-recovery) exposes source/automatic
-recovery and shows retained-source counts separately from fitted geometry and
-compiled native colors. It reads the report's binding claim, not the archive itself.
+recovery and shows individual retained primitives/settings separately from fitted
+geometry and compiled native colors. It reads the report's binding claim, not the
+archive itself. Older aggregate reports remain readable.
 
 ## Verification
 
@@ -94,3 +101,5 @@ stages and three MAP projections. Source primitives and rebuilt samples must
 match independently retained inputs. Archive opt-out and optional prior binaries
 check native-lump parity. Checksummed malformed records and stale geometry must
 preserve existing MAP/report bytes. See [recorded evidence](validation/patch-source.json).
+Per-primitive report checks are included in the newer
+[recovery validation](validation/patch-recovery-topology.json).

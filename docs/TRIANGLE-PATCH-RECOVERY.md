@@ -33,12 +33,19 @@ semantics, welds matching XYZ/ST/requested-color samples and finds connected
 components. Splits across BSP draw surfaces do not erase the candidate grid.
 Both planar and triangle-soup surface types are considered.
 
-A candidate needs one rectangular boundary in an affine UV frame, regular
-sampling on both axes, exactly one sample per grid point, consistent winding,
-complete two-triangle cells, and the compiler's alternating diagonals. Affine
-rotation/shear of UVs is supported. Missing cells, holes, overlapping triangles,
-nonmanifold seams, nonuniform sampling or incompatible triangulation are rejected.
-Welds do not average differing requested colors or UVs across seams.
+A candidate needs a complete rectangular checkerboard topology with at least
+five samples per axis. Boundary valences identify four possible corners; an
+edge-by-edge traversal must then prove a one-to-one correspondence with every
+vertex and triangle in the expected lattice. Winding must be consistent, with
+two triangles per cell and the compiler's alternating diagonals. Missing cells,
+holes, overlapping triangles, nonmanifold seams and incompatible triangulation
+are rejected. Welds do not average differing requested colors or UVs across seams.
+
+Grid discovery is independent of texture coordinates. Affine, warped, constant
+and folded UV fields can be recovered if the subsequent quadratic fit verifies
+every sample. Constant UVs preserve the stored constant field; they do not reveal
+a lost texture mapping. Geometry still needs uniform parameter sampling of a
+compatible quadratic patch. Arbitrary or decimated meshes are not filled in.
 
 The fitter tries 32, 16, 8 and 4 segments per quadratic span, preferring the
 coarsest verified control grid. At least five samples per axis are required.
@@ -64,7 +71,7 @@ Current shader color/UV/geometry modifiers, redirects, incompatible paint
 materials, surviving modifier volumes and conflicting active requested color
 styles prevent fitting. Absence of such operations in current assets does not
 prove their absence in the original build. Arbitrary meshes, heavily optimized
-or decimated grids, missing/warped UVs, non-quadratic surfaces and low-sample grids
+or decimated grids, non-quadratic geometry/UV fields and low-sample grids
 may have insufficient evidence. Rejected triangles retain the existing omission
 from MAP export; no artificial patch is substituted.
 
@@ -94,18 +101,24 @@ ctest --test-dir build/release -R '^(patch_fit|patch_reconstruction|patch_source
 ```
 
 An independent long-double de Casteljau oracle covers shuffled vertex/triangle
-order, affine UV frames, flat/curved multi-span grids and byte rounding. Generated
+order, affine/warped/constant/folded UVs, flat/curved multi-span grids and byte
+rounding. Generated
 Q3/JA BSP tests remove archives and poison adjacent source files. Recompiled and
 relit meshes are compared by oriented triangle positions, UVs and requested
 channels. Legacy `patchDef2` and mixed archived/inferred recovery are covered.
-Malformed topology, color/style conflicts, material replay, budget limits and
-invalid-option output preservation have explicit controls.
+Native Q3/JA rebuilds also cover warped, constant and folded fields without any
+archive. Malformed interior diagonals, holes and unused vertices cannot pass
+merely because the outer boundary is rectangular. Color/style conflicts, material
+replay, budget limits and invalid-option output preservation have explicit controls.
 
 The optional [engine harness](../tests/renderer/patch_source_render.py) accepts
 `--fit` to compare archive-free fitted/rebuilt scenes against their source BSPs.
 It uses registered engine screenshots, windowed SDL offscreen and disabled
-input/network. Flat and curved neutral-material scenes match pixel-for-pixel.
-See [platforms and evidence](validation/patch-reconstruction.json).
+input/network. The initial fitter's flat and curved neutral-material scenes
+matched pixel-for-pixel. The connectivity extension is qualified by native data
+and workbench comparisons; those engine captures have not been repeated for it.
+See [initial platforms and evidence](validation/patch-reconstruction.json) and
+[topology/source-review validation](validation/patch-recovery-topology.json).
 
 These checks do not prove identical author grouping, normals, inherited settings,
 lightmap atlases, arbitrary shader lighting, dynamic effects or runtime LOD seams.

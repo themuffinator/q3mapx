@@ -37,7 +37,7 @@ geometric refinement may increase sampling. `lightmapSampleSize 0` inherits norm
 compile settings because an original per-patch density is not established here.
 Neither the adjacent MAP nor SRF is loaded for this extraction. A BSP-writing game
 profile and compiled BSP input are required; material replacement with `-wtf` is
-incompatible. Dedicated workbench controls for these options remain planned.
+incompatible. The workbench patch recovery page exposes these controls.
 
 ## Channel and rendering limits
 
@@ -57,7 +57,8 @@ Solid painted patches often retain a nodraw native collision grid. Its compiled
 channels may survive even though the visible surface is a separate triangle mesh.
 Modifiers, tessellation and lighting can make those controls differ from the
 rendered mesh's colors. Non-solid painted patches can have no native grid at all;
-this exporter does not fit new control grids to triangle soup. Original
+compiled-control extraction alone cannot restore them; use `-patch-recovery
+fit|auto` for eligible triangle grids or `source` for a retained archive. Original
 pre-modifier paint, RGB mode, density and sampling settings remain unproven even
 when a paint binding is present. Keep the original MAP whenever possible.
 

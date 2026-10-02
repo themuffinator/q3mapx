@@ -549,6 +549,17 @@ broader material-preview/runtime qualification requirements remain open.
   direct/bounced/repeated LIGHT. BSP/SRF binding rejects stale paint metadata.
   Native RGB styles, runtime material/LOD seam equivalence, large-map costs and
   paint-aware reduction remain open; finite tessellation is not pixel-exact.
+- [x] Retain original paint metadata in new BSPs and restore original XYZ/ST/RGBA
+  controls, shader, RGB mode, subdivision choice and density override from the
+  validated archive. Keep compiler-retained source evidence distinct from inferred
+  or baked channels. CLI and workbench expose recovery and per-primitive settings.
+  Older BSPs without an archive cannot establish the original author's paint.
+- [x] Reconstruct eligible triangle-only patches without original source metadata.
+  Infer the rectangular checkerboard lattice from connectivity, then verify every
+  quadratic geometry/UV sample and requested rounded color byte. Warped, constant
+  and folded UV fields are supported. Reject incomplete/ambiguous topology and
+  retain explicit source-versus-fit provenance and resource bounds. This does not
+  claim arbitrary mesh recovery or unique original controls.
 - [ ] Preserve source paint through save/reload, duplication and patch editing.
   Recover compiled colors during decompilation, and restore original paint only
   where retained authoring metadata supports it; distinguish paint from baked light.

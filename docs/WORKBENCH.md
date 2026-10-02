@@ -240,13 +240,15 @@ folder. Completion loads its recovery report into **Results**. Existing reports
 can also be opened with Browse. Results separate retained sources, triangle fits
 and native color extraction; filter accepted or skipped decisions and select a
 row for supporting surface IDs, grid dimensions, errors and report SHA-256.
-Counts include omitted report records. Source restoration is currently one
-aggregate row; it does not provide per-control or spatial inspection.
+Counts include omitted report records. Each retained source gets a row showing
+its source entity/primitive, shader, RGB mode, subdivisions and density override.
+Older reports retain their aggregate row. Per-control and spatial inspection
+remain separate work.
 
 Reports load asynchronously with cancellation and stale-result protection. The
 reader checks schema, UTF-8, duplicate properties, bounded depth/size, evidence
 claims and count consistency. Limits are 64 MiB, two million JSON values and
-10,000 records per triangle/native category. These are checks of reported data;
+10,000 records per source/triangle/native category. These are checks of reported data;
 the viewer does not authenticate provenance, recheck a BSP binding or establish
 rebuild equivalence. Independent compiler comparisons are separate tests.
 

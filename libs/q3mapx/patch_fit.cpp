@@ -80,20 +80,29 @@ PatchFit fitTrianglePatch( std::span<const PatchFitVertex> vertices,
         budget.spend();
         for ( double value:v.value ) if ( !std::isfinite(value) || std::abs(value)>1e7 ) { out.status="invalid_sample"; return out; }
     }
-    // A single boundary loop with four straight UV sides determines an affine
-    // parameter frame, independent of BSP vertex ordering and surface splits.
-    std::map<std::array<int,2>,int> edges;
-    for ( const auto& tri:triangles ) {
+    // Discover the parameter grid from connectivity, not texture coordinates.
+    // On an odd checkerboard grid each corner has degree three and two
+    // degree-three boundary neighbours. Other boundary vertices alternate
+    // degree three/five. Verify the entire lattice before trusting that clue.
+    struct Edge { int faces[2]{-1,-1}; };
+    std::map<std::array<int,2>,Edge> edges;
+    std::vector<int> degree(vertices.size(),0);
+    const auto edgeKey=[](int a,int b) { return std::array<int,2>{std::min(a,b),std::max(a,b)}; };
+    for ( size_t i=0; i<triangles.size(); ++i ) {
+        const auto& tri=triangles[i];
         budget.spend();
         for ( int v:tri ) if ( v<0 || size_t(v)>=vertices.size() ) { out.status="invalid_index"; return out; }
         if ( tri[0]==tri[1] || tri[1]==tri[2] || tri[0]==tri[2] ) { out.status="degenerate_triangle"; return out; }
         for ( int e=0; e<3; ++e ) {
-            int a=tri[e], b=tri[(e+1)%3]; if ( a>b ) std::swap(a,b);
-            if ( ++edges[{a,b}]>2 ) { out.status="nonmanifold_mesh"; return out; }
+            const auto key=edgeKey(tri[e],tri[(e+1)%3]);
+            auto& edge=edges[key];
+            if ( edge.faces[0]<0 ) { edge.faces[0]=int(i); ++degree[key[0]]; ++degree[key[1]]; }
+            else if ( edge.faces[1]<0 ) edge.faces[1]=int(i);
+            else { out.status="nonmanifold_mesh"; return out; }
         }
     }
     std::map<int,std::vector<int>> boundary;
-    for ( const auto& [edge,count]:edges ) if ( count==1 ) { boundary[edge[0]].push_back(edge[1]); boundary[edge[1]].push_back(edge[0]); }
+    for ( const auto& [key,edge]:edges ) if ( edge.faces[1]<0 ) { boundary[key[0]].push_back(key[1]); boundary[key[1]].push_back(key[0]); }
     if ( boundary.empty() ) return out;
     for ( const auto& [v,adj]:boundary ) if ( adj.size()!=2 ) { out.status="nonmanifold_boundary"; return out; }
     std::vector<int> loop;
@@ -107,40 +116,67 @@ PatchFit fitTrianglePatch( std::span<const PatchFitVertex> vertices,
     if ( loop.size()!=boundary.size() ) { out.status="multiple_boundaries"; return out; }
     std::vector<int> corners;
     for ( size_t i=0; i<loop.size(); ++i ) {
-        const auto& a=vertices[loop[(i+loop.size()-1)%loop.size()]].value;
-        const auto& b=vertices[loop[i]].value; const auto& c=vertices[loop[(i+1)%loop.size()]].value;
-        const double ux=b[3]-a[3], uy=b[4]-a[4], vx=c[3]-b[3], vy=c[4]-b[4];
-        const double length=std::hypot(ux,uy)*std::hypot(vx,vy);
-        if ( length==0 ) { out.status="degenerate_uv"; return out; }
-        if ( std::abs(ux*vy-uy*vx)>length*1e-5 || ux*vx+uy*vy<=0 ) corners.push_back(loop[i]);
-    }
-    if ( corners.size()!=4 ) { out.status="nonrectangular_uv_boundary"; return out; }
-    const auto& a=vertices[corners[0]].value; const auto& b=vertices[corners[1]].value; const auto& d=vertices[corners[3]].value;
-    const double ux=b[3]-a[3], uy=b[4]-a[4], vx=d[3]-a[3], vy=d[4]-a[4], determinant=ux*vy-uy*vx;
-    if ( std::abs(determinant)<1e-10*std::hypot(ux,uy)*std::hypot(vx,vy) ) { out.status="degenerate_uv"; return out; }
-    std::vector<std::array<double,2>> uv;
-    std::array<std::vector<double>,2> axes;
-    for ( const auto& v:vertices ) {
         budget.spend();
-        const double s=v.value[3]-a[3], t=v.value[4]-a[4];
-        const std::array<double,2> coord{(s*vy-t*vx)/determinant,(ux*t-uy*s)/determinant}; uv.push_back(coord);
-        for ( int k=0; k<2; ++k ) axes[k].push_back(coord[k]);
+        if ( degree[loop[i]]==3 && degree[loop[(i+loop.size()-1)%loop.size()]]==3
+          && degree[loop[(i+1)%loop.size()]]==3 ) corners.push_back(int(i));
     }
-    for ( auto& axis:axes ) {
-        std::sort(axis.begin(),axis.end());
-        axis.erase(std::unique(axis.begin(),axis.end(),[](double a,double b){return std::abs(a-b)<1e-6;}),axis.end());
-        if ( axis.size()<5 || axis.size()>481 ) return out;
-        for ( size_t i=0; i<axis.size(); ++i ) if ( std::abs(axis[i]-double(i)/(axis.size()-1))>2e-5 ) { out.status="irregular_uv_samples"; return out; }
+    if ( corners.size()!=4 ) { out.status="nonrectangular_topology"; return out; }
+    int width=corners[1]-corners[0]+1, height=corners[2]-corners[1]+1;
+    if ( width<5 || height<5 || width>481 || height>481 || !(width&1) || !(height&1)
+      || corners[3]-corners[2]!=width-1 || int(loop.size())+corners[0]-corners[3]!=height-1 ) {
+        out.status="nonrectangular_topology"; return out;
     }
-    int width=axes[0].size(), height=axes[1].size();
     if ( size_t(width*height)!=vertices.size() || triangles.size()!=size_t((width-1)*(height-1)*2) ) { out.status="incomplete_grid"; return out; }
-    std::vector<std::array<int,2>> coords;
-    std::vector<bool> occupied(vertices.size(),false);
-    for ( const auto& v:uv ) {
-        const int x=int(std::lround(v[0]*(width-1))), y=int(std::lround(v[1]*(height-1)));
-        if ( x<0 || y<0 || x>=width || y>=height || occupied[y*width+x] ) { out.status="overlapping_grid_samples"; return out; }
-        occupied[y*width+x]=true; coords.push_back({x,y});
+    // Each lattice edge records the opposite vertex on each incident face.
+    // Propagate a one-to-one embedding across the actual triangles, requiring
+    // boundary/interior edges and all shared vertices to agree exactly.
+    struct Opposite { int vertices[2]{-1,-1}; };
+    std::map<std::array<int,2>,Opposite> expected;
+    for ( int y=0; y<height-1; ++y ) for ( int x=0; x<width-1; ++x ) {
+        budget.spend(2);
+        const int p[]{y*width+x,(y+1)*width+x,(y+1)*width+x+1,y*width+x+1,y*width+x};
+        const int r=(x+y)&1;
+        for ( const std::array<int,3> tri:{std::array{p[r],p[r+1],p[r+2]},std::array{p[r],p[r+2],p[r+3]}} )
+            for ( int e=0; e<3; ++e ) {
+                auto& opposite=expected[edgeKey(tri[e],tri[(e+1)%3])];
+                opposite.vertices[opposite.vertices[0]<0?0:1]=tri[(e+2)%3];
+            }
     }
+    std::vector<int> location(vertices.size(),-1), occupant(vertices.size(),-1);
+    const auto place=[&](int vertex,int cell) {
+        if ( (location[vertex]>=0 && location[vertex]!=cell) || (occupant[cell]>=0 && occupant[cell]!=vertex) ) return false;
+        location[vertex]=cell; occupant[cell]=vertex; return true;
+    };
+    const int start=loop[corners[0]], next=loop[corners[0]+1];
+    place(start,0); place(next,1);
+    const int first=edges.at(edgeKey(start,next)).faces[0];
+    for ( int v:triangles[first] ) if ( v!=start && v!=next ) place(v,width+1);
+    std::vector<int> queue{first};
+    std::vector<bool> visited(triangles.size(),false); visited[first]=true;
+    for ( size_t i=0; i<queue.size(); ++i ) {
+        const int face=queue[i]; const auto& tri=triangles[face];
+        for ( int e=0; e<3; ++e ) {
+            budget.spend();
+            const int a=tri[e], b=tri[(e+1)%3], c=tri[(e+2)%3];
+            const auto found=expected.find(edgeKey(location[a],location[b]));
+            if ( found==expected.end() ) { out.status="unsupported_triangulation"; return out; }
+            const auto& opposite=found->second.vertices;
+            const int third=location[c]==opposite[0]?opposite[1]:location[c]==opposite[1]?opposite[0]:-2;
+            const auto& edge=edges.at(edgeKey(a,b));
+            const int adjacent=edge.faces[0]==face?edge.faces[1]:edge.faces[0];
+            if ( third==-2 || (third<0)!=(adjacent<0) ) { out.status="unsupported_triangulation"; return out; }
+            if ( adjacent<0 ) continue;
+            for ( int v:triangles[adjacent] ) if ( v!=a && v!=b && !place(v,third) ) {
+                out.status="overlapping_grid_samples"; return out;
+            }
+            if ( !visited[adjacent] ) { visited[adjacent]=true; queue.push_back(adjacent); }
+        }
+    }
+    if ( queue.size()!=triangles.size() || std::find(location.begin(),location.end(),-1)!=location.end() ) {
+        out.status="incomplete_grid"; return out;
+    }
+    std::vector<std::array<int,2>> coords;
+    for ( int cell:location ) coords.push_back({cell%width,cell/width});
     int orientation=0;
     std::vector<unsigned> cells((width-1)*(height-1),0);
     for ( const auto& tri:triangles ) {

@@ -115,6 +115,15 @@ def main():
                         report = json.loads(Path(str(output)+'.recovery.json').read_text(encoding='utf-8'))
                         assert report['patches'] == report['patch_recovery']['restored_source_patches'] == 2
                         assert report['patch_recovery']['geometry_binding_verified']
+                        records = report['patch_recovery']['source_records']
+                        assert report['patch_recovery']['omitted_source_records'] == 0 and len(records) == 2
+                        expected_settings = sorted((shader,dimensions,settings) for shader,dimensions,settings,_ in primitives(text))
+                        actual_settings = sorted((r['shader'][9:],(r['width'],r['height']),
+                            (str(r['lightmap_sample_size']),r['rgb_mode'],str(r['subdivisions']))) for r in records)
+                        assert actual_settings == expected_settings and {r['model'] for r in records} == {0,1}
+                        for r in records:
+                            assert r['controls'] == r['width']*r['height'] and r['source_entity'] >= 0 and r['source_primitive'] >= 0
+                            assert r['surfaces'] and r['surfaces'] == sorted(set(r['surfaces'])) and r['omitted_surfaces'] == 0
                         run(exe,[*base,output],root,output.stem+'-rebuild')
                         rebuilt = output.with_suffix('.bsp').read_bytes()
                         assert render(rebuilt) == render(raw), label+'-'+stage

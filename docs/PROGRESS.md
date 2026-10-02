@@ -3763,3 +3763,46 @@ raw-sidecar publication/parser audits remain open.
 Automatic approval review rejected cleanup of the disposable `probe.py` helper
 with "blocked by policy". The command did not run and the file remains in
 `.agents/tmp/vis-rows/`; previously blocked cleanup targets were untouched.
+
+## 2026-10-02 — Resolve patch source metadata review and UV-independent reconstruction
+
+Completed the separately tracked original-paint metadata and triangle-only patch
+recovery items in M11, keeping their evidence limits explicit. New BSP archives
+already retain original pre-modifier controls and settings; reports and the native
+workbench now expose each restored primitive's source entity/primitive, shader,
+grid, RGB mode, sampling, density and supporting surfaces. Readers validate the
+bounded records and retain compatibility with older aggregate reports. Full
+controls remain in the recovered MAP.
+
+Triangle fitting now discovers its rectangular grid from connectivity. Boundary
+valences suggest four corners, then a traversal verifies a one-to-one embedding
+of every vertex and triangle into the complete checkerboard lattice. Geometry,
+UVs and requested color bytes still require the existing quadratic/sample checks.
+Warped, constant and folded UV fields can now recover without source metadata;
+an apparently rectangular boundary alone cannot admit a hole, changed interior
+diagonal or unused vertex. No source controls are invented for rejected meshes.
+
+Windows/Linux Release and Linux ASan/UBSan pass eight relevant test groups each.
+Per configuration, the independent long-double oracle covers 384 shuffled grids,
+311,424 sampled vertices and 16 rejections. Native tests pass 80 exact source and
+rebuild cases with 160 individual metadata records, 48 malformed-archive/output
+guards, 46 triangle reconstruction cases (42 also relit) and 27 recovery guards.
+Eighteen new Q3/JA cases cover all three non-affine UV forms and all color policies.
+Oriented triangle positions, UVs and requested bytes agree after rebuilding and
+relighting. Ten native workbench cases per platform additionally verify per-source
+rows, malformed metadata, legacy reports, cancellation, persistence and queued
+compiler output. Owned-widget renders cover both themes/sizes; the Windows source
+results were visually inspected at 1380×920 and 1024×720.
+
+See [recorded validation](validation/patch-recovery-topology.json),
+[retained sources](PATCH-SOURCE.md) and [triangle fitting](TRIANGLE-PATCH-RECOVERY.md).
+Logs and the evidence recorder remain in `.agents/tmp/patch-recovery-topology/`;
+native fixtures and widget renders remain under each build's test directories.
+No game, OS screenshot or user-input control was used. Earlier engine comparisons
+were not rerun, and the established sanitizer leak exclusion remains.
+
+Unarchived BSPs cannot prove original paint, lost settings or unique source
+controls. Arbitrary/decimated meshes, original grouping and broad runtime/LOD
+equivalence remain separate work. No new unrelated issue was found in this patch
+round. The preceding generated-BSP depth mismatch, material-preview 66/68 gate and
+raw-sidecar audits remain open; previously blocked cleanup targets were untouched.

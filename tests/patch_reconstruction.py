@@ -89,6 +89,41 @@ def main():
                         split_surface_count=sum(s['shader']=='textures/q3mapx/paint' for s in read_surfaces(old))))
                     if policy=='rgba': carriers[game]=(base,old,raw,text)
 
+        # Recover the lattice without texture-coordinate hints. These fields
+        # are quadratic but non-affine, singular or folded in texture space.
+        for uv in ('warped','constant','folded'):
+            for policy in ('rgba','alpha','none'):
+                label=f'{game}-topology-{uv}-{policy}'
+                patch=painted(mode='material' if policy=='rgba' else 'lighting',subdivisions=8,
+                              curved=True,width=5,height=5,extent=64)
+                def texture(match):
+                    fields=match[1].split()
+                    if len(fields)!=9: return match[0]
+                    x,y=map(float,fields[3:5])
+                    if uv=='warped': s,t=x+(y%2)*0.5+(x%2)*0.25,y+(x%2)*0.375+((x+y)%2)*0.25
+                    elif uv=='constant': s,t=3.25,-5.5
+                    else: s,t=x%2,y%2
+                    fields[3:5]=map(str,(s,t))
+                    return '( '+' '.join(fields)+' )'
+                patch=re.sub(r'\( ([^()]*) \)',texture,patch)
+                source.write_text(plain.replace('"message" "q3mapx regression"\n','"message" "q3mapx regression"\n'+patch),encoding='utf-8')
+                run(exe,[*base,'-no-patch-source','-mi',96,source],root,label+'-bsp')
+                run(exe,[*base,'-light','-fast',source],root,label+'-light')
+                bsp=source.with_name(label+'.bsp'); raw=source.with_suffix('.bsp').read_bytes(); bsp.write_bytes(raw)
+                bsp.with_suffix('.map').write_text('poisoned adjacent source',encoding='utf-8')
+                bsp.with_suffix('.srf').write_text('poisoned',encoding='utf-8')
+                output,report=recover(base,bsp,label+'-fit',['-patch-colors',policy])
+                fit=report['patch_recovery']['triangle_fitting']
+                assert fit['fitted_patches']==report['patches']==1,(label,fit)
+                assert fit['basis']=='complete_checkerboard_topology_and_verified_quadratic_samples'
+                assert report['patch_recovery']['source_records']==[] and not fit['original_source_proven']
+                run(exe,[*base,output],root,label+'-rebuild')
+                assert triangles(output.with_suffix('.bsp').read_bytes(),policy)==triangles(raw,policy),label
+                run(exe,[*base,'-light','-fast',output],root,label+'-relight')
+                assert triangles(output.with_suffix('.bsp').read_bytes(),policy)==triangles(raw,policy),label
+                assert bsp.read_bytes()==raw
+                cases.append(dict(case=label,uv=uv,oriented_triangles=len(triangles(raw,policy)),rebuild_and_relight_equal=True))
+
         # Genuine legacy patchDef2 compiled to triangle-only output, with no
         # q3mapx paint metadata at any stage. Auto must also fit a legacy patch
         # alongside archived painted sources without duplicating either.

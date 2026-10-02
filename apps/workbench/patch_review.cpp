@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "patch_review.h"
+#include "authoring/patch_paint.h"
+#include "authoring/surface.h"
 #include <QCryptographicHash>
 #include <QFile>
 #include <QFileInfo>
@@ -93,14 +95,40 @@ PatchReview readPatchReview(const QString& path,const std::atomic_bool* cancelle
             fail("Unsupported patch source evidence basis.");
         if(boolean(field(source,"author_identity_authenticated")) || boolean(field(source,"original_compile_context_restored")))
             fail("Unsupported original-source claim in report.");
-        if(result.archived) result.decisions.append({"Source archive","retained",QString::number(result.archived)+" patches","Authored controls and settings",
+        if(source.HasMember("source_records")) {
+            const auto& rows=source["source_records"]; const auto omitted=count(field(source,"omitted_source_records"));
+            if(!rows.IsArray() || rows.Size()>10000 || rows.Size()+omitted!=result.archived)
+                fail("Inconsistent retained source records.");
+            result.omitted+=omitted;
+            for(const auto& row:rows.GetArray()) {
+                check(cancelled);
+                const auto model=count(field(row,"model")),entity=count(field(row,"source_entity")),primitive=count(field(row,"source_primitive"));
+                const auto width=count(field(row,"width")),height=count(field(row,"height")),sub=count(field(row,"subdivisions"));
+                if(width>31 || height>31 || !sub || sub>32 || (sub&(sub-1))
+                    || !q3mapx::authoring::paintMeshFits(int(width),int(height),int(sub)) || count(field(row,"controls"))!=width*height)
+                    fail("Invalid retained patch dimensions.");
+                const auto shader=text(field(row,"shader")),rgb=text(field(row,"rgb_mode"));
+                if(shader.size()>63 || shader.size()<=9 || !shader.startsWith("textures/",Qt::CaseInsensitive)
+                    || !QStringList{"lighting","material"}.contains(rgb) || count(field(row,"lightmap_sample_size"))>q3mapx::authoring::maxSampleSize)
+                    fail("Invalid retained patch settings.");
+                const auto& surfaces=field(row,"surfaces");
+                if(!surfaces.IsArray() || surfaces.Size()>64) fail("Invalid retained patch surfaces.");
+                quint64 previous=0;
+                for(rapidjson::SizeType i=0;i<surfaces.Size();++i) {
+                    const auto id=count(surfaces[i]); if(i && id<=previous) fail("Unordered retained patch surfaces."); previous=id;
+                }
+                count(field(row,"omitted_surfaces"));
+                result.decisions.append({"Source archive","retained",QString("Model %1 · source entity %2 · primitive %3").arg(model).arg(entity).arg(primitive),
+                    QString("%1 × %2 · %3 segments · %4 RGB").arg(width).arg(height).arg(sub).arg(rgb),object(row)});
+            }
+        } else if(result.archived) result.decisions.append({"Source archive","retained",QString::number(result.archived)+" patches","Authored controls and settings",
             {{"restored_source_patches",double(result.archived)},{"geometry_binding_verified",result.binding},
              {"basis","retained_pre_tessellation_source_archive"},{"original_compile_context_restored",false},{"author_identity_authenticated",false}}});
         if(source.HasMember("triangle_fitting")) {
             const auto& fit=source["triangle_fitting"];
             if(result.policy=="source" || boolean(field(fit,"original_source_proven")) || boolean(field(fit,"rebuild_equivalence_proven")))
                 fail("Unsupported triangle fitting claim.");
-            if(text(field(fit,"basis"))!="complete_affine_uv_grid_and_verified_quadratic_samples"
+            if(!QStringList{"complete_affine_uv_grid_and_verified_quadratic_samples","complete_checkerboard_topology_and_verified_quadratic_samples"}.contains(text(field(fit,"basis")))
                 || text(field(fit,"density_basis"))!="inherit_not_inferred"
                 || text(field(fit,"subdivisions_basis"))!="observed_sample_grid_not_author_setting")
                 fail("Unsupported triangle fitting evidence basis.");

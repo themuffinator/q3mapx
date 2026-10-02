@@ -48,15 +48,19 @@ int main() try {
     size_t cases=0,samples=0;
     std::mt19937 random(713);
     std::vector<PatchFitVertex> last; std::vector<std::array<int,3>> lastTris;
-    for(int width:{3,5}) for(int n:{4,8,16,32}) for(int channels:{0,3,4}) for(bool curved:{false,true}) {
+    for(int width:{3,5}) for(int height:{3,5}) for(int n:{4,8,16,32}) for(int channels:{0,3,4})
+    for(bool curved:{false,true}) for(int uv:{0,1,2,3}) {
         std::vector<PatchFitVertex> c;
-        for(int y=0;y<3;++y) for(int x=0;x<width;++x) {
+        for(int y=0;y<height;++y) for(int x=0;x<width;++x) {
             PatchFitVertex v;
             v.value={double(x*64-128),double(y*64-64),double(128+(curved?((x%2)*48+(y%2)*32):0)),3.25+x+y*0.25,-5.5+y-x*0.5};
+            if(uv==1) { v.value[3]+=(y%2)*0.5+(x%2)*0.25; v.value[4]+=(x%2)*0.375+((x+y)%2)*0.25; }
+            if(uv==2) { v.value[3]=3.25; v.value[4]=-5.5; }
+            if(uv==3) { v.value[3]=x%2; v.value[4]=y%2; }
             v.color={uint8_t((x%3)*73),uint8_t(y*99),uint8_t((x%2&&y%2)?253:5),uint8_t((x%2&&y%2)?3:253)};
             c.push_back(v);
         }
-        auto vertices=sample(c,width,3,n); auto triangles=topology((width-1)/2*n+1,n+1);
+        auto vertices=sample(c,width,height,n); auto triangles=topology((width-1)/2*n+1,(height-1)/2*n+1);
         if(channels!=0) for(auto& v:vertices) for(int k=0;k<channels;++k) v.color[k]=255;
         // Randomized BSP emission order must not supply an implicit grid oracle.
         std::vector<int> order(vertices.size()),inverse(vertices.size()); std::iota(order.begin(),order.end(),0);
@@ -65,7 +69,7 @@ int main() try {
         for(auto& tri:triangles) for(int& v:tri) v=inverse[v];
         std::shuffle(triangles.begin(),triangles.end(),random);
         uint64_t work=0; const auto fit=fitTrianglePatch(shuffled,triangles,channels,work,50'000'000);
-        if(fit.controls.empty()) throw std::runtime_error(std::string("Positive fit rejected: ")+fit.status+" width="+std::to_string(width)+" n="+std::to_string(n)+" channels="+std::to_string(channels)+" curved="+std::to_string(curved));
+        if(fit.controls.empty()) throw std::runtime_error(std::string("Positive fit rejected: ")+fit.status+" width="+std::to_string(width)+" height="+std::to_string(height)+" n="+std::to_string(n)+" channels="+std::to_string(channels)+" curved="+std::to_string(curved)+" uv="+std::to_string(uv));
         auto rebuilt=sample(fit.controls,fit.width,fit.height,fit.subdivisions);
         std::sort(vertices.begin(),vertices.end()); std::sort(rebuilt.begin(),rebuilt.end());
         require(vertices==rebuilt,"Independent sampled-field mismatch");
@@ -87,6 +91,18 @@ int main() try {
     v=last; v[0].value[3]+=0.003; reject(v,lastTris);
     v=last; v[0].color[3]=0; reject(v,lastTris);
     reject(last,lastTris,0,1); reject(last,lastTris,2);
-    std::cout<<cases<<" shuffled affine-UV fit cases, "<<samples<<" independent samples and "<<rejected<<" rejection cases passed\n";
+    // Intact rectangular boundary and constant UVs cannot excuse an incompatible
+    // interior diagonal, a hole, an unused sample or a nonmanifold edge.
+    std::vector<PatchFitVertex> grid;
+    for(int y=0;y<9;++y) for(int x=0;x<9;++x) { PatchFitVertex p; p.value={double(x),double(y),0,1,1}; grid.push_back(p); }
+    auto faces=topology(9,9); t=faces;
+    t[(2*8+2)*2]={20,29,21}; t[(2*8+2)*2+1]={29,30,21}; reject(grid,t);
+    t=faces; t.erase(t.begin()+36,t.begin()+38); reject(grid,t);
+    v=grid; v.push_back(grid[0]); reject(v,faces);
+    t=faces; t.push_back({20,29,40}); reject(grid,t);
+    uint64_t fullWork=0;
+    require(!fitTrianglePatch(grid,faces,4,fullWork,50'000'000).controls.empty(),"Constant UV control rejected");
+    reject(grid,faces,4,fullWork-1);
+    std::cout<<cases<<" shuffled topology fit cases (affine/warped/constant/folded UV), "<<samples<<" independent samples and "<<rejected<<" rejection cases passed\n";
 }
 catch(const std::exception& e) { std::cerr<<e.what()<<'\n'; return 1; }

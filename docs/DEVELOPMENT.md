@@ -924,6 +924,16 @@ Use `tests/renderer/patch_source_render.py --fit` with the same in-project engin
 test setup to compare original and reconstructed triangle-only scenes. It changes
 only independent copied test assets. See [contract and evidence](TRIANGLE-PATCH-RECOVERY.md).
 
+Grid discovery now uses a complete connectivity check instead of affine texture
+coordinates. `patch_fit` independently evaluates shuffled flat/curved grids with
+affine, warped, constant and folded UV fields, including multiple spans on both
+axes. `patch_reconstruction` also rebuilds and relights archive-free Q3/JA examples
+of each newly supported field, comparing oriented XYZ/ST/requested-color samples.
+Malformed interior diagonals, holes, unused samples and exhausted work remain
+rejections. `patch_source` checks individual restored settings in the JSON against
+the source primitives; `workbench_patches` covers those rows, malformed metadata
+and compatibility with older aggregate reports.
+
 ## Workbench patch recovery
 
 `workbench_patches` runs ten Quake III/Jedi Academy scenes through the real Qt

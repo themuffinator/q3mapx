@@ -1,0 +1,698 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-02T03:11:18.236984+00:00",
+  "base_revision": "e20fbf741eb9246cf64e1303f9a8b48b595fd97d",
+  "scope": "Resolve inherited lightmap spacing once through classification and meta rebuilding; bound extreme scale products before integer conversion",
+  "source_sha256_lf": {
+    "CMakeLists.txt": "33f4b230d01bef6f9cee53ea853d9231c5961bb5d02a3a25d7358ca2176faaae",
+    "tools/quake3/q3map2/q3map2.h": "5145b72ae5f12decb9abfd63beb87b452f7e022c2530874e7b0ce0ee43d657c2",
+    "tools/quake3/q3map2/surface.cpp": "858410eafcfd0381c3262b4624487809d8a417d1a1540838a4e3142a7af9bc0a",
+    "tools/quake3/q3map2/surface_meta.cpp": "ba59e867bb8353e96b0854693bfa800929d44593350d9e45e11e88856f85e4ca",
+    "tests/surface_sampling.py": "542f0b72e3a9de490504931d96a537a79aae5d72eeab9c3adce93116960758e2",
+    "tests/surface_density.py": "c2a72d90c1ff87288d1d5bba3d7a39a806d1418b7490def92285a5550da15335"
+  },
+  "platforms": {
+    "windows": {
+      "compiler": {
+        "path": "build/release/bin/q3mapx.exe",
+        "sha256": "ec15a37bc8d17ab739dce93cdff1fa82c7a8fedff15dd6716d3f0c800bf5b887"
+      },
+      "reference": {
+        "path": ".agents/tmp/surface-sampling/q3mapx-reference.exe",
+        "sha256": "1898724900bd28bea187d7868613fa7394bc9f9f0e01b6302760c7fc8dfd4196"
+      },
+      "final_build_log": {
+        "path": ".agents/tmp/surface-sampling/build-windows-final.log",
+        "sha256": "1b5a810cc27ed2661abe902db1680c99f63e8e2b191dc62cf78220323a2646fd"
+      },
+      "native": {
+        "report": {
+          "path": "build/release/tests/surface-sampling/validation.json",
+          "sha256": "438e4dafcf4a27f36685632457a8469cf5d7cb29296d94057e44261444fc107b"
+        },
+        "log": {
+          "path": ".agents/tmp/surface-sampling/native-windows-final.log",
+          "sha256": "e87fe982c6f160a821f0627d5b118dc6d79fea93470780f1a81fc90ab1eca27d"
+        },
+        "bsp_builds": 160,
+        "worker_parity_pairs": 80,
+        "packed_atlas_checks": 12,
+        "preceding_compiler_lump_and_srf_parity_cases": 16,
+        "preceding_compiler_lost_scale_controls": 8
+      },
+      "regressions": {
+        "log": {
+          "path": ".agents/tmp/surface-sampling/regression-windows-final.log",
+          "sha256": "27daed8beb54f9a0f90bf177b890d4a80388966854c412446c392177393d6f8e"
+        },
+        "groups": [
+          "recovery_groups",
+          "patch_source",
+          "light_source",
+          "patch_reconstruction",
+          "surface_density",
+          "patch_paint",
+          "compiler_pipeline",
+          "game_profiles"
+        ]
+      },
+      "authored_density": {
+        "report": {
+          "path": "build/release/tests/surface-density/results.json",
+          "sha256": "ce9ec4d54f4b04e7cb1e979ccab9440a253e4e4dcce01bb98493f01ee54a2f79"
+        },
+        "matrix_builds": 24,
+        "malformed_source_guards": 27,
+        "clamp_minima": [
+          16,
+          64
+        ]
+      }
+    },
+    "linux": {
+      "compiler": {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "88ff75253e798c473488578bb24e3f6b20f415404db70f709a347307a11bcd5e"
+      },
+      "reference": {
+        "path": ".agents/tmp/surface-sampling/q3mapx-reference-linux",
+        "sha256": "f31b4d4e2511f32d3e5cdeac5a7f03810386b76f451fc39c194a9cfda3d06553"
+      },
+      "final_build_log": {
+        "path": ".agents/tmp/surface-sampling/build-linux-final.log",
+        "sha256": "7565b6c079c80f34d20ce49c642a3b51c9b4cb1a1d46d1c79ed73ad5f45c2981"
+      },
+      "native": {
+        "report": {
+          "path": "build/linux-release/tests/surface-sampling/validation.json",
+          "sha256": "f7d0a06b9c76e7abcd4f6a9af72431e6b5e9c89b9c55b6ab1df1addb925efb52"
+        },
+        "log": {
+          "path": ".agents/tmp/surface-sampling/native-linux-final.log",
+          "sha256": "b8bb78d51acb8158f49f42e08e7f70796278eb88d347730109f37fc985cd0984"
+        },
+        "bsp_builds": 160,
+        "worker_parity_pairs": 80,
+        "packed_atlas_checks": 12,
+        "preceding_compiler_lump_and_srf_parity_cases": 16,
+        "preceding_compiler_lost_scale_controls": 8
+      },
+      "regressions": {
+        "log": {
+          "path": ".agents/tmp/surface-sampling/regression-linux-final.log",
+          "sha256": "2615f79672785da23b5799fb8b4ee59794614879052325f48fef7e455ce7b400"
+        },
+        "groups": [
+          "patch_reconstruction",
+          "patch_source",
+          "light_source",
+          "recovery_groups",
+          "patch_paint",
+          "surface_density",
+          "compiler_pipeline",
+          "game_profiles"
+        ]
+      },
+      "authored_density": {
+        "report": {
+          "path": "build/linux-release/tests/surface-density/results.json",
+          "sha256": "f2aa6376e2ddb366fc9e6b04c3694bd7e299c52a8c87827c6089c83219b52782"
+        },
+        "matrix_builds": 24,
+        "malformed_source_guards": 27,
+        "clamp_minima": [
+          16,
+          64
+        ]
+      }
+    },
+    "sanitized": {
+      "compiler": {
+        "path": "build/linux-sanitized/bin/q3mapx",
+        "sha256": "c715ca569d2c4045535a4023bf7148cf261fad32435d95de46506f422a9a2d0a"
+      },
+      "reference": null,
+      "final_build_log": {
+        "path": ".agents/tmp/surface-sampling/build-sanitized-final.log",
+        "sha256": "7565b6c079c80f34d20ce49c642a3b51c9b4cb1a1d46d1c79ed73ad5f45c2981"
+      },
+      "native": {
+        "report": {
+          "path": "build/linux-sanitized/tests/surface-sampling/validation.json",
+          "sha256": "92c8597e94853e07a192408a0c9d6a6234a769dace42eae2a9746198e46e7a17"
+        },
+        "log": {
+          "path": ".agents/tmp/surface-sampling/native-sanitized-final.log",
+          "sha256": "b8bb78d51acb8158f49f42e08e7f70796278eb88d347730109f37fc985cd0984"
+        },
+        "bsp_builds": 160,
+        "worker_parity_pairs": 80,
+        "packed_atlas_checks": 12,
+        "preceding_compiler_lump_and_srf_parity_cases": 0,
+        "preceding_compiler_lost_scale_controls": 0
+      },
+      "regressions": {
+        "log": {
+          "path": ".agents/tmp/surface-sampling/regression-sanitized-final.log",
+          "sha256": "67ae26b87c52ebae15e98a6f4d2237c7604d1142cb3ab588f4faf37eb8c25a92"
+        },
+        "groups": [
+          "patch_reconstruction",
+          "patch_source",
+          "light_source",
+          "recovery_groups",
+          "patch_paint",
+          "surface_density",
+          "compiler_pipeline",
+          "game_profiles"
+        ]
+      },
+      "authored_density": {
+        "report": {
+          "path": "build/linux-sanitized/tests/surface-density/results.json",
+          "sha256": "be532316818d8edc19c9b6e770cf2fed73e3cd58c182e11933f213cf8158bfdb"
+        },
+        "matrix_builds": 24,
+        "malformed_source_guards": 27,
+        "clamp_minima": [
+          16,
+          64
+        ]
+      }
+    }
+  },
+  "representative_effective_spacing": [
+    {
+      "case": "default",
+      "material_values": {
+        "stone": [
+          16
+        ],
+        "sampled": [
+          32
+        ],
+        "clone": [
+          16
+        ],
+        "back": [
+          48
+        ],
+        "split": [
+          32
+        ],
+        "forced": [
+          32
+        ],
+        "patch": [
+          32
+        ],
+        "model": [
+          32
+        ],
+        "door": [
+          32
+        ],
+        "group": [
+          32
+        ],
+        "unlit": [
+          0
+        ],
+        "authored": [
+          7
+        ],
+        "decal": [
+          32
+        ]
+      }
+    },
+    {
+      "case": "unit",
+      "material_values": {
+        "stone": [
+          24
+        ],
+        "sampled": [
+          32
+        ],
+        "clone": [
+          16
+        ],
+        "back": [
+          48
+        ],
+        "split": [
+          32
+        ],
+        "forced": [
+          32
+        ],
+        "patch": [
+          32
+        ],
+        "model": [
+          32
+        ],
+        "door": [
+          32
+        ],
+        "group": [
+          32
+        ],
+        "unlit": [
+          0
+        ],
+        "authored": [
+          7
+        ],
+        "decal": [
+          32
+        ]
+      }
+    },
+    {
+      "case": "scaled",
+      "material_values": {
+        "stone": [
+          48
+        ],
+        "sampled": [
+          64
+        ],
+        "clone": [
+          32
+        ],
+        "back": [
+          96
+        ],
+        "split": [
+          64
+        ],
+        "forced": [
+          64
+        ],
+        "patch": [
+          64
+        ],
+        "model": [
+          64
+        ],
+        "door": [
+          64
+        ],
+        "group": [
+          16,
+          48
+        ],
+        "unlit": [
+          0
+        ],
+        "authored": [
+          7
+        ],
+        "decal": [
+          32
+        ]
+      }
+    },
+    {
+      "case": "shrunk",
+      "material_values": {
+        "stone": [
+          6
+        ],
+        "sampled": [
+          8
+        ],
+        "clone": [
+          4
+        ],
+        "back": [
+          12
+        ],
+        "split": [
+          8
+        ],
+        "forced": [
+          8
+        ],
+        "patch": [
+          8
+        ],
+        "model": [
+          8
+        ],
+        "door": [
+          8
+        ],
+        "group": [
+          16,
+          48
+        ],
+        "unlit": [
+          0
+        ],
+        "authored": [
+          7
+        ],
+        "decal": [
+          32
+        ]
+      }
+    },
+    {
+      "case": "fractional",
+      "material_values": {
+        "stone": [
+          29
+        ],
+        "sampled": [
+          35
+        ],
+        "clone": [
+          17
+        ],
+        "back": [
+          52
+        ],
+        "split": [
+          35
+        ],
+        "forced": [
+          35
+        ],
+        "patch": [
+          35
+        ],
+        "model": [
+          35
+        ],
+        "door": [
+          35
+        ],
+        "group": [
+          16,
+          48
+        ],
+        "unlit": [
+          0
+        ],
+        "authored": [
+          7
+        ],
+        "decal": [
+          32
+        ]
+      }
+    },
+    {
+      "case": "global",
+      "material_values": {
+        "stone": [
+          48
+        ],
+        "sampled": [
+          64
+        ],
+        "clone": [
+          32
+        ],
+        "back": [
+          96
+        ],
+        "split": [
+          64
+        ],
+        "forced": [
+          64
+        ],
+        "patch": [
+          64
+        ],
+        "model": [
+          64
+        ],
+        "door": [
+          64
+        ],
+        "group": [
+          16,
+          48
+        ],
+        "unlit": [
+          0
+        ],
+        "authored": [
+          7
+        ],
+        "decal": [
+          32
+        ]
+      }
+    },
+    {
+      "case": "minimum",
+      "material_values": {
+        "stone": [
+          16
+        ],
+        "sampled": [
+          16
+        ],
+        "clone": [
+          16
+        ],
+        "back": [
+          16
+        ],
+        "split": [
+          16
+        ],
+        "forced": [
+          16
+        ],
+        "patch": [
+          16
+        ],
+        "model": [
+          16
+        ],
+        "door": [
+          16
+        ],
+        "group": [
+          16,
+          48
+        ],
+        "unlit": [
+          0
+        ],
+        "authored": [
+          16
+        ],
+        "decal": [
+          32
+        ]
+      }
+    },
+    {
+      "case": "overflow",
+      "material_values": {
+        "stone": [
+          16384
+        ],
+        "sampled": [
+          16384
+        ],
+        "clone": [
+          16384
+        ],
+        "back": [
+          16384
+        ],
+        "split": [
+          16384
+        ],
+        "forced": [
+          16384
+        ],
+        "patch": [
+          16384
+        ],
+        "model": [
+          16384
+        ],
+        "door": [
+          16384
+        ],
+        "group": [
+          16,
+          48
+        ],
+        "unlit": [
+          0
+        ],
+        "authored": [
+          7
+        ],
+        "decal": [
+          32
+        ]
+      }
+    },
+    {
+      "case": "large-base",
+      "material_values": {
+        "stone": [
+          16384
+        ],
+        "sampled": [
+          32
+        ],
+        "clone": [
+          16
+        ],
+        "back": [
+          48
+        ],
+        "split": [
+          32
+        ],
+        "forced": [
+          32
+        ],
+        "patch": [
+          32
+        ],
+        "model": [
+          32
+        ],
+        "door": [
+          32
+        ],
+        "group": [
+          32
+        ],
+        "unlit": [
+          0
+        ],
+        "authored": [
+          7
+        ],
+        "decal": [
+          32
+        ]
+      }
+    },
+    {
+      "case": "large-minimum",
+      "material_values": {
+        "stone": [
+          16384
+        ],
+        "sampled": [
+          16384
+        ],
+        "clone": [
+          16384
+        ],
+        "back": [
+          16384
+        ],
+        "split": [
+          16384
+        ],
+        "forced": [
+          16384
+        ],
+        "patch": [
+          16384
+        ],
+        "model": [
+          16384
+        ],
+        "door": [
+          16384
+        ],
+        "group": [
+          16384
+        ],
+        "unlit": [
+          0
+        ],
+        "authored": [
+          16384
+        ],
+        "decal": [
+          16384
+        ]
+      }
+    }
+  ],
+  "checks": [
+    "Ten source/global/minimum settings, Q3 and JA, ordinary/meta/patchmeta/maxarea, one/four workers. Check every emitted surface against expected spacing and require every fixture material.",
+    "Shader sizes 16/32/48, entity bases/scales, global fallback, positive fractional truncation, minimum clamps, 1e38 scale, large entity base and minimum above the supported maximum.",
+    "Subdivision, material clones/back sides, curved patches, transformed brush models, imported forced-meta meshes, same-shader adjacent func_groups, authored overrides and vertex-lit surfaces.",
+    "Verify group source-space ownership and prohibit an emitted surface crossing regions with differing effective spacing. Equal clamped spacing may merge.",
+    "New triangular projected decals receive initial classification after the -maxarea shortcut; an intermediate implementation failing this case was repaired before final validation.",
+    "Final native reports agree exactly on effective values and selected atlas UV spans across all three configurations. Worker comparisons cover normalized native BSP lumps and complete SRF bytes."
+  ],
+  "unrelated_existing_model_issue": {
+    "description": "misc_model with spawnflag 4 can fail LIGHT without global -meta; both versions reproduce the zero projection axis and controlled raw-lightmap error",
+    "preceding_log": {
+      "path": ".agents/tmp/surface-sampling/reference-ordinary-light.log",
+      "sha256": "3b8247f059b1d57dcbe82ec4e12166f8ddb333049f14d1b2d488cc436a914291"
+    },
+    "current_log": {
+      "path": ".agents/tmp/surface-sampling/current-ordinary-light.log",
+      "sha256": "2c81a34bca4a7896ff98400cfae5e033e37e514513e4d6f8f364b0d5c20fa30c"
+    },
+    "preceding_source": {
+      "path": ".agents/tmp/surface-sampling/before/scaled-quake3-ordinary/baseq3/maps/fixture.map",
+      "sha256": "4e39e9e5c6754ae2b7d296b95233f5b2fc60d03719cb3bc1d5deb6ec714ed2d2"
+    },
+    "current_source": {
+      "path": "build/release/tests/surface-sampling/scaled-quake3-ordinary/baseq3/maps/fixture.map",
+      "sha256": "80c0d78d69a2f1b925adeec8fde22233e1273a7ed8de0e1e6c633632536a7f1a"
+    },
+    "fixture_difference": "The final current fixture additionally contains projected decals; each independently reproduces the same ordinary-model failure.",
+    "plan": "docs/PLAN.md M7 forced-meta model path",
+    "isolation_report": {
+      "path": ".agents/tmp/surface-sampling/model-isolation.json",
+      "sha256": "29be21b1d5e4a76e82af570061f915af6b20bd040d0eeb513f3bac535573fcf9"
+    },
+    "isolation_controls": {
+      "checks": "Both binaries pass LIGHT after removing only the imported model; both reject it with the model and preserve prior BSP bytes.",
+      "logs": [
+        {
+          "path": ".agents/tmp/surface-sampling/model-isolation/current-False/light.log",
+          "sha256": "52b6e4ba51622ce74b555c2cbe8267df3916777953090956f64df1352f47f751"
+        },
+        {
+          "path": ".agents/tmp/surface-sampling/model-isolation/current-True/light.log",
+          "sha256": "fcb0436c389a2f54f6e9964a24cbfdf994a2ea9b2d0270a047289eb765b7d4ff"
+        },
+        {
+          "path": ".agents/tmp/surface-sampling/model-isolation/reference-False/light.log",
+          "sha256": "0c682734ea38181e7102c58c09183df4996e1818060f913695a7925c37c070ab"
+        },
+        {
+          "path": ".agents/tmp/surface-sampling/model-isolation/reference-True/light.log",
+          "sha256": "aecc14e70c92b9751eda75cd3db9461ac142d8318469a125100e1d3d4bef3ff3"
+        }
+      ],
+      "harness": {
+        "path": ".agents/tmp/surface-sampling/model-isolation.py",
+        "sha256": "d6729ef8ea546ab2f674ad296235e2e9679bb35310c7567e6f750a22e196fa48"
+      }
+    }
+  },
+  "limits": [
+    "Affected maps intentionally change inherited sampling and can repack lightmaps; no universal legacy byte-compatibility claim is made.",
+    "SRF sampleSize describes requested effective sampling. LIGHT can still enlarge sampling for atlas constraints. Selected atlas checks use an unclamped 64-unit planar face at spacing 64.",
+    "Ordinary-mode model validation stops at BSP/SRF because of the separately reproduced existing model issue. The twelve atlas checks use meta, patchmeta and maxarea.",
+    "Existing generated-decal/model inheritance policy, source numeric parsing, minimum/maximum syntax and GUI preview resolution are not redesigned.",
+    "Native control fixtures do not qualify arbitrary maps, lighting seam quality, engine pixels, fur/skybox rendering or Radiant inherited-density previews.",
+    "Linux ASan/UBSan uses the established leak-detection exclusion. No game, OS screenshot or user-input control was used."
+  ]
+}

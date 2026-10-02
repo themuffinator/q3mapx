@@ -957,6 +957,7 @@ struct mapDrawSurface_t_params
 	MinMax minmax;
 	Vector3 lightmapAxis{ 0 };
 	int sampleSize;
+	bool sampleSizeResolved = false;       /* sampleSize is final, including entity scale */
 
 	/* ydnar: shadow group support */
 	int castShadows, recvShadows;

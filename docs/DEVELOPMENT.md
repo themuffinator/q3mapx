@@ -1,5 +1,13 @@
 # Development and validation
 
+## Inherited surface sampling
+
+`surface_sampling` checks density precedence and bounds through native surface
+classification, subdivision, copies, patch tessellation and meta merging, with
+source-space checks on adjacent groups and actual packed lightmap UVs. Its
+optional reference compiler proves ordinary no-scale/unit-scale parity and
+reproduces the prior lost-scale defect. See [the sampling contract](LIGHTMAP-SAMPLING.md).
+
 ## BSP subdivision and depth
 
 `bsp_tree` independently enumerates block boundaries and verifies graph path

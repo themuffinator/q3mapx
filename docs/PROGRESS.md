@@ -3852,3 +3852,52 @@ previously blocked cleanup targets were untouched.
 
 No new unrelated issue was found. The material-preview strict pixel qualification
 remains 66/68, and raw-sidecar publication/parser audits remain open.
+
+## 2026-10-02 — Preserve inherited lightmap spacing through repeated classification
+
+Repaired the inherited density defect tracked in M7. A shader sample size of 32
+with entity scale 2 now remains at 64 through brush emission, subdivision, patch
+tessellation and meta rebuilding. Previously those later classifications could
+replace the scaled result with the shader base. Copies retain resolved spacing;
+meta surfaces inherit their seed's positive final value. Newly projected triangle
+decals with unresolved zero still receive initial classification, including the
+`-maxarea` shortcut. Different effective densities remain distinct during merging.
+
+Authored overrides retain their absolute precedence and vertex-lit surfaces stay
+unlightmapped. Scale products are bounded before integer conversion, including
+overflow from finite inputs. A CLI minimum above the supported 16,384-unit maximum
+saturates at that maximum instead of supplying reversed clamp bounds. Affected
+maps intentionally change sampling and may repack atlases; this is a correctness
+fix rather than a universal byte-compatibility guarantee.
+
+Windows/Linux Release and Linux ASan/UBSan each pass 160 native sampling builds
+and twelve complete VIS/LIGHT atlas checks. Ten parameter settings exercise both
+profiles, four compilation paths and one/four workers, including material clones,
+subdivision, curved patches, translated entities, imported models, adjacent groups,
+decals, authored overrides and extreme numbers. Source-space group checks prevent
+merges across different densities. Effective sizes and selected atlas UV spans
+agree across configurations; a 64-unit face spans one packed texel at spacing 64.
+Each release additionally checks 16 preceding-compiler parity cases and eight
+lost-scale controls. Worker comparisons preserve native lumps after removing
+command-line provenance and preserve complete SRF bytes.
+
+Eight final regression groups pass per configuration, including authored density,
+paint/source/triangle recovery, compile/game profiles, LIGHT source loading and
+group recovery. Existing density tests now require corrected inherited spacing;
+their 24 authored builds and 27 malformed-input guards still pass. The established
+sanitizer leak exclusion remains. No game, OS screenshot or user-input control was
+used, and engine pixels, seams and inherited editor previews are not newly qualified.
+
+See [the sampling contract](LIGHTMAP-SAMPLING.md) and
+[recorded validation](validation/surface-sampling.json). Useful build/test logs,
+reference binaries, the evidence recorder and model-isolation harness remain in
+`.agents/tmp/surface-sampling/`; native fixtures remain under each build's
+`tests/surface-sampling/`. Previously blocked cleanup targets were untouched.
+
+An unrelated existing model defect was isolated: without global `-meta`, a
+`misc_model` with spawnflag 4 can retain a zero projection axis and fail LIGHT.
+Both preceding and current binaries fail with that model and complete LIGHT after
+removing only it; failed runs preserve prior BSP bytes. M7 now tracks honoring the
+force flag throughout meta processing. Ordinary model cases in this round cover
+BSP/SRF; the atlas checks use meta, patchmeta and maxarea. Material-preview strict
+pixel qualification remains 66/68, and raw-sidecar publication/parser audits remain open.

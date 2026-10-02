@@ -4,7 +4,8 @@ The first M11 implementation adds **per-face and per-patch lightmap spacing** to
 q3mapx and a maintained NetRadiant-custom editor patch. In the patched editor,
 the Surface Inspector has a density value, Apply/Inherit actions, selection
 feedback and an optional cyan grid in the camera renderer. Ordinary maps keep
-their existing syntax and compiler behavior.
+their existing syntax. The later [inherited sampling repair](LIGHTMAP-SAMPLING.md)
+corrects repeated classification losing entity scale on shader-specified spacing.
 
 This is an experimental authoring integration. The Windows editor model,
 serializers, widgets and grid geometry are tested; the camera's rendered pixels
@@ -39,7 +40,7 @@ Other game formats and patchDef3 authoring are outside this integration's scope.
 | `0` | Inherit the existing compiler/entity/shader behavior |
 | `1` through `16384` | Absolute requested world units per texel |
 | Positive authored value versus entity/shader size or scale | Authored value takes precedence |
-| BSP `-minsamplesize` greater than the authored value | Compiler minimum takes precedence |
+| BSP `-minsamplesize` greater than the authored value | Compiler minimum, capped at 16,384, takes precedence |
 | Material or compile path requiring vertex lighting | Remains vertex-lit; an override does not enable lightmapping |
 
 The input is a whole decimal number; signs, fractional/scientific spellings,
@@ -104,14 +105,20 @@ that value without reapplying entity scaling. Meta surfaces with different
 authored values cannot merge merely because the global minimum clamps them to
 the same effective spacing.
 
+Inherited spacing also resolves once: shader size overrides the entity base,
+then a positive entity scale applies before compile limits. Reclassification and
+meta merging retain the result. A shader size of 32 and entity scale of 2 now
+remain at 64; preceding versions could silently revert to 32.
+
 The BSP stage's `.srf` file records `authoredSampleSize` for positive overrides,
 alongside the existing effective `sampleSize`. Vertex-lit surfaces can therefore
 have an authored value and an effective zero. LIGHT uses the ordinary effective
 surface data and native allocation paths; there is no new BSP lump or runtime
 engine requirement. Keep the matching SRF with its BSP for separate LIGHT runs.
 The SRF is a build diagnostic indexed by output surfaces, not the source-data
-association mechanism. A BSP alone does not preserve these original authoring
-settings for decompilation.
+association mechanism. Ordinary native BSP fields do not preserve these original
+authoring settings. q3mapx's [retained patch-source trailer](PATCH-SOURCE.md) can
+restore original patch settings; it does not archive brush-face density metadata.
 
 ## Preview limits
 
@@ -204,5 +211,7 @@ checks actual packed UVs instead of unused legacy chart-width fields.
 
 Remaining density work includes native grid raster tests, larger maps, explicit shader
 eligibility, inherited previews, baked-atlas inspection, topology-changing editor
-operations, lighting seams, other native profiles, Linux editor delivery, patch
-painting and retained authoring metadata for decompilation.
+operations, lighting seams, other native profiles and Linux editor delivery.
+Implemented [patch painting](PATCH-PAINT.md) and
+[retained patch-source recovery](PATCH-SOURCE.md) have their own qualification
+records and remaining limits.

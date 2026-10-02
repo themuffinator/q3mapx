@@ -1499,6 +1499,9 @@ static void MetaTrianglesToSurface(){
 		ds.planeNum          = seed.planeNum;
 		ds.fogNum            = seed.fogNum;
 		ds.sampleSize        = seed.sampleSize;
+		// Positive spacing is final. Newly projected triangular decals can still
+		// have an unresolved zero when -maxarea skips their initial classification.
+		ds.sampleSizeResolved = seed.sampleSize > 0;
 		ds.lightmapSampleSizeOverride = seed.lightmapSampleSizeOverride;
 		ds.paintMode = seed.paintMode;
 		ds.shadeAngleDegrees = seed.shadeAngleDegrees;

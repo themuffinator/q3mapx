@@ -453,25 +453,25 @@ void ClassifySurface( mapDrawSurface_t& ds ){
 			//%     Sys_Printf( "Failed to map axis %d onto patch\n", bestAxis );
 		}
 
-		/* calculate lightmap sample size */
-		if ( ds.lightmapSampleSizeOverride > 0 ) {
-			// An authored surface specifies final spacing, independent of shader or
-			// entity scaling. The global minimum below remains a compile limit.
-			ds.sampleSize = ds.lightmapSampleSizeOverride;
+		/* Resolve once: triangulation and meta merging classify surfaces again.
+		   Copies retain this state; merged surfaces inherit their seed's final size. */
+		if ( !ds.sampleSizeResolved ) {
+			float requested;
+			if ( ds.lightmapSampleSizeOverride > 0 ) {
+				// Authored spacing overrides shader/entity values and scaling.
+				requested = ds.lightmapSampleSizeOverride;
+			}
+			else {
+				requested = ds.shaderInfo->lightmapSampleSize > 0 ? ds.shaderInfo->lightmapSampleSize
+					: ds.sampleSize > 0 ? ds.sampleSize : sampleSize;
+				if ( ds.lightmapScale > 0 ) requested *= ds.lightmapScale;
+			}
+			// Clamp before converting: finite input scale can overflow float or int.
+			// A CLI minimum above the supported maximum saturates at that maximum.
+			ds.sampleSize = int( std::clamp( requested, float( std::clamp( minSampleSize, 1, 16384 ) ), 16384.f ) );
 			ds.lightmapScale = 0;
+			ds.sampleSizeResolved = true;
 		}
-		else if ( ds.shaderInfo->lightmapSampleSize > 0 ) { /* shader overrides inherited sizes */
-			ds.sampleSize = ds.shaderInfo->lightmapSampleSize;
-		}
-		else if ( ds.sampleSize <= 0 ) { /* may contain the entity asigned value */
-			ds.sampleSize = sampleSize; /* otherwise use global default */
-		}
-		if ( ds.lightmapScale > 0 ) { /* apply surface lightmap scaling factor */
-			ds.sampleSize = ds.lightmapScale * ds.sampleSize;
-			ds.lightmapScale = 0; /* applied */
-		}
-
-		ds.sampleSize = std::clamp( ds.sampleSize, std::max( minSampleSize, 1 ), 16384 ); /* powers of 2 are preferred */
 	}
 }
 

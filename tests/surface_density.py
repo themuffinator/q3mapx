@@ -127,9 +127,9 @@ def run_matrix(compiler, root, reference=None):
                     assert all(meta and struct.unpack_from('<i',lumps[13],i*(148 if game=='ja' else 104)+8)[0]==2
                                for i,r in authored if r['sampleSize']==0), (label,authored)
                     inherited = [row for row in srf.values() if not row.get('authoredSampleSize',0) and row.get('entity',0)==0]
-                    # Existing repeated classification reapplies a shader's absolute
-                    # spacing after consuming entity scale. Preserve that legacy result.
-                    assert inherited and all(row['sampleSize']==32 for row in inherited), (label, inherited)
+                    # Shader spacing overrides the entity base, then entity scale
+                    # applies exactly once through repeated classification/merging.
+                    assert inherited and all(row['sampleSize']==64 for row in inherited), (label, inherited)
                     # Thread count is literal CLI provenance in the entity string.
                     semantic = [re.sub(rb'"_q3map2_cmdline" "[^"\n]*"', b'', lumps[0]), *lumps[1:]]
                     if normalized is None: normalized = semantic

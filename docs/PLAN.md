@@ -218,9 +218,15 @@ not a redefinition of the overall goal around the existing release:
   decimal/scientific and integer-limit behavior. See [numeric input](CLI-INPUT.md).
 - [ ] Audit the separate legacy positional BSP scale/shift parsers, which still
   use `atof`; retain valid numeric/vector semantics and protect existing BSPs.
-- [ ] Repair repeated surface classification reapplying a shader's absolute
-  sample size after consuming entity lightmap scale. The initial M11 authored
-  override bypasses that inherited issue; legacy semantics remain unchanged.
+- [x] Repair repeated surface classification reapplying a shader's absolute
+  sample size after consuming entity lightmap scale. Resolved spacing now survives
+  copies, triangulation and meta merging; extreme scales are bounded before integer
+  conversion. Native Q3/JA controls cover precedence, regional separation, worker
+  parity and packed atlas UVs. See [inherited sampling](LIGHTMAP-SAMPLING.md).
+- [ ] Repair the forced-meta model path without global `-meta`. A generated
+  `misc_model` with spawnflag 4 is emitted with a zero projection axis and fails
+  LIGHT in both preceding and density-repaired binaries. Honor the model's force
+  flag through meta processing and qualify its baked output and ordinary models.
 - [x] Prevent BSP compilation from publishing a tree that exceeds its own reader's
   depth limit. Balanced automatic block cuts reduce the 1,024-block corridor
   from depth 1,028 to 15 while preserving its cells. Generation and publication

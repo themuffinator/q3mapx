@@ -395,6 +395,10 @@ if(BUILD_TESTING)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/surface_density.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/surface-density)
     set_tests_properties(surface_density PROPERTIES TIMEOUT 300)
+    add_test(NAME surface_sampling COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/surface_sampling.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/surface-sampling)
+    set_tests_properties(surface_sampling PROPERTIES TIMEOUT 900)
     add_test(NAME patch_paint COMMAND ${Python3_EXECUTABLE}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/patch_paint.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/patch-paint)

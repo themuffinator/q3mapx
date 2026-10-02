@@ -396,6 +396,12 @@ Separate compiler workstream; see [compiler optimization design](COMPILER-OPTIMI
   numerical and work/memory limits. Check independent box/oblique oracles, matched
   compiled portals and native recovery-only readers. This geometric prerequisite
   does not recover protected PRT flags or authorize VIS substitution.
+- [x] Separate lost baseline bits from demonstrated false culling on known axial
+  source fixtures. Add bounded exact interior-occlusion certificates, independent
+  clipping replay and worker/platform comparisons across all four VIS solvers.
+  The [qualification audit](VIS-QUALIFICATION.md) certifies 83 of 84 distinct
+  dropped pairs; one remains unresolved. This limited oracle does not qualify
+  automatic merging, boundary behavior or general source geometry.
 - [ ] Diagnose regional over-portalling, inefficient splits and poor detail usage,
   attributing costs to source geometry and comparing current merge/hint options.
   `-bsp-evidence` now ranks subtree subdivision/reference costs for investigation;
@@ -409,8 +415,10 @@ Separate compiler workstream; see [compiler optimization design](COMPILER-OPTIMI
   remove the baseline-inclusion failures; leaf merging needs its own correctness
   argument and validation gate before automatic selection.
   The complete-winding repair still leaves 2/27 omitted baseline bits on the
-  grid=5/grid=9 combined-merge probes. Use reconstructed cell interfaces for
-  bounded geometric correspondence/coverage checks before proposing transformations;
+  grid=5/grid=9 combined-merge probes. Both small-fixture pairs and 26 large-fixture
+  pairs now have interior-occlusion certificates; grid=9 pair 79 to 217 remains
+  unresolved. Use reconstructed cell interfaces for bounded geometric
+  correspondence/coverage checks before proposing transformations;
   original PRT construction and serialized BSP planes have measurable oblique
   differences, so successful point probes are insufficient.
 - [ ] Add a VIS-only option for conservative graph simplification with correct

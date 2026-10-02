@@ -434,6 +434,8 @@ if(BUILD_TESTING)
     endif()
     add_test(NAME vis_clip COMMAND vis_clip_test)
     set_tests_properties(vis_clip PROPERTIES TIMEOUT 60)
+    add_test(NAME vis_occlusion COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/vis_occlusion_test.py)
+    set_tests_properties(vis_occlusion PROPERTIES TIMEOUT 120)
     add_test(NAME vis_passage_clipping COMMAND ${Python3_EXECUTABLE}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/vis_passage_clipping.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/vis-passage-clipping)

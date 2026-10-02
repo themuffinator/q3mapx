@@ -48,6 +48,12 @@ correct source detail classification. The [optimizer design](COMPILER-OPTIMIZATI
 requires separate baseline-inclusion, geometry and runtime-cost gates before
 automatic regional changes can be offered.
 
+The [exact fixture qualification audit](VIS-QUALIFICATION.md) now explains 83 of
+84 distinct dropped pairs across four solvers and these merge selections. It
+certifies only interior occlusion for known axial source geometry, with independent
+clipping replay. One pair remains unresolved and boundary behavior remains outside
+the contract. Automatic merge qualification stays closed.
+
 ## Compact working data
 
 Deleted portals no longer occupy bits in portal-front, flood, final-flow or

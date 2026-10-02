@@ -3638,3 +3638,46 @@ No new unrelated issue was found. The existing material-preview strict pixel
 qualification remains 66/68, and raw-sidecar publication/parser audits remain open.
 Spatial/per-control review, arbitrary mesh reconstruction and broader engine/game
 qualification are still separate work.
+
+## 2026-10-02 — Exact geometric audit of VIS merge differences
+
+Added a bounded rational oracle for known axial source fixtures and a native
+qualification harness across all four VIS solvers, four merge selections and
+one/four workers. Dropped baseline bits are now distinguished from demonstrated
+false culling. Certificates prove absence of an open set of interior sightlines
+using conservative line-parameter polygons and original opaque pillar boxes.
+Bounded endpoint bisection can refine uncertain cases. Each accepted certificate
+is replayed with separate vertex-pair clipping and an exact convex hull.
+
+Windows and Linux each pass the new `vis_occlusion` CTest group: 1,274 independent
+polygon checks and 106 visibility/occlusion controls, plus resource and malformed
+certificate guards. Controls retain explicit clear windows as narrow as 2^-80,
+axis permutations/reflections, large translations and reversed endpoints. Each
+platform completes 64 native VIS commands and all worker, PRT, geometry-lump,
+self-bit and padding checks. VIS bytes, source LF hashes, cell boxes, certificates
+and proof work counts agree across platforms. Input BSP/PRT hashes are recorded
+separately because those serialized files differ between builds.
+
+Of 84 distinct directed pairs lost across the selected modes, 83 have accepted
+interior-occlusion certificates. The default full solver's combined merge still
+drops 2/27 baseline bits on grid=5/grid=9, but both small-fixture pairs and 26
+large-fixture pairs now have this limited geometric explanation. Grid=9 pair
+79 to 217 remains unresolved. The optional qualification command writes that
+failure and exits nonzero; it is not registered as a passing native CTest or
+exempted from the gate. No compiler runtime behavior, tolerance or default changed.
+
+Updated the plan, VIS/development guides and optimizer design. See the
+[proof contract](VIS-QUALIFICATION.md) and [recorded validation](validation/vis-merge-qualification.json).
+General geometry, grazing/boundary behavior, protected topology and runtime
+visibility budgets remain required before automatic regional merges. No
+performance improvement or general engine correctness is claimed by this round.
+
+Native fixtures, complete certificates and command logs remain under each release
+build's `tests/vis-merge-qualification/` directory. Build/test logs and the evidence
+recorder remain under `.agents/tmp/vis-merge/`. Cleanup of that directory's
+disposable investigation fixtures, prototype scripts and copied reference binary
+was rejected by automatic approval review as blocked by policy; the command did
+not run and those files remain there. Earlier blocked cleanup targets were untouched.
+
+No new unrelated code issue was found. The existing material-preview strict pixel
+qualification remains 66/68, and raw-sidecar publication/parser audits remain open.

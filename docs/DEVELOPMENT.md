@@ -382,6 +382,17 @@ The graph-only fixtures intentionally isolate PRT contracts and are not claimed
 spatial matches to their carrier BSP. All real-map checks retain non-entity,
 non-VIS lumps and require worker-independent visibility bytes.
 
+`vis_occlusion` checks the bounded rational interior-occlusion oracle with 1,274
+independent polygon comparisons and 106 visibility/occlusion controls, including
+tiny positive windows, axis permutations/reflections, large translations and
+resource/certificate guards. It is Python-only and part of ordinary CTest.
+The optional `tests/vis_merge_qualification.py` runs 64 native VIS cases per
+platform on known axial source fixtures and independently replays generated
+certificates for dropped baseline bits. Its current result is deliberately
+nonzero: 83 of 84 distinct pairs certify, while one remains unresolved. It does
+not change compiler behavior or qualify engine boundary cases. See
+[contract, results and reproduction](VIS-QUALIFICATION.md).
+
 Pass `--reference /path/to/preceding/q3mapx` to require exact VIS bytes against
 a compiler with the same merge repairs. The passage-storage round retains its
 preceding `e2965d0` executables under `.agents/tmp/continuation/smart-vis-baseline`.

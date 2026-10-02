@@ -1,0 +1,1077 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-02",
+  "compiler_source_revision": "158f08bb6bb0d4f183409f5eebc4b74805d5cd54",
+  "compiler_runtime_changed": false,
+  "automatic_merge_enabled": false,
+  "status": "Partial interior-occlusion qualification; one unresolved pair; broader automatic merge remains unqualified.",
+  "sources": [
+    {
+      "path": "CMakeLists.txt",
+      "sha256_lf": "5a6414a9ba5a65319292a3c48d9d7e1eda3b5ab44d810204011561159fdbd37c"
+    },
+    {
+      "path": "tests/vis_occlusion.py",
+      "sha256_lf": "47c5e045cd28b6c3ea8be09894fd1b663285873ed1c489a937ba85747d63c0c4"
+    },
+    {
+      "path": "tests/vis_occlusion_test.py",
+      "sha256_lf": "e175e450d553947bac1b987b642fce60e561f83cd2eff915a8b8885c69e459ba"
+    },
+    {
+      "path": "tests/vis_merge_qualification.py",
+      "sha256_lf": "449aad4ab4e97c27f1ae5e3981967180a87a16451db2bb69cccbe30658215a0b"
+    },
+    {
+      "path": "tests/vis_fixtures.py",
+      "sha256_lf": "1fa706f41f11a08224ba403e23274d83e7fd10823f8c9100e3067a7e2f4fd7f4"
+    },
+    {
+      "path": "tests/fixtures.py",
+      "sha256_lf": "5cc300117041bc22a719451f9915bca17cc5af10094521408538b850284436c7"
+    },
+    {
+      "path": "tests/vis_merge.py",
+      "sha256_lf": "25e550a3a3860476c15c9fa82842a6a2ce0ff64037185f91b16499d98acd1782"
+    },
+    {
+      "path": "tests/integration.py",
+      "sha256_lf": "3bb8e703e9e898a4c079f6a52321941aeb54876a7eac7804b8e1069c1541dfb3"
+    }
+  ],
+  "platforms": [
+    {
+      "platform": "windows",
+      "compiler": {
+        "path": "build/release/bin/q3mapx.exe",
+        "sha256": "1e47b6d3dba9f2466a8565ff649a1f7dd237d87fa39a16a3a7c44f1b3a8700cf"
+      },
+      "build_log": {
+        "path": ".agents/tmp/vis-merge/build-windows.log",
+        "sha256": "a81c22e738a1987e5d2c6c87559d20c6ad7603e136e41a2fc2e2d8afd5cdda57"
+      },
+      "ctest": {
+        "path": ".agents/tmp/vis-merge/ctest-windows.log",
+        "sha256": "af48e98e928bf053d5ccfa4fc15b6c609312494e4f3929c0a2e8ac3e25042001",
+        "passed": [
+          "vis_occlusion"
+        ],
+        "independent_polygon_checks": 1274,
+        "visibility_occlusion_controls": 106,
+        "resource_and_certificate_guards": true
+      },
+      "qualification_log": {
+        "path": ".agents/tmp/vis-merge/qualification-windows.log",
+        "sha256": "05c533616d7621f9b1687b2624b34ce6f0bf11031213711c7bdc8764e5288a11"
+      },
+      "native_report": {
+        "path": "build/release/tests/vis-merge-qualification/validation.json",
+        "sha256": "42b35be503d9403a670e4914c5b97cf0eb29689acbaa302bcb35615b80a81682"
+      },
+      "qualified": false,
+      "native_vis_runs": 64,
+      "grids": [
+        {
+          "grid": 5,
+          "clusters": 84,
+          "native_vis_runs": 32,
+          "source_sha256_lf": "6581d0f025b124899d1c2fffb9c0fadd414746284911ffda45261a8df51d94f6",
+          "input_bsp_sha256": "a2f9ccf6620124b802f32ccd6d3774b556443ca59f970337de1eb63be15879ed",
+          "prt_sha256": "21e00c7112eb519b55b7be189098afbefc31a6d27c1298f013e70a3f452ecfb8",
+          "distinct_lost_pairs": 11,
+          "certified_interior_pairs": 11,
+          "unresolved_pairs": [],
+          "certificates_sha256": "117e9469164fc3ff598ca69d486ef20b7443cbb4de00fd263fb377202bd6f11b",
+          "default_full": {
+            "baseline_visible_pairs": 6956,
+            "merged_visible_pairs": 6954,
+            "lost_baseline_bits": 2,
+            "certified_lost_pairs": 2,
+            "added_baseline_bits": 0
+          },
+          "polygon_only_vis_bytes_equal_baseline": true,
+          "cases": [
+            {
+              "solver": "full",
+              "mode": "original",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6956,
+              "visibility_sha256": "4271c3a613b1741da612de2bc9c874b814744bb39cb4d3933d54df2995a0af1f"
+            },
+            {
+              "solver": "full",
+              "mode": "merge",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 2,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6954,
+              "visibility_sha256": "187c44495bca270046dacd446236a36d80d748e8cb252a3423360c22fb7b364f"
+            },
+            {
+              "solver": "full",
+              "mode": "polygons",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6956,
+              "visibility_sha256": "4271c3a613b1741da612de2bc9c874b814744bb39cb4d3933d54df2995a0af1f"
+            },
+            {
+              "solver": "full",
+              "mode": "merge-nosort",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 2,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6954,
+              "visibility_sha256": "187c44495bca270046dacd446236a36d80d748e8cb252a3423360c22fb7b364f"
+            },
+            {
+              "solver": "portal",
+              "mode": "original",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6959,
+              "visibility_sha256": "c0d1154422af2eff71ecde4c95c509edf0b2faa16c24c5cea4ebc277bd5f3c34"
+            },
+            {
+              "solver": "portal",
+              "mode": "merge",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 1,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6958,
+              "visibility_sha256": "9c6f3761c775c73615c5f6f4b1e24402887dd0b6e457953a885db3a74c0de8c9"
+            },
+            {
+              "solver": "portal",
+              "mode": "polygons",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6959,
+              "visibility_sha256": "c0d1154422af2eff71ecde4c95c509edf0b2faa16c24c5cea4ebc277bd5f3c34"
+            },
+            {
+              "solver": "portal",
+              "mode": "merge-nosort",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 1,
+              "visible_pairs": 6960,
+              "visibility_sha256": "76bcc646f2afc4ba7250d7036d3984e198d53274956cde1b97ea547bfdb936e7"
+            },
+            {
+              "solver": "passage",
+              "mode": "original",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6972,
+              "visibility_sha256": "55646326c04e305014372daf74102984c01cdacf99f66200b2ae726f5ca67c2a"
+            },
+            {
+              "solver": "passage",
+              "mode": "merge",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6972,
+              "visibility_sha256": "55646326c04e305014372daf74102984c01cdacf99f66200b2ae726f5ca67c2a"
+            },
+            {
+              "solver": "passage",
+              "mode": "polygons",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6972,
+              "visibility_sha256": "55646326c04e305014372daf74102984c01cdacf99f66200b2ae726f5ca67c2a"
+            },
+            {
+              "solver": "passage",
+              "mode": "merge-nosort",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6972,
+              "visibility_sha256": "55646326c04e305014372daf74102984c01cdacf99f66200b2ae726f5ca67c2a"
+            },
+            {
+              "solver": "fast",
+              "mode": "original",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6985,
+              "visibility_sha256": "4e0df2074488030ab5a9f12bdfeed241fbe9c9f7a4a8ecda9673fb70f1a54f8b"
+            },
+            {
+              "solver": "fast",
+              "mode": "merge",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 8,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6977,
+              "visibility_sha256": "6947420b2a8839c8ab987ea172efc407310f58d5bbd04838cfa4078082c05163"
+            },
+            {
+              "solver": "fast",
+              "mode": "polygons",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6985,
+              "visibility_sha256": "4e0df2074488030ab5a9f12bdfeed241fbe9c9f7a4a8ecda9673fb70f1a54f8b"
+            },
+            {
+              "solver": "fast",
+              "mode": "merge-nosort",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 8,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6977,
+              "visibility_sha256": "6947420b2a8839c8ab987ea172efc407310f58d5bbd04838cfa4078082c05163"
+            }
+          ],
+          "unresolved_cells": []
+        },
+        {
+          "grid": 9,
+          "clusters": 220,
+          "native_vis_runs": 32,
+          "source_sha256_lf": "b909fa274c6cff0db02ab62e2b90cfc30c203658ea111cbd1cba618d28ef7947",
+          "input_bsp_sha256": "6ee7b02e21a87aa981ffc9d72bec5845b4f5b56863008071e8a5aa3543b419cb",
+          "prt_sha256": "bb6a5f9bfcce7225d66837fcc12aa98f63556e50a47c1093b6bfb6eff28e8b54",
+          "distinct_lost_pairs": 73,
+          "certified_interior_pairs": 72,
+          "unresolved_pairs": [
+            [
+              79,
+              217
+            ]
+          ],
+          "certificates_sha256": "76f6a31374bd7d69dc93f41596efdb256623e4c1abc9af3213815fc81ca66dc1",
+          "default_full": {
+            "baseline_visible_pairs": 46370,
+            "merged_visible_pairs": 46427,
+            "lost_baseline_bits": 27,
+            "certified_lost_pairs": 26,
+            "added_baseline_bits": 84
+          },
+          "polygon_only_vis_bytes_equal_baseline": true,
+          "cases": [
+            {
+              "solver": "full",
+              "mode": "original",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 46370,
+              "visibility_sha256": "c389e6bd6180bbe86342ba3c4e1955a9f648e2a17037d10bdec7038248ca6590"
+            },
+            {
+              "solver": "full",
+              "mode": "merge",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 27,
+              "added_baseline_bits": 84,
+              "visible_pairs": 46427,
+              "visibility_sha256": "1443615cf69a9d3d45f7c1f8df3a38e8abf171df0f2d461a722f99785c48dfbd"
+            },
+            {
+              "solver": "full",
+              "mode": "polygons",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 46370,
+              "visibility_sha256": "c389e6bd6180bbe86342ba3c4e1955a9f648e2a17037d10bdec7038248ca6590"
+            },
+            {
+              "solver": "full",
+              "mode": "merge-nosort",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 33,
+              "added_baseline_bits": 129,
+              "visible_pairs": 46466,
+              "visibility_sha256": "ec378f03d50fcedca0b62d9187f2ef43af6100f8e0f1cf13fb22bce1b502170f"
+            },
+            {
+              "solver": "portal",
+              "mode": "original",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 46848,
+              "visibility_sha256": "a5d969f04492dbb841e875ed3e4c9c3cca6f25c6197948ec7467a29af14c0df0"
+            },
+            {
+              "solver": "portal",
+              "mode": "merge",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 25,
+              "added_baseline_bits": 94,
+              "visible_pairs": 46917,
+              "visibility_sha256": "8681859b503875df748a6b4d3a8d3868306265a5e22cac0a94d0fa0b3c695f9f"
+            },
+            {
+              "solver": "portal",
+              "mode": "polygons",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 46848,
+              "visibility_sha256": "a5d969f04492dbb841e875ed3e4c9c3cca6f25c6197948ec7467a29af14c0df0"
+            },
+            {
+              "solver": "portal",
+              "mode": "merge-nosort",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 32,
+              "added_baseline_bits": 141,
+              "visible_pairs": 46957,
+              "visibility_sha256": "e99030b85982aebf9acb88442cde35abd0a227687298e57d6f44dddf8754b54e"
+            },
+            {
+              "solver": "passage",
+              "mode": "original",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 47452,
+              "visibility_sha256": "42471e5cc884fcc97d1daaf8297dba455c2f5f4bed8c43821dbf4cbfc4d6938f"
+            },
+            {
+              "solver": "passage",
+              "mode": "merge",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 2,
+              "added_baseline_bits": 27,
+              "visible_pairs": 47477,
+              "visibility_sha256": "a9d4378468189a7f7695c5eb64cb8c581b0c4e7b43c9911f064003c396068f14"
+            },
+            {
+              "solver": "passage",
+              "mode": "polygons",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 47452,
+              "visibility_sha256": "42471e5cc884fcc97d1daaf8297dba455c2f5f4bed8c43821dbf4cbfc4d6938f"
+            },
+            {
+              "solver": "passage",
+              "mode": "merge-nosort",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 2,
+              "added_baseline_bits": 27,
+              "visible_pairs": 47477,
+              "visibility_sha256": "a9d4378468189a7f7695c5eb64cb8c581b0c4e7b43c9911f064003c396068f14"
+            },
+            {
+              "solver": "fast",
+              "mode": "original",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 47671,
+              "visibility_sha256": "cc4ac3ca26c27a1056e8b494ca0fd4cbd8ca901ad689d784e2add4e6f41462e9"
+            },
+            {
+              "solver": "fast",
+              "mode": "merge",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 4,
+              "added_baseline_bits": 22,
+              "visible_pairs": 47689,
+              "visibility_sha256": "c1ded993633c0e8cbf280ec514b838e0111f8575e2fa6e0b53f5e7f92b5c481a"
+            },
+            {
+              "solver": "fast",
+              "mode": "polygons",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 47671,
+              "visibility_sha256": "cc4ac3ca26c27a1056e8b494ca0fd4cbd8ca901ad689d784e2add4e6f41462e9"
+            },
+            {
+              "solver": "fast",
+              "mode": "merge-nosort",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 4,
+              "added_baseline_bits": 22,
+              "visible_pairs": 47689,
+              "visibility_sha256": "c1ded993633c0e8cbf280ec514b838e0111f8575e2fa6e0b53f5e7f92b5c481a"
+            }
+          ],
+          "unresolved_cells": [
+            {
+              "clusters": [
+                79,
+                217
+              ],
+              "proven_occluded_interiors": false,
+              "cell_pairs": [
+                {
+                  "source_box": [
+                    [
+                      236,
+                      -276,
+                      80
+                    ],
+                    [
+                      276,
+                      -236,
+                      176
+                    ]
+                  ],
+                  "target_box": [
+                    [
+                      -492,
+                      -532,
+                      0
+                    ],
+                    [
+                      -404,
+                      -492,
+                      80
+                    ]
+                  ],
+                  "status": "unresolved",
+                  "work": 83650,
+                  "certificate": null
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "platform": "linux",
+      "compiler": {
+        "path": "build/linux-release/bin/q3mapx",
+        "sha256": "7a715fcf67a6274b59c39fd2163d79cabdabc62ce7c64e4b4ad3c39f8db7f85a"
+      },
+      "build_log": {
+        "path": ".agents/tmp/vis-merge/build-linux.log",
+        "sha256": "fd15bb2c395d527782b52a1e4f8264ea83b9ab4be429f0d855e1854a47e7952b"
+      },
+      "ctest": {
+        "path": ".agents/tmp/vis-merge/ctest-linux.log",
+        "sha256": "fc04b48ff0c5dccbd5f3aaa37973fb40cf40648d127d6424e36da34a0f3840fb",
+        "passed": [
+          "vis_occlusion"
+        ],
+        "independent_polygon_checks": 1274,
+        "visibility_occlusion_controls": 106,
+        "resource_and_certificate_guards": true
+      },
+      "qualification_log": {
+        "path": ".agents/tmp/vis-merge/qualification-linux.log",
+        "sha256": "3fdf204418f6288b344ec5cbb334edbd82907434a18c19fe23d4697f84c29579"
+      },
+      "native_report": {
+        "path": "build/linux-release/tests/vis-merge-qualification/validation.json",
+        "sha256": "b70fe6c2468470a2f995ec77809ec718045d14c3571d3be5a68468193003c6fd"
+      },
+      "qualified": false,
+      "native_vis_runs": 64,
+      "grids": [
+        {
+          "grid": 5,
+          "clusters": 84,
+          "native_vis_runs": 32,
+          "source_sha256_lf": "6581d0f025b124899d1c2fffb9c0fadd414746284911ffda45261a8df51d94f6",
+          "input_bsp_sha256": "07d64d2eb8e0e7071b6a18e52066e7999b52399fda34698c7738d202084843fa",
+          "prt_sha256": "7fffd417bb8eb4775e5a25b4c51dec3f52af0ffb0d1a2c3175d8a359e29cc23f",
+          "distinct_lost_pairs": 11,
+          "certified_interior_pairs": 11,
+          "unresolved_pairs": [],
+          "certificates_sha256": "117e9469164fc3ff598ca69d486ef20b7443cbb4de00fd263fb377202bd6f11b",
+          "default_full": {
+            "baseline_visible_pairs": 6956,
+            "merged_visible_pairs": 6954,
+            "lost_baseline_bits": 2,
+            "certified_lost_pairs": 2,
+            "added_baseline_bits": 0
+          },
+          "polygon_only_vis_bytes_equal_baseline": true,
+          "cases": [
+            {
+              "solver": "full",
+              "mode": "original",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6956,
+              "visibility_sha256": "4271c3a613b1741da612de2bc9c874b814744bb39cb4d3933d54df2995a0af1f"
+            },
+            {
+              "solver": "full",
+              "mode": "merge",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 2,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6954,
+              "visibility_sha256": "187c44495bca270046dacd446236a36d80d748e8cb252a3423360c22fb7b364f"
+            },
+            {
+              "solver": "full",
+              "mode": "polygons",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6956,
+              "visibility_sha256": "4271c3a613b1741da612de2bc9c874b814744bb39cb4d3933d54df2995a0af1f"
+            },
+            {
+              "solver": "full",
+              "mode": "merge-nosort",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 2,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6954,
+              "visibility_sha256": "187c44495bca270046dacd446236a36d80d748e8cb252a3423360c22fb7b364f"
+            },
+            {
+              "solver": "portal",
+              "mode": "original",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6959,
+              "visibility_sha256": "c0d1154422af2eff71ecde4c95c509edf0b2faa16c24c5cea4ebc277bd5f3c34"
+            },
+            {
+              "solver": "portal",
+              "mode": "merge",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 1,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6958,
+              "visibility_sha256": "9c6f3761c775c73615c5f6f4b1e24402887dd0b6e457953a885db3a74c0de8c9"
+            },
+            {
+              "solver": "portal",
+              "mode": "polygons",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6959,
+              "visibility_sha256": "c0d1154422af2eff71ecde4c95c509edf0b2faa16c24c5cea4ebc277bd5f3c34"
+            },
+            {
+              "solver": "portal",
+              "mode": "merge-nosort",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 1,
+              "visible_pairs": 6960,
+              "visibility_sha256": "76bcc646f2afc4ba7250d7036d3984e198d53274956cde1b97ea547bfdb936e7"
+            },
+            {
+              "solver": "passage",
+              "mode": "original",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6972,
+              "visibility_sha256": "55646326c04e305014372daf74102984c01cdacf99f66200b2ae726f5ca67c2a"
+            },
+            {
+              "solver": "passage",
+              "mode": "merge",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6972,
+              "visibility_sha256": "55646326c04e305014372daf74102984c01cdacf99f66200b2ae726f5ca67c2a"
+            },
+            {
+              "solver": "passage",
+              "mode": "polygons",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6972,
+              "visibility_sha256": "55646326c04e305014372daf74102984c01cdacf99f66200b2ae726f5ca67c2a"
+            },
+            {
+              "solver": "passage",
+              "mode": "merge-nosort",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6972,
+              "visibility_sha256": "55646326c04e305014372daf74102984c01cdacf99f66200b2ae726f5ca67c2a"
+            },
+            {
+              "solver": "fast",
+              "mode": "original",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6985,
+              "visibility_sha256": "4e0df2074488030ab5a9f12bdfeed241fbe9c9f7a4a8ecda9673fb70f1a54f8b"
+            },
+            {
+              "solver": "fast",
+              "mode": "merge",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 8,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6977,
+              "visibility_sha256": "6947420b2a8839c8ab987ea172efc407310f58d5bbd04838cfa4078082c05163"
+            },
+            {
+              "solver": "fast",
+              "mode": "polygons",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6985,
+              "visibility_sha256": "4e0df2074488030ab5a9f12bdfeed241fbe9c9f7a4a8ecda9673fb70f1a54f8b"
+            },
+            {
+              "solver": "fast",
+              "mode": "merge-nosort",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 8,
+              "added_baseline_bits": 0,
+              "visible_pairs": 6977,
+              "visibility_sha256": "6947420b2a8839c8ab987ea172efc407310f58d5bbd04838cfa4078082c05163"
+            }
+          ],
+          "unresolved_cells": []
+        },
+        {
+          "grid": 9,
+          "clusters": 220,
+          "native_vis_runs": 32,
+          "source_sha256_lf": "b909fa274c6cff0db02ab62e2b90cfc30c203658ea111cbd1cba618d28ef7947",
+          "input_bsp_sha256": "d58c3ae517a8aba0dd86b53663ac72c3364204909010f0827082040681a4eb52",
+          "prt_sha256": "c380ee429fd47212bb90bff2110002b7bb48fb8ba70e8b83d7d9b8ac666894fc",
+          "distinct_lost_pairs": 73,
+          "certified_interior_pairs": 72,
+          "unresolved_pairs": [
+            [
+              79,
+              217
+            ]
+          ],
+          "certificates_sha256": "76f6a31374bd7d69dc93f41596efdb256623e4c1abc9af3213815fc81ca66dc1",
+          "default_full": {
+            "baseline_visible_pairs": 46370,
+            "merged_visible_pairs": 46427,
+            "lost_baseline_bits": 27,
+            "certified_lost_pairs": 26,
+            "added_baseline_bits": 84
+          },
+          "polygon_only_vis_bytes_equal_baseline": true,
+          "cases": [
+            {
+              "solver": "full",
+              "mode": "original",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 46370,
+              "visibility_sha256": "c389e6bd6180bbe86342ba3c4e1955a9f648e2a17037d10bdec7038248ca6590"
+            },
+            {
+              "solver": "full",
+              "mode": "merge",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 27,
+              "added_baseline_bits": 84,
+              "visible_pairs": 46427,
+              "visibility_sha256": "1443615cf69a9d3d45f7c1f8df3a38e8abf171df0f2d461a722f99785c48dfbd"
+            },
+            {
+              "solver": "full",
+              "mode": "polygons",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 46370,
+              "visibility_sha256": "c389e6bd6180bbe86342ba3c4e1955a9f648e2a17037d10bdec7038248ca6590"
+            },
+            {
+              "solver": "full",
+              "mode": "merge-nosort",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 33,
+              "added_baseline_bits": 129,
+              "visible_pairs": 46466,
+              "visibility_sha256": "ec378f03d50fcedca0b62d9187f2ef43af6100f8e0f1cf13fb22bce1b502170f"
+            },
+            {
+              "solver": "portal",
+              "mode": "original",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 46848,
+              "visibility_sha256": "a5d969f04492dbb841e875ed3e4c9c3cca6f25c6197948ec7467a29af14c0df0"
+            },
+            {
+              "solver": "portal",
+              "mode": "merge",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 25,
+              "added_baseline_bits": 94,
+              "visible_pairs": 46917,
+              "visibility_sha256": "8681859b503875df748a6b4d3a8d3868306265a5e22cac0a94d0fa0b3c695f9f"
+            },
+            {
+              "solver": "portal",
+              "mode": "polygons",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 46848,
+              "visibility_sha256": "a5d969f04492dbb841e875ed3e4c9c3cca6f25c6197948ec7467a29af14c0df0"
+            },
+            {
+              "solver": "portal",
+              "mode": "merge-nosort",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 32,
+              "added_baseline_bits": 141,
+              "visible_pairs": 46957,
+              "visibility_sha256": "e99030b85982aebf9acb88442cde35abd0a227687298e57d6f44dddf8754b54e"
+            },
+            {
+              "solver": "passage",
+              "mode": "original",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 47452,
+              "visibility_sha256": "42471e5cc884fcc97d1daaf8297dba455c2f5f4bed8c43821dbf4cbfc4d6938f"
+            },
+            {
+              "solver": "passage",
+              "mode": "merge",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 2,
+              "added_baseline_bits": 27,
+              "visible_pairs": 47477,
+              "visibility_sha256": "a9d4378468189a7f7695c5eb64cb8c581b0c4e7b43c9911f064003c396068f14"
+            },
+            {
+              "solver": "passage",
+              "mode": "polygons",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 47452,
+              "visibility_sha256": "42471e5cc884fcc97d1daaf8297dba455c2f5f4bed8c43821dbf4cbfc4d6938f"
+            },
+            {
+              "solver": "passage",
+              "mode": "merge-nosort",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 2,
+              "added_baseline_bits": 27,
+              "visible_pairs": 47477,
+              "visibility_sha256": "a9d4378468189a7f7695c5eb64cb8c581b0c4e7b43c9911f064003c396068f14"
+            },
+            {
+              "solver": "fast",
+              "mode": "original",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 47671,
+              "visibility_sha256": "cc4ac3ca26c27a1056e8b494ca0fd4cbd8ca901ad689d784e2add4e6f41462e9"
+            },
+            {
+              "solver": "fast",
+              "mode": "merge",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 4,
+              "added_baseline_bits": 22,
+              "visible_pairs": 47689,
+              "visibility_sha256": "c1ded993633c0e8cbf280ec514b838e0111f8575e2fa6e0b53f5e7f92b5c481a"
+            },
+            {
+              "solver": "fast",
+              "mode": "polygons",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 0,
+              "added_baseline_bits": 0,
+              "visible_pairs": 47671,
+              "visibility_sha256": "cc4ac3ca26c27a1056e8b494ca0fd4cbd8ca901ad689d784e2add4e6f41462e9"
+            },
+            {
+              "solver": "fast",
+              "mode": "merge-nosort",
+              "workers": [
+                1,
+                4
+              ],
+              "lost_baseline_bits": 4,
+              "added_baseline_bits": 22,
+              "visible_pairs": 47689,
+              "visibility_sha256": "c1ded993633c0e8cbf280ec514b838e0111f8575e2fa6e0b53f5e7f92b5c481a"
+            }
+          ],
+          "unresolved_cells": [
+            {
+              "clusters": [
+                79,
+                217
+              ],
+              "proven_occluded_interiors": false,
+              "cell_pairs": [
+                {
+                  "source_box": [
+                    [
+                      236,
+                      -276,
+                      80
+                    ],
+                    [
+                      276,
+                      -236,
+                      176
+                    ]
+                  ],
+                  "target_box": [
+                    [
+                      -492,
+                      -532,
+                      0
+                    ],
+                    [
+                      -404,
+                      -492,
+                      80
+                    ]
+                  ],
+                  "status": "unresolved",
+                  "work": 83650,
+                  "certificate": null
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "checks": [
+    "128 native VIS runs total; every compiler command succeeds.",
+    "Four solvers, four merge selections, two fixtures, one/four workers.",
+    "Each solver compared with its own unmerged baseline; no omitted pair exempted.",
+    "BSP lumps 1-15 and PRT bytes unchanged in each native run; valid self bits and zero padding.",
+    "Worker-independent and Windows/Linux-identical VIS bytes for each selected mode.",
+    "Same 84 distinct dropped pairs on both platforms, with 83 exact interior certificates and one unresolved pair.",
+    "Every accepted certificate replayed with separate vertex-pair clipping and exact convex hull.",
+    "Windows/Linux source LF hashes, cell boxes, certificates and proof work counts identical."
+  ],
+  "limits": [
+    "Known original opaque axial fixture solids only; not arbitrary BSP/material reconstruction.",
+    "No open set of interior sightlines; zero-area grazing and cell/partition boundary rays excluded.",
+    "Replay shares geometric formulation/partitioning but independently implements clipping.",
+    "Grid=9 directed cluster pair 79 to 217 remains unresolved, not demonstrated visible or occluded.",
+    "Optional qualification command remains nonzero; no automatic transformation enabled.",
+    "No compiler algorithm changes, performance claim, engine run or sanitizer validation in this Python audit round.",
+    "Existing unrelated material-preview strict pixel qualification remains 66/68."
+  ]
+}

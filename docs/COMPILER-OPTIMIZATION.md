@@ -37,7 +37,12 @@ enclosure and numerical uncertainty and does not recover original PRT flags.
 Matched oblique portals show measurable construction differences; complete area
 coverage and protected-flag correspondence remain prerequisites. After the full-
 winding clipping repair, combined merging still omits 2 baseline bits on grid=5
-and 27 on grid=9. No automatic transformation is enabled by this evidence stage.
+and 27 on grid=9. The [exact axial-fixture audit](VIS-QUALIFICATION.md) now certifies
+interior occlusion for both small-fixture pairs and 26 large-fixture pairs. Across
+all solver/merge selections, 83 of 84 distinct dropped pairs have certificates
+replayed with an independent clipper. One remains unresolved; general geometry
+and engine boundary behavior remain outside this contract. No automatic
+transformation is enabled by this evidence stage.
 
 Start with reports and proposals. Once a transformation meets its correctness
 gates, the selected optimization mode may apply validated changes automatically

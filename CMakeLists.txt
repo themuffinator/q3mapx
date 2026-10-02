@@ -436,6 +436,10 @@ if(BUILD_TESTING)
     set_tests_properties(vis_clip PROPERTIES TIMEOUT 60)
     add_test(NAME vis_occlusion COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/vis_occlusion_test.py)
     set_tests_properties(vis_occlusion PROPERTIES TIMEOUT 120)
+    add_test(NAME vis_merge_qualification COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/vis_merge_qualification.py
+        --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/vis-merge-qualification)
+    set_tests_properties(vis_merge_qualification PROPERTIES TIMEOUT 900)
     add_test(NAME vis_passage_clipping COMMAND ${Python3_EXECUTABLE}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/vis_passage_clipping.py
         --compiler $<TARGET_FILE:q3mapx> --work-dir ${CMAKE_BINARY_DIR}/tests/vis-passage-clipping)

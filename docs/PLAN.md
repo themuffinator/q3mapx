@@ -399,8 +399,9 @@ Separate compiler workstream; see [compiler optimization design](COMPILER-OPTIMI
 - [x] Separate lost baseline bits from demonstrated false culling on known axial
   source fixtures. Add bounded exact interior-occlusion certificates, independent
   clipping replay and worker/platform comparisons across all four VIS solvers.
-  The [qualification audit](VIS-QUALIFICATION.md) certifies 83 of 84 distinct
-  dropped pairs; one remains unresolved. This limited oracle does not qualify
+  Coupled endpoint/blocker refinement now resolves the final pair: the
+  [qualification audit](VIS-QUALIFICATION.md) certifies all 84 distinct dropped
+  pairs and is part of CTest. This limited oracle does not qualify
   automatic merging, boundary behavior or general source geometry.
 - [ ] Diagnose regional over-portalling, inefficient splits and poor detail usage,
   attributing costs to source geometry and comparing current merge/hint options.
@@ -415,9 +416,9 @@ Separate compiler workstream; see [compiler optimization design](COMPILER-OPTIMI
   remove the baseline-inclusion failures; leaf merging needs its own correctness
   argument and validation gate before automatic selection.
   The complete-winding repair still leaves 2/27 omitted baseline bits on the
-  grid=5/grid=9 combined-merge probes. Both small-fixture pairs and 26 large-fixture
-  pairs now have interior-occlusion certificates; grid=9 pair 79 to 217 remains
-  unresolved. Use reconstructed cell interfaces for bounded geometric
+  grid=5/grid=9 combined-merge probes. Both small-fixture pairs and all 27 large-fixture
+  pairs now have interior-occlusion certificates, including the formerly unresolved
+  grid=9 pair 79 to 217. Use reconstructed cell interfaces for bounded geometric
   correspondence/coverage checks before proposing transformations;
   original PRT construction and serialized BSP planes have measurable oblique
   differences, so successful point probes are insufficient.

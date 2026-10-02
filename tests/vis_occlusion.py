@@ -151,7 +151,100 @@ def cut_states(states, cut, lo, hi, sides, budget, clipping):
     return out
 
 
-def sweep(a, b, obstacles, axis, budget):
+def slope_sign(poly):
+    if all(m >= 0 for m, _ in poly) and any(m > 0 for m, _ in poly):
+        return 1
+    if all(m <= 0 for m, _ in poly) and any(m < 0 for m, _ in poly):
+        return -1
+    raise ValueError('Expected a positive-area polygon with a fixed slope sign')
+
+
+def misses_endpoint(state, cell, sides, direction, budget):
+    """An entry slab lies beyond another exit slab for the entire product."""
+    x, y = state[direction], state[1-direction]
+    sx, sy = slope_sign(x), slope_sign(y)
+    entry = cell[0 if sx > 0 else 1][sides[direction]]
+    leave = cell[1 if sy > 0 else 0][sides[1-direction]]
+    budget.spend(len(x)*len(y))
+    # This is bilinear in the two independent polygon parameters. Its extrema
+    # occur at vertex pairs. Equality excludes only boundary/grazing lines.
+    return all(sx*sy*((entry-cx)*my-(leave-cy)*mx) >= 0
+               for mx, cx in x for my, cy in y)
+
+
+def crosses_box(state, cell, axis, sides, budget):
+    """All vertex-pair rays meet a closed blocker, including its full depth."""
+    for poly in state:
+        slope_sign(poly)
+    for x in state[0]:
+        for y in state[1]:
+            budget.spend(3)
+            low, high = cell[0][axis], cell[1][axis]
+            for side, (m, c) in zip(sides, (x, y)):
+                if not m:
+                    if not cell[0][side] <= c <= cell[1][side]:
+                        return False
+                    continue
+                entry, leave = sorted(((cell[0][side]-c)/m, (cell[1][side]-c)/m))
+                low, high = max(low, entry), min(high, leave)
+                if low > high:
+                    return False
+    # Fixed slope signs make the slab-overlap inequalities linear or bilinear
+    # on this product. Checking every vertex pair bounds each inequality over
+    # its whole interior; this is not a sampled-ray claim.
+    return True
+
+
+def gap_box(cell, a, b, axis):
+    lo, hi = list(cell[0]), list(cell[1])
+    lo[axis], hi[axis] = max(lo[axis], a[1][axis]), min(hi[axis], b[0][axis])
+    return (lo, hi) if lo[axis] < hi[axis] else None
+
+
+def parameter_children(state, side, anchor, a, b, axis, budget, clipping):
+    t = (a[1][axis], b[0][axis])[anchor]
+    values = [m*t+c for m, c in state[side]]
+    midpoint = (min(values)+max(values))/2
+    children = []
+    for sign in (1, -1):
+        child = list(state)
+        child[side] = clipping(child[side], (sign*t, sign, -sign*midpoint), budget)
+        children.append(child)
+    return children
+
+
+def refine_product(state, a, b, obstacles, axis, sides, budget, depth):
+    budget.spend()
+    for endpoint, cell in enumerate((a, b)):
+        for direction in (0, 1):
+            if misses_endpoint(state, cell, sides, direction, budget):
+                return dict(outside_endpoint=endpoint, direction=direction)
+    for index, obstacle in enumerate(obstacles):
+        cell = gap_box(obstacle, a, b, axis)
+        if cell is not None and crosses_box(state, cell, axis, sides, budget):
+            return dict(inside_occluder=index)
+    if not depth:
+        return None
+    choices = []
+    for side, poly in enumerate(state):
+        for anchor, t in enumerate((a[1][axis], b[0][axis])):
+            values = [m*t+c for m, c in poly]
+            choices.append((max(values)-min(values), side, anchor))
+    width, side, anchor = max(choices)
+    if not width:
+        return None
+    proofs = []
+    for child in parameter_children(state, side, anchor, a, b, axis, budget, clip):
+        if not area2(child[side]):
+            return None
+        proof = refine_product(child, a, b, obstacles, axis, sides, budget, depth-1)
+        if proof is None:
+            return None
+        proofs.append(proof)
+    return dict(split_side=side, anchor=anchor, children=proofs)
+
+
+def sweep(a, b, obstacles, axis, budget, refinement=0):
     start = initial(a, b, axis, budget, clip)
     if start is None:
         return None
@@ -169,6 +262,14 @@ def sweep(a, b, obstacles, axis, budget):
             states = updated
             if not states:
                 return dict(axis=axis, cuts=cuts)
+    if refinement:
+        proofs = []
+        for state in states:
+            proof = refine_product(state, a, b, obstacles, axis, sides, budget, refinement)
+            if proof is None:
+                return None
+            proofs.append(proof)
+        return dict(axis=axis, cuts=cuts, refinements=proofs)
     return None
 
 
@@ -180,10 +281,11 @@ def partition(a, b, axis, chosen):
     return [(box(child), b) if chosen == 0 else (a, box(child)) for child in (left, right)]
 
 
-def certify_occlusion(first, second, occluders, *, work=2_000_000, states=2048, depth=10):
+def certify_occlusion(first, second, occluders, *, work=2_000_000, states=2048, depth=10, refinement=12):
     a, b = box(first), box(second)
     obstacles = tuple(box(o) for o in occluders)
-    if not 0 <= depth <= 16 or not 1 <= work <= 100_000_000 or not 1 <= states <= 8192 or len(obstacles) > 256:
+    if (not 0 <= depth <= 16 or not 0 <= refinement <= 16 or not 1 <= work <= 100_000_000
+            or not 1 <= states <= 8192 or len(obstacles) > 256):
         raise ValueError('Invalid occlusion-oracle limit')
     budget = Budget(work, states)
     def prove(a, b, level):
@@ -192,6 +294,13 @@ def certify_occlusion(first, second, occluders, *, work=2_000_000, states=2048, 
             proof = sweep(a, b, obstacles, axis, budget)
             if proof is not None:
                 return proof
+        # Keep inexpensive direct certificates first on every axis. Only then
+        # refine the conservative product of independent projection constraints.
+        if refinement:
+            for axis in range(3):
+                proof = sweep(a, b, obstacles, axis, budget, refinement)
+                if proof is not None:
+                    return proof
         if level == depth:
             return None
         axis = max(range(3), key=lambda i:max(a[0][i]-b[1][i], b[0][i]-a[1][i]))
@@ -214,10 +323,67 @@ def certify_occlusion(first, second, occluders, *, work=2_000_000, states=2048, 
 
 
 def replay_certificate(first, second, occluders, proof):
-    """Replay a generated certificate with independent vertex-pair clipping."""
+    """Replay with independent clipping and division-free slab inequalities."""
     obstacles = tuple(box(o) for o in occluders)
     budget = Budget(100_000_000, 8192)
+
+    def bounds(point, cell, axis, sides, signs):
+        # entry/denominator and exit/denominator, with nonnegative denominators.
+        # At a zero slope, comparisons with the axial interval check that the
+        # constant coordinate lies inside the slab, without dividing by zero.
+        result = [(cell[0][axis], cell[1][axis], F(1))]
+        for (m, c), side, sign in zip(point, sides, signs):
+            entry = sign*(cell[0 if sign > 0 else 1][side]-c)
+            leave = sign*(cell[1 if sign > 0 else 0][side]-c)
+            result.append((entry, leave, sign*m))
+        return result
+
+    def verify_refinement(state, a, b, axis, sides, proof, depth=0):
+        budget.spend()
+        if not isinstance(proof, dict) or depth > 16 or any(not area2(p) for p in state):
+            return False
+        signs = [slope_sign(p) for p in state]
+        if 'outside_endpoint' in proof:
+            endpoint, direction = proof['outside_endpoint'], proof['direction']
+            if endpoint not in (0, 1) or direction not in (0, 1):
+                return False
+            cell = (a, b)[endpoint]
+            for x in state[0]:
+                for y in state[1]:
+                    budget.spend(3)
+                    slab = bounds((x, y), cell, axis, sides, signs)
+                    entry, _, denominator = slab[1+direction]
+                    _, leave, other = slab[2-direction]
+                    if entry*other < leave*denominator:
+                        return False
+            return True
+        if 'inside_occluder' in proof:
+            index = proof['inside_occluder']
+            if not 0 <= index < len(obstacles):
+                return False
+            cell = gap_box(obstacles[index], a, b, axis)
+            if cell is None:
+                return False
+            for x in state[0]:
+                for y in state[1]:
+                    budget.spend(9)
+                    slab = bounds((x, y), cell, axis, sides, signs)
+                    # Every entry bound must precede every exit bound. Each
+                    # inequality is bilinear (or reduces to linear), so vertex
+                    # pair extrema cover the entire convex product.
+                    if any(entry*other > leave*denominator for entry, _, denominator in slab
+                           for _, leave, other in slab):
+                        return False
+            return True
+        side, anchor = proof['split_side'], proof['anchor']
+        if side not in (0, 1) or anchor not in (0, 1) or len(proof['children']) != 2:
+            return False
+        children = parameter_children(state, side, anchor, a, b, axis, budget, reference_clip)
+        return all(verify_refinement(child, a, b, axis, sides, p, depth+1)
+                   for child, p in zip(children, proof['children']))
+
     def verify(a, b, proof, depth):
+        budget.spend()
         if not isinstance(proof, dict) or depth > 16:
             return False
         if 'split_axis' in proof:
@@ -241,6 +407,10 @@ def replay_certificate(first, second, occluders, proof):
             if not a[1][axis] <= cut <= b[0][axis]:
                 return False
             states = cut_states(states, cut, lo, hi, sides, budget, reference_clip)
+        if 'refinements' in proof:
+            proofs = proof['refinements']
+            return len(states) == len(proofs) and all(
+                verify_refinement(state, a, b, axis, sides, p) for state, p in zip(states, proofs))
         return not states
     try:
         return verify(box(first), box(second), proof, 0)

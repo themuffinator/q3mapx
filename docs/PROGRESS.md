@@ -3681,3 +3681,45 @@ not run and those files remain there. Earlier blocked cleanup targets were untou
 
 No new unrelated code issue was found. The existing material-preview strict pixel
 qualification remains 66/68, and raw-sidecar publication/parser audits remain open.
+
+## 2026-10-02 — Coupled VIS proof refinement resolves the final fixture pair
+
+Extended the rational VIS oracle to couple the coordinate constraints of a full
+3D endpoint box and account for the complete depth of an opaque blocker between
+the original cut planes. Fixed slope signs make slab-overlap predicates bilinear
+on products of convex line-parameter polygons. Exact vertex-pair extrema certify
+each rejection; bounded polygon bisection refines uncertain products. Certificates
+record every split and endpoint/blocker justification. Replay uses independent
+convex-hull clipping and division-free slab inequalities, while retaining the same
+geometric model and explicit boundary exclusions.
+
+Grid=9 pair 79 to 217 now has a verified interior-occlusion certificate: 56 proof
+nodes, at most twelve parameter splits, eighteen impossible-endpoint leaves and
+eleven blocker-intersection leaves. All 84 distinct dropped pairs across the four
+solvers and merge selections now certify. The compiler binaries and every VIS
+result remain identical to the preceding audit. No tolerance was relaxed and no
+pair was exempted. This resolves uncertainty in the fixture oracle; automatic
+regional merging still requires general geometry, protected-topology, boundary
+and runtime-cost qualification.
+
+Promoted `vis_merge_qualification` into ordinary CTest with a 900-second timeout.
+Its native reports now include proof limits, original opaque boxes and explicit
+replay results. Any unresolved pair or failed replay remains a test failure.
+Windows and Linux each pass this group and `vis_occlusion`, completing 128 native
+VIS runs with worker parity, unchanged PRT/geometry lumps, correct self bits and
+zero padding. Exact certificates, source/box premises and VIS bytes agree across
+platforms. Rational controls cover 1,274 polygon comparisons, 106 basic cases,
+96 transformed/reversed coupled cases and 80 independent continuous clear-ray
+controls. Final Windows/Linux repetitions additionally check late proof-budget
+exhaustion, invalid refinement limits and malformed certificate rejection.
+
+Updated the [contract and reproduction guide](VIS-QUALIFICATION.md), plan,
+development/VIS guides and [validation record](validation/vis-merge-qualification.json).
+Full native evidence remains in each release build's `tests/vis-merge-qualification/`;
+build/test logs, the previous raw reports and evidence recorder remain under
+`.agents/tmp/vis-refinement/`. Ten disposable prototype/search files from this
+round were removed after verifying their exact project paths and absence of
+links. Previously blocked cleanup targets were untouched.
+
+No new unrelated code issue was found. The existing material-preview strict pixel
+qualification remains 66/68, and raw-sidecar publication/parser audits remain open.

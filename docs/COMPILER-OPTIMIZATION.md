@@ -38,9 +38,10 @@ Matched oblique portals show measurable construction differences; complete area
 coverage and protected-flag correspondence remain prerequisites. After the full-
 winding clipping repair, combined merging still omits 2 baseline bits on grid=5
 and 27 on grid=9. The [exact axial-fixture audit](VIS-QUALIFICATION.md) now certifies
-interior occlusion for both small-fixture pairs and 26 large-fixture pairs. Across
-all solver/merge selections, 83 of 84 distinct dropped pairs have certificates
-replayed with an independent clipper. One remains unresolved; general geometry
+interior occlusion for both small-fixture pairs and all 27 large-fixture pairs.
+Across all solver/merge selections, all 84 distinct dropped pairs have certificates
+replayed with independent clipping and slab-inequality checks. Coupled 3D constraints
+resolve the final pair without changing compiler results. General geometry
 and engine boundary behavior remain outside this contract. No automatic
 transformation is enabled by this evidence stage.
 

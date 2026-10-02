@@ -53,8 +53,10 @@ def main():
     p.add_argument('--workers', type=int, nargs='+', default=[1, 4])
     args = p.parse_args()
     exe, root = args.compiler.resolve(), args.work_dir.resolve()
-    report = dict(schema_version=1, compiler_sha256=hashlib.sha256(exe.read_bytes()).hexdigest(),
+    limits = dict(work=2_000_000, states=2048, depth=10, refinement=12)
+    report = dict(schema_version=2, compiler_sha256=hashlib.sha256(exe.read_bytes()).hexdigest(),
                   contract='Exact interior-occlusion proof for axial known-source fixtures; zero-area grazing rays excluded; no automatic compiler edits.',
+                  oracle_limits=limits,
                   grids=[], qualified=False)
     for grid in (5, 9):
         directory = root/f'grid-{grid}'
@@ -72,6 +74,7 @@ def main():
         solids = [((x-20, y-20, 0), (x+20, y+20, 80+(x+y) % 112))
                   for y in range(-limit, limit+1, 128) for x in range(-limit, limit+1, 128)]
         record = dict(grid=grid, clusters=len(cells), cases=[], pairs=[],
+                      opaque_source_boxes=solids,
                       source_sha256_lf=hashlib.sha256(source.read_text().encode()).hexdigest(),
                       input_bsp_sha256=hashlib.sha256(original.data).hexdigest(),
                       prt_sha256=hashlib.sha256(portals).hexdigest())
@@ -106,11 +109,13 @@ def main():
             proofs = []
             for a in cells[left]:
                 for b in cells[right]:
-                    result = certify_occlusion(a, b, solids)
+                    result = certify_occlusion(a, b, solids, **limits)
+                    replayed = False
                     if result['status'] == 'occluded_interiors':
-                        assert replay_certificate(a, b, solids, result['certificate']), (grid, left, right, 'Independent replay rejected certificate')
-                    proofs.append(dict(source_box=a, target_box=b, **result))
-            proven = all(p['status'] == 'occluded_interiors' for p in proofs)
+                        replayed = replay_certificate(a, b, solids, result['certificate'])
+                        assert replayed, (grid, left, right, 'Independent replay rejected certificate')
+                    proofs.append(dict(source_box=a, target_box=b, replay_verified=replayed, **result))
+            proven = all(p['status'] == 'occluded_interiors' and p['replay_verified'] for p in proofs)
             record['pairs'].append(dict(clusters=[left, right], proven_occluded_interiors=proven, cell_pairs=proofs))
         record['unresolved_pairs'] = [p['clusters'] for p in record['pairs'] if not p['proven_occluded_interiors']]
         report['grids'].append(record)

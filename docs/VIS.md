@@ -48,11 +48,12 @@ correct source detail classification. The [optimizer design](COMPILER-OPTIMIZATI
 requires separate baseline-inclusion, geometry and runtime-cost gates before
 automatic regional changes can be offered.
 
-The [exact fixture qualification audit](VIS-QUALIFICATION.md) now explains 83 of
-84 distinct dropped pairs across four solvers and these merge selections. It
-certifies only interior occlusion for known axial source geometry, with independent
-clipping replay. One pair remains unresolved and boundary behavior remains outside
-the contract. Automatic merge qualification stays closed.
+The [exact fixture qualification audit](VIS-QUALIFICATION.md) now explains all
+84 distinct dropped pairs across four solvers and these merge selections. Coupled
+3D endpoint/blocker constraints resolve the last pair, with independent clipping
+and slab-inequality replay. The contract covers interior occlusion for known axial
+source geometry. General geometry and boundary behavior remain outside its scope;
+automatic merge qualification stays closed.
 
 ## Compact working data
 

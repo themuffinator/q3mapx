@@ -31,7 +31,8 @@ def windows(output, version, sha):
         archive.write(package / 'RUNTIME-CREDITS.md', 'RUNTIME-CREDITS.md')
         for name, path in sorted(sources.items()):
             archive.write(path, 'dependency-sources/' + name)
-    shutil.copy2(package.with_suffix('.zip'), output / package.with_suffix('.zip').name)
+    binary_archive = package.parent / (package.name + '.zip')
+    shutil.copy2(binary_archive, output / binary_archive.name)
 
 
 def linux(output, version, sha):

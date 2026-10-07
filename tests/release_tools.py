@@ -10,6 +10,7 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
 import release
+import package_release
 
 
 class ReleaseTests(unittest.TestCase):
@@ -120,6 +121,32 @@ class ReleaseTests(unittest.TestCase):
         assets.mkdir()
         with self.assertRaises(ValueError):
             release.finalize(assets, '0.4.0', 'a' * 40)
+
+    def test_windows_staging_preserves_dotted_version_and_exact_sources(self):
+        import zipfile
+        name = 'q3mapx-0.4.0-windows-x64'
+        package = self.root / 'build/package' / name
+        package.mkdir(parents=True)
+        source_dir = package.parent / 'dependency-sources'
+        source_dir.mkdir()
+        source = source_dir / 'runtime-1.2.3.src.tar.zst'
+        source.write_bytes(b'exact dependency source')
+        archive = package.parent / (name + '.zip')
+        archive.write_bytes(b'tested portable archive')
+        manifest = {'version': '0.4.0', 'revision': 'a' * 40, 'dirty_source_snapshot': False,
+                    'dependency_sources_downloaded': True,
+                    'packages': [{'source_archive': source.name, 'source_sha256': release.digest(source)}]}
+        (package / 'runtime-manifest.json').write_text(json.dumps(manifest))
+        (package / 'RUNTIME-CREDITS.md').write_text('Runtime attribution')
+        output = self.root / 'assets'
+        output.mkdir()
+        with patch.object(package_release, 'ROOT', self.root):
+            package_release.windows(output, '0.4.0', 'a' * 40)
+        self.assertEqual((output / archive.name).read_bytes(), archive.read_bytes())
+        with zipfile.ZipFile(output / 'q3mapx-0.4.0-windows-dependency-sources.zip') as bundle:
+            self.assertEqual(bundle.read('dependency-sources/' + source.name), source.read_bytes())
+            self.assertEqual(set(bundle.namelist()), {'dependency-sources/' + source.name,
+                                                     'runtime-manifest.json', 'RUNTIME-CREDITS.md'})
 
     def test_published_release_is_never_changed(self):
         with patch.object(release, 'api', return_value={'draft': False}) as api:

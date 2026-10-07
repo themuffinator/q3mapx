@@ -95,6 +95,19 @@ void AtomicFile::commit(){
 
 namespace {
 bool regularDestination( const std::filesystem::path& path ){
+#ifdef _WIN32
+    // MinGW's symlink_status can report a file symlink as a regular file.
+    // Inspect the destination itself, including dangling links, before staging.
+    const DWORD attributes = GetFileAttributesW( path.c_str() );
+    if ( attributes == INVALID_FILE_ATTRIBUTES ) {
+        const DWORD error = GetLastError();
+        if ( error == ERROR_FILE_NOT_FOUND || error == ERROR_PATH_NOT_FOUND ) return false;
+        throw std::system_error( error, std::system_category(), "Cannot inspect output " + path.string() );
+    }
+    if ( attributes & ( FILE_ATTRIBUTE_DIRECTORY | FILE_ATTRIBUTE_REPARSE_POINT | FILE_ATTRIBUTE_DEVICE ) )
+        throw std::runtime_error( "Output must be a regular file, not a directory or link: " + path.string() );
+    return true;
+#else
     std::error_code error;
     const auto status = std::filesystem::symlink_status( path, error );
     if ( error && error != std::errc::no_such_file_or_directory )
@@ -103,6 +116,7 @@ bool regularDestination( const std::filesystem::path& path ){
     if ( !std::filesystem::is_regular_file( status ) )
         throw std::runtime_error( "Output must be a regular file, not a directory or link: " + path.string() );
     return true;
+#endif
 }
 
 bool sameDestination( const std::filesystem::path& a, const std::filesystem::path& b ){

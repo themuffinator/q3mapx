@@ -2,7 +2,15 @@ name: Build and regressions
 on:
   push:
   pull_request:
+permissions:
+  contents: read
 jobs:
+  release-metadata:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: python3 tools/release.py check
+      - run: python3 tests/release_tools.py
   linux:
     runs-on: ubuntu-24.04
     strategy:
@@ -10,7 +18,7 @@ jobs:
       matrix:
         preset: [release, cpu-only, cli, sanitized]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -y ninja-build pkg-config libglib2.0-dev libxml2-dev libassimp-dev libpng-dev libjpeg-dev zlib1g-dev qt6-base-dev
       - run: cmake --preset ${{ matrix.preset }}
@@ -26,8 +34,8 @@ jobs:
       run:
         shell: msys2 {0}
     steps:
-      - uses: actions/checkout@v4
-      - uses: msys2/setup-msys2@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e # v2.33.0
         with:
           msystem: MINGW64
           update: true

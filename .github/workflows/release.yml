@@ -1,0 +1,202 @@
+name: Release
+run-name: Release ${{ inputs.version }} · ${{ inputs.publish && 'publish' || 'rehearsal' }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version already prepared in VERSION and CHANGELOG.md (e.g. 0.4.0)'
+        required: true
+        type: string
+      publish:
+        description: 'Publish to GitHub after all tests and package checks pass'
+        default: false
+        type: boolean
+      prerelease:
+        description: 'Mark this release as a prerelease (does not replace Latest)'
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Validate release request
+        env:
+          REQUESTED_VERSION: ${{ inputs.version }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          test "$GITHUB_REF" = "refs/heads/$DEFAULT_BRANCH" || { echo 'Run releases from the default branch'; exit 1; }
+          python3 tools/release.py preflight --version "$REQUESTED_VERSION"
+          python3 tests/release_tools.py
+
+  linux:
+    needs: validate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build pkg-config libglib2.0-dev libxml2-dev libassimp-dev libpng-dev libjpeg-dev zlib1g-dev qt6-base-dev
+      - name: Build
+        run: |
+          cmake --preset release
+          cmake --build --preset release --parallel 2
+      - name: Full release regressions
+        run: ctest --preset release --output-junit "$GITHUB_WORKSPACE/build/release/release-tests.xml"
+        working-directory: ${{ github.workspace }}
+      - name: Package and test extracted archive
+        run: python3 tools/package_release.py linux
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-linux
+          path: build/release-assets/*
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
+      - name: Keep test evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-linux-test-evidence
+          path: |
+            build/release/Testing/Temporary/
+            build/release/release-tests.xml
+            build/package-validation-linux/workbench.png
+          retention-days: 14
+
+  windows:
+    needs: validate
+    runs-on: windows-2025
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e # v2.33.0
+        with:
+          msystem: MINGW64
+          update: true
+          install: mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja mingw-w64-x86_64-pkgconf mingw-w64-x86_64-glib2 mingw-w64-x86_64-libxml2 mingw-w64-x86_64-assimp mingw-w64-x86_64-libpng mingw-w64-x86_64-libjpeg-turbo mingw-w64-x86_64-zlib mingw-w64-x86_64-python mingw-w64-x86_64-qt6-base
+      - name: Build
+        run: |
+          cmake --preset release
+          cmake --build --preset release --parallel 2
+      - name: Full release regressions
+        run: ctest --preset release --output-junit "$GITHUB_WORKSPACE/build/release/release-tests.xml"
+      - name: Package with licences and exact dependency sources
+        run: python tools/package_windows.py --msys-root "$(cygpath -m /)" --fetch-dependency-sources
+      - name: Test portable runtime without development DLL paths
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          python tests/package_smoke.py --package-dir "build/package/q3mapx-$RELEASE_VERSION-windows-x64" --work-dir build/package-validation-release --workbench-test build/release/bin/workbench_test.exe
+          python tools/package_release.py windows
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-windows
+          path: build/release-assets/*
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
+      - name: Keep test evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-windows-test-evidence
+          path: |
+            build/release/Testing/Temporary/
+            build/release/release-tests.xml
+            build/package-validation-release/validation.json
+            build/package-validation-release/*.log
+            build/package-validation-release/workbench.png
+          retention-days: 14
+
+  assemble:
+    needs: [linux, windows]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: release-linux
+          path: build/release-assets
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: release-windows
+          path: build/release-assets
+      - name: Verify and checksum the complete release
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: python3 tools/release.py finalize --version "$RELEASE_VERSION"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-ready
+          path: build/release-assets/*
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14
+      - name: Summarize tested release
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+          PUBLISH: ${{ inputs.publish }}
+        run: |
+          printf '## q3mapx %s\n\nCommit: `%s`\n\nPublish requested: %s\n\n' "$RELEASE_VERSION" "$GITHUB_SHA" "$PUBLISH" >> "$GITHUB_STEP_SUMMARY"
+          printf 'Windows and Linux regressions and packaged runtime checks passed. Download **release-ready** from this run for all archives and checksums.\n' >> "$GITHUB_STEP_SUMMARY"
+
+  publish:
+    if: inputs.publish
+    needs: assemble
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: release-ready
+          path: build/release-assets
+      - name: Upload, verify and publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ inputs.version }}
+          PRERELEASE: ${{ inputs.prerelease }}
+        run: |
+          options=()
+          if [ "$PRERELEASE" = true ]; then options+=(--prerelease); fi
+          python3 tools/release.py publish --version "$RELEASE_VERSION" "${options[@]}"
+          printf 'Published [q3mapx %s](%s/%s/releases/tag/v%s).\n' "$RELEASE_VERSION" "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$RELEASE_VERSION" >> "$GITHUB_STEP_SUMMARY"

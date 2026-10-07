@@ -80,7 +80,8 @@ def main():
     parser.add_argument('--build-dir',type=Path,default=ROOT/'build/release')
     parser.add_argument('--msys-root',type=Path,default=Path('C:/msys64'))
     parser.add_argument('--prefix',default='mingw64',choices=['mingw64','ucrt64'])
-    version=re.search(r'project\(q3mapx VERSION ([0-9.]+)',(ROOT/'CMakeLists.txt').read_text())[1]
+    from release import read_version
+    version=read_version(ROOT)
     parser.add_argument('--name',default=f'q3mapx-{version}-windows-x64')
     parser.add_argument('--cli-only',action='store_true')
     parser.add_argument('--allow-dirty',action='store_true',help='Include current uncommitted source in a local development snapshot')
@@ -177,7 +178,7 @@ def main():
 
     shutil.copy2(ROOT/'README.md',output/'README.md')
     shutil.copytree(ROOT/'docs',output/'docs')
-    for name in ('COPYING','GPL','LGPL','LICENSE','CONTRIBUTORS'): shutil.copy2(ROOT/name,output/name)
+    for name in ('COPYING','GPL','LGPL','LICENSE','CONTRIBUTORS','VERSION','CHANGELOG.md'): shutil.copy2(ROOT/name,output/name)
     # Ship precisely the current project source, including new local files in an
     # explicitly requested dirty snapshot, without build products or git metadata.
     source_paths=run(['git','ls-files','--cached','--others','--exclude-standard','-z']).split('\0')

@@ -1,22 +1,27 @@
 # q3mapx
 
+[![Build and regressions](https://github.com/themuffinator/q3mapx/actions/workflows/build.yml/badge.svg)](https://github.com/themuffinator/q3mapx/actions/workflows/build.yml)
+[![Latest release](https://img.shields.io/github/v/release/themuffinator/q3mapx)](https://github.com/themuffinator/q3mapx/releases/latest)
+
 An independent, performance-focused continuation of the q3map2 compiler from
 [NetRadiant-custom (NRC)](https://github.com/Garux/netradiant-custom), with a native
 desktop workbench and the existing command-line workflow.
 
-q3mapx 0.3.0 is a development release with persistent CPU jobs, optional OpenCL
+q3mapx is in active development, with persistent CPU jobs, optional OpenCL
 minimap acceleration, stronger input validation, improved BSP recovery, and a
 native Qt workbench. It starts from NRC revision `8216133` (latest at retrieval on
 2026-09-29). See the [implementation plan](docs/PLAN.md) and [task log](docs/PROGRESS.md)
-for completed work, validation and remaining limits.
+for completed work, validation and remaining limits. Download tested binaries from
+[GitHub Releases](https://github.com/themuffinator/q3mapx/releases/latest) and see
+the [changelog](CHANGELOG.md) for versioned release notes.
 
 The standalone CLI builds with CMake/Ninja; see [build instructions](docs/DEVELOPMENT.md).
 Release output is `build/release/bin/q3mapx` (`.exe` on Windows).
 The native GUI is `build/release/bin/q3mapx-workbench`; see the [workbench guide](docs/WORKBENCH.md).
-For the portable Windows archive, dependencies, source and installation steps,
+For Windows and Linux archives, dependencies, source and installation steps,
 see [release packaging](docs/RELEASE.md).
 
-Development after 0.3.0 adds checked, staged MAP/report and mesh output with
+The compiler provides checked, staged MAP/report and mesh output with
 companion rollback on publication errors, plus an asynchronous [BSP inspection page](docs/BSP-INSPECTION.md)
 in the workbench. See [export guarantees and limits](docs/DECOMPILATION.md).
 BSP and shared buffer saves now also close and discard unfinished staging files
@@ -50,7 +55,8 @@ assemblies, with bounded work, rebuild-order protection and explicit uncertainty
 The [geometry optimizer](docs/GEOMETRY-OPTIMIZATION.md) now provides bounded
 post-LIGHT triangle reduction and reports in CLI/workbench, initially for an
 explicit Quake3e OpenGL contract on eligible Quake III surfaces.
-The packaged 0.3.0 archive remains unchanged.
+The older local 0.3.0 archive remains historical evidence; current downloads are
+published through the [manual release workflow](docs/RELEASE.md#publishing-a-release).
 
 Recover an editable map with a texture-recovery report:
 
@@ -122,6 +128,7 @@ native validation of 242 installed-map entries without distributing game assets.
 
 ## Documentation
 
+- [Changelog](CHANGELOG.md) and [release procedure](docs/RELEASE.md#publishing-a-release)
 - [Implementation plan and acceptance criteria](docs/PLAN.md)
 - [Architecture and decisions](docs/ARCHITECTURE.md)
 - [Development and validation](docs/DEVELOPMENT.md)

@@ -84,9 +84,11 @@ def main():
                 raise
             skips.append(label + ': symbolic links require Windows privileges')
         else:
-            before = source.read_bytes()
+            assert path.is_symlink(), 'Link fixture must be a native symbolic link'
+            before = source.read_bytes() if source.exists() else None
             failed(base, arguments, label, b'Output must be a regular file')
-            assert path.is_symlink() and source.read_bytes() == before
+            assert path.is_symlink()
+            assert (source.read_bytes() if source.exists() else None) == before
 
     for game, magic in (('quake3', b'IBSP'), ('ja', b'RBSP')):
         directory = root / game
@@ -145,6 +147,10 @@ def main():
         linked_input = directory / 'linked.bsp'
         linked_input.write_bytes(original)
         reject_link(directory / 'linked_s.bsp', linked_input, ['-scale', 1, linked_input], base, game + '-link')
+        dangling_input = directory / 'dangling.bsp'
+        dangling_input.write_bytes(original)
+        reject_link(directory / 'dangling_s.bsp', directory / 'absent-target.bsp',
+                    ['-scale', 1, dangling_input], base, game + '-dangling-link')
         assert source.read_bytes() == source_bytes and source.with_suffix('.bsp').read_bytes() == original
 
     # -info is read-only; its profile exercises shared SaveFile independently of

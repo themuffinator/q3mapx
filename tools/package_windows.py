@@ -20,7 +20,10 @@ ROOT=Path(__file__).resolve().parents[1]
 
 
 def run(arguments, *, env=None):
-    result=subprocess.run(list(map(str,arguments)),cwd=ROOT,env=env,capture_output=True,text=True,errors='replace')
+    try:
+        result=subprocess.run(list(map(str,arguments)),cwd=ROOT,env=env,capture_output=True,text=True,errors='replace')
+    except OSError as error:
+        raise RuntimeError(f'Cannot execute {arguments[0]}: {error}') from error
     if result.returncode:
         raise RuntimeError(f'{arguments[0]} failed ({result.returncode}):\n{result.stdout}\n{result.stderr}')
     return result.stdout

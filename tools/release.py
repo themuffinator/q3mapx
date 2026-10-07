@@ -112,8 +112,50 @@ def api(endpoint, *args, missing_ok=False):
     return json.loads(result.stdout) if result.stdout else None
 
 
+def find_release(repo, tag):
+    # The by-tag endpoint omits unpublished drafts, even when the tag exists.
+    # Authenticated release listings include drafts; retain their numeric ID.
+    page = 1
+    while True:
+        releases = api(f'repos/{repo}/releases?per_page=100&page={page}')
+        for release in releases:
+            if release['tag_name'] == tag:
+                return release
+        if len(releases) < 100:
+            return None
+        page += 1
+
+
+def source_revision(revision=None):
+    head = command('git', 'rev-parse', 'HEAD')
+    if revision is None:
+        return head
+    if not re.fullmatch(r'[0-9a-f]{40}', revision):
+        raise ValueError('Recovery revision must be a full commit SHA')
+    sha = command('git', 'rev-parse', '--verify', revision + '^{commit}')
+    # A corrected publisher can finish a previously tested draft without moving
+    # its tag. Require exactly the same version and reviewed release notes.
+    command('git', 'diff', '--exit-code', sha, head, '--', 'VERSION', 'CHANGELOG.md')
+    return sha
+
+
+def recovery_revision(repo, run_id):
+    run = api(f'repos/{repo}/actions/runs/{run_id}')
+    workflow = api(f'repos/{repo}/actions/workflows/release.yml')
+    if (run['workflow_id'] != workflow['id'] or run['event'] != 'workflow_dispatch'
+            or run['status'] != 'completed' or run['head_repository']['full_name'] != repo):
+        raise ValueError('Recovery requires a completed manual Release run from this repository')
+    jobs = api(f'repos/{repo}/actions/runs/{run_id}/jobs?filter=latest&per_page=100')
+    if jobs['total_count'] > 100:
+        raise ValueError('Unexpected recovery job count')
+    states = {job['name']: job['conclusion'] for job in jobs['jobs']}
+    if any(states.get(name) != 'success' for name in ('validate', 'linux', 'windows', 'assemble')):
+        raise ValueError('Recovery requires successful validation, both platform builds and assembly')
+    return source_revision(run['head_sha'])
+
+
 def remote_state(repo, tag, sha):
-    release = api(f'repos/{repo}/releases/tags/{tag}', missing_ok=True)
+    release = find_release(repo, tag)
     if release and not release['draft']:
         raise ValueError(f'{tag} is already published; published releases are never overwritten')
     ref = api(f'repos/{repo}/git/ref/tags/{tag}', missing_ok=True)
@@ -170,9 +212,9 @@ def finalize(directory, version, sha):
     verify_assets(directory, version, sha)
 
 
-def publish(directory, version, repo, prerelease=False):
+def publish(directory, version, repo, prerelease=False, revision=None):
     check(expected=version)
-    sha = command('git', 'rev-parse', 'HEAD')
+    sha = source_revision(revision)
     if command('git', 'status', '--porcelain'):
         raise ValueError('Release checkout must be clean')
     verify_assets(directory, version, sha)
@@ -197,9 +239,13 @@ def publish(directory, version, repo, prerelease=False):
             api(f'repos/{repo}/releases/assets/{asset["id"]}', '-X', 'DELETE')
     else:
         command('gh', 'release', 'create', tag, '--verify-tag', '--target', sha, '--draft', *common)
+    release = find_release(repo, tag)
+    if not release or not release['draft']:
+        raise ValueError('Expected an unpublished draft before uploading')
+    release_id = release['id']
     for path in sorted(directory.iterdir()):
         command('gh', 'release', 'upload', tag, path, '--repo', repo)
-    release = api(f'repos/{repo}/releases/tags/{tag}')
+    release = api(f'repos/{repo}/releases/{release_id}')
     if not release['draft'] or {a['name'] for a in release['assets']} != {p.name for p in directory.iterdir()}:
         raise ValueError('Draft does not contain the exact expected assets')
     for asset in release['assets']:
@@ -209,10 +255,11 @@ def publish(directory, version, repo, prerelease=False):
     # All assets are attached before publication, including on immutable-release repositories.
     command('gh', 'release', 'edit', tag, '--repo', repo, '--draft=false',
             '--latest=false' if prerelease else '--latest')
-    published = api(f'repos/{repo}/releases/tags/{tag}')
+    published = api(f'repos/{repo}/releases/{release_id}')
     if published['draft'] or published['prerelease'] != prerelease:
         raise ValueError('GitHub did not publish the requested release state')
     print(published['html_url'])
+    return sha
 
 
 def main():
@@ -221,15 +268,19 @@ def main():
     p = sub.add_parser('prepare', help='Move Unreleased notes into a new dated release and update VERSION')
     p.add_argument('version')
     p.add_argument('--date')
-    for name in ('check', 'preflight', 'finalize', 'verify', 'publish'):
+    for name in ('check', 'preflight', 'finalize', 'verify', 'publish', 'recovery'):
         p = sub.add_parser(name)
         p.add_argument('--version', required=name != 'check')
-        if name in ('preflight', 'publish'):
+        if name in ('preflight', 'publish', 'recovery'):
             p.add_argument('--repo', default=os.environ.get('GITHUB_REPOSITORY', 'themuffinator/q3mapx'))
         if name in ('finalize', 'verify', 'publish'):
             p.add_argument('--assets', type=Path, default=ROOT / 'build/release-assets')
         if name == 'publish':
             p.add_argument('--prerelease', action='store_true')
+        if name in ('verify', 'publish'):
+            p.add_argument('--revision', help='Full tested commit SHA when recovering with a corrected publisher')
+        if name == 'recovery':
+            p.add_argument('--run-id', type=int, required=True)
     args = parser.parse_args()
     if args.action == 'prepare':
         prepare(args.version, release_date=args.date)
@@ -239,12 +290,18 @@ def main():
     sha = command('git', 'rev-parse', 'HEAD')
     if args.action == 'preflight':
         remote_state(args.repo, 'v' + version, sha)
+    elif args.action == 'recovery':
+        sha = recovery_revision(args.repo, args.run_id)
+        if os.environ.get('GITHUB_OUTPUT'):
+            with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
+                output.write(f'revision={sha}\n')
     elif args.action == 'finalize':
         finalize(args.assets, version, sha)
     elif args.action == 'verify':
+        sha = source_revision(args.revision)
         verify_assets(args.assets, version, sha)
     elif args.action == 'publish':
-        publish(args.assets, version, args.repo, args.prerelease)
+        sha = publish(args.assets, version, args.repo, args.prerelease, args.revision)
     print(f'Validated q3mapx {version} at {sha}')
 
 

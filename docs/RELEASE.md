@@ -78,7 +78,7 @@ use the extracted archive. Offscreen previews come from Qt itself; no desktop
 capture or input automation is used. No installed game assets are required.
 Hardware-specific OpenCL checks can skip when hosted runners have no GPU.
 
-Only the final publish job can write repository contents. After both platforms
+Only the publication jobs can write repository contents. After both platforms
 pass, it verifies the exact asset set, creates the matching tag and a draft,
 uploads every asset, checks GitHub's SHA-256 digests and sizes, then publishes.
 This draft-first sequence also supports repositories with immutable releases.
@@ -110,6 +110,19 @@ version. Release workflows are serialized and do not cancel an active publish.
 Actions artifacts are retained for 7–14 days; published release assets persist.
 A manual run can build a newer toolchain than a prior rehearsal, so publication
 always repeats the checks instead of treating an earlier rehearsal as approval.
+
+If the publisher itself needs a fix after a draft has been uploaded, commit the
+fix and run the workflow again with **recover_run_id** set to the original run's
+numeric ID. Recovery requires that run's validation, both platform builds and
+assembly to have succeeded. It retrieves `release-ready` from that exact run,
+verifies the assets and tag against the original tested commit, and requires
+unchanged VERSION and CHANGELOG.md. It never moves a tag or rebuilds binaries
+under an existing version. Leave Publish unchecked to verify recovery first.
+Draft lookup uses authenticated release listings and numeric release IDs;
+GitHub's by-tag REST endpoint only returns published releases.
+
+For equivalent local recovery, download `release-ready` into `build/release-assets`
+and run `python tools/release.py publish --version <version> --revision <full-tested-sha>`.
 
 ## Historical local packages
 

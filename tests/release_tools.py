@@ -149,20 +149,61 @@ class ReleaseTests(unittest.TestCase):
                                                      'runtime-manifest.json', 'RUNTIME-CREDITS.md'})
 
     def test_published_release_is_never_changed(self):
-        with patch.object(release, 'api', return_value={'draft': False}) as api:
+        with patch.object(release, 'find_release', return_value={'draft': False}) as lookup, \
+                patch.object(release, 'api') as api:
             with self.assertRaises(ValueError):
                 release.remote_state('owner/repo', 'v0.4.0', 'a' * 40)
-            api.assert_called_once()
+            lookup.assert_called_once()
+            api.assert_not_called()
 
     def test_existing_tag_cannot_move(self):
-        with patch.object(release, 'api', side_effect=[None, {'object': {}}, {'sha': 'b' * 40}]):
+        with patch.object(release, 'find_release', return_value=None), \
+                patch.object(release, 'api', side_effect=[{'object': {}}, {'sha': 'b' * 40}]):
             with self.assertRaises(ValueError):
                 release.remote_state('owner/repo', 'v0.4.0', 'a' * 40)
 
     def test_same_commit_draft_can_resume(self):
         draft = {'draft': True, 'target_commitish': 'a' * 40}
-        with patch.object(release, 'api', side_effect=[draft, {'object': {}}, {'sha': 'a' * 40}]):
+        with patch.object(release, 'find_release', return_value=draft), \
+                patch.object(release, 'api', side_effect=[{'object': {}}, {'sha': 'a' * 40}]):
             self.assertEqual(release.remote_state('owner/repo', 'v0.4.0', 'a' * 40)[0], draft)
+
+    def test_draft_lookup_uses_paginated_listing(self):
+        draft = {'id': 42, 'tag_name': 'v0.4.0', 'draft': True}
+        with patch.object(release, 'api', side_effect=[[{'tag_name': 'v0.3.0'}] * 100, [draft]]) as api:
+            self.assertEqual(release.find_release('owner/repo', 'v0.4.0'), draft)
+            self.assertEqual(api.call_count, 2)
+            self.assertTrue(all('/releases?' in c.args[0] for c in api.call_args_list))
+
+    def test_recovery_preserves_source_commit_and_metadata(self):
+        with patch.object(release, 'command', side_effect=['b' * 40, 'a' * 40, '']) as command:
+            self.assertEqual(release.source_revision('a' * 40), 'a' * 40)
+            command.assert_called_with('git', 'diff', '--exit-code', 'a' * 40, 'b' * 40,
+                                       '--', 'VERSION', 'CHANGELOG.md')
+        with patch.object(release, 'command', side_effect=['b' * 40, 'a' * 40,
+                    subprocess.CalledProcessError(1, 'git diff')]), self.assertRaises(subprocess.CalledProcessError):
+            release.source_revision('a' * 40)
+
+    def test_recovery_requires_all_original_build_and_test_gates(self):
+        run = {'workflow_id': 7, 'event': 'workflow_dispatch', 'status': 'completed',
+               'head_repository': {'full_name': 'owner/repo'}, 'head_sha': 'a' * 40}
+        for failed in (None, 'linux', 'windows', 'assemble', 'validate'):
+            jobs = {'total_count': 4, 'jobs': [{'name': name,
+                    'conclusion': 'failure' if name == failed else 'success'}
+                    for name in ('validate', 'linux', 'windows', 'assemble')]}
+            with patch.object(release, 'api', side_effect=[run, {'id': 7}, jobs]), \
+                    patch.object(release, 'source_revision', return_value='a' * 40):
+                if failed:
+                    with self.assertRaises(ValueError):
+                        release.recovery_revision('owner/repo', 123)
+                else:
+                    self.assertEqual(release.recovery_revision('owner/repo', 123), 'a' * 40)
+
+    def test_recovery_rejects_unrelated_workflow(self):
+        run = {'workflow_id': 8, 'event': 'workflow_dispatch', 'status': 'completed',
+               'head_repository': {'full_name': 'owner/repo'}, 'head_sha': 'a' * 40}
+        with patch.object(release, 'api', side_effect=[run, {'id': 7}]), self.assertRaises(ValueError):
+            release.recovery_revision('owner/repo', 123)
 
     def test_api_errors_are_not_treated_as_missing_releases(self):
         result = subprocess.CompletedProcess([], 1, '', 'gh: Forbidden (HTTP 403)')
@@ -184,6 +225,7 @@ class ReleaseTests(unittest.TestCase):
 
             with patch.object(release, 'check'), patch.object(release, 'sections', return_value={'0.4.0': '- Notes'}), \
                     patch.object(release, 'remote_state', return_value=(None, None)), \
+                    patch.object(release, 'find_release', return_value={'id': 42, 'draft': True}), \
                     patch.object(release, 'api', side_effect=results), \
                     patch.object(release, 'command', side_effect=commands) as commands_mock:
                 if corrupt:
